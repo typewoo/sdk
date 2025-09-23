@@ -15,6 +15,7 @@ import { ProductCollectionDataService } from './store/product.collection.data.se
 import { ProductReviewService } from './store/product.review.service.js';
 import { ProductService } from './store/product.service.js';
 import { ProductTagService } from './store/product.tag.service.js';
+import { AdminService } from './admin.service.js';
 
 export class StoreService {
   private _tags!: ProductTagService;
@@ -31,6 +32,8 @@ export class StoreService {
   private _cart!: CartService;
   private _cartItems!: CartItemService;
   private _cartCoupons!: CartCouponService;
+
+  private _admin!: AdminService;
 
   constructor(
     state: StoreSdkState,
@@ -59,6 +62,8 @@ export class StoreService {
     this._cart = new CartService(state, config, events);
     this._cartItems = new CartItemService(state, config, events);
     this._cartCoupons = new CartCouponService(state, config, events);
+
+    this._admin = new AdminService(state, config, events);
   }
 
   /**
@@ -150,5 +155,12 @@ export class StoreService {
    */
   get cartCoupons() {
     return this._cartCoupons;
+  }
+
+  /**
+   * WooCommerce REST API endpoints
+   */
+  get admin() {
+    return this._admin;
   }
 }

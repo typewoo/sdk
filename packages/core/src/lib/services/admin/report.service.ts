@@ -1,0 +1,218 @@
+import { BaseService } from '../base.service.js';
+import {
+  WcAdminReport,
+  WcAdminSalesReport,
+  WcAdminTopSellersReport,
+  WcAdminCustomersReport,
+  WcAdminOrdersReport,
+  WcAdminTotalsReportEntry,
+  WcAdminReportsQueryParams,
+  WcAdminSalesReportQueryParams,
+  WcAdminTopSellersReportQueryParams,
+  WcAdminCustomersReportQueryParams,
+  WcAdminOrdersReportQueryParams,
+} from '../../types/admin/report.types.js';
+import { ApiResult, ApiPaginationResult } from '../../types/api.js';
+import { doGet } from '../../utilities/axios.utility.js';
+import { parseLinkHeader } from '../../utilities/common.js';
+import qs from 'qs';
+
+/**
+ * WooCommerce REST API Reports Service
+ *
+ * Manages reports through the WooCommerce REST API (wp-json/wc/v3/reports)
+ */
+export class WcAdminReportService extends BaseService {
+  private readonly endpoint = 'wp-json/wc/v3/reports';
+
+  /**
+   * List available reports
+   */
+  async list(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminReport[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+
+    const { data, error, headers } = await doGet<WcAdminReport[]>(url);
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Get sales report
+   */
+  async getSalesReport(
+    params?: WcAdminSalesReportQueryParams
+  ): Promise<ApiResult<WcAdminSalesReport[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/sales${query ? `?${query}` : ''}`;
+
+    const { data, error } = await doGet<WcAdminSalesReport[]>(url);
+    return { data, error };
+  }
+
+  /**
+   * Get top sellers report
+   */
+  async getTopSellersReport(
+    params?: WcAdminTopSellersReportQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTopSellersReport[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/top_sellers${query ? `?${query}` : ''}`;
+
+    const { data, error, headers } = await doGet<WcAdminTopSellersReport[]>(
+      url
+    );
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Get customers report
+   */
+  async getCustomersReport(
+    params?: WcAdminCustomersReportQueryParams
+  ): Promise<ApiPaginationResult<WcAdminCustomersReport[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
+
+    const { data, error, headers } = await doGet<WcAdminCustomersReport[]>(url);
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Get orders report
+   */
+  async getOrdersReport(
+    params?: WcAdminOrdersReportQueryParams
+  ): Promise<ApiResult<WcAdminOrdersReport[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
+
+    const { data, error } = await doGet<WcAdminOrdersReport[]>(url);
+    return { data, error };
+  }
+
+  /**
+   * Orders totals report
+   */
+  async getOrdersTotals(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
+    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
+      url
+    );
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Products totals report
+   */
+  async getProductsTotals(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/products/totals${query ? `?${query}` : ''}`;
+    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
+      url
+    );
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Customers totals report
+   */
+  async getCustomersTotals(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
+    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
+      url
+    );
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Coupons totals report
+   */
+  async getCouponsTotals(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/coupons/totals${query ? `?${query}` : ''}`;
+    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
+      url
+    );
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
+  }
+
+  /**
+   * Reviews totals report
+   */
+  async getReviewsTotals(
+    params?: WcAdminReportsQueryParams
+  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const url = `/${this.endpoint}/reviews/totals${query ? `?${query}` : ''}`;
+    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
+      url
+    );
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
+  }
+}

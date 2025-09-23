@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 // These tests assume the WP env is up (npm run test:wp-plugin script starts it) and seeded users exist.
 // Adjust base URL if docker compose mapping changes.
-const BASE = process.env.WP_BASE_URL || 'http://localhost:8080';
+const BASE = process.env.WP_URL || 'http://localhost:8080';
 
 interface IssueTokenResponse {
   token: string;

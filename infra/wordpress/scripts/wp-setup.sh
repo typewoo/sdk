@@ -245,9 +245,51 @@ if ! wp user get "$TEST_CUSTOMER_USER_EFFECTIVE" >/dev/null 2>&1; then
   wp user create "$TEST_CUSTOMER_USER_EFFECTIVE" "${TEST_CUSTOMER_EMAIL:-customer@example.com}" --user_pass="${TEST_CUSTOMER_PASSWORD:-customer123}" --role=customer || log "[WARN] Failed to create test customer user"
 fi
 
+# ---------------------------------------------------------------------------
+# Create application passwords for API testing
+# ---------------------------------------------------------------------------
+log "Creating application passwords for API testing..."
+
+# Create application password for admin user
+ADMIN_USER="${WP_ADMIN_USER:-admin}"
+log "Creating application password for admin user '$ADMIN_USER'..."
+
+# Remove any existing "API Dev" application passwords to avoid conflicts
+if wp user application-password list "$ADMIN_USER" --field=name 2>/dev/null | grep -q "API Dev"; then
+  log "Removing existing 'API Dev' application password for admin"
+  EXISTING_UUID=$(wp user application-password list "$ADMIN_USER" --format=csv --fields=uuid,name 2>/dev/null | grep "API Dev" | cut -d',' -f1 || echo "")
+  if [ -n "$EXISTING_UUID" ]; then
+    wp user application-password delete "$ADMIN_USER" "$EXISTING_UUID" >/dev/null 2>&1 || true
+  fi
+fi
+
+# Create new application password for admin
+ADMIN_APP_PASSWORD=$(wp user application-password create "$ADMIN_USER" "API Dev" --porcelain 2>/dev/null || echo "")
+if [ -n "$ADMIN_APP_PASSWORD" ]; then
+  log "✅ Admin application password created: $ADMIN_APP_PASSWORD"
+else
+  log "[WARN] Failed to create admin application password"
+  ADMIN_APP_PASSWORD="(failed)"
+fi
+
 log "Setup complete. Site available at: $SITE_URL"
-log "Admin: ${WP_ADMIN_USER:-admin} / ${WP_ADMIN_PASSWORD:-admin}"
-log "Customer: ${TEST_CUSTOMER_USER:-customer} / ${TEST_CUSTOMER_PASSWORD:-customer123}" || true
+log "Admin: ${WP_ADMIN_USER:-admin} / ${WP_ADMIN_PASSWORD:-admin} (App Password: $ADMIN_APP_PASSWORD)"
+log "Customer: ${TEST_CUSTOMER_USER:-customer} / ${TEST_CUSTOMER_PASSWORD:-customer123}"
+
+# ---------------------------------------------------------------------------
+# Export application passwords for .env file
+# ---------------------------------------------------------------------------
+log "Exporting application passwords for .env file..."
+
+# Write the application passwords to the mounted scripts directory
+cat > /scripts/generated-app-passwords.txt << EOF
+# Application passwords generated on $(date)
+# Add these lines to your infra/wordpress/.env file:
+
+WP_ADMIN_APP_PASSWORD=${ADMIN_APP_PASSWORD}
+EOF
+
+log "✅ Application passwords exported to: scripts/generated-app-passwords.txt"
 
 # Final verification: ensure store is accessible and not showing coming soon page
 log "Verifying store accessibility..."
@@ -293,6 +335,17 @@ if wp plugin is-active woocommerce >/dev/null 2>&1; then
   # Ensure test coupons always present (idempotent)
   log "Ensuring test coupons (SUMMER10, PERCENT15)..."
   wp eval-file /scripts/ensure-test-coupons.php || true
+  
+  # Create REST API keys for testing (idempotent)
+  log "Creating WooCommerce REST API keys for testing..."
+  wp eval-file /scripts/create-api-keys.php || true
+  
+  # Source the API keys if the file was created
+  if [ -f /tmp/wc-api-keys.env ]; then
+    log "Loading REST API keys into environment..."
+    source /tmp/wc-api-keys.env
+    log "REST API keys available: WP_CONSUMER_KEY and WP_CONSUMER_SECRET"
+  fi
 else
   fail "WooCommerce inactive; cannot proceed with catalog seeding."
 fi
