@@ -281,15 +281,22 @@ log "Customer: ${TEST_CUSTOMER_USER:-customer} / ${TEST_CUSTOMER_PASSWORD:-custo
 # ---------------------------------------------------------------------------
 log "Exporting application passwords for .env file..."
 
-# Write the application passwords to the mounted scripts directory
-cat > /scripts/generated-app-passwords.txt << EOF
+# Write the application passwords to a temporary location first, then try to copy to scripts
+TMP_FILE="/tmp/generated-app-passwords.txt"
+cat > "$TMP_FILE" << EOF
 # Application passwords generated on $(date)
 # Add these lines to your infra/wordpress/.env file:
 
 WP_ADMIN_APP_PASSWORD=${ADMIN_APP_PASSWORD}
 EOF
 
-log "✅ Application passwords exported to: scripts/generated-app-passwords.txt"
+# Try to copy to the scripts directory, but don't fail if it's not writable
+if cp "$TMP_FILE" /scripts/generated-app-passwords.txt 2>/dev/null; then
+  log "✅ Application passwords exported to: scripts/generated-app-passwords.txt"
+else
+  log "✅ Application passwords available at: $TMP_FILE (scripts directory not writable)"
+  log "    Content: WP_ADMIN_APP_PASSWORD=${ADMIN_APP_PASSWORD}"
+fi
 
 # Final verification: ensure store is accessible and not showing coming soon page
 log "Verifying store accessibility..."
