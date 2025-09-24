@@ -4,21 +4,21 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../../../.env"
-PASSWORDS_FILE="/tmp/generated-app-passwords.txt"
 
 echo "Adding application passwords to .env file..."
 
-if [ ! -f "$PASSWORDS_FILE" ]; then
-  echo "❌ No generated passwords found at: $PASSWORDS_FILE"
-  echo "Make sure to run 'npm run wp:env:up' first to generate the passwords."
+# Extract password from the generated file (already extracted by npm script)
+PASSWORDS_FILE="$SCRIPT_DIR/generated-app-passwords.txt"
+if [ -f "$PASSWORDS_FILE" ]; then
+  ADMIN_PASSWORD=$(grep "WP_ADMIN_APP_PASSWORD=" "$PASSWORDS_FILE" | cut -d'=' -f2)
+else
+  echo "❌ No password file found at $PASSWORDS_FILE"
+  echo "    Make sure to run 'npm run wp:extract:passwords' first"
   exit 1
 fi
 
-# Extract the password values from the generated file
-ADMIN_PASSWORD=$(grep "WP_ADMIN_APP_PASSWORD=" "$PASSWORDS_FILE" | cut -d'=' -f2)
-
 if [ -z "$ADMIN_PASSWORD" ]; then
-  echo "❌ Could not extract passwords from $PASSWORDS_FILE"
+  echo "❌ Could not extract password from $PASSWORDS_FILE"
   exit 1
 fi
 
