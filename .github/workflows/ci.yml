@@ -131,49 +131,8 @@ jobs:
       - name: Run Unit Tests (fast, no WP env)
         run: |
           cd packages/core && npx vitest run --coverage src/lib/tests/unit
-  test-integration-flow:
-    name: tests / integration & flow
-    runs-on: ubuntu-latest
-    needs: [test-plugin, plugin-check]
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Restore Nx Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
-      - name: Start WordPress Environment
-        env:
-          WOO_COMMERCE_VERSION: ''
-        run: |
-          set -euo pipefail
-          echo "Provisioning WordPress + WooCommerce for integration and flow tests..."
-          npm run wp:env:up
-          npm run wp:cli:fast option get store_sdk_seeded || true
-          npm run wp:cli:fast post list --post_type=product --posts_per_page=1 --format=json || true
-      - name: Run Integration Tests
-        run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/integration
-      - name: Run Flow Tests
-        run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/flow
-      - name: Tear Down WordPress Environment
-        if: always()
-        run: npm run wp:env:clean || true
-  test-plugin:
-    name: tests / plugin
+  test:
+    name: tests / integration & flow & plugin
     runs-on: ubuntu-latest
     needs: [lint, format]
     steps:
@@ -198,7 +157,7 @@ jobs:
       - name: Start WordPress Environment
         run: |
           set -euo pipefail
-          echo "Provisioning WordPress + WooCommerce for plugin tests..."
+          echo "Provisioning WordPress + WooCommerce for tests..."
           npm run wp:env:up
           npm run wp:cli:fast option get store_sdk_seeded || true
           npm run wp:cli:fast post list --post_type=product --posts_per_page=1 --format=json || true
@@ -207,6 +166,12 @@ jobs:
           WP_URL: http://localhost:8080
         run: |
           npx vitest run scripts/tests
+      - name: Run Integration Tests
+        run: |
+          cd packages/core && npx vitest run --coverage src/lib/tests/integration
+      - name: Run Flow Tests
+        run: |
+          cd packages/core && npx vitest run --coverage src/lib/tests/flow
       - name: Tear Down WordPress Environment
         if: always()
         run: npm run wp:env:clean || true
@@ -270,7 +235,7 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: [test-unit, test-integration-flow, plugin-check]
+    needs: [test-unit, plugin-check]
     steps:
       - uses: actions/checkout@v5
         with:
