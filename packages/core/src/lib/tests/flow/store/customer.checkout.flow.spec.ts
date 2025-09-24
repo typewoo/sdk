@@ -6,6 +6,11 @@ import {
   GET_WP_URL,
 } from '../../config.tests.js';
 
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
+
 const WP_URL = GET_WP_URL();
 const CUSTOMER_USER = GET_WP_CUSTOMER_USER();
 const CUSTOMER_PASS = GET_WP_CUSTOMER_PASSWORD();
