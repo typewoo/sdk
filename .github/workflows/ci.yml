@@ -235,7 +235,7 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: [test-unit, plugin-check]
+    needs: [test, test-unit, plugin-check]
     steps:
       - uses: actions/checkout@v5
         with:
