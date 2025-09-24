@@ -69,6 +69,7 @@
     "autoprefixer": "^10.4.20",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.2",
     "esbuild": "0.25.9",
     "eslint": "9.35.0",
     "eslint-config-prettier": "10.1.8",

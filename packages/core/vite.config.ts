@@ -1,10 +1,6 @@
 import { defineConfig } from 'vite';
-import { loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  // Load env vars from the wordpress .env file for integration tests
-  const env = loadEnv(mode, '../../', '');
-
   return {
     root: __dirname,
     resolve: {
@@ -17,12 +13,11 @@ export default defineConfig(({ mode }) => {
     //  plugins: [ nxViteTsPaths() ],
     // },
     test: {
-      watch: true,
+      watch: false,
       globals: true,
       environment: 'node',
       include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       reporters: ['default'],
-      env: env,
       coverage: {
         reportsDirectory: './test-output/vitest/coverage',
         provider: 'v8' as const,

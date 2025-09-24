@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
 
 const WP_URL = GET_WP_URL();
 const CUSTOMER_USER = process.env.TEST_CUSTOMER_USER || 'customer';
@@ -39,13 +43,6 @@ describe('Integration: Checkout & Order', () => {
     });
   });
 
-  beforeEach(async () => {
-    await StoreSdk.auth.token({
-      login: CUSTOMER_USER,
-      password: CUSTOMER_PASS,
-    });
-  });
-
   async function ensureCartItem() {
     const { data: products } = await StoreSdk.store.products.list({
       per_page: 3,
@@ -57,6 +54,10 @@ describe('Integration: Checkout & Order', () => {
   }
 
   it('retrieves checkout data or empty-cart error', async () => {
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
     const checkout = await StoreSdk.store.checkout.get();
     if (checkout.error) {
       // Expect a recognizable checkout/cart related error code
@@ -74,6 +75,10 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('fails to process order with missing billing fields (expect error)', async () => {
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
     const attempt = await StoreSdk.store.checkout.processOrderAndPayment({
       billing_address: {
         first_name: '',
@@ -111,6 +116,10 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('updates checkout (order notes) best-effort', async () => {
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
     const upd = await StoreSdk.store.checkout.update({
       order_notes: 'Integration test note',
     });
@@ -123,6 +132,10 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('attempts to process order (best-effort, may not finalize)', async () => {
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
     await ensureCartItem();
     const create = await StoreSdk.store.checkout.processOrderAndPayment({
       billing_address: {

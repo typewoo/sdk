@@ -9,6 +9,10 @@ import {
   GET_WP_ADMIN_USER,
   GET_WP_URL,
 } from '../../config.tests.js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
 
 /**
  * Integration tests for Admin Product Service

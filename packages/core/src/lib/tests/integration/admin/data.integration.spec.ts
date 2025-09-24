@@ -6,6 +6,11 @@ import {
   GET_WP_URL,
 } from '../../config.tests.js';
 
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
+
 /**
  * Integration: Admin Data (Countries, Currencies, Continents)
  * Covers list/get for each data endpoint with safe assertions.

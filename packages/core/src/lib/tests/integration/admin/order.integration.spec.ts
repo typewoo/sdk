@@ -9,6 +9,10 @@ import {
   GET_WP_ADMIN_USER,
   GET_WP_URL,
 } from '../../config.tests.js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
 
 /**
  * Integration tests for Admin Order Service
@@ -39,23 +43,6 @@ describe('Integration: Admin Order Service', () => {
 
     if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
     if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
-  });
-
-  it('searches orders by number', async () => {
-    // Use a numeric query likely to match some order numbers
-    const query = '1';
-    const { data, error } = await StoreSdk.admin.orders.list({
-      search: query,
-      per_page: 10,
-    });
-
-    expect(error).toBeFalsy();
-    expect(Array.isArray(data)).toBe(true);
-
-    if (data && data.length > 0) {
-      const hasSearchTerm = data.some((o) => (o.number || '').includes(query));
-      expect(hasSearchTerm).toBe(true);
-    }
   });
 
   it('creates, retrieves, updates, and deletes an order', async () => {

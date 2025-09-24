@@ -4,6 +4,10 @@ import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { httpClient } from '../../../services/api.js';
 import { resetRefreshTokenState } from '../../../interceptors/refresh.token.interceptor.js';
 import { GET_WP_URL } from '../../config.tests.js';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(__dirname, '../../../../../../../.env') });
 
 const WP_URL = GET_WP_URL();
 const CUSTOMER_USER = process.env.TEST_CUSTOMER_USER || 'customer';
