@@ -4,7 +4,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../../../.env"
-PASSWORDS_FILE="$SCRIPT_DIR/generated-app-passwords.txt"
+PASSWORDS_FILE="/tmp/generated-app-passwords.txt"
 
 echo "Adding application passwords to .env file..."
 
