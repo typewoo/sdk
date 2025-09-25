@@ -5,7 +5,10 @@ import { StoreSdkState } from '../types/sdk.state.js';
 import { CartCouponService } from './store/cart.coupon.service.js';
 import { CartItemService } from './store/cart.item.service.js';
 import { CartService } from './store/cart.service.js';
+import { BatchService } from './store/batch.service.js';
+import { CartExtensionsService } from './store/cart.extensions.service.js';
 import { CheckoutService } from './store/checkout.service.js';
+import { CheckoutOrderService } from './store/checkout.order.service.js';
 import { OrderService } from './store/order.service.js';
 import { ProductAttributeService } from './store/product.attribute.service.js';
 import { ProductAttributeTermService } from './store/product.attribute.term.service.js';
@@ -21,6 +24,7 @@ export class StoreService {
   private _orders!: OrderService;
   private _brands!: ProductBrandService;
   private _checkout!: CheckoutService;
+  private _checkoutOrder!: CheckoutOrderService;
   private _products!: ProductService;
   private _reviews!: ProductReviewService;
   private _categories!: ProductCategoryService;
@@ -31,6 +35,9 @@ export class StoreService {
   private _cart!: CartService;
   private _cartItems!: CartItemService;
   private _cartCoupons!: CartCouponService;
+  private _cartExtensions!: CartExtensionsService;
+
+  private _batch!: BatchService;
 
   constructor(
     state: StoreSdkState,
@@ -41,6 +48,7 @@ export class StoreService {
     this._orders = new OrderService(state, config, events);
     this._brands = new ProductBrandService(state, config, events);
     this._checkout = new CheckoutService(state, config, events);
+    this._checkoutOrder = new CheckoutOrderService(state, config, events);
     this._reviews = new ProductReviewService(state, config, events);
     this._products = new ProductService(state, config, events);
     this._categories = new ProductCategoryService(state, config, events);
@@ -59,6 +67,9 @@ export class StoreService {
     this._cart = new CartService(state, config, events);
     this._cartItems = new CartItemService(state, config, events);
     this._cartCoupons = new CartCouponService(state, config, events);
+    this._cartExtensions = new CartExtensionsService(state, config, events);
+
+    this._batch = new BatchService(state, config, events);
   }
 
   /**
@@ -87,6 +98,13 @@ export class StoreService {
    */
   get checkout() {
     return this._checkout;
+  }
+
+  /**
+   * Checkout Order API
+   */
+  get checkoutOrder() {
+    return this._checkoutOrder;
   }
 
   /**
@@ -150,5 +168,19 @@ export class StoreService {
    */
   get cartCoupons() {
     return this._cartCoupons;
+  }
+
+  /**
+   * Cart Extensions API
+   */
+  get cartExtensions() {
+    return this._cartExtensions;
+  }
+
+  /**
+   * Batch API
+   */
+  get batch() {
+    return this._batch;
   }
 }

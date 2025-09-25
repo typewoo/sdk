@@ -1,0 +1,4671 @@
+{
+  "timestamp": "2025-09-25T05:39:51.496Z",
+  "apiType": "store",
+  "apiVersion": "v1",
+  "baseUrl": "http://localhost:8080/wp-json/wc/store/v1",
+  "routes": {
+    "batch": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "args": {
+            "validation": {
+              "type": "string",
+              "enum": ["require-all-validate", "normal"],
+              "default": "normal",
+              "required": false
+            },
+            "requests": {
+              "type": "array",
+              "maxItems": 25,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": ["POST", "PUT", "PATCH", "DELETE"],
+                    "default": "POST"
+                  },
+                  "path": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "body": {
+                    "type": "object",
+                    "properties": [],
+                    "additionalProperties": true
+                  },
+                  "headers": {
+                    "type": "object",
+                    "properties": [],
+                    "additionalProperties": {
+                      "type": ["string", "array"],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": true
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "validation": {
+          "methods": ["POST"],
+          "type": "string",
+          "enum": ["require-all-validate", "normal"],
+          "default": "normal",
+          "required": false
+        },
+        "requests": {
+          "methods": ["POST"],
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": ["POST", "PUT", "PATCH", "DELETE"],
+                "default": "POST"
+              },
+              "path": {
+                "type": "string",
+                "required": true
+              },
+              "body": {
+                "type": "object",
+                "properties": [],
+                "additionalProperties": true
+              },
+              "headers": {
+                "type": "object",
+                "properties": [],
+                "additionalProperties": {
+                  "type": ["string", "array"],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "schema": null
+    },
+    "cart": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/add-item": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "id": {
+              "description": "The cart item product or variation ID.",
+              "type": "integer",
+              "required": false
+            },
+            "quantity": {
+              "description": "Quantity of this item to add to the cart.",
+              "type": "number",
+              "required": false
+            },
+            "variation": {
+              "description": "Chosen attributes (for variations).",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attribute": {
+                    "description": "Variation attribute name.",
+                    "type": "string",
+                    "context": ["view", "edit"]
+                  },
+                  "value": {
+                    "description": "Variation attribute value.",
+                    "type": "string",
+                    "context": ["view", "edit"]
+                  }
+                }
+              },
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "id": {
+          "methods": ["POST"],
+          "description": "The cart item product or variation ID.",
+          "type": "integer",
+          "required": false
+        },
+        "quantity": {
+          "methods": ["POST"],
+          "description": "Quantity of this item to add to the cart.",
+          "type": "number",
+          "required": false
+        },
+        "variation": {
+          "methods": ["POST"],
+          "description": "Chosen attributes (for variations).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attribute": {
+                "description": "Variation attribute name.",
+                "type": "string",
+                "context": ["view", "edit"]
+              },
+              "value": {
+                "description": "Variation attribute value.",
+                "type": "string",
+                "context": ["view", "edit"]
+              }
+            }
+          },
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/apply-coupon": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "code": {
+              "description": "Unique identifier for the coupon within the cart.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "code": {
+          "methods": ["POST"],
+          "description": "Unique identifier for the coupon within the cart.",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/coupons": {
+      "methods": ["GET", "POST", "DELETE"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "code": {
+              "description": "The coupon's unique code.",
+              "type": "string",
+              "required": false
+            },
+            "discount_type": {
+              "description": "The discount type for the coupon (e.g. percentage or fixed amount)",
+              "type": "string",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["DELETE"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": []
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "code": {
+          "methods": ["POST"],
+          "description": "The coupon's unique code.",
+          "type": "string",
+          "required": false
+        },
+        "discount_type": {
+          "methods": ["POST"],
+          "description": "The discount type for the coupon (e.g. percentage or fixed amount)",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/coupons/(?P<code>[\\w-]+)": {
+      "methods": ["GET", "DELETE"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "code": {
+              "description": "Unique identifier for the coupon within the cart.",
+              "type": "string",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["DELETE"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "code": {
+              "description": "Unique identifier for the coupon within the cart.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "code": {
+          "methods": ["DELETE", "GET"],
+          "description": "Unique identifier for the coupon within the cart.",
+          "type": "string",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/extensions": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "namespace": {
+              "description": "Extension's name - this will be used to ensure the data in the request is routed appropriately.",
+              "type": "string",
+              "required": false
+            },
+            "data": {
+              "description": "Additional data to pass to the extension",
+              "type": "object",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "namespace": {
+          "methods": ["POST"],
+          "description": "Extension's name - this will be used to ensure the data in the request is routed appropriately.",
+          "type": "string",
+          "required": false
+        },
+        "data": {
+          "methods": ["POST"],
+          "description": "Additional data to pass to the extension",
+          "type": "object",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/items": {
+      "methods": ["GET", "POST", "DELETE"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "extensions": {
+              "type": "object",
+              "properties": [],
+              "default": [],
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["DELETE"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": []
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "extensions": {
+          "methods": ["POST"],
+          "type": "object",
+          "properties": [],
+          "default": [],
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/items/(?P<key>[\\w-]{32})": {
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "key": {
+              "description": "Unique identifier for the item within the cart.",
+              "type": "string",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["POST", "PUT", "PATCH"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "key": {
+              "description": "Unique identifier for the item within the cart.",
+              "type": "string",
+              "required": false
+            },
+            "extensions": {
+              "type": "object",
+              "properties": [],
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["DELETE"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "key": {
+              "description": "Unique identifier for the item within the cart.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "key": {
+          "methods": ["DELETE", "GET", "PATCH", "POST", "PUT"],
+          "description": "Unique identifier for the item within the cart.",
+          "type": "string",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "extensions": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "type": "object",
+          "properties": [],
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/remove-coupon": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "code": {
+              "description": "Unique identifier for the coupon within the cart.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "code": {
+          "methods": ["POST"],
+          "description": "Unique identifier for the coupon within the cart.",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/remove-item": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "key": {
+              "description": "Unique identifier (key) for the cart item.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "key": {
+          "methods": ["POST"],
+          "description": "Unique identifier (key) for the cart item.",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/select-shipping-rate": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "package_id": {
+              "description": "The ID of the package being shipped. Leave blank to apply to all packages.",
+              "type": ["integer", "string", "null"],
+              "required": false
+            },
+            "rate_id": {
+              "description": "The chosen rate ID for the package.",
+              "type": "string",
+              "required": true
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "package_id": {
+          "methods": ["POST"],
+          "description": "The ID of the package being shipped. Leave blank to apply to all packages.",
+          "type": ["integer", "string", "null"],
+          "required": false
+        },
+        "rate_id": {
+          "methods": ["POST"],
+          "description": "The chosen rate ID for the package.",
+          "type": "string",
+          "required": true
+        }
+      },
+      "schema": null
+    },
+    "cart/update-item": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "key": {
+              "description": "Unique identifier (key) for the cart item to update.",
+              "type": "string",
+              "required": false
+            },
+            "quantity": {
+              "description": "New quantity of the item in the cart.",
+              "type": "number",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "key": {
+          "methods": ["POST"],
+          "description": "Unique identifier (key) for the cart item to update.",
+          "type": "string",
+          "required": false
+        },
+        "quantity": {
+          "methods": ["POST"],
+          "description": "New quantity of the item in the cart.",
+          "type": "number",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "cart/update-customer": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "billing_address": {
+              "description": "Billing address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "email": {
+                  "description": "Email",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            },
+            "shipping_address": {
+              "description": "Shipping address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "billing_address": {
+          "methods": ["POST"],
+          "description": "Billing address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "email": {
+              "description": "Email",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": false
+        },
+        "shipping_address": {
+          "methods": ["POST"],
+          "description": "Shipping address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "checkout": {
+      "methods": ["GET", "POST", "POST", "PUT", "PATCH"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "payment_data": {
+              "description": "Data to pass through to the payment method when processing payment.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": ["string", "boolean"]
+                  }
+                }
+              },
+              "required": false
+            },
+            "customer_password": {
+              "description": "Customer password for new accounts, if applicable.",
+              "type": "string",
+              "required": false
+            },
+            "customer_note": {
+              "description": "Note added to the order by the customer during checkout.",
+              "type": "string",
+              "required": false
+            },
+            "billing_address": {
+              "description": "Billing address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "email": {
+                  "description": "Email",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": true
+            },
+            "shipping_address": {
+              "description": "Shipping address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            },
+            "payment_method": {
+              "description": "The ID of the payment method being used to process the payment.",
+              "type": "string",
+              "enum": ["", "bacs", "cheque", "cod"],
+              "required": false
+            },
+            "create_account": {
+              "description": "Whether to create a new user account as part of order processing.",
+              "type": "boolean",
+              "required": false
+            },
+            "additional_fields": {
+              "description": "Additional fields to be persisted on the order.",
+              "type": "object",
+              "properties": [],
+              "required": false
+            },
+            "extensions": {
+              "type": "object",
+              "properties": {
+                "woocommerce/order-attribution": {
+                  "description": "Extension data registered by woocommerce/order-attribution",
+                  "type": ["object", "null"],
+                  "context": ["view", "edit"],
+                  "properties": {
+                    "source_type": {
+                      "description": "Order attribution field: source_type",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "referrer": {
+                      "description": "Order attribution field: referrer",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_campaign": {
+                      "description": "Order attribution field: utm_campaign",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source": {
+                      "description": "Order attribution field: utm_source",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_medium": {
+                      "description": "Order attribution field: utm_medium",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_content": {
+                      "description": "Order attribution field: utm_content",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_id": {
+                      "description": "Order attribution field: utm_id",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_term": {
+                      "description": "Order attribution field: utm_term",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source_platform": {
+                      "description": "Order attribution field: utm_source_platform",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_creative_format": {
+                      "description": "Order attribution field: utm_creative_format",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_marketing_tactic": {
+                      "description": "Order attribution field: utm_marketing_tactic",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_entry": {
+                      "description": "Order attribution field: session_entry",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_start_time": {
+                      "description": "Order attribution field: session_start_time",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_pages": {
+                      "description": "Order attribution field: session_pages",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_count": {
+                      "description": "Order attribution field: session_count",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "user_agent": {
+                      "description": "Order attribution field: user_agent",
+                      "type": ["string", "null"],
+                      "context": []
+                    }
+                  }
+                }
+              },
+              "default": {
+                "woocommerce/order-attribution": []
+              },
+              "required": false
+            }
+          }
+        },
+        {
+          "methods": ["POST", "PUT", "PATCH"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "additional_fields": {
+              "description": "Additional fields to be persisted on the order.",
+              "type": "object",
+              "properties": [],
+              "required": false
+            },
+            "payment_method": {
+              "description": "The ID of the payment method being used to process the payment.",
+              "type": "string",
+              "enum": ["", "bacs", "cheque", "cod"],
+              "required": false
+            },
+            "order_notes": {
+              "description": "Order notes.",
+              "type": "string",
+              "required": false
+            },
+            "customer_note": {
+              "description": "Note added to the order by the customer during checkout.",
+              "type": "string",
+              "required": false
+            },
+            "billing_address": {
+              "description": "Billing address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "email": {
+                  "description": "Email",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            },
+            "shipping_address": {
+              "description": "Shipping address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            },
+            "create_account": {
+              "description": "Whether to create a new user account as part of order processing.",
+              "type": "boolean",
+              "required": false
+            },
+            "extensions": {
+              "type": "object",
+              "properties": {
+                "woocommerce/order-attribution": {
+                  "description": "Extension data registered by woocommerce/order-attribution",
+                  "type": ["object", "null"],
+                  "context": ["view", "edit"],
+                  "properties": {
+                    "source_type": {
+                      "description": "Order attribution field: source_type",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "referrer": {
+                      "description": "Order attribution field: referrer",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_campaign": {
+                      "description": "Order attribution field: utm_campaign",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source": {
+                      "description": "Order attribution field: utm_source",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_medium": {
+                      "description": "Order attribution field: utm_medium",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_content": {
+                      "description": "Order attribution field: utm_content",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_id": {
+                      "description": "Order attribution field: utm_id",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_term": {
+                      "description": "Order attribution field: utm_term",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source_platform": {
+                      "description": "Order attribution field: utm_source_platform",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_creative_format": {
+                      "description": "Order attribution field: utm_creative_format",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_marketing_tactic": {
+                      "description": "Order attribution field: utm_marketing_tactic",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_entry": {
+                      "description": "Order attribution field: session_entry",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_start_time": {
+                      "description": "Order attribution field: session_start_time",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_pages": {
+                      "description": "Order attribution field: session_pages",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_count": {
+                      "description": "Order attribution field: session_count",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "user_agent": {
+                      "description": "Order attribution field: user_agent",
+                      "type": ["string", "null"],
+                      "context": []
+                    }
+                  }
+                }
+              },
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "payment_data": {
+          "methods": ["POST"],
+          "description": "Data to pass through to the payment method when processing payment.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": ["string", "boolean"]
+              }
+            }
+          },
+          "required": false
+        },
+        "customer_password": {
+          "methods": ["POST"],
+          "description": "Customer password for new accounts, if applicable.",
+          "type": "string",
+          "required": false
+        },
+        "customer_note": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Note added to the order by the customer during checkout.",
+          "type": "string",
+          "required": false
+        },
+        "billing_address": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Billing address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "email": {
+              "description": "Email",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": true
+        },
+        "shipping_address": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Shipping address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": false
+        },
+        "payment_method": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "The ID of the payment method being used to process the payment.",
+          "type": "string",
+          "enum": ["", "bacs", "cheque", "cod"],
+          "required": false
+        },
+        "create_account": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Whether to create a new user account as part of order processing.",
+          "type": "boolean",
+          "required": false
+        },
+        "additional_fields": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Additional fields to be persisted on the order.",
+          "type": "object",
+          "properties": [],
+          "required": false
+        },
+        "extensions": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "type": "object",
+          "properties": {
+            "woocommerce/order-attribution": {
+              "description": "Extension data registered by woocommerce/order-attribution",
+              "type": ["object", "null"],
+              "context": ["view", "edit"],
+              "properties": {
+                "source_type": {
+                  "description": "Order attribution field: source_type",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "referrer": {
+                  "description": "Order attribution field: referrer",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_campaign": {
+                  "description": "Order attribution field: utm_campaign",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_source": {
+                  "description": "Order attribution field: utm_source",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_medium": {
+                  "description": "Order attribution field: utm_medium",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_content": {
+                  "description": "Order attribution field: utm_content",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_id": {
+                  "description": "Order attribution field: utm_id",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_term": {
+                  "description": "Order attribution field: utm_term",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_source_platform": {
+                  "description": "Order attribution field: utm_source_platform",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_creative_format": {
+                  "description": "Order attribution field: utm_creative_format",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_marketing_tactic": {
+                  "description": "Order attribution field: utm_marketing_tactic",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_entry": {
+                  "description": "Order attribution field: session_entry",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_start_time": {
+                  "description": "Order attribution field: session_start_time",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_pages": {
+                  "description": "Order attribution field: session_pages",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_count": {
+                  "description": "Order attribution field: session_count",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "user_agent": {
+                  "description": "Order attribution field: user_agent",
+                  "type": ["string", "null"],
+                  "context": []
+                }
+              }
+            }
+          },
+          "default": {
+            "woocommerce/order-attribution": []
+          },
+          "required": false
+        },
+        "order_notes": {
+          "methods": ["PATCH", "POST", "PUT"],
+          "description": "Order notes.",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "checkout/(?P<id>[\\d]+)": {
+      "methods": ["POST"],
+      "endpoints": [
+        {
+          "methods": ["POST"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "payment_data": {
+              "description": "Data to pass through to the payment method when processing payment.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": ["string", "boolean"]
+                  }
+                }
+              },
+              "required": false
+            },
+            "customer_note": {
+              "description": "Note added to the order by the customer during checkout.",
+              "type": "string",
+              "required": false
+            },
+            "billing_address": {
+              "description": "Billing address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "email": {
+                  "description": "Email",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": true
+            },
+            "shipping_address": {
+              "description": "Shipping address.",
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "description": "First name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "last_name": {
+                  "description": "Last name",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "company": {
+                  "description": "Company",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_1": {
+                  "description": "Address",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "address_2": {
+                  "description": "Apartment, suite, etc.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "city": {
+                  "description": "City",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "state": {
+                  "description": "State/County code, or name of the state, county, province, or district.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "postcode": {
+                  "description": "Postal code",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "country": {
+                  "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                },
+                "phone": {
+                  "description": "Phone",
+                  "type": "string",
+                  "context": ["view", "edit"],
+                  "required": true
+                }
+              },
+              "required": false
+            },
+            "payment_method": {
+              "description": "The ID of the payment method being used to process the payment.",
+              "type": "string",
+              "enum": ["", "bacs", "cheque", "cod"],
+              "required": false
+            },
+            "additional_fields": {
+              "description": "Additional fields to be persisted on the order.",
+              "type": "object",
+              "properties": [],
+              "required": false
+            },
+            "extensions": {
+              "type": "object",
+              "properties": {
+                "woocommerce/order-attribution": {
+                  "description": "Extension data registered by woocommerce/order-attribution",
+                  "type": ["object", "null"],
+                  "context": ["view", "edit"],
+                  "properties": {
+                    "source_type": {
+                      "description": "Order attribution field: source_type",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "referrer": {
+                      "description": "Order attribution field: referrer",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_campaign": {
+                      "description": "Order attribution field: utm_campaign",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source": {
+                      "description": "Order attribution field: utm_source",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_medium": {
+                      "description": "Order attribution field: utm_medium",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_content": {
+                      "description": "Order attribution field: utm_content",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_id": {
+                      "description": "Order attribution field: utm_id",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_term": {
+                      "description": "Order attribution field: utm_term",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_source_platform": {
+                      "description": "Order attribution field: utm_source_platform",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_creative_format": {
+                      "description": "Order attribution field: utm_creative_format",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "utm_marketing_tactic": {
+                      "description": "Order attribution field: utm_marketing_tactic",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_entry": {
+                      "description": "Order attribution field: session_entry",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_start_time": {
+                      "description": "Order attribution field: session_start_time",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_pages": {
+                      "description": "Order attribution field: session_pages",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "session_count": {
+                      "description": "Order attribution field: session_count",
+                      "type": ["string", "null"],
+                      "context": []
+                    },
+                    "user_agent": {
+                      "description": "Order attribution field: user_agent",
+                      "type": ["string", "null"],
+                      "context": []
+                    }
+                  }
+                }
+              },
+              "default": {
+                "woocommerce/order-attribution": []
+              },
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "payment_data": {
+          "methods": ["POST"],
+          "description": "Data to pass through to the payment method when processing payment.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": ["string", "boolean"]
+              }
+            }
+          },
+          "required": false
+        },
+        "customer_note": {
+          "methods": ["POST"],
+          "description": "Note added to the order by the customer during checkout.",
+          "type": "string",
+          "required": false
+        },
+        "billing_address": {
+          "methods": ["POST"],
+          "description": "Billing address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "email": {
+              "description": "Email",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": true
+        },
+        "shipping_address": {
+          "methods": ["POST"],
+          "description": "Shipping address.",
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "description": "First name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "last_name": {
+              "description": "Last name",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "company": {
+              "description": "Company",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_1": {
+              "description": "Address",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "address_2": {
+              "description": "Apartment, suite, etc.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "city": {
+              "description": "City",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "state": {
+              "description": "State/County code, or name of the state, county, province, or district.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "postcode": {
+              "description": "Postal code",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "country": {
+              "description": "Country/Region code in ISO 3166-1 alpha-2 format.",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            },
+            "phone": {
+              "description": "Phone",
+              "type": "string",
+              "context": ["view", "edit"],
+              "required": true
+            }
+          },
+          "required": false
+        },
+        "payment_method": {
+          "methods": ["POST"],
+          "description": "The ID of the payment method being used to process the payment.",
+          "type": "string",
+          "enum": ["", "bacs", "cheque", "cod"],
+          "required": false
+        },
+        "additional_fields": {
+          "methods": ["POST"],
+          "description": "Additional fields to be persisted on the order.",
+          "type": "object",
+          "properties": [],
+          "required": false
+        },
+        "extensions": {
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "woocommerce/order-attribution": {
+              "description": "Extension data registered by woocommerce/order-attribution",
+              "type": ["object", "null"],
+              "context": ["view", "edit"],
+              "properties": {
+                "source_type": {
+                  "description": "Order attribution field: source_type",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "referrer": {
+                  "description": "Order attribution field: referrer",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_campaign": {
+                  "description": "Order attribution field: utm_campaign",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_source": {
+                  "description": "Order attribution field: utm_source",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_medium": {
+                  "description": "Order attribution field: utm_medium",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_content": {
+                  "description": "Order attribution field: utm_content",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_id": {
+                  "description": "Order attribution field: utm_id",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_term": {
+                  "description": "Order attribution field: utm_term",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_source_platform": {
+                  "description": "Order attribution field: utm_source_platform",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_creative_format": {
+                  "description": "Order attribution field: utm_creative_format",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "utm_marketing_tactic": {
+                  "description": "Order attribution field: utm_marketing_tactic",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_entry": {
+                  "description": "Order attribution field: session_entry",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_start_time": {
+                  "description": "Order attribution field: session_start_time",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_pages": {
+                  "description": "Order attribution field: session_pages",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "session_count": {
+                  "description": "Order attribution field: session_count",
+                  "type": ["string", "null"],
+                  "context": []
+                },
+                "user_agent": {
+                  "description": "Order attribution field: user_agent",
+                  "type": ["string", "null"],
+                  "context": []
+                }
+              }
+            }
+          },
+          "default": {
+            "woocommerce/order-attribution": []
+          },
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "order/(?P<id>[\\d]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/attributes": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/attributes/(?P<id>[\\d]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "id": {
+              "description": "Unique identifier for the resource.",
+              "type": "integer",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "id": {
+          "methods": ["GET"],
+          "description": "Unique identifier for the resource.",
+          "type": "integer",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/attributes/(?P<attribute_id>[\\d]+)/terms": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "attribute_id": {
+              "description": "Unique identifier for the attribute.",
+              "type": "integer",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "order": {
+              "description": "Sort ascending or descending.",
+              "type": "string",
+              "default": "asc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort by term property.",
+              "type": "string",
+              "default": "name",
+              "enum": ["name", "slug", "count", "menu_order", "name_num", "id"],
+              "required": false
+            },
+            "hide_empty": {
+              "description": "If true, empty terms will not be returned.",
+              "type": "boolean",
+              "default": true,
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "attribute_id": {
+          "methods": ["GET"],
+          "description": "Unique identifier for the attribute.",
+          "type": "integer",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Sort ascending or descending.",
+          "type": "string",
+          "default": "asc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort by term property.",
+          "type": "string",
+          "default": "name",
+          "enum": ["name", "slug", "count", "menu_order", "name_num", "id"],
+          "required": false
+        },
+        "hide_empty": {
+          "methods": ["GET"],
+          "description": "If true, empty terms will not be returned.",
+          "type": "boolean",
+          "default": true,
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/categories": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "embed", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "order": {
+              "description": "Sort ascending or descending.",
+              "type": "string",
+              "default": "asc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort by term property.",
+              "type": "string",
+              "default": "name",
+              "enum": ["name", "slug", "count"],
+              "required": false
+            },
+            "hide_empty": {
+              "description": "If true, empty terms will not be returned.",
+              "type": "boolean",
+              "default": true,
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "embed", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Sort ascending or descending.",
+          "type": "string",
+          "default": "asc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort by term property.",
+          "type": "string",
+          "default": "name",
+          "enum": ["name", "slug", "count"],
+          "required": false
+        },
+        "hide_empty": {
+          "methods": ["GET"],
+          "description": "If true, empty terms will not be returned.",
+          "type": "boolean",
+          "default": true,
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/categories/(?P<id>[\\d]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "id": {
+              "description": "Unique identifier for the resource.",
+              "type": "integer",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "embed", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "id": {
+          "methods": ["GET"],
+          "description": "Unique identifier for the resource.",
+          "type": "integer",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "embed", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/brands": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "embed", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "order": {
+              "description": "Sort ascending or descending.",
+              "type": "string",
+              "default": "asc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort by term property.",
+              "type": "string",
+              "default": "name",
+              "enum": ["name", "slug", "count"],
+              "required": false
+            },
+            "hide_empty": {
+              "description": "If true, empty terms will not be returned.",
+              "type": "boolean",
+              "default": true,
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "embed", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Sort ascending or descending.",
+          "type": "string",
+          "default": "asc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort by term property.",
+          "type": "string",
+          "default": "name",
+          "enum": ["name", "slug", "count"],
+          "required": false
+        },
+        "hide_empty": {
+          "methods": ["GET"],
+          "description": "If true, empty terms will not be returned.",
+          "type": "boolean",
+          "default": true,
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/brands/(?P<identifier>[\\w-]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "identifier": {
+              "description": "Unique identifier for the resource.",
+              "type": "string",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "embed", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "identifier": {
+          "methods": ["GET"],
+          "description": "Unique identifier for the resource.",
+          "type": "string",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "embed", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/collection-data": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "default": 10,
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "slug": {
+              "description": "Limit result set to products with specific slug(s). Use commas to separate.",
+              "type": "string",
+              "required": false
+            },
+            "after": {
+              "description": "Limit response to resources created after a given ISO8601 compliant date.",
+              "type": "string",
+              "format": "date-time",
+              "required": false
+            },
+            "before": {
+              "description": "Limit response to resources created before a given ISO8601 compliant date.",
+              "type": "string",
+              "format": "date-time",
+              "required": false
+            },
+            "date_column": {
+              "description": "When limiting response using after/before, which date column to compare against.",
+              "type": "string",
+              "default": "date",
+              "enum": ["date", "date_gmt", "modified", "modified_gmt"],
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "offset": {
+              "description": "Offset the result set by a specific number of items.",
+              "type": "integer",
+              "required": false
+            },
+            "order": {
+              "description": "Order sort attribute ascending or descending.",
+              "type": "string",
+              "default": "desc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort collection by object attribute.",
+              "type": "string",
+              "default": "date",
+              "enum": [
+                "date",
+                "modified",
+                "id",
+                "include",
+                "title",
+                "slug",
+                "price",
+                "popularity",
+                "rating",
+                "menu_order",
+                "comment_count"
+              ],
+              "required": false
+            },
+            "parent": {
+              "description": "Limit result set to those of particular parent IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "parent_exclude": {
+              "description": "Limit result set to all items except those of a particular parent ID.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "type": {
+              "description": "Limit result set to products assigned a specific type.",
+              "type": "string",
+              "enum": [
+                "simple",
+                "grouped",
+                "external",
+                "variable",
+                "variation"
+              ],
+              "required": false
+            },
+            "sku": {
+              "description": "Limit result set to products with specific SKU(s). Use commas to separate.",
+              "type": "string",
+              "required": false
+            },
+            "featured": {
+              "description": "Limit result set to featured products.",
+              "type": "boolean",
+              "required": false
+            },
+            "category": {
+              "description": "Limit result set to products assigned a set of category IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "category_operator": {
+              "description": "Operator to compare product category terms.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "brand": {
+              "description": "Limit result set to products assigned a set of brand IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "brand_operator": {
+              "description": "Operator to compare product brand terms.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "tag": {
+              "description": "Limit result set to products assigned a set of tag IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "tag_operator": {
+              "description": "Operator to compare product tags.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "on_sale": {
+              "description": "Limit result set to products on sale.",
+              "type": "boolean",
+              "required": false
+            },
+            "min_price": {
+              "description": "Limit result set to products based on a minimum price, provided using the smallest unit of the currency.",
+              "type": "string",
+              "required": false
+            },
+            "max_price": {
+              "description": "Limit result set to products based on a maximum price, provided using the smallest unit of the currency.",
+              "type": "string",
+              "required": false
+            },
+            "stock_status": {
+              "description": "Limit result set to products with specified stock status.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["instock", "outofstock", "onbackorder"],
+                "sanitize_callback": "sanitize_text_field",
+                "validate_callback": "rest_validate_request_arg"
+              },
+              "default": [],
+              "required": false
+            },
+            "attributes": {
+              "description": "Limit result set to products with selected global attributes.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attribute": {
+                    "description": "Attribute taxonomy name.",
+                    "type": "string",
+                    "sanitize_callback": "wc_sanitize_taxonomy_name"
+                  },
+                  "term_id": {
+                    "description": "List of attribute term IDs.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "sanitize_callback": "wp_parse_id_list"
+                  },
+                  "slug": {
+                    "description": "List of attribute slug(s). If a term ID is provided, this will be ignored.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "sanitize_callback": "wp_parse_slug_list"
+                  },
+                  "operator": {
+                    "description": "Operator to compare product attribute terms.",
+                    "type": "string",
+                    "enum": ["in", "not_in", "and"]
+                  }
+                }
+              },
+              "default": [],
+              "required": false
+            },
+            "attribute_relation": {
+              "description": "The logical relationship between attributes when filtering across multiple at once.",
+              "type": "string",
+              "enum": ["in", "and"],
+              "default": "and",
+              "required": false
+            },
+            "catalog_visibility": {
+              "description": "Determines if hidden or visible catalog products are shown.",
+              "type": "string",
+              "enum": ["any", "visible", "catalog", "search", "hidden"],
+              "required": false
+            },
+            "rating": {
+              "description": "Limit result set to products with a certain average rating.",
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "enum": [1, 2, 3, 4, 5]
+              },
+              "default": [],
+              "required": false
+            },
+            "calculate_price_range": {
+              "description": "If true, calculates the minimum and maximum product prices for the collection.",
+              "type": "boolean",
+              "default": false,
+              "required": false
+            },
+            "calculate_stock_status_counts": {
+              "description": "If true, calculates stock counts for products in the collection.",
+              "type": "boolean",
+              "default": false,
+              "required": false
+            },
+            "calculate_attribute_counts": {
+              "description": "If requested, calculates attribute term counts for products in the collection.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "taxonomy": {
+                    "description": "Taxonomy name.",
+                    "type": "string",
+                    "context": ["view", "edit"],
+                    "readonly": true
+                  },
+                  "query_type": {
+                    "description": "Filter condition\t being performed which may affect counts. Valid values include \"and\" and \"or\".",
+                    "type": "string",
+                    "enum": ["and", "or"],
+                    "context": ["view", "edit"],
+                    "readonly": true
+                  }
+                }
+              },
+              "default": [],
+              "required": false
+            },
+            "calculate_rating_counts": {
+              "description": "If true, calculates rating counts for products in the collection.",
+              "type": "boolean",
+              "default": false,
+              "required": false
+            },
+            "calculate_taxonomy_counts": {
+              "description": "If requested, calculates taxonomy term counts for products in the collection.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Taxonomy name."
+              },
+              "default": [],
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "slug": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specific slug(s). Use commas to separate.",
+          "type": "string",
+          "required": false
+        },
+        "after": {
+          "methods": ["GET"],
+          "description": "Limit response to resources created after a given ISO8601 compliant date.",
+          "type": "string",
+          "format": "date-time",
+          "required": false
+        },
+        "before": {
+          "methods": ["GET"],
+          "description": "Limit response to resources created before a given ISO8601 compliant date.",
+          "type": "string",
+          "format": "date-time",
+          "required": false
+        },
+        "date_column": {
+          "methods": ["GET"],
+          "description": "When limiting response using after/before, which date column to compare against.",
+          "type": "string",
+          "default": "date",
+          "enum": ["date", "date_gmt", "modified", "modified_gmt"],
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "offset": {
+          "methods": ["GET"],
+          "description": "Offset the result set by a specific number of items.",
+          "type": "integer",
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Order sort attribute ascending or descending.",
+          "type": "string",
+          "default": "desc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort collection by object attribute.",
+          "type": "string",
+          "default": "date",
+          "enum": [
+            "date",
+            "modified",
+            "id",
+            "include",
+            "title",
+            "slug",
+            "price",
+            "popularity",
+            "rating",
+            "menu_order",
+            "comment_count"
+          ],
+          "required": false
+        },
+        "parent": {
+          "methods": ["GET"],
+          "description": "Limit result set to those of particular parent IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "parent_exclude": {
+          "methods": ["GET"],
+          "description": "Limit result set to all items except those of a particular parent ID.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "type": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a specific type.",
+          "type": "string",
+          "enum": ["simple", "grouped", "external", "variable", "variation"],
+          "required": false
+        },
+        "sku": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specific SKU(s). Use commas to separate.",
+          "type": "string",
+          "required": false
+        },
+        "featured": {
+          "methods": ["GET"],
+          "description": "Limit result set to featured products.",
+          "type": "boolean",
+          "required": false
+        },
+        "category": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of category IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "category_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product category terms.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "brand": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of brand IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "brand_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product brand terms.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "tag": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of tag IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "tag_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product tags.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "on_sale": {
+          "methods": ["GET"],
+          "description": "Limit result set to products on sale.",
+          "type": "boolean",
+          "required": false
+        },
+        "min_price": {
+          "methods": ["GET"],
+          "description": "Limit result set to products based on a minimum price, provided using the smallest unit of the currency.",
+          "type": "string",
+          "required": false
+        },
+        "max_price": {
+          "methods": ["GET"],
+          "description": "Limit result set to products based on a maximum price, provided using the smallest unit of the currency.",
+          "type": "string",
+          "required": false
+        },
+        "stock_status": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specified stock status.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["instock", "outofstock", "onbackorder"],
+            "sanitize_callback": "sanitize_text_field",
+            "validate_callback": "rest_validate_request_arg"
+          },
+          "default": [],
+          "required": false
+        },
+        "attributes": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with selected global attributes.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attribute": {
+                "description": "Attribute taxonomy name.",
+                "type": "string",
+                "sanitize_callback": "wc_sanitize_taxonomy_name"
+              },
+              "term_id": {
+                "description": "List of attribute term IDs.",
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "sanitize_callback": "wp_parse_id_list"
+              },
+              "slug": {
+                "description": "List of attribute slug(s). If a term ID is provided, this will be ignored.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "sanitize_callback": "wp_parse_slug_list"
+              },
+              "operator": {
+                "description": "Operator to compare product attribute terms.",
+                "type": "string",
+                "enum": ["in", "not_in", "and"]
+              }
+            }
+          },
+          "default": [],
+          "required": false
+        },
+        "attribute_relation": {
+          "methods": ["GET"],
+          "description": "The logical relationship between attributes when filtering across multiple at once.",
+          "type": "string",
+          "enum": ["in", "and"],
+          "default": "and",
+          "required": false
+        },
+        "catalog_visibility": {
+          "methods": ["GET"],
+          "description": "Determines if hidden or visible catalog products are shown.",
+          "type": "string",
+          "enum": ["any", "visible", "catalog", "search", "hidden"],
+          "required": false
+        },
+        "rating": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with a certain average rating.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "enum": [1, 2, 3, 4, 5]
+          },
+          "default": [],
+          "required": false
+        },
+        "calculate_price_range": {
+          "methods": ["GET"],
+          "description": "If true, calculates the minimum and maximum product prices for the collection.",
+          "type": "boolean",
+          "default": false,
+          "required": false
+        },
+        "calculate_stock_status_counts": {
+          "methods": ["GET"],
+          "description": "If true, calculates stock counts for products in the collection.",
+          "type": "boolean",
+          "default": false,
+          "required": false
+        },
+        "calculate_attribute_counts": {
+          "methods": ["GET"],
+          "description": "If requested, calculates attribute term counts for products in the collection.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "taxonomy": {
+                "description": "Taxonomy name.",
+                "type": "string",
+                "context": ["view", "edit"],
+                "readonly": true
+              },
+              "query_type": {
+                "description": "Filter condition\t being performed which may affect counts. Valid values include \"and\" and \"or\".",
+                "type": "string",
+                "enum": ["and", "or"],
+                "context": ["view", "edit"],
+                "readonly": true
+              }
+            }
+          },
+          "default": [],
+          "required": false
+        },
+        "calculate_rating_counts": {
+          "methods": ["GET"],
+          "description": "If true, calculates rating counts for products in the collection.",
+          "type": "boolean",
+          "default": false,
+          "required": false
+        },
+        "calculate_taxonomy_counts": {
+          "methods": ["GET"],
+          "description": "If requested, calculates taxonomy term counts for products in the collection.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Taxonomy name."
+          },
+          "default": [],
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/reviews": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "default": 10,
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "offset": {
+              "description": "Offset the result set by a specific number of items.",
+              "type": "integer",
+              "required": false
+            },
+            "order": {
+              "description": "Order sort attribute ascending or descending.",
+              "type": "string",
+              "default": "desc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort collection by object attribute.",
+              "type": "string",
+              "default": "date",
+              "enum": ["date", "date_gmt", "id", "rating", "product"],
+              "required": false
+            },
+            "category_id": {
+              "description": "Limit result set to reviews from specific category IDs.",
+              "type": "string",
+              "required": false
+            },
+            "product_id": {
+              "description": "Limit result set to reviews from specific product IDs.",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "offset": {
+          "methods": ["GET"],
+          "description": "Offset the result set by a specific number of items.",
+          "type": "integer",
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Order sort attribute ascending or descending.",
+          "type": "string",
+          "default": "desc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort collection by object attribute.",
+          "type": "string",
+          "default": "date",
+          "enum": ["date", "date_gmt", "id", "rating", "product"],
+          "required": false
+        },
+        "category_id": {
+          "methods": ["GET"],
+          "description": "Limit result set to reviews from specific category IDs.",
+          "type": "string",
+          "required": false
+        },
+        "product_id": {
+          "methods": ["GET"],
+          "description": "Limit result set to reviews from specific product IDs.",
+          "type": "string",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/tags": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "order": {
+              "description": "Sort ascending or descending.",
+              "type": "string",
+              "default": "asc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort by term property.",
+              "type": "string",
+              "default": "name",
+              "enum": ["name", "slug", "count"],
+              "required": false
+            },
+            "hide_empty": {
+              "description": "If true, empty terms will not be returned.",
+              "type": "boolean",
+              "default": true,
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Sort ascending or descending.",
+          "type": "string",
+          "default": "asc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort by term property.",
+          "type": "string",
+          "default": "name",
+          "enum": ["name", "slug", "count"],
+          "required": false
+        },
+        "hide_empty": {
+          "methods": ["GET"],
+          "description": "If true, empty terms will not be returned.",
+          "type": "boolean",
+          "default": true,
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            },
+            "page": {
+              "description": "Current page of the collection.",
+              "type": "integer",
+              "default": 1,
+              "minimum": 1,
+              "required": false
+            },
+            "per_page": {
+              "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+              "type": "integer",
+              "default": 10,
+              "minimum": 0,
+              "maximum": 100,
+              "required": false
+            },
+            "search": {
+              "description": "Limit results to those matching a string.",
+              "type": "string",
+              "required": false
+            },
+            "slug": {
+              "description": "Limit result set to products with specific slug(s). Use commas to separate.",
+              "type": "string",
+              "required": false
+            },
+            "after": {
+              "description": "Limit response to resources created after a given ISO8601 compliant date.",
+              "type": "string",
+              "format": "date-time",
+              "required": false
+            },
+            "before": {
+              "description": "Limit response to resources created before a given ISO8601 compliant date.",
+              "type": "string",
+              "format": "date-time",
+              "required": false
+            },
+            "date_column": {
+              "description": "When limiting response using after/before, which date column to compare against.",
+              "type": "string",
+              "default": "date",
+              "enum": ["date", "date_gmt", "modified", "modified_gmt"],
+              "required": false
+            },
+            "exclude": {
+              "description": "Ensure result set excludes specific IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "include": {
+              "description": "Limit result set to specific ids.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "offset": {
+              "description": "Offset the result set by a specific number of items.",
+              "type": "integer",
+              "required": false
+            },
+            "order": {
+              "description": "Order sort attribute ascending or descending.",
+              "type": "string",
+              "default": "desc",
+              "enum": ["asc", "desc"],
+              "required": false
+            },
+            "orderby": {
+              "description": "Sort collection by object attribute.",
+              "type": "string",
+              "default": "date",
+              "enum": [
+                "date",
+                "modified",
+                "id",
+                "include",
+                "title",
+                "slug",
+                "price",
+                "popularity",
+                "rating",
+                "menu_order",
+                "comment_count"
+              ],
+              "required": false
+            },
+            "parent": {
+              "description": "Limit result set to those of particular parent IDs.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "parent_exclude": {
+              "description": "Limit result set to all items except those of a particular parent ID.",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "default": [],
+              "required": false
+            },
+            "type": {
+              "description": "Limit result set to products assigned a specific type.",
+              "type": "string",
+              "enum": [
+                "simple",
+                "grouped",
+                "external",
+                "variable",
+                "variation"
+              ],
+              "required": false
+            },
+            "sku": {
+              "description": "Limit result set to products with specific SKU(s). Use commas to separate.",
+              "type": "string",
+              "required": false
+            },
+            "featured": {
+              "description": "Limit result set to featured products.",
+              "type": "boolean",
+              "required": false
+            },
+            "category": {
+              "description": "Limit result set to products assigned a set of category IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "category_operator": {
+              "description": "Operator to compare product category terms.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "brand": {
+              "description": "Limit result set to products assigned a set of brand IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "brand_operator": {
+              "description": "Operator to compare product brand terms.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "tag": {
+              "description": "Limit result set to products assigned a set of tag IDs or slugs, separated by commas.",
+              "type": "string",
+              "required": false
+            },
+            "tag_operator": {
+              "description": "Operator to compare product tags.",
+              "type": "string",
+              "enum": ["in", "not_in", "and"],
+              "default": "in",
+              "required": false
+            },
+            "on_sale": {
+              "description": "Limit result set to products on sale.",
+              "type": "boolean",
+              "required": false
+            },
+            "min_price": {
+              "description": "Limit result set to products based on a minimum price, provided using the smallest unit of the currency.",
+              "type": "string",
+              "required": false
+            },
+            "max_price": {
+              "description": "Limit result set to products based on a maximum price, provided using the smallest unit of the currency.",
+              "type": "string",
+              "required": false
+            },
+            "stock_status": {
+              "description": "Limit result set to products with specified stock status.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["instock", "outofstock", "onbackorder"],
+                "sanitize_callback": "sanitize_text_field",
+                "validate_callback": "rest_validate_request_arg"
+              },
+              "default": [],
+              "required": false
+            },
+            "attributes": {
+              "description": "Limit result set to products with selected global attributes.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attribute": {
+                    "description": "Attribute taxonomy name.",
+                    "type": "string",
+                    "sanitize_callback": "wc_sanitize_taxonomy_name"
+                  },
+                  "term_id": {
+                    "description": "List of attribute term IDs.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "sanitize_callback": "wp_parse_id_list"
+                  },
+                  "slug": {
+                    "description": "List of attribute slug(s). If a term ID is provided, this will be ignored.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "sanitize_callback": "wp_parse_slug_list"
+                  },
+                  "operator": {
+                    "description": "Operator to compare product attribute terms.",
+                    "type": "string",
+                    "enum": ["in", "not_in", "and"]
+                  }
+                }
+              },
+              "default": [],
+              "required": false
+            },
+            "attribute_relation": {
+              "description": "The logical relationship between attributes when filtering across multiple at once.",
+              "type": "string",
+              "enum": ["in", "and"],
+              "default": "and",
+              "required": false
+            },
+            "catalog_visibility": {
+              "description": "Determines if hidden or visible catalog products are shown.",
+              "type": "string",
+              "enum": ["any", "visible", "catalog", "search", "hidden"],
+              "required": false
+            },
+            "rating": {
+              "description": "Limit result set to products with a certain average rating.",
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "enum": [1, 2, 3, 4, 5]
+              },
+              "default": [],
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        },
+        "page": {
+          "methods": ["GET"],
+          "description": "Current page of the collection.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "required": false
+        },
+        "per_page": {
+          "methods": ["GET"],
+          "description": "Maximum number of items to be returned in result set. Defaults to no limit if left blank.",
+          "type": "integer",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 100,
+          "required": false
+        },
+        "search": {
+          "methods": ["GET"],
+          "description": "Limit results to those matching a string.",
+          "type": "string",
+          "required": false
+        },
+        "slug": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specific slug(s). Use commas to separate.",
+          "type": "string",
+          "required": false
+        },
+        "after": {
+          "methods": ["GET"],
+          "description": "Limit response to resources created after a given ISO8601 compliant date.",
+          "type": "string",
+          "format": "date-time",
+          "required": false
+        },
+        "before": {
+          "methods": ["GET"],
+          "description": "Limit response to resources created before a given ISO8601 compliant date.",
+          "type": "string",
+          "format": "date-time",
+          "required": false
+        },
+        "date_column": {
+          "methods": ["GET"],
+          "description": "When limiting response using after/before, which date column to compare against.",
+          "type": "string",
+          "default": "date",
+          "enum": ["date", "date_gmt", "modified", "modified_gmt"],
+          "required": false
+        },
+        "exclude": {
+          "methods": ["GET"],
+          "description": "Ensure result set excludes specific IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "include": {
+          "methods": ["GET"],
+          "description": "Limit result set to specific ids.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "offset": {
+          "methods": ["GET"],
+          "description": "Offset the result set by a specific number of items.",
+          "type": "integer",
+          "required": false
+        },
+        "order": {
+          "methods": ["GET"],
+          "description": "Order sort attribute ascending or descending.",
+          "type": "string",
+          "default": "desc",
+          "enum": ["asc", "desc"],
+          "required": false
+        },
+        "orderby": {
+          "methods": ["GET"],
+          "description": "Sort collection by object attribute.",
+          "type": "string",
+          "default": "date",
+          "enum": [
+            "date",
+            "modified",
+            "id",
+            "include",
+            "title",
+            "slug",
+            "price",
+            "popularity",
+            "rating",
+            "menu_order",
+            "comment_count"
+          ],
+          "required": false
+        },
+        "parent": {
+          "methods": ["GET"],
+          "description": "Limit result set to those of particular parent IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "parent_exclude": {
+          "methods": ["GET"],
+          "description": "Limit result set to all items except those of a particular parent ID.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "default": [],
+          "required": false
+        },
+        "type": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a specific type.",
+          "type": "string",
+          "enum": ["simple", "grouped", "external", "variable", "variation"],
+          "required": false
+        },
+        "sku": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specific SKU(s). Use commas to separate.",
+          "type": "string",
+          "required": false
+        },
+        "featured": {
+          "methods": ["GET"],
+          "description": "Limit result set to featured products.",
+          "type": "boolean",
+          "required": false
+        },
+        "category": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of category IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "category_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product category terms.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "brand": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of brand IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "brand_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product brand terms.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "tag": {
+          "methods": ["GET"],
+          "description": "Limit result set to products assigned a set of tag IDs or slugs, separated by commas.",
+          "type": "string",
+          "required": false
+        },
+        "tag_operator": {
+          "methods": ["GET"],
+          "description": "Operator to compare product tags.",
+          "type": "string",
+          "enum": ["in", "not_in", "and"],
+          "default": "in",
+          "required": false
+        },
+        "on_sale": {
+          "methods": ["GET"],
+          "description": "Limit result set to products on sale.",
+          "type": "boolean",
+          "required": false
+        },
+        "min_price": {
+          "methods": ["GET"],
+          "description": "Limit result set to products based on a minimum price, provided using the smallest unit of the currency.",
+          "type": "string",
+          "required": false
+        },
+        "max_price": {
+          "methods": ["GET"],
+          "description": "Limit result set to products based on a maximum price, provided using the smallest unit of the currency.",
+          "type": "string",
+          "required": false
+        },
+        "stock_status": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with specified stock status.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["instock", "outofstock", "onbackorder"],
+            "sanitize_callback": "sanitize_text_field",
+            "validate_callback": "rest_validate_request_arg"
+          },
+          "default": [],
+          "required": false
+        },
+        "attributes": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with selected global attributes.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attribute": {
+                "description": "Attribute taxonomy name.",
+                "type": "string",
+                "sanitize_callback": "wc_sanitize_taxonomy_name"
+              },
+              "term_id": {
+                "description": "List of attribute term IDs.",
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "sanitize_callback": "wp_parse_id_list"
+              },
+              "slug": {
+                "description": "List of attribute slug(s). If a term ID is provided, this will be ignored.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "sanitize_callback": "wp_parse_slug_list"
+              },
+              "operator": {
+                "description": "Operator to compare product attribute terms.",
+                "type": "string",
+                "enum": ["in", "not_in", "and"]
+              }
+            }
+          },
+          "default": [],
+          "required": false
+        },
+        "attribute_relation": {
+          "methods": ["GET"],
+          "description": "The logical relationship between attributes when filtering across multiple at once.",
+          "type": "string",
+          "enum": ["in", "and"],
+          "default": "and",
+          "required": false
+        },
+        "catalog_visibility": {
+          "methods": ["GET"],
+          "description": "Determines if hidden or visible catalog products are shown.",
+          "type": "string",
+          "enum": ["any", "visible", "catalog", "search", "hidden"],
+          "required": false
+        },
+        "rating": {
+          "methods": ["GET"],
+          "description": "Limit result set to products with a certain average rating.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "enum": [1, 2, 3, 4, 5]
+          },
+          "default": [],
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/(?P<id>[\\d]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "id": {
+              "description": "Unique identifier for the resource.",
+              "type": "integer",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "id": {
+          "methods": ["GET"],
+          "description": "Unique identifier for the resource.",
+          "type": "integer",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    },
+    "products/(?P<slug>[\\S]+)": {
+      "methods": ["GET"],
+      "endpoints": [
+        {
+          "methods": ["GET"],
+          "allow_batch": {
+            "v1": true
+          },
+          "args": {
+            "slug": {
+              "description": "Slug of the resource.",
+              "type": "string",
+              "required": false
+            },
+            "context": {
+              "description": "Scope under which the request is made; determines fields present in response.",
+              "type": "string",
+              "enum": ["view", "edit"],
+              "default": "view",
+              "required": false
+            }
+          }
+        }
+      ],
+      "parameters": {
+        "slug": {
+          "methods": ["GET"],
+          "description": "Slug of the resource.",
+          "type": "string",
+          "required": false
+        },
+        "context": {
+          "methods": ["GET"],
+          "description": "Scope under which the request is made; determines fields present in response.",
+          "type": "string",
+          "enum": ["view", "edit"],
+          "default": "view",
+          "required": false
+        }
+      },
+      "schema": null
+    }
+  },
+  "namespaces": [],
+  "authentication": {}
+}

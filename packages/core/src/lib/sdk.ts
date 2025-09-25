@@ -9,12 +9,16 @@ import { EventBus } from './bus/event.bus.js';
 import { addTokenInterceptor } from './interceptors/token.interceptor.js';
 import { AuthService } from './services/auth/auth.service.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
+import { AdminService } from './services/admin.service.js';
+import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.js';
 
 export class Sdk {
+  private _config!: StoreSdkConfig;
   state: StoreSdkState = {};
 
   private _auth!: AuthService;
   private _store!: StoreService;
+  private _admin!: AdminService;
 
   private _initialized = false;
 
@@ -23,8 +27,11 @@ export class Sdk {
   public async init(config: StoreSdkConfig): Promise<void> {
     if (this._initialized) return;
 
-    this._auth = new AuthService(this.state, config, this.events);
-    this._store = new StoreService(this.state, config, this.events);
+    this._config = config;
+
+    this._auth = new AuthService(this.state, this._config, this.events);
+    this._store = new StoreService(this.state, this._config, this.events);
+    this._admin = new AdminService(this.state, this._config, this.events);
 
     createHttpClient({
       baseURL: config.baseUrl,
@@ -42,6 +49,12 @@ export class Sdk {
       config.auth?.useRefreshTokenInterceptor ?? true;
     if (useRefreshTokenInterceptor) {
       addRefreshTokenInterceptor(config, this._auth);
+    }
+
+    if (config.admin?.consumer_key && config.admin.consumer_secret) {
+      if (config.admin.useAuthInterceptor !== false) {
+        addAdminAuthInterceptor(config);
+      }
     }
 
     // Set initial authentication state based on config
@@ -69,7 +82,8 @@ export class Sdk {
 
     this._initialized = true;
 
-    await this._store.cart.get();
+    // TODO: Conditional from config
+    // await this._store.cart.get();
   }
 
   /**
@@ -86,6 +100,14 @@ export class Sdk {
   get store() {
     this.throwIfNotInitized();
     return this._store;
+  }
+
+  /**
+   * Admin API
+   */
+  get admin() {
+    this.throwIfNotInitized();
+    return this._admin;
   }
 
   private throwIfNotInitized() {

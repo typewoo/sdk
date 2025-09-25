@@ -1,0 +1,45 @@
+import {
+  CartExtensionsRequest,
+  CartExtensionsResponse,
+} from '../../types/store/cart-extensions/index.js';
+import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
+import { AxiosRequestConfig } from 'axios';
+import { doPost } from '../../utilities/axios.utility.js';
+
+/**
+ * Cart Extensions API
+ *
+ * The cart extensions API allows third-party plugins to store and retrieve data during the cart and checkout processes.
+ */
+export class CartExtensionsService extends BaseService {
+  private readonly endpoint = 'wp-json/wc/store/v1/cart/extensions';
+
+  /**
+   * Store Extension Data
+   * Store data from third-party extensions in the cart
+   * @param params - Extension data to store
+   * @returns {CartExtensionsResponse} - Response indicating success/failure
+   */
+  async store(
+    params: CartExtensionsRequest
+  ): Promise<ApiResult<CartExtensionsResponse>> {
+    const url = `/${this.endpoint}`;
+
+    const options: AxiosRequestConfig = {};
+
+    this.events.emit('cart:extensions:loading', true);
+    this.events.emit('cart:extensions:request:start');
+
+    const { data, error } = await doPost<
+      CartExtensionsResponse,
+      CartExtensionsRequest
+    >(url, params, options);
+
+    this.events.emitIf(!!data, 'cart:extensions:request:success');
+    this.events.emitIf(!!error, 'cart:extensions:request:error', { error });
+    this.events.emit('cart:extensions:loading', false);
+
+    return { data, error };
+  }
+}

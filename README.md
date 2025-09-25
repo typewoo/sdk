@@ -6,6 +6,11 @@
 ![Codecov](https://img.shields.io/codecov/c/github/kmakris23/store-sdk)
 ![NPM Version](https://img.shields.io/npm/v/%40store-sdk%2Fcore)
 
+<!-- API Monitoring Status Badges -->
+
+![Admin API Status](https://img.shields.io/github/actions/workflow/status/kmakris23/store-sdk/wc-admin-api-monitor.yml?label=Admin%20API&logo=wordpress&logoColor=white)
+![Store API Status](https://img.shields.io/github/actions/workflow/status/kmakris23/store-sdk/wc-admin-api-monitor.yml?label=Store%20API&logo=woocommerce&logoColor=white)
+
 A modern, TypeScript-first SDK for seamless integration with the **WooCommerce Store API**. Built for headless and decoupled storefronts, this SDK provides comprehensive typed utilities and abstractions that simplify e-commerce development. Whether you're building with React, Angular, Vue, or vanilla JavaScript, this SDK offers a consistent, type-safe interface for all your WooCommerce needs.
 
 ## Table of Contents
@@ -65,6 +70,18 @@ StoreSdk.store
 ├── checkout       # Checkout processing
 └── orders         # Order management
 ```
+
+### 📊 API Monitoring
+
+The SDK includes automated monitoring of WooCommerce API structures to ensure compatibility:
+
+- **Admin API Badge** ![Admin API Status](https://img.shields.io/github/actions/workflow/status/kmakris23/store-sdk/wc-admin-api-monitor.yml?label=Admin%20API&logo=wordpress&logoColor=white) - Monitors `/wp-json/wc/v3` structure daily
+- **Store API Badge** ![Store API Status](https://img.shields.io/github/actions/workflow/status/kmakris23/store-sdk/wc-admin-api-monitor.yml?label=Store%20API&logo=woocommerce&logoColor=white) - Monitors `/wp-json/wc/store/v1` structure daily
+
+🟢 **Green Badge** = APIs are in sync with SDK  
+🔴 **Red Badge** = API changes detected, SDK may need updates
+
+The monitoring runs daily at 6 AM UTC and automatically creates issues when breaking changes are detected.
 
 ## 📦 Installation
 
@@ -627,6 +644,13 @@ infra/
 
 - **`npm run dev:rebuild`** - Clean rebuild of all packages
 - **`npm run docs:tests`** - Generate test documentation
+- **`npm run api:monitor:admin:create`** - Create Admin API structure baseline
+- **`npm run api:monitor:admin:check`** - Check Admin API for structure changes
+- **`npm run api:monitor:admin:compare`** - Compare Admin API structure snapshots
+- **`npm run api:monitor:store:create`** - Create Store API structure baseline
+- **`npm run api:monitor:store:check`** - Check Store API for structure changes
+- **`npm run api:monitor:store:compare`** - Compare Store API structure snapshots
+- **`npm run api:monitor:test`** - Run API structure integration tests
 - **`npx nx run-many -t build`** - Build all packages
 - **`npx nx run-many -t test`** - Run all tests
 - **`npx nx run-many -t lint`** - Lint all packages
@@ -665,7 +689,109 @@ Auto-generated test documentation is available in [`docs/TESTS.md`](docs/TESTS.m
 npm run docs:tests
 ```
 
-## 📞 Support
+## � API Structure Monitoring
+
+The Store SDK includes automated monitoring of both WooCommerce Admin REST API and Store API structures to detect changes that might affect SDK compatibility.
+
+### Overview
+
+The API monitoring system:
+
+- **Tracks API Structure Changes** - Monitors endpoints, HTTP methods, and parameters
+- **Automated Detection** - Runs daily and on relevant code changes via GitHub Actions
+- **Breaking Change Alerts** - Creates issues for critical changes that may break the SDK
+- **Integration Testing** - Validates API compatibility during CI/CD
+
+### How It Works
+
+1. **Baseline Creation** - Creates a snapshot of the current API structure
+2. **Change Detection** - Compares current API structure against the baseline
+3. **Impact Analysis** - Categorizes changes as additive (safe) or breaking (critical)
+4. **Automated Notifications** - Creates GitHub issues for significant changes
+
+### Manual Usage
+
+The monitoring system supports both WooCommerce Admin REST API and Store API:
+
+```bash
+# Admin REST API (WC v3) - for backend operations
+npm run api:monitor:admin:create     # Create baseline
+npm run api:monitor:admin:check      # Check for changes
+npm run api:monitor:admin:compare    # Compare snapshots
+
+# Store API (WC Store v1) - for frontend/headless operations
+npm run api:monitor:store:create     # Create baseline
+npm run api:monitor:store:check      # Check for changes
+npm run api:monitor:store:compare    # Compare snapshots
+
+# Run API structure integration tests
+npm run api:monitor:test
+
+# Direct script usage with custom paths
+node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3
+node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/store/v1
+```
+
+### GitHub Actions Workflow
+
+The monitoring runs automatically:
+
+- **Daily at 2 AM UTC** - Scheduled monitoring
+- **On relevant code changes** - Admin service file modifications
+- **Manual trigger** - Workflow dispatch for on-demand checks
+
+### Configuration
+
+Set the WordPress URL for monitoring:
+
+```bash
+# Environment variable
+export WC_API_BASE_URL=http://localhost:8080
+
+# Or pass directly to script
+WC_API_BASE_URL=https://your-wp-site.com npm run api:monitor:check
+```
+
+### Understanding Changes
+
+**✅ Safe Changes (Additive):**
+
+- New routes added
+- New HTTP methods added to existing routes
+- New parameters added to existing endpoints
+
+**🚨 Breaking Changes (Critical):**
+
+- Routes removed
+- HTTP methods removed from routes
+- Required parameters removed from endpoints
+
+### Snapshots Location
+
+API structure snapshots are stored separately for each API:
+
+```
+snapshots/api-structure/
+├── admin/                    # Admin REST API (WC v3)
+│   ├── baseline.json         # Reference snapshot
+│   ├── current.json          # Latest snapshot
+│   └── changes-*.json        # Change reports
+└── store/                    # Store API (WC Store v1)
+    ├── baseline.json         # Reference snapshot
+    ├── current.json          # Latest snapshot
+    └── changes-*.json        # Change reports
+```
+
+### Integration with CI/CD
+
+The API monitoring integrates with the development workflow:
+
+1. **PR Reviews** - Alerts on PRs that may affect API structure
+2. **Issue Creation** - Automatically creates issues for breaking changes
+3. **Artifact Storage** - Saves snapshots and reports as workflow artifacts
+4. **Test Integration** - Runs as part of the integration test suite
+
+## �📞 Support
 
 - **📧 Email**: kostasmakris23@gmail.com
 - **🐛 Issues**: [GitHub Issues](https://github.com/kmakris23/store-sdk/issues)

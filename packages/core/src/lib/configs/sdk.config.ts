@@ -2,6 +2,11 @@ import { StoreSdkPlugin } from '../plugins/plugin.js';
 
 export interface StoreSdkConfig {
   baseUrl: string;
+  admin?: {
+    consumer_key?: string;
+    consumer_secret?: string;
+    useAuthInterceptor?: boolean;
+  };
   auth?: {
     autoLoginUrl?: string;
     /**

@@ -49,6 +49,15 @@ export const addRefreshTokenInterceptor = (
   httpClient.interceptors.response.use(
     (response) => response,
     async (error) => {
+      // Only handle errors for Store API or Store SDK endpoints
+      const reqUrl: string | undefined = error?.config?.url;
+      if (
+        !reqUrl ||
+        (!reqUrl.startsWith('/wp-json/wc/store/v1/') &&
+          !reqUrl.startsWith('/wp-json/store-sdk/'))
+      ) {
+        return Promise.reject(error);
+      }
       const originalRequest = error.config;
       if (
         error.response &&

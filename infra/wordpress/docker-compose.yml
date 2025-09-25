@@ -66,6 +66,9 @@ services:
       - WC_STORE_SALES_TAX=${WC_STORE_SALES_TAX:-true}
       - WOO_COMMERCE_VERSION=${WOO_COMMERCE_VERSION:-}
       - WP_CLI_CACHE_DIR=/tmp/wp-cli-cache
+      # REST API keys for testing (will be populated by setup script)
+      - WP_CONSUMER_KEY=${WP_CONSUMER_KEY:-}
+      - WP_CONSUMER_SECRET=${WP_CONSUMER_SECRET:-}
     working_dir: /var/www/html
     volumes:
       - wp_data:/var/www/html

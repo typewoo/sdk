@@ -1,5 +1,7 @@
+export * from './batch/index.js';
 export * from './cart/index.js';
 export * from './cart-coupon/index.js';
+export * from './cart-extensions/index.js';
 export * from './cart-item/index.js';
 export * from './checkout/index.js';
 export * from './order/index.js';

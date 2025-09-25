@@ -11,6 +11,74 @@ Environment for running a real WordPress + WooCommerce instance with the Store S
 - Basic WooCommerce store settings applied
 - Pretty permalinks enabled
 - Automatic sample catalog seeding (10 categories x 10 products each, simple & variable mix, tags & brands taxonomy) on first run
+- **SSL/TLS support with Let's Encrypt certificates for production deployment**
+- **Nginx reverse proxy with security headers and rate limiting**
+- **Automatic certificate renewal**
+
+## SSL Configuration
+
+This environment supports both development (localhost) and production (with real domain) scenarios:
+
+### Development Mode (Default)
+
+- Domain: `localhost`
+- No SSL certificates needed
+- Accessible via: http://localhost:8080
+- Direct WordPress access without reverse proxy
+
+### Production Mode with SSL
+
+- Set `DOMAIN_NAME` in `.env` to your actual domain
+- Automatic Let's Encrypt certificate generation
+- Nginx reverse proxy with SSL termination
+- Accessible via: https://yourdomain.com
+- HTTP traffic automatically redirected to HTTPS
+
+### SSL Setup Process
+
+1. **Configure domain**: Edit `.env` and set your domain:
+
+   ```env
+   DOMAIN_NAME=your-domain.com
+   LETSENCRYPT_EMAIL=your-email@example.com
+   LETSENCRYPT_STAGING=1  # Use staging for testing, 0 for production
+   ```
+
+2. **Ensure DNS**: Point your domain to your server's IP address
+
+3. **Initialize SSL** (PowerShell):
+
+   ```powershell
+   .\scripts\ssl-init.ps1
+   ```
+
+   Or (Bash):
+
+   ```bash
+   ./scripts/ssl-init.sh
+   ```
+
+4. **Move to production certificates** (after testing):
+   ```env
+   LETSENCRYPT_STAGING=0
+   ```
+   Remove staging certificates and re-run initialization script.
+
+### SSL Security Features
+
+- **TLS 1.2/1.3 only** with strong cipher suites
+- **HSTS headers** for browsers
+- **OCSP stapling** for certificate validation
+- **Rate limiting** on login and API endpoints
+- **Security headers** (XSS protection, frame options, etc.)
+- **Automatic HTTP to HTTPS redirect**
+
+### Certificate Management
+
+- **Auto-renewal**: Certificates renew automatically every 12 hours
+- **Manual renewal**: `docker-compose exec certbot certbot renew`
+- **Certificate location**: `./certbot/conf/live/yourdomain.com/`
+- **Logs**: Check `docker-compose logs certbot` for renewal status
 
 ## Quick Start (with npm scripts)
 

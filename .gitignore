@@ -50,3 +50,9 @@ vitest.config.*.timestamp*
 .npmrc
 .angular
 proxy.conf.json
+
+# Environment files with sensitive data
+.env
+.env.local
+.env.*.local
+infra/wordpress/scripts/generated-app-passwords.txt
