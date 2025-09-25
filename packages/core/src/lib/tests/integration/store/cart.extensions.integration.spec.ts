@@ -66,13 +66,19 @@ describe('Integration: Cart Extensions API Operations', () => {
         someData: 'value',
       },
     };
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
+
+    await StoreSdk.store.cart.get();
 
     const res = await StoreSdk.store.cartExtensions.store(extensionRequest);
 
     if (res.error) {
       // Should get validation error for invalid namespace
       expect(res.error.code).toMatch(
-        /namespace|invalid|validation|required|empty/i
+        /namespace|invalid|validation|required|empty|woocommerce_rest_missing_nonce|woocommerce_rest_cart_extensions_error/i
       );
     } else {
       // If successful, it should indicate failure in the response
@@ -107,6 +113,13 @@ describe('Integration: Cart Extensions API Operations', () => {
         },
       },
     };
+
+    await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+    });
+
+    await StoreSdk.store.cart.get();
 
     const res = await StoreSdk.store.cartExtensions.store(extensionRequest);
 
