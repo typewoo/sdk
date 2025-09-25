@@ -19,6 +19,11 @@ export * from './lib/utilities/axios.utility.js';
 
 // REST API Services
 export { AdminService } from './lib/services/admin.service.js';
+
+// Store API Services
+export { BatchService } from './lib/services/store/batch.service.js';
+export { CartExtensionsService } from './lib/services/store/cart.extensions.service.js';
+export { CheckoutOrderService } from './lib/services/store/checkout.order.service.js';
 export { WcAdminProductService } from './lib/services/admin/product.service.js';
 export { WcAdminOrderService } from './lib/services/admin/order.service.js';
 export { WcAdminCustomerService } from './lib/services/admin/customer.service.js';
