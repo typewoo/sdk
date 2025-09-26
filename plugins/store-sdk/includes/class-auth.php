@@ -349,51 +349,88 @@ class Store_SDK_Auth {
 	/**
 	 * Check if endpoint requires authentication.
 	 *
-	 * @param string $route_path Route path to check.
+	 * Supports:
+	 * - Exact match: "wc/store/v1/cart"
+	 * - Glob patterns: "wc/store/v1/*", "wc/store/**"
+	 *
+	 * @param string|null $route_path Route path to check (e.g., "wc/store/v1/cart/coupons").
 	 * @return bool
 	 */
 	public function endpoint_requires_auth($route_path = null) {
 		$protected_endpoints = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') ? STORESDK_JWT_FORCE_AUTH_ENDPOINTS : '';
-		
+
 		if ($route_path === null) {
 			$route_path = $this->get_current_route_path();
 		}
 
-		if (empty($route_path)) {
-			return false;
+		$prefix = function_exists('rest_get_url_prefix') ? rest_get_url_prefix() : 'wp-json';
+
+		// Normalize a path: strip query, leading slash, REST prefix, collapse slashes.
+		$normalize_path = static function ($path) use ($prefix) {
+			if (!is_string($path)) return '';
+			if (false !== ($qpos = strpos($path, '?'))) {
+				$path = substr($path, 0, $qpos);
+			}
+			$path = urldecode(trim($path));
+			$path = ltrim($path, '/');
+
+			$pfx = rtrim($prefix, '/') . '/';
+			if (stripos($path, $pfx) === 0) {
+				$path = substr($path, strlen($pfx));
+			}
+
+			$path = preg_replace('#/+#', '/', $path);
+			return trim($path, "/ \t\n\r\0\x0B");
+		};
+
+		$route_path = $normalize_path($route_path);
+		if ($route_path === '') {
+			return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
 		}
 
-		// Parse endpoints list
-		$endpoints = array_filter(array_map('trim', explode(',', $protected_endpoints)));
-		$endpoints = apply_filters('storesdk_jwt_force_auth_endpoints', $endpoints, $route_path);
+		// Parse endpoints list (supports commas, spaces, and newlines)
+		$endpoints_list = is_string($protected_endpoints) ? wp_parse_list($protected_endpoints) : (array) $protected_endpoints;
+		$endpoints_list = array_filter(array_map('trim', $endpoints_list));
+		$endpoints_list = apply_filters('storesdk_jwt_force_auth_endpoints', $endpoints_list, $route_path);
 
-		foreach ($endpoints as $endpoint) {
-			$endpoint = trim($endpoint);
-			if (empty($endpoint)) {
-				continue;
-			}
+		if (empty($endpoints_list)) {
+			return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
+		}
 
-			// Normalize endpoint
-			$normalized_endpoint = $endpoint;
-			$prefix = function_exists('rest_get_url_prefix') ? rest_get_url_prefix() : 'wp-json';
-			if (strpos($normalized_endpoint, $prefix . '/') === 0) {
-				$normalized_endpoint = substr($normalized_endpoint, strlen($prefix) + 1);
-			}
+		foreach ($endpoints_list as $endpoint) {
+			if (($endpoint = trim($endpoint)) === '') continue;
 
-			// Support wildcard matching
-			$pattern = str_replace('*', '.*', preg_quote($normalized_endpoint, '#'));
-			if (preg_match('#^' . $pattern . '$#', $route_path)) {
+			// Normalize rule (so "wp-json/..." rules also work)
+			$normalized_endpoint = $normalize_path($endpoint);
+
+			// Exact match first (most performant)
+			if ($normalized_endpoint === $route_path) {
 				return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
 			}
 
-			// Exact match
-			if ($route_path === $normalized_endpoint || $route_path === $endpoint) {
+			// Skip glob processing if no wildcards present
+			if (strpos($normalized_endpoint, '*') === false) {
+				continue;
+			}
+
+			// Build regex from glob pattern:
+			// - **  =>  .*           (match any characters including /)
+			// - *   =>  [^/]*        (match any characters except /)
+			$quoted = preg_quote($normalized_endpoint, '#');
+			$quoted = str_replace('\*\*', '.*', $quoted);      // handle ** first
+			$quoted = str_replace('\*',  '[^/]*', $quoted);    // then single *
+
+			$pattern = '#^' . $quoted . '$#';
+
+			// Validate and match pattern
+			if (@preg_match($pattern, '') !== false && preg_match($pattern, $route_path)) {
 				return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
 			}
 		}
 
 		return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
 	}
+
 
 	/**
 	 * Check if front-channel autologin is enabled.
