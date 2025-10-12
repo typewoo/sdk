@@ -1,13 +1,20 @@
-import { ImageResponse } from '../image.response.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { ImageResponseSchema } from '../image.response.js';
 
-export interface ProductBrandResponse {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  parent: number;
-  count: number;
-  image: ImageResponse | null;
-  review_count: number;
-  permalink: string;
-}
+export const ProductBrandResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  description: z.string(),
+  parent: z.number(),
+  count: z.number(),
+  image: ImageResponseSchema.nullable(),
+  review_count: z.number(),
+  permalink: z.string(),
+});
+
+export type ProductBrandResponse = z.infer<typeof ProductBrandResponseSchema>;
+export class ApiProductBrandResponse extends createZodDto(
+  ProductBrandResponseSchema
+) {}

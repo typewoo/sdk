@@ -1,72 +1,128 @@
-export interface WcAdminShippingZone {
-  id: number;
-  name: string;
-  order: number;
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-    describedby: Array<{ href: string }>;
-  };
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
 
-export interface WcAdminShippingZoneRequest {
-  name?: string;
-  order?: number;
-}
+export const AdminShippingZoneSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  order: z.number(),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+    describedby: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminShippingZoneQueryParams {
-  context?: 'view' | 'edit';
-}
+export type AdminShippingZone = z.infer<typeof AdminShippingZoneSchema>;
+export class ApiAdminShippingZone extends createZodDto(
+  AdminShippingZoneSchema
+) {}
 
-export interface WcAdminShippingZoneLocation {
-  code: string;
-  type: 'postcode' | 'state' | 'country' | 'continent';
-  _links: {
-    collection: Array<{ href: string }>;
-    describes: Array<{ href: string }>;
-  };
-}
+export const AdminShippingZoneRequestSchema = z.object({
+  name: z.string().optional(),
+  order: z.number().optional(),
+});
 
-export interface WcAdminShippingZoneLocationRequest {
-  code: string;
-  type: 'postcode' | 'state' | 'country' | 'continent';
-}
+export type AdminShippingZoneRequest = z.infer<
+  typeof AdminShippingZoneRequestSchema
+>;
+export class ApiAdminShippingZoneRequest extends createZodDto(
+  AdminShippingZoneRequestSchema
+) {}
 
-export interface WcAdminShippingZoneMethod {
-  instance_id: number;
-  title: string;
-  order: number;
-  enabled: boolean;
-  method_id: string;
-  method_title: string;
-  method_description: string;
-  settings: {
-    [key: string]: {
-      id: string;
-      label: string;
-      description: string;
-      type: string;
-      value: string;
-      default: string;
-      tip: string;
-      placeholder: string;
-    };
-  };
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-    describes: Array<{ href: string }>;
-  };
-}
+export const AdminShippingZoneQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+});
 
-export interface WcAdminShippingZoneMethodRequest {
-  order?: number;
-  enabled?: boolean;
-  settings?: {
-    [key: string]: string;
-  };
-}
+export type AdminShippingZoneQueryParams = z.infer<
+  typeof AdminShippingZoneQueryParamsSchema
+>;
+export class ApiAdminShippingZoneQueryParams extends createZodDto(
+  AdminShippingZoneQueryParamsSchema
+) {}
 
-export interface WcAdminShippingZoneMethodQueryParams {
-  context?: 'view' | 'edit';
-}
+export const AdminShippingZoneLocationSchema = z.object({
+  code: z.string(),
+  type: z.enum(['postcode', 'state', 'country', 'continent']),
+  _links: z.object({
+    collection: z.array(z.object({ href: z.string() })),
+    describes: z.array(z.object({ href: z.string() })),
+  }),
+});
+
+export type AdminShippingZoneLocation = z.infer<
+  typeof AdminShippingZoneLocationSchema
+>;
+export class ApiAdminShippingZoneLocation extends createZodDto(
+  AdminShippingZoneLocationSchema
+) {}
+
+export const AdminShippingZoneLocationRequestSchema = z.object({
+  code: z.string(),
+  type: z.enum(['postcode', 'state', 'country', 'continent']),
+});
+
+export type AdminShippingZoneLocationRequest = z.infer<
+  typeof AdminShippingZoneLocationRequestSchema
+>;
+export class ApiAdminShippingZoneLocationRequest extends createZodDto(
+  AdminShippingZoneLocationRequestSchema
+) {}
+
+export const AdminShippingZoneMethodSchema = z.object({
+  instance_id: z.number(),
+  title: z.string(),
+  order: z.number(),
+  enabled: z.boolean(),
+  method_id: z.string(),
+  method_title: z.string(),
+  method_description: z.string(),
+  settings: z.record(
+    z.string(),
+    z.object({
+      id: z.string(),
+      label: z.string(),
+      description: z.string(),
+      type: z.string(),
+      value: z.string(),
+      default: z.string(),
+      tip: z.string(),
+      placeholder: z.string(),
+    })
+  ),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+    describes: z.array(z.object({ href: z.string() })),
+  }),
+});
+
+export type AdminShippingZoneMethod = z.infer<
+  typeof AdminShippingZoneMethodSchema
+>;
+export class ApiAdminShippingZoneMethod extends createZodDto(
+  AdminShippingZoneMethodSchema
+) {}
+
+export const AdminShippingZoneMethodRequestSchema = z.object({
+  order: z.number().optional(),
+  enabled: z.boolean().optional(),
+  settings: z.record(z.string(), z.string()).optional(),
+});
+
+export type AdminShippingZoneMethodRequest = z.infer<
+  typeof AdminShippingZoneMethodRequestSchema
+>;
+export class ApiAdminShippingZoneMethodRequest extends createZodDto(
+  AdminShippingZoneMethodRequestSchema
+) {}
+
+export const AdminShippingZoneMethodQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+});
+
+export type AdminShippingZoneMethodQueryParams = z.infer<
+  typeof AdminShippingZoneMethodQueryParamsSchema
+>;
+export class ApiAdminShippingZoneMethodQueryParams extends createZodDto(
+  AdminShippingZoneMethodQueryParamsSchema
+) {}

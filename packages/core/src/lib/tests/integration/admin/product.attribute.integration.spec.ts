@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcAdminProductAttributeRequest,
-  WcAdminProductAttributeTermRequest,
+  AdminProductAttributeRequest,
+  AdminProductAttributeTermRequest,
 } from '../../../types/admin/attribute.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -42,7 +42,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
   it('creates, retrieves, updates, and deletes a product attribute', async () => {
     const ts = Date.now();
-    const req: WcAdminProductAttributeRequest = {
+    const req: AdminProductAttributeRequest = {
       name: `Material ${ts}`,
       order_by: 'menu_order',
       has_archives: false,
@@ -152,7 +152,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       expect(list0.error).toBeFalsy();
 
       // Create a term
-      const termReq: WcAdminProductAttributeTermRequest = {
+      const termReq: AdminProductAttributeTermRequest = {
         name: 'Red',
         description: 'A red color',
         menu_order: 0,

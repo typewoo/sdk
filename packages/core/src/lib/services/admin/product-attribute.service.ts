@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductAttribute,
-  WcAdminProductAttributeRequest,
-  WcAdminProductAttributeQueryParams,
+  AdminProductAttribute,
+  AdminProductAttributeRequest,
+  AdminProductAttributeQueryParams,
 } from '../../types/admin/attribute.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,21 +19,19 @@ import qs from 'qs';
  *
  * Manages product attributes through the WooCommerce REST API (wp-json/wc/v3/products/attributes)
  */
-export class WcAdminProductAttributeService extends BaseService {
+export class AdminProductAttributeService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/attributes';
 
   /**
    * List product attributes
    */
   async list(
-    params?: WcAdminProductAttributeQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductAttribute[]>> {
+    params?: AdminProductAttributeQueryParams
+  ): Promise<ApiPaginationResult<AdminProductAttribute[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductAttribute[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminProductAttribute[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -51,11 +49,11 @@ export class WcAdminProductAttributeService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductAttribute>> {
+  ): Promise<ApiResult<AdminProductAttribute>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductAttribute>(url);
+    const { data, error } = await doGet<AdminProductAttribute>(url);
     return { data, error };
   }
 
@@ -63,12 +61,12 @@ export class WcAdminProductAttributeService extends BaseService {
    * Create a new product attribute
    */
   async create(
-    attribute: WcAdminProductAttributeRequest
-  ): Promise<ApiResult<WcAdminProductAttribute>> {
+    attribute: AdminProductAttributeRequest
+  ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminProductAttribute,
-      WcAdminProductAttributeRequest
+      AdminProductAttribute,
+      AdminProductAttributeRequest
     >(url, attribute);
 
     return { data, error };
@@ -79,12 +77,12 @@ export class WcAdminProductAttributeService extends BaseService {
    */
   async update(
     id: number,
-    attribute: WcAdminProductAttributeRequest
-  ): Promise<ApiResult<WcAdminProductAttribute>> {
+    attribute: AdminProductAttributeRequest
+  ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminProductAttribute,
-      WcAdminProductAttributeRequest
+      AdminProductAttribute,
+      AdminProductAttributeRequest
     >(url, attribute);
 
     return { data, error };
@@ -96,10 +94,10 @@ export class WcAdminProductAttributeService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminProductAttribute>> {
+  ): Promise<ApiResult<AdminProductAttribute>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductAttribute>(url);
+    const { data, error } = await doDelete<AdminProductAttribute>(url);
 
     return { data, error };
   }
@@ -108,22 +106,22 @@ export class WcAdminProductAttributeService extends BaseService {
    * Batch create/update/delete product attributes
    */
   async batch(operations: {
-    create?: WcAdminProductAttributeRequest[];
-    update?: Array<WcAdminProductAttributeRequest & { id: number }>;
+    create?: AdminProductAttributeRequest[];
+    update?: Array<AdminProductAttributeRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminProductAttribute[];
-      update: WcAdminProductAttribute[];
-      delete: WcAdminProductAttribute[];
+      create: AdminProductAttribute[];
+      update: AdminProductAttribute[];
+      delete: AdminProductAttribute[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductAttribute[];
-        update: WcAdminProductAttribute[];
-        delete: WcAdminProductAttribute[];
+        create: AdminProductAttribute[];
+        update: AdminProductAttribute[];
+        delete: AdminProductAttribute[];
       },
       typeof operations
     >(url, operations);

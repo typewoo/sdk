@@ -1,40 +1,57 @@
-export interface WcAdminSetting {
-  id: string;
-  label: string;
-  description: string;
-  type:
-    | 'text'
-    | 'email'
-    | 'number'
-    | 'color'
-    | 'password'
-    | 'textarea'
-    | 'select'
-    | 'multiselect'
-    | 'radio'
-    | 'image_width'
-    | 'checkbox';
-  default: string | number | boolean;
-  tip: string;
-  value: string | number | boolean;
-  options?: { [key: string]: string };
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
 
-export interface WcAdminSettingRequest {
-  value: string | number | boolean;
-}
+export const AdminSettingSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string(),
+  type: z.enum([
+    'text',
+    'email',
+    'number',
+    'color',
+    'password',
+    'textarea',
+    'select',
+    'multiselect',
+    'radio',
+    'image_width',
+    'checkbox',
+  ]),
+  default: z.union([z.string(), z.number(), z.boolean()]),
+  tip: z.string(),
+  value: z.union([z.string(), z.number(), z.boolean()]),
+  options: z.record(z.string(), z.string()).optional(),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminSettingGroup {
-  id: string;
-  label: string;
-  description: string;
-  parent_id: string;
-  sub_groups: string[];
-  _links: {
-    options: Array<{ href: string }>;
-  };
-}
+export type AdminSetting = z.infer<typeof AdminSettingSchema>;
+export class ApiAdminSetting extends createZodDto(AdminSettingSchema) {}
+
+export const AdminSettingRequestSchema = z.object({
+  value: z.union([z.string(), z.number(), z.boolean()]),
+});
+
+export type AdminSettingRequest = z.infer<typeof AdminSettingRequestSchema>;
+export class ApiAdminSettingRequest extends createZodDto(
+  AdminSettingRequestSchema
+) {}
+
+export const AdminSettingGroupSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string(),
+  parent_id: z.string(),
+  sub_groups: z.array(z.string()),
+  _links: z.object({
+    options: z.array(z.object({ href: z.string() })),
+  }),
+});
+
+export type AdminSettingGroup = z.infer<typeof AdminSettingGroupSchema>;
+export class ApiAdminSettingGroup extends createZodDto(
+  AdminSettingGroupSchema
+) {}

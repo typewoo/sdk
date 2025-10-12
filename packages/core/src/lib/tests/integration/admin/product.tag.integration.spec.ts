@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcAdminProductTagRequest,
-  WcAdminProductTagQueryParams,
+  AdminProductTagRequest,
+  AdminProductTagQueryParams,
 } from '../../../types/admin/index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -31,7 +31,7 @@ describe('Integration: Admin Product Tags', () => {
   });
 
   it('lists tags with pagination and search', async () => {
-    const params: WcAdminProductTagQueryParams = { per_page: 5, page: 1 };
+    const params: AdminProductTagQueryParams = { per_page: 5, page: 1 };
     const list = await StoreSdk.admin.productTags.list(params);
     if (list.error) {
       expect(list.error.code).toMatch(/not_found|invalid|forbidden/i);
@@ -51,7 +51,7 @@ describe('Integration: Admin Product Tags', () => {
 
   it('creates, retrieves, updates, and deletes a tag', async () => {
     const ts = Date.now();
-    const req: WcAdminProductTagRequest = {
+    const req: AdminProductTagRequest = {
       name: `tag-${ts}`,
       slug: `tag-${ts}`,
       description: 'Integration test tag',

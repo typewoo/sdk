@@ -1,16 +1,16 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminReport,
-  WcAdminSalesReport,
-  WcAdminTopSellersReport,
-  WcAdminCustomersReport,
-  WcAdminOrdersReport,
-  WcAdminTotalsReportEntry,
-  WcAdminReportsQueryParams,
-  WcAdminSalesReportQueryParams,
-  WcAdminTopSellersReportQueryParams,
-  WcAdminCustomersReportQueryParams,
-  WcAdminOrdersReportQueryParams,
+  AdminReport,
+  AdminSalesReport,
+  AdminTopSellersReport,
+  AdminCustomersReport,
+  AdminOrdersReport,
+  AdminTotalsReportEntry,
+  AdminReportsQueryParams,
+  AdminSalesReportQueryParams,
+  AdminTopSellersReportQueryParams,
+  AdminCustomersReportQueryParams,
+  AdminOrdersReportQueryParams,
 } from '../../types/admin/report.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
@@ -22,19 +22,19 @@ import qs from 'qs';
  *
  * Manages reports through the WooCommerce REST API (wp-json/wc/v3/reports)
  */
-export class WcAdminReportService extends BaseService {
+export class AdminReportService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/reports';
 
   /**
    * List available reports
    */
   async list(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminReport[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminReport[]>(url);
+    const { data, error, headers } = await doGet<AdminReport[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -50,12 +50,12 @@ export class WcAdminReportService extends BaseService {
    * Get sales report
    */
   async getSalesReport(
-    params?: WcAdminSalesReportQueryParams
-  ): Promise<ApiResult<WcAdminSalesReport[]>> {
+    params?: AdminSalesReportQueryParams
+  ): Promise<ApiResult<AdminSalesReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/sales${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminSalesReport[]>(url);
+    const { data, error } = await doGet<AdminSalesReport[]>(url);
     return { data, error };
   }
 
@@ -63,14 +63,12 @@ export class WcAdminReportService extends BaseService {
    * Get top sellers report
    */
   async getTopSellersReport(
-    params?: WcAdminTopSellersReportQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTopSellersReport[]>> {
+    params?: AdminTopSellersReportQueryParams
+  ): Promise<ApiPaginationResult<AdminTopSellersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/top_sellers${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminTopSellersReport[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTopSellersReport[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -86,12 +84,12 @@ export class WcAdminReportService extends BaseService {
    * Get customers report
    */
   async getCustomersReport(
-    params?: WcAdminCustomersReportQueryParams
-  ): Promise<ApiPaginationResult<WcAdminCustomersReport[]>> {
+    params?: AdminCustomersReportQueryParams
+  ): Promise<ApiPaginationResult<AdminCustomersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminCustomersReport[]>(url);
+    const { data, error, headers } = await doGet<AdminCustomersReport[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -107,12 +105,12 @@ export class WcAdminReportService extends BaseService {
    * Get orders report
    */
   async getOrdersReport(
-    params?: WcAdminOrdersReportQueryParams
-  ): Promise<ApiResult<WcAdminOrdersReport[]>> {
+    params?: AdminOrdersReportQueryParams
+  ): Promise<ApiResult<AdminOrdersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminOrdersReport[]>(url);
+    const { data, error } = await doGet<AdminOrdersReport[]>(url);
     return { data, error };
   }
 
@@ -120,13 +118,11 @@ export class WcAdminReportService extends BaseService {
    * Orders totals report
    */
   async getOrdersTotals(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
     let total, totalPages, link;
     if (headers) {
       link = parseLinkHeader(headers['link']);
@@ -140,13 +136,11 @@ export class WcAdminReportService extends BaseService {
    * Products totals report
    */
   async getProductsTotals(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/products/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
     let total, totalPages, link;
     if (headers) {
       link = parseLinkHeader(headers['link']);
@@ -160,13 +154,11 @@ export class WcAdminReportService extends BaseService {
    * Customers totals report
    */
   async getCustomersTotals(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
     let total, totalPages, link;
     if (headers) {
       link = parseLinkHeader(headers['link']);
@@ -180,13 +172,11 @@ export class WcAdminReportService extends BaseService {
    * Coupons totals report
    */
   async getCouponsTotals(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/coupons/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
     let total, totalPages, link;
     if (headers) {
       link = parseLinkHeader(headers['link']);
@@ -200,13 +190,11 @@ export class WcAdminReportService extends BaseService {
    * Reviews totals report
    */
   async getReviewsTotals(
-    params?: WcAdminReportsQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTotalsReportEntry[]>> {
+    params?: AdminReportsQueryParams
+  ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/reviews/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<WcAdminTotalsReportEntry[]>(
-      url
-    );
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
     let total, totalPages, link;
     if (headers) {
       link = parseLinkHeader(headers['link']);

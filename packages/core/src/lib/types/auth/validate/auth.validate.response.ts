@@ -1,13 +1,17 @@
-export interface AuthValidateResponse {
-  valid: boolean;
-  payload: {
-    iss: string;
-    iat: number;
-    nbf: number;
-    exp: number;
-    sub: number;
-    login: string;
-    email: string;
-    ver: number;
-  };
-}
+import { z } from 'zod';
+
+export const AuthValidateResponseSchema = z.object({
+  valid: z.boolean(),
+  payload: z.object({
+    iss: z.string(),
+    iat: z.number(),
+    nbf: z.number(),
+    exp: z.number(),
+    sub: z.number(),
+    login: z.string(),
+    email: z.string(),
+    ver: z.number(),
+  }),
+});
+
+export type AuthValidateResponse = z.infer<typeof AuthValidateResponseSchema>;

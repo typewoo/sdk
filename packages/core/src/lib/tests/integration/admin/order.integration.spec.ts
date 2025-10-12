@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcAdminOrderRequest,
-  WcAdminOrderEmailTemplateId,
+  AdminOrderRequest,
+  AdminOrderEmailTemplateId,
 } from '../../../types/admin/order.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -57,7 +57,7 @@ describe('Integration: Admin Order Service', () => {
 
     const productId = prodList.data[0].id;
 
-    const orderData: WcAdminOrderRequest = {
+    const orderData: AdminOrderRequest = {
       status: 'pending',
       line_items: [
         {
@@ -107,7 +107,7 @@ describe('Integration: Admin Order Service', () => {
     expect(getResult.data?.id).toBe(orderId);
 
     // Update the order status and note
-    const updateData: WcAdminOrderRequest = {
+    const updateData: AdminOrderRequest = {
       status: 'processing',
       customer_note: 'Updated via integration test',
     };
@@ -165,7 +165,7 @@ describe('Integration: Admin Order Service', () => {
             },
           ],
         },
-      ] as WcAdminOrderRequest[],
+      ] as AdminOrderRequest[],
     };
 
     const batchResult = await StoreSdk.admin.orders.batch(batchData);
@@ -445,7 +445,7 @@ describe('Integration: Admin Order Service', () => {
       // Attempt to send email with first available template
       if (templates.data && templates.data.length > 0) {
         const templateId = templates.data[0]
-          .id as unknown as WcAdminOrderEmailTemplateId; // use returned template id
+          .id as unknown as AdminOrderEmailTemplateId; // use returned template id
         const sent = await StoreSdk.admin.orders.sendEmail(orderId, {
           template_id: templateId,
           email: `notify-${Date.now()}@example.com`,

@@ -1,33 +1,44 @@
-import { CheckoutBillingResponse } from './checkout.billing.response.js';
-import { CheckoutShippingResponse } from './checkout.shipping.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { CheckoutBillingResponseSchema } from './checkout.billing.response.js';
+import { CheckoutShippingResponseSchema } from './checkout.shipping.js';
 
-export interface CheckoutCreateRequest {
+export const CheckoutCreateRequestSchema = z.object({
   /**
    * Object of updated billing address data for the customer.
    */
-  billing_address: CheckoutBillingResponse;
+  billing_address: CheckoutBillingResponseSchema,
   /**
    * Object of updated shipping address data for the customer.
    */
-  shipping_address: CheckoutShippingResponse;
+  shipping_address: CheckoutShippingResponseSchema,
   /**
    * Note added to the order by the customer during checkout.
    */
-  customer_note?: string;
+  customer_note: z.string().optional(),
   /**
    * The ID of the payment method being used to process the payment.
    */
-  payment_method?: string;
+  payment_method: z.string().optional(),
   /**
    * Data to pass through to the payment method when processing payment.
    */
-  payment_data?: {
-    key: string;
-    value: string;
-  }[];
+  payment_data: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional(),
   /**
    * Optionally define a password for new accounts.
    */
-  customer_password?: string;
-  extensions?: unknown;
-}
+  customer_password: z.string().optional(),
+  extensions: z.unknown().optional(),
+});
+
+export type CheckoutCreateRequest = z.infer<typeof CheckoutCreateRequestSchema>;
+export class ApiCheckoutCreateRequest extends createZodDto(
+  CheckoutCreateRequestSchema
+) {}

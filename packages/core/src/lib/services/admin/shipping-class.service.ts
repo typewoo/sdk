@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminShippingClass,
-  WcAdminShippingClassRequest,
-  WcAdminShippingClassQueryParams,
+  AdminShippingClass,
+  AdminShippingClassRequest,
+  AdminShippingClassQueryParams,
 } from '../../types/admin/taxonomy.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,19 +19,19 @@ import qs from 'qs';
  *
  * Manages shipping classes through the WooCommerce REST API (wp-json/wc/v3/products/shipping_classes)
  */
-export class WcAdminShippingClassService extends BaseService {
+export class AdminShippingClassService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/shipping_classes';
 
   /**
    * List shipping classes
    */
   async list(
-    params?: WcAdminShippingClassQueryParams
-  ): Promise<ApiPaginationResult<WcAdminShippingClass[]>> {
+    params?: AdminShippingClassQueryParams
+  ): Promise<ApiPaginationResult<AdminShippingClass[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminShippingClass[]>(url);
+    const { data, error, headers } = await doGet<AdminShippingClass[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -49,11 +49,11 @@ export class WcAdminShippingClassService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminShippingClass>> {
+  ): Promise<ApiResult<AdminShippingClass>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminShippingClass>(url);
+    const { data, error } = await doGet<AdminShippingClass>(url);
     return { data, error };
   }
 
@@ -61,12 +61,12 @@ export class WcAdminShippingClassService extends BaseService {
    * Create a new shipping class
    */
   async create(
-    shippingClass: WcAdminShippingClassRequest
-  ): Promise<ApiResult<WcAdminShippingClass>> {
+    shippingClass: AdminShippingClassRequest
+  ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminShippingClass,
-      WcAdminShippingClassRequest
+      AdminShippingClass,
+      AdminShippingClassRequest
     >(url, shippingClass);
 
     return { data, error };
@@ -77,12 +77,12 @@ export class WcAdminShippingClassService extends BaseService {
    */
   async update(
     id: number,
-    shippingClass: WcAdminShippingClassRequest
-  ): Promise<ApiResult<WcAdminShippingClass>> {
+    shippingClass: AdminShippingClassRequest
+  ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminShippingClass,
-      WcAdminShippingClassRequest
+      AdminShippingClass,
+      AdminShippingClassRequest
     >(url, shippingClass);
 
     return { data, error };
@@ -94,10 +94,10 @@ export class WcAdminShippingClassService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminShippingClass>> {
+  ): Promise<ApiResult<AdminShippingClass>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminShippingClass>(url);
+    const { data, error } = await doDelete<AdminShippingClass>(url);
 
     return { data, error };
   }
@@ -106,22 +106,22 @@ export class WcAdminShippingClassService extends BaseService {
    * Batch create/update/delete shipping classes
    */
   async batch(operations: {
-    create?: WcAdminShippingClassRequest[];
-    update?: Array<WcAdminShippingClassRequest & { id: number }>;
+    create?: AdminShippingClassRequest[];
+    update?: Array<AdminShippingClassRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminShippingClass[];
-      update: WcAdminShippingClass[];
-      delete: WcAdminShippingClass[];
+      create: AdminShippingClass[];
+      update: AdminShippingClass[];
+      delete: AdminShippingClass[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminShippingClass[];
-        update: WcAdminShippingClass[];
-        delete: WcAdminShippingClass[];
+        create: AdminShippingClass[];
+        update: AdminShippingClass[];
+        delete: AdminShippingClass[];
       },
       typeof operations
     >(url, operations);

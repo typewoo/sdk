@@ -1,310 +1,353 @@
-import {
-  WcAdminMetaData,
-  WcAdminImage,
-  WcAdminDimensions,
-  WcAdminStockStatus,
-  WcAdminBackorderStatus,
-  WcAdminTaxStatus,
-  WcAdminCatalogVisibility,
-  WcAdminProductType,
-  WcAdminStatus,
-} from './common.types.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { AdminMetaData, AdminImage, AdminDimensions } from './common.types.js';
 
 /**
  * Product category reference in product
  */
-export interface WcAdminProductCategory {
-  id: number;
-  name: string;
-  slug: string;
-}
+export const AdminProductCategorySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+});
+
+export type AdminProductCategory = z.infer<typeof AdminProductCategorySchema>;
+export class ApiAdminProductCategory extends createZodDto(
+  AdminProductCategorySchema
+) {}
 
 /**
  * Product tag reference in product
  */
-export interface WcAdminProductTag {
-  id: number;
-  name: string;
-  slug: string;
-}
+export const AdminProductTagSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+});
+
+export type AdminProductTag = z.infer<typeof AdminProductTagSchema>;
+export class ApiAdminProductTag extends createZodDto(AdminProductTagSchema) {}
 
 /**
  * Product brand reference in product
  */
-export interface WcProductBrand {
-  id: number;
-  name: string;
-  slug: string;
-}
+export const AdminProductBrandSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+});
+
+export type AdminProductBrand = z.infer<typeof AdminProductBrandSchema>;
+export class ApiAdminProductBrand extends createZodDto(
+  AdminProductBrandSchema
+) {}
 
 /**
  * Product attribute in product
  */
-export interface WcProductAttribute {
-  id: number;
-  name: string;
-  position: number;
-  visible: boolean;
-  variation: boolean;
-  options: string[];
-}
+export const AdminProductAttributeSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  position: z.number(),
+  visible: z.boolean(),
+  variation: z.boolean(),
+  options: z.array(z.string()),
+});
+
+export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
+export class ApiAdminProductAttribute extends createZodDto(
+  AdminProductAttributeSchema
+) {}
 
 /**
  * Product default attribute for variations
  */
-export interface WcProductDefaultAttribute {
-  id: number;
-  name: string;
-  option: string;
-}
+export const AdminProductDefaultAttributeSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  option: z.string(),
+});
+
+export type AdminProductDefaultAttribute = z.infer<
+  typeof AdminProductDefaultAttributeSchema
+>;
+export class ApiAdminProductDefaultAttribute extends createZodDto(
+  AdminProductDefaultAttributeSchema
+) {}
 
 /**
  * Downloadable file
  */
-export interface WcDownloadableFile {
-  id: string;
-  name: string;
-  file: string;
-}
+export const AdminDownloadableFileSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  file: z.string(),
+});
+
+export type AdminDownloadableFile = z.infer<typeof AdminDownloadableFileSchema>;
+export class ApiAdminDownloadableFile extends createZodDto(
+  AdminDownloadableFileSchema
+) {}
 
 /**
  * WooCommerce REST API Product Response
  */
-export interface WcProduct {
-  id: number;
-  name: string;
-  slug: string;
-  permalink: string;
-  date_created: string;
-  date_created_gmt: string;
-  date_modified: string;
-  date_modified_gmt: string;
-  type: WcAdminProductType;
-  status: WcAdminStatus;
-  featured: boolean;
-  catalog_visibility: WcAdminCatalogVisibility;
-  description: string;
-  short_description: string;
-  sku: string;
-  price: string;
-  regular_price: string;
-  sale_price: string;
-  date_on_sale_from: string | null;
-  date_on_sale_from_gmt: string | null;
-  date_on_sale_to: string | null;
-  date_on_sale_to_gmt: string | null;
-  price_html: string;
-  on_sale: boolean;
-  purchasable: boolean;
-  total_sales: number;
-  virtual: boolean;
-  downloadable: boolean;
-  downloads: WcDownloadableFile[];
-  download_limit: number;
-  download_expiry: number;
-  external_url: string;
-  button_text: string;
-  tax_status: WcAdminTaxStatus;
-  tax_class: string;
-  manage_stock: boolean;
-  stock_quantity: number | null;
-  stock_status: WcAdminStockStatus;
-  backorders: WcAdminBackorderStatus;
-  backorders_allowed: boolean;
-  backordered: boolean;
-  low_stock_amount: number | null;
-  sold_individually: boolean;
-  weight: string;
-  dimensions: WcAdminDimensions;
-  shipping_required: boolean;
-  shipping_taxable: boolean;
-  shipping_class: string;
-  shipping_class_id: number;
-  reviews_allowed: boolean;
-  average_rating: string;
-  rating_count: number;
-  upsell_ids: number[];
-  cross_sell_ids: number[];
-  parent_id: number;
-  purchase_note: string;
-  categories: WcAdminProductCategory[];
-  tags: WcAdminProductTag[];
-  brands?: WcProductBrand[]; // Optional, depends on plugins
-  images: WcAdminImage[];
-  attributes: WcProductAttribute[];
-  default_attributes: WcProductDefaultAttribute[];
-  variations: number[];
-  grouped_products: number[];
-  menu_order: number;
-  price_range: string | null;
-  meta_data: WcAdminMetaData[];
-  _links?: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+export const AdminProductSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  permalink: z.string(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  type: z.enum(['simple', 'grouped', 'external', 'variable']),
+  status: z.enum(['draft', 'pending', 'private', 'publish']),
+  featured: z.boolean(),
+  catalog_visibility: z.enum(['visible', 'catalog', 'search', 'hidden']),
+  description: z.string(),
+  short_description: z.string(),
+  sku: z.string(),
+  price: z.string(),
+  regular_price: z.string(),
+  sale_price: z.string(),
+  date_on_sale_from: z.string().nullable(),
+  date_on_sale_from_gmt: z.string().nullable(),
+  date_on_sale_to: z.string().nullable(),
+  date_on_sale_to_gmt: z.string().nullable(),
+  price_html: z.string(),
+  on_sale: z.boolean(),
+  purchasable: z.boolean(),
+  total_sales: z.number(),
+  virtual: z.boolean(),
+  downloadable: z.boolean(),
+  downloads: z.array(AdminDownloadableFileSchema),
+  download_limit: z.number(),
+  download_expiry: z.number(),
+  external_url: z.string(),
+  button_text: z.string(),
+  tax_status: z.enum(['taxable', 'shipping', 'none']),
+  tax_class: z.string(),
+  manage_stock: z.boolean(),
+  stock_quantity: z.number().nullable(),
+  stock_status: z.enum(['instock', 'outofstock', 'onbackorder']),
+  backorders: z.enum(['no', 'notify', 'yes']),
+  backorders_allowed: z.boolean(),
+  backordered: z.boolean(),
+  low_stock_amount: z.number().nullable(),
+  sold_individually: z.boolean(),
+  weight: z.string(),
+  dimensions: AdminDimensions,
+  shipping_required: z.boolean(),
+  shipping_taxable: z.boolean(),
+  shipping_class: z.string(),
+  shipping_class_id: z.number(),
+  reviews_allowed: z.boolean(),
+  average_rating: z.string(),
+  rating_count: z.number(),
+  upsell_ids: z.array(z.number()),
+  cross_sell_ids: z.array(z.number()),
+  parent_id: z.number(),
+  purchase_note: z.string(),
+  categories: z.array(AdminProductCategorySchema),
+  tags: z.array(AdminProductTagSchema),
+  brands: z.array(AdminProductBrandSchema).optional(), // Optional, depends on plugins
+  images: z.array(AdminImage),
+  attributes: z.array(AdminProductAttributeSchema),
+  default_attributes: z.array(AdminProductDefaultAttributeSchema),
+  variations: z.array(z.number()),
+  grouped_products: z.array(z.number()),
+  menu_order: z.number(),
+  price_range: z.string().nullable(),
+  meta_data: z.array(AdminMetaData),
+  _links: z
+    .object({
+      self: z.array(z.object({ href: z.string() })),
+      collection: z.array(z.object({ href: z.string() })),
+    })
+    .optional(),
+});
+
+export type AdminProduct = z.infer<typeof AdminProductSchema>;
+export class ApiAdminProduct extends createZodDto(AdminProductSchema) {}
 
 /**
  * Product variation for variable products
  */
-export interface WcProductVariation {
-  id: number;
-  date_created: string;
-  date_created_gmt: string;
-  date_modified: string;
-  date_modified_gmt: string;
-  description: string;
-  permalink: string;
-  sku: string;
-  price: string;
-  regular_price: string;
-  sale_price: string;
-  date_on_sale_from: string | null;
-  date_on_sale_from_gmt: string | null;
-  date_on_sale_to: string | null;
-  date_on_sale_to_gmt: string | null;
-  on_sale: boolean;
-  status: 'publish' | 'private' | 'draft';
-  purchasable: boolean;
-  virtual: boolean;
-  downloadable: boolean;
-  downloads: WcDownloadableFile[];
-  download_limit: number;
-  download_expiry: number;
-  tax_status: WcAdminTaxStatus;
-  tax_class: string;
-  manage_stock: boolean;
-  stock_quantity: number | null;
-  stock_status: WcAdminStockStatus;
-  backorders: WcAdminBackorderStatus;
-  backorders_allowed: boolean;
-  backordered: boolean;
-  low_stock_amount: number | null;
-  weight: string;
-  dimensions: WcAdminDimensions;
-  shipping_class: string;
-  shipping_class_id: number;
-  image: WcAdminImage;
-  attributes: WcProductDefaultAttribute[];
-  menu_order: number;
-  meta_data: WcAdminMetaData[];
-  _links?: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+export const AdminProductVariationSchema = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  description: z.string(),
+  permalink: z.string(),
+  sku: z.string(),
+  price: z.string(),
+  regular_price: z.string(),
+  sale_price: z.string(),
+  date_on_sale_from: z.string().nullable(),
+  date_on_sale_from_gmt: z.string().nullable(),
+  date_on_sale_to: z.string().nullable(),
+  date_on_sale_to_gmt: z.string().nullable(),
+  on_sale: z.boolean(),
+  status: z.enum(['publish', 'private', 'draft']),
+  purchasable: z.boolean(),
+  virtual: z.boolean(),
+  downloadable: z.boolean(),
+  downloads: z.array(AdminDownloadableFileSchema),
+  download_limit: z.number(),
+  download_expiry: z.number(),
+  tax_status: z.enum(['taxable', 'shipping', 'none']),
+  tax_class: z.string(),
+  manage_stock: z.boolean(),
+  stock_quantity: z.number().nullable(),
+  stock_status: z.enum(['instock', 'outofstock', 'onbackorder']),
+  backorders: z.enum(['no', 'notify', 'yes']),
+  backorders_allowed: z.boolean(),
+  backordered: z.boolean(),
+  low_stock_amount: z.number().nullable(),
+  weight: z.string(),
+  dimensions: AdminDimensions,
+  shipping_class: z.string(),
+  shipping_class_id: z.number(),
+  image: AdminImage,
+  attributes: z.array(AdminProductDefaultAttributeSchema),
+  menu_order: z.number(),
+  meta_data: z.array(AdminMetaData),
+  _links: z
+    .object({
+      self: z.array(z.object({ href: z.string() })),
+      collection: z.array(z.object({ href: z.string() })),
+    })
+    .optional(),
+});
+
+export type AdminProductVariation = z.infer<typeof AdminProductVariationSchema>;
+export class ApiAdminProductVariation extends createZodDto(
+  AdminProductVariationSchema
+) {}
 
 /**
  * Product request parameters for creating/updating
  */
-export interface WcProductRequest {
-  name?: string;
-  slug?: string;
-  type?: WcAdminProductType;
-  status?: WcAdminStatus;
-  featured?: boolean;
-  catalog_visibility?: WcAdminCatalogVisibility;
-  description?: string;
-  short_description?: string;
-  sku?: string;
-  regular_price?: string;
-  sale_price?: string;
-  date_on_sale_from?: string;
-  date_on_sale_from_gmt?: string;
-  date_on_sale_to?: string;
-  date_on_sale_to_gmt?: string;
-  virtual?: boolean;
-  downloadable?: boolean;
-  downloads?: WcDownloadableFile[];
-  download_limit?: number;
-  download_expiry?: number;
-  external_url?: string;
-  button_text?: string;
-  tax_status?: WcAdminTaxStatus;
-  tax_class?: string;
-  manage_stock?: boolean;
-  stock_quantity?: number;
-  stock_status?: WcAdminStockStatus;
-  backorders?: WcAdminBackorderStatus;
-  low_stock_amount?: number;
-  sold_individually?: boolean;
-  weight?: string;
-  dimensions?: WcAdminDimensions;
-  shipping_class?: string;
-  reviews_allowed?: boolean;
-  upsell_ids?: number[];
-  cross_sell_ids?: number[];
-  parent_id?: number;
-  purchase_note?: string;
-  categories?: Array<{ id: number }>;
-  tags?: Array<{ id: number }>;
-  brands?: Array<{ id: number }>;
-  images?: WcAdminImage[];
-  attributes?: WcProductAttribute[];
-  default_attributes?: WcProductDefaultAttribute[];
-  menu_order?: number;
-  meta_data?: WcAdminMetaData[];
-}
+export const AdminProductRequestSchema = z.object({
+  name: z.string().optional(),
+  slug: z.string().optional(),
+  type: z.enum(['simple', 'grouped', 'external', 'variable']).optional(),
+  status: z.enum(['draft', 'pending', 'private', 'publish']).optional(),
+  featured: z.boolean().optional(),
+  catalog_visibility: z
+    .enum(['visible', 'catalog', 'search', 'hidden'])
+    .optional(),
+  description: z.string().optional(),
+  short_description: z.string().optional(),
+  sku: z.string().optional(),
+  regular_price: z.string().optional(),
+  sale_price: z.string().optional(),
+  date_on_sale_from: z.string().optional(),
+  date_on_sale_from_gmt: z.string().optional(),
+  date_on_sale_to: z.string().optional(),
+  date_on_sale_to_gmt: z.string().optional(),
+  virtual: z.boolean().optional(),
+  downloadable: z.boolean().optional(),
+  downloads: z.array(AdminDownloadableFileSchema).optional(),
+  download_limit: z.number().optional(),
+  download_expiry: z.number().optional(),
+  external_url: z.string().optional(),
+  button_text: z.string().optional(),
+  tax_status: z.enum(['taxable', 'shipping', 'none']).optional(),
+  tax_class: z.string().optional(),
+  manage_stock: z.boolean().optional(),
+  stock_quantity: z.number().optional(),
+  stock_status: z.enum(['instock', 'outofstock', 'onbackorder']).optional(),
+  backorders: z.enum(['no', 'notify', 'yes']).optional(),
+  low_stock_amount: z.number().optional(),
+  sold_individually: z.boolean().optional(),
+  weight: z.string().optional(),
+  dimensions: AdminDimensions.optional(),
+  shipping_class: z.string().optional(),
+  reviews_allowed: z.boolean().optional(),
+  upsell_ids: z.array(z.number()).optional(),
+  cross_sell_ids: z.array(z.number()).optional(),
+  parent_id: z.number().optional(),
+  purchase_note: z.string().optional(),
+  categories: z.array(z.object({ id: z.number() })).optional(),
+  tags: z.array(z.object({ id: z.number() })).optional(),
+  brands: z.array(z.object({ id: z.number() })).optional(),
+  images: z.array(AdminImage).optional(),
+  attributes: z.array(AdminProductAttributeSchema).optional(),
+  default_attributes: z.array(AdminProductDefaultAttributeSchema).optional(),
+  menu_order: z.number().optional(),
+  meta_data: z.array(AdminMetaData).optional(),
+});
+
+export type AdminProductRequest = z.infer<typeof AdminProductRequestSchema>;
+export class ApiAdminProductRequest extends createZodDto(
+  AdminProductRequestSchema
+) {}
 
 /**
  * Product query parameters for listing
  */
-export interface WcProductQueryParams {
-  context?: 'view' | 'edit';
-  page?: number;
-  per_page?: number;
-  search?: string;
-  after?: string;
-  before?: string;
-  modified_after?: string;
-  modified_before?: string;
-  dates_are_gmt?: boolean;
-  exclude?: number[];
-  include?: number[];
-  offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?:
-    | 'date'
-    | 'id'
-    | 'include'
-    | 'title'
-    | 'slug'
-    | 'modified'
-    | 'menu_order';
-  parent?: number[];
-  parent_exclude?: number[];
-  slug?: string;
-  status?:
-    | 'any'
-    | 'future'
-    | 'trash'
-    | 'draft'
-    | 'pending'
-    | 'private'
-    | 'publish';
-  type?: WcAdminProductType;
-  sku?: string;
-  featured?: boolean;
-  category?: string;
-  tag?: string;
-  shipping_class?: string;
-  attribute?: string;
-  attribute_term?: string;
-  on_sale?: boolean;
-  min_price?: string;
-  max_price?: string;
-  stock_status?: WcAdminStockStatus;
-  include_meta?: string[];
-  exclude_meta?: string[];
-}
+export const AdminProductQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  search: z.string().optional(),
+  after: z.string().optional(),
+  before: z.string().optional(),
+  modified_after: z.string().optional(),
+  modified_before: z.string().optional(),
+  dates_are_gmt: z.boolean().optional(),
+  exclude: z.array(z.number()).optional(),
+  include: z.array(z.number()).optional(),
+  offset: z.number().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  orderby: z
+    .enum(['date', 'id', 'include', 'title', 'slug', 'modified', 'menu_order'])
+    .optional(),
+  parent: z.array(z.number()).optional(),
+  parent_exclude: z.array(z.number()).optional(),
+  slug: z.string().optional(),
+  status: z
+    .enum(['any', 'future', 'trash', 'draft', 'pending', 'private', 'publish'])
+    .optional(),
+  type: z.enum(['simple', 'grouped', 'external', 'variable']).optional(),
+  sku: z.string().optional(),
+  featured: z.boolean().optional(),
+  category: z.string().optional(),
+  tag: z.string().optional(),
+  shipping_class: z.string().optional(),
+  attribute: z.string().optional(),
+  attribute_term: z.string().optional(),
+  on_sale: z.boolean().optional(),
+  min_price: z.string().optional(),
+  max_price: z.string().optional(),
+  stock_status: z.enum(['instock', 'outofstock', 'onbackorder']).optional(),
+  include_meta: z.array(z.string()).optional(),
+  exclude_meta: z.array(z.string()).optional(),
+});
+
+export type ProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;
+export class ApiProductQueryParams extends createZodDto(
+  AdminProductQueryParamsSchema
+) {}
 
 /**
  * Query params for listing product custom-field names
  * Endpoint: wp-json/wc/v3/products/custom-fields/names
  */
-export interface WcProductCustomFieldNameQueryParams {
-  context?: 'view' | 'edit';
-  search?: string;
-  orderby?: string;
-  order?: 'asc' | 'desc';
-}
+export const AdminProductCustomFieldNameQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+  search: z.string().optional(),
+  orderby: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+});
+
+export type ProductCustomFieldNameQueryParams = z.infer<
+  typeof AdminProductCustomFieldNameQueryParamsSchema
+>;
+export class ApiProductCustomFieldNameQueryParams extends createZodDto(
+  AdminProductCustomFieldNameQueryParamsSchema
+) {}

@@ -1,7 +1,7 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminRefund,
-  WcAdminRefundQueryParams,
+  AdminRefund,
+  AdminRefundQueryParams,
 } from '../../types/admin/refund.types.js';
 import { ApiPaginationResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
@@ -14,19 +14,19 @@ import qs from 'qs';
  * Manages refunds through the WooCommerce REST API (wp-json/wc/v3/refunds)
  * Note: Refunds are typically created through order endpoints, this service provides read access
  */
-export class WcAdminRefundService extends BaseService {
+export class AdminRefundService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/refunds';
 
   /**
    * List refunds
    */
   async list(
-    params?: WcAdminRefundQueryParams
-  ): Promise<ApiPaginationResult<WcAdminRefund[]>> {
+    params?: AdminRefundQueryParams
+  ): Promise<ApiPaginationResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminRefund[]>(url);
+    const { data, error, headers } = await doGet<AdminRefund[]>(url);
 
     let total, totalPages, link;
     if (headers) {

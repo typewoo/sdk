@@ -1,9 +1,15 @@
-export interface ImageResponse {
-  id: number;
-  src: string;
-  thumbnail: string;
-  srcset: string;
-  sizes: string;
-  name: string;
-  alt: string;
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const ImageResponseSchema = z.object({
+  id: z.number(),
+  src: z.string(),
+  thumbnail: z.string(),
+  srcset: z.string(),
+  sizes: z.string(),
+  name: z.string(),
+  alt: z.string(),
+});
+
+export type ImageResponse = z.infer<typeof ImageResponseSchema>;
+export class ApiImageResponse extends createZodDto(ImageResponseSchema) {}

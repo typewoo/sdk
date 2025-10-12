@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcProductRequest,
-  WcProductVariation,
+  ProductRequest,
+  ProductVariation,
 } from '../../../types/admin/product.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -61,7 +61,7 @@ describe('Integration: Admin Product Service', () => {
 
   it('creates, retrieves, updates, and deletes a simple product', async () => {
     const ts = Date.now();
-    const req: WcProductRequest = {
+    const req: ProductRequest = {
       name: `itest-simple-${ts}`,
       type: 'simple',
       regular_price: '9.99',
@@ -201,7 +201,7 @@ describe('Integration: Admin Product Service', () => {
           attributes: [{ name: 'Size', option: 'S' }],
           regular_price: '15.00',
           stock_status: 'instock',
-        } as Partial<WcProductVariation>
+        } as Partial<ProductVariation>
       );
       if (createVar.error) {
         // Some environments may restrict variation creation

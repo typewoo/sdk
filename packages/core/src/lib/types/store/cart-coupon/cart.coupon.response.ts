@@ -1,7 +1,14 @@
-import { CartCouponTotalResponse } from './cart.coupon.total.response.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { CartCouponTotalResponseSchema } from './cart.coupon.total.response.js';
 
-export interface CartCouponResponse {
-  code: string;
-  type: string;
-  totals: CartCouponTotalResponse;
-}
+export const CartCouponResponseSchema = z.object({
+  code: z.string(),
+  type: z.string(),
+  totals: CartCouponTotalResponseSchema,
+});
+
+export type CartCouponResponse = z.infer<typeof CartCouponResponseSchema>;
+export class ApiCartCouponResponse extends createZodDto(
+  CartCouponResponseSchema
+) {}

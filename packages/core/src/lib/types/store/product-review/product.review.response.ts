@@ -1,17 +1,24 @@
-import { ImageResponse } from '../image.response.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { ImageResponseSchema } from '../image.response.js';
 
-export interface ProductReviewResponse {
-  id: number;
-  date_created: string;
-  formatted_date_created: string;
-  date_created_gmt: string;
-  product_id: number;
-  product_name: string;
-  product_permalink: string;
-  product_image: ImageResponse;
-  reviewer: string;
-  review: string;
-  rating: number;
-  verified: boolean;
-  reviewer_avatar_urls: { [key: string]: string }[];
-}
+export const ProductReviewResponseSchema = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  formatted_date_created: z.string(),
+  date_created_gmt: z.string(),
+  product_id: z.number(),
+  product_name: z.string(),
+  product_permalink: z.string(),
+  product_image: ImageResponseSchema,
+  reviewer: z.string(),
+  review: z.string(),
+  rating: z.number(),
+  verified: z.boolean(),
+  reviewer_avatar_urls: z.array(z.record(z.string(), z.string())),
+});
+
+export type ProductReviewResponse = z.infer<typeof ProductReviewResponseSchema>;
+export class ApiProductReviewResponse extends createZodDto(
+  ProductReviewResponseSchema
+) {}

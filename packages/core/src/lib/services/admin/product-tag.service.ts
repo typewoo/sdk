@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductTag,
-  WcAdminProductTagRequest,
-  WcAdminProductTagQueryParams,
+  AdminTaxonomyTag,
+  AdminTaxonomyTagRequest,
+  AdminTaxonomyTagQueryParams,
 } from '../../types/admin/taxonomy.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,19 +19,19 @@ import qs from 'qs';
  *
  * Manages product tags through the WooCommerce REST API (wp-json/wc/v3/products/tags)
  */
-export class WcAdminProductTagService extends BaseService {
+export class AdminProductTagService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/tags';
 
   /**
    * List product tags
    */
   async list(
-    params?: WcAdminProductTagQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductTag[]>> {
+    params?: AdminTaxonomyTagQueryParams
+  ): Promise<ApiPaginationResult<AdminTaxonomyTag[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductTag[]>(url);
+    const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -49,11 +49,11 @@ export class WcAdminProductTagService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductTag>> {
+  ): Promise<ApiResult<AdminTaxonomyTag>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductTag>(url);
+    const { data, error } = await doGet<AdminTaxonomyTag>(url);
     return { data, error };
   }
 
@@ -61,12 +61,12 @@ export class WcAdminProductTagService extends BaseService {
    * Create a new product tag
    */
   async create(
-    tag: WcAdminProductTagRequest
-  ): Promise<ApiResult<WcAdminProductTag>> {
+    tag: AdminTaxonomyTagRequest
+  ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminProductTag,
-      WcAdminProductTagRequest
+      AdminTaxonomyTag,
+      AdminTaxonomyTagRequest
     >(url, tag);
 
     return { data, error };
@@ -77,12 +77,12 @@ export class WcAdminProductTagService extends BaseService {
    */
   async update(
     id: number,
-    tag: WcAdminProductTagRequest
-  ): Promise<ApiResult<WcAdminProductTag>> {
+    tag: AdminTaxonomyTagRequest
+  ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminProductTag,
-      WcAdminProductTagRequest
+      AdminTaxonomyTag,
+      AdminTaxonomyTagRequest
     >(url, tag);
 
     return { data, error };
@@ -94,10 +94,10 @@ export class WcAdminProductTagService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminProductTag>> {
+  ): Promise<ApiResult<AdminTaxonomyTag>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductTag>(url);
+    const { data, error } = await doDelete<AdminTaxonomyTag>(url);
 
     return { data, error };
   }
@@ -106,22 +106,22 @@ export class WcAdminProductTagService extends BaseService {
    * Batch create/update/delete product tags
    */
   async batch(operations: {
-    create?: WcAdminProductTagRequest[];
-    update?: Array<WcAdminProductTagRequest & { id: number }>;
+    create?: AdminTaxonomyTagRequest[];
+    update?: Array<AdminTaxonomyTagRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminProductTag[];
-      update: WcAdminProductTag[];
-      delete: WcAdminProductTag[];
+      create: AdminTaxonomyTag[];
+      update: AdminTaxonomyTag[];
+      delete: AdminTaxonomyTag[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductTag[];
-        update: WcAdminProductTag[];
-        delete: WcAdminProductTag[];
+        create: AdminTaxonomyTag[];
+        update: AdminTaxonomyTag[];
+        delete: AdminTaxonomyTag[];
       },
       typeof operations
     >(url, operations);

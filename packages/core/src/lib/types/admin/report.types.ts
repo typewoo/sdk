@@ -1,110 +1,177 @@
-export interface WcAdminReport {
-  slug: string;
-  description: string;
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
 
-export interface WcAdminSalesReport {
-  total_sales: string;
-  net_sales: string;
-  average_sales: string;
-  total_orders: number;
-  total_items: number;
-  total_tax: string;
-  total_shipping: string;
-  total_refunds: string;
-  total_discount: string;
-  totals_grouped_by: string;
-  totals: {
-    [key: string]: {
-      sales: string;
-      orders: number;
-      items: number;
-      tax: string;
-      shipping: string;
-      discount: string;
-      customers: number;
-    };
-  };
-  _links: {
-    about: Array<{ href: string }>;
-  };
-}
+export const AdminReportSchema = z.object({
+  slug: z.string(),
+  description: z.string(),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminTopSellersReport {
-  title: string;
-  product_id: number;
-  quantity: number;
-  _links: {
-    about: Array<{ href: string }>;
-    product: Array<{ href: string }>;
-  };
-}
+export type AdminReport = z.infer<typeof AdminReportSchema>;
+export class ApiAdminReport extends createZodDto(AdminReportSchema) {}
 
-export interface WcAdminCustomersReport {
-  slug: string;
-  name: string;
-  total: number;
-}
+export const AdminSalesReportSchema = z.object({
+  total_sales: z.string(),
+  net_sales: z.string(),
+  average_sales: z.string(),
+  total_orders: z.number(),
+  total_items: z.number(),
+  total_tax: z.string(),
+  total_shipping: z.string(),
+  total_refunds: z.string(),
+  total_discount: z.string(),
+  totals_grouped_by: z.string(),
+  totals: z.record(
+    z.string(),
+    z.object({
+      sales: z.string(),
+      orders: z.number(),
+      items: z.number(),
+      tax: z.string(),
+      shipping: z.string(),
+      discount: z.string(),
+      customers: z.number(),
+    })
+  ),
+  _links: z.object({
+    about: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminOrdersReport {
-  slug: string;
-  name: string;
-  total: number;
-}
+export type AdminSalesReport = z.infer<typeof AdminSalesReportSchema>;
+export class ApiAdminSalesReport extends createZodDto(AdminSalesReportSchema) {}
+
+export const AdminTopSellersReportSchema = z.object({
+  title: z.string(),
+  product_id: z.number(),
+  quantity: z.number(),
+  _links: z.object({
+    about: z.array(z.object({ href: z.string() })),
+    product: z.array(z.object({ href: z.string() })),
+  }),
+});
+
+export type AdminTopSellersReport = z.infer<typeof AdminTopSellersReportSchema>;
+export class ApiAdminTopSellersReport extends createZodDto(
+  AdminTopSellersReportSchema
+) {}
+
+export const AdminCustomersReportSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  total: z.number(),
+});
+
+export type AdminCustomersReport = z.infer<typeof AdminCustomersReportSchema>;
+export class ApiAdminCustomersReport extends createZodDto(
+  AdminCustomersReportSchema
+) {}
+
+export const AdminOrdersReportSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  total: z.number(),
+});
+
+export type AdminOrdersReport = z.infer<typeof AdminOrdersReportSchema>;
+export class ApiAdminOrdersReport extends createZodDto(
+  AdminOrdersReportSchema
+) {}
 
 // Generic totals report entry used by several totals endpoints
-export interface WcAdminTotalsReportEntry {
-  slug: string;
-  name?: string;
-  total: number | string;
-}
+export const AdminTotalsReportEntrySchema = z.object({
+  slug: z.string(),
+  name: z.string().optional(),
+  total: z.union([z.number(), z.string()]),
+});
 
-export interface WcAdminReportsQueryParams {
-  context?: 'view';
-  period?: 'week' | 'month' | 'last_month' | 'year';
-  date_min?: string;
-  date_max?: string;
-  force_cache_refresh?: boolean;
-}
+export type AdminTotalsReportEntry = z.infer<
+  typeof AdminTotalsReportEntrySchema
+>;
+export class ApiAdminTotalsReportEntry extends createZodDto(
+  AdminTotalsReportEntrySchema
+) {}
 
-export interface WcAdminSalesReportQueryParams
-  extends WcAdminReportsQueryParams {
-  interval?: 'day' | 'week' | 'month' | 'year';
-}
+export const AdminReportsQueryParamsSchema = z.object({
+  context: z.enum(['view']).optional(),
+  period: z.enum(['week', 'month', 'last_month', 'year']).optional(),
+  date_min: z.string().optional(),
+  date_max: z.string().optional(),
+  force_cache_refresh: z.boolean().optional(),
+});
 
-export interface WcAdminTopSellersReportQueryParams
-  extends WcAdminReportsQueryParams {
-  per_page?: number;
-  page?: number;
-}
+export type AdminReportsQueryParams = z.infer<
+  typeof AdminReportsQueryParamsSchema
+>;
+export class ApiAdminReportsQueryParams extends createZodDto(
+  AdminReportsQueryParamsSchema
+) {}
 
-export interface WcAdminCustomersReportQueryParams
-  extends WcAdminReportsQueryParams {
-  registered_before?: string;
-  registered_after?: string;
-  orders_count_min?: number;
-  orders_count_max?: number;
-  total_spend_min?: string;
-  total_spend_max?: string;
-  avg_order_value_min?: string;
-  avg_order_value_max?: string;
-  last_active_before?: string;
-  last_active_after?: string;
-  per_page?: number;
-  page?: number;
-}
+export const AdminSalesReportQueryParamsSchema =
+  AdminReportsQueryParamsSchema.extend({
+    interval: z.enum(['day', 'week', 'month', 'year']).optional(),
+  });
 
-export interface WcAdminOrdersReportQueryParams
-  extends WcAdminReportsQueryParams {
-  match?: 'all' | 'any';
-  status?: string[];
-  product?: number[];
-  variation?: number[];
-  category?: number[];
-  coupon?: number[];
-  customer?: number[];
-}
+export type AdminSalesReportQueryParams = z.infer<
+  typeof AdminSalesReportQueryParamsSchema
+>;
+export class ApiAdminSalesReportQueryParams extends createZodDto(
+  AdminSalesReportQueryParamsSchema
+) {}
+
+export const AdminTopSellersReportQueryParamsSchema =
+  AdminReportsQueryParamsSchema.extend({
+    per_page: z.number().optional(),
+    page: z.number().optional(),
+  });
+
+export type AdminTopSellersReportQueryParams = z.infer<
+  typeof AdminTopSellersReportQueryParamsSchema
+>;
+export class ApiAdminTopSellersReportQueryParams extends createZodDto(
+  AdminTopSellersReportQueryParamsSchema
+) {}
+
+export const AdminCustomersReportQueryParamsSchema =
+  AdminReportsQueryParamsSchema.extend({
+    registered_before: z.string().optional(),
+    registered_after: z.string().optional(),
+    orders_count_min: z.number().optional(),
+    orders_count_max: z.number().optional(),
+    total_spend_min: z.string().optional(),
+    total_spend_max: z.string().optional(),
+    avg_order_value_min: z.string().optional(),
+    avg_order_value_max: z.string().optional(),
+    last_active_before: z.string().optional(),
+    last_active_after: z.string().optional(),
+    per_page: z.number().optional(),
+    page: z.number().optional(),
+  });
+
+export type AdminCustomersReportQueryParams = z.infer<
+  typeof AdminCustomersReportQueryParamsSchema
+>;
+export class ApiAdminCustomersReportQueryParams extends createZodDto(
+  AdminCustomersReportQueryParamsSchema
+) {}
+
+export const AdminOrdersReportQueryParamsSchema =
+  AdminReportsQueryParamsSchema.extend({
+    match: z.enum(['all', 'any']).optional(),
+    status: z.array(z.string()).optional(),
+    product: z.array(z.number()).optional(),
+    variation: z.array(z.number()).optional(),
+    category: z.array(z.number()).optional(),
+    coupon: z.array(z.number()).optional(),
+    customer: z.array(z.number()).optional(),
+  });
+
+export type AdminOrdersReportQueryParams = z.infer<
+  typeof AdminOrdersReportQueryParamsSchema
+>;
+export class ApiAdminOrdersReportQueryParams extends createZodDto(
+  AdminOrdersReportQueryParamsSchema
+) {}

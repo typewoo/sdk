@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type { WcAdminProductBrandRequest } from '../../../types/admin/product-brand.types.js';
+import type { AdminBrandRequest } from '../../../types/admin/product-brand.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -54,7 +54,7 @@ describe('Integration: Admin Product Brands', () => {
 
   it('creates, retrieves, updates, and deletes a brand', async () => {
     const ts = Date.now();
-    const req: WcAdminProductBrandRequest = {
+    const req: AdminBrandRequest = {
       name: `itest-brand-${ts}`,
       description: 'Integration brand',
       display: 'default',

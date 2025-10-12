@@ -1,10 +1,18 @@
-export interface CartItemEditRequest {
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const CartItemEditRequestSchema = z.object({
   /**
    * The key of the cart item to edit.
    */
-  key: string;
+  key: z.string(),
   /**
    * Quantity of this item in the cart.
    */
-  quantity: number;
-}
+  quantity: z.number(),
+});
+
+export type CartItemEditRequest = z.infer<typeof CartItemEditRequestSchema>;
+export class ApiCartItemEditRequest extends createZodDto(
+  CartItemEditRequestSchema
+) {}

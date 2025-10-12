@@ -1,7 +1,7 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminShippingMethod,
-  WcAdminShippingMethodQueryParams,
+  AdminShippingMethod,
+  AdminShippingMethodQueryParams,
 } from '../../types/admin/shipping-method.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
@@ -13,19 +13,19 @@ import qs from 'qs';
  *
  * Manages shipping methods through the WooCommerce REST API (wp-json/wc/v3/shipping_methods)
  */
-export class WcAdminShippingMethodService extends BaseService {
+export class AdminShippingMethodService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/shipping_methods';
 
   /**
    * List shipping methods
    */
   async list(
-    params?: WcAdminShippingMethodQueryParams
-  ): Promise<ApiPaginationResult<WcAdminShippingMethod[]>> {
+    params?: AdminShippingMethodQueryParams
+  ): Promise<ApiPaginationResult<AdminShippingMethod[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminShippingMethod[]>(url);
+    const { data, error, headers } = await doGet<AdminShippingMethod[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -42,12 +42,12 @@ export class WcAdminShippingMethodService extends BaseService {
    */
   async get(
     id: string,
-    params?: WcAdminShippingMethodQueryParams
-  ): Promise<ApiResult<WcAdminShippingMethod>> {
+    params?: AdminShippingMethodQueryParams
+  ): Promise<ApiResult<AdminShippingMethod>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminShippingMethod>(url);
+    const { data, error } = await doGet<AdminShippingMethod>(url);
     return { data, error };
   }
 }

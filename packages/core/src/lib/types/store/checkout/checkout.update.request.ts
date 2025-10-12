@@ -1,14 +1,22 @@
-export interface CheckoutUpdateRequest {
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const CheckoutUpdateRequestSchema = z.object({
   /**
    * Name => value pairs of additional fields to update.
    */
-  additional_fields?: { [key: string]: string }[];
+  additional_fields: z.array(z.record(z.string(), z.string())).optional(),
   /**
    * The ID of the payment method selected.
    */
-  payment_method?: string;
+  payment_method: z.string().optional(),
   /**
    * Order notes.
    */
-  order_notes?: string;
-}
+  order_notes: z.string().optional(),
+});
+
+export type CheckoutUpdateRequest = z.infer<typeof CheckoutUpdateRequestSchema>;
+export class ApiCheckoutUpdateRequest extends createZodDto(
+  CheckoutUpdateRequestSchema
+) {}

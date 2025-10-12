@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type { WcAdminCouponRequest } from '../../../types/admin/coupon.types.js';
+import type { AdminCouponRequest } from '../../../types/admin/coupon.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -66,7 +66,7 @@ describe('Integration: Admin Coupon Service', () => {
   });
 
   it('creates, retrieves, updates, and deletes a coupon', async () => {
-    const testCouponData: WcAdminCouponRequest = {
+    const testCouponData: AdminCouponRequest = {
       code: `test-coupon-${Date.now()}`,
       discount_type: 'percent',
       amount: '10.00',
@@ -98,7 +98,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(getResult.data?.code).toBe(testCouponData.code);
 
     // Update the coupon
-    const updateData: WcAdminCouponRequest = {
+    const updateData: AdminCouponRequest = {
       amount: '15.00',
       description: 'Updated test coupon description',
     };
@@ -179,7 +179,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(nonExistentResult.error?.code).toMatch(/not_found|invalid/i);
 
     // Test creating coupon with invalid data
-    const invalidCouponData: WcAdminCouponRequest = {
+    const invalidCouponData: AdminCouponRequest = {
       code: '', // Empty code should be invalid
       discount_type: 'percent',
       amount: 'invalid_amount', // Invalid amount

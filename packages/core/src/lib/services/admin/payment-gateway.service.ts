@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminPaymentGateway,
-  WcAdminPaymentGatewayRequest,
-  WcAdminPaymentGatewayQueryParams,
+  AdminPaymentGateway,
+  AdminPaymentGatewayRequest,
+  AdminPaymentGatewayQueryParams,
 } from '../../types/admin/payment-gateway.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import { doGet, doPut } from '../../utilities/axios.utility.js';
@@ -14,19 +14,19 @@ import qs from 'qs';
  *
  * Manages payment gateways through the WooCommerce REST API (wp-json/wc/v3/payment_gateways)
  */
-export class WcAdminPaymentGatewayService extends BaseService {
+export class AdminPaymentGatewayService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/payment_gateways';
 
   /**
    * List payment gateways
    */
   async list(
-    params?: WcAdminPaymentGatewayQueryParams
-  ): Promise<ApiPaginationResult<WcAdminPaymentGateway[]>> {
+    params?: AdminPaymentGatewayQueryParams
+  ): Promise<ApiPaginationResult<AdminPaymentGateway[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminPaymentGateway[]>(url);
+    const { data, error, headers } = await doGet<AdminPaymentGateway[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -43,12 +43,12 @@ export class WcAdminPaymentGatewayService extends BaseService {
    */
   async get(
     id: string,
-    params?: WcAdminPaymentGatewayQueryParams
-  ): Promise<ApiResult<WcAdminPaymentGateway>> {
+    params?: AdminPaymentGatewayQueryParams
+  ): Promise<ApiResult<AdminPaymentGateway>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminPaymentGateway>(url);
+    const { data, error } = await doGet<AdminPaymentGateway>(url);
     return { data, error };
   }
 
@@ -57,12 +57,12 @@ export class WcAdminPaymentGatewayService extends BaseService {
    */
   async update(
     id: string,
-    gateway: WcAdminPaymentGatewayRequest
-  ): Promise<ApiResult<WcAdminPaymentGateway>> {
+    gateway: AdminPaymentGatewayRequest
+  ): Promise<ApiResult<AdminPaymentGateway>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminPaymentGateway,
-      WcAdminPaymentGatewayRequest
+      AdminPaymentGateway,
+      AdminPaymentGatewayRequest
     >(url, gateway);
     return { data, error };
   }

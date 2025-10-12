@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductBrand,
-  WcAdminProductBrandRequest,
-  WcAdminProductBrandQueryParams,
+  AdminBrand,
+  AdminBrandRequest,
+  AdminBrandQueryParams,
 } from '../../types/admin/product-brand.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,19 +19,19 @@ import qs from 'qs';
  *
  * Manages product brands through the WooCommerce REST API (wp-json/wc/v3/products/brands)
  */
-export class WcAdminProductBrandService extends BaseService {
+export class AdminProductBrandService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/brands';
 
   /**
    * List product brands
    */
   async list(
-    params?: WcAdminProductBrandQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductBrand[]>> {
+    params?: AdminBrandQueryParams
+  ): Promise<ApiPaginationResult<AdminBrand[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductBrand[]>(url);
+    const { data, error, headers } = await doGet<AdminBrand[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -49,25 +49,23 @@ export class WcAdminProductBrandService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductBrand>> {
+  ): Promise<ApiResult<AdminBrand>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductBrand>(url);
+    const { data, error } = await doGet<AdminBrand>(url);
     return { data, error };
   }
 
   /**
    * Create a new product brand
    */
-  async create(
-    brand: WcAdminProductBrandRequest
-  ): Promise<ApiResult<WcAdminProductBrand>> {
+  async create(brand: AdminBrandRequest): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
-      WcAdminProductBrand,
-      WcAdminProductBrandRequest
-    >(url, brand);
+    const { data, error } = await doPost<AdminBrand, AdminBrandRequest>(
+      url,
+      brand
+    );
 
     return { data, error };
   }
@@ -77,13 +75,13 @@ export class WcAdminProductBrandService extends BaseService {
    */
   async update(
     id: number,
-    brand: WcAdminProductBrandRequest
-  ): Promise<ApiResult<WcAdminProductBrand>> {
+    brand: AdminBrandRequest
+  ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
-      WcAdminProductBrand,
-      WcAdminProductBrandRequest
-    >(url, brand);
+    const { data, error } = await doPut<AdminBrand, AdminBrandRequest>(
+      url,
+      brand
+    );
 
     return { data, error };
   }
@@ -91,13 +89,10 @@ export class WcAdminProductBrandService extends BaseService {
   /**
    * Delete a product brand
    */
-  async delete(
-    id: number,
-    force = false
-  ): Promise<ApiResult<WcAdminProductBrand>> {
+  async delete(id: number, force = false): Promise<ApiResult<AdminBrand>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductBrand>(url);
+    const { data, error } = await doDelete<AdminBrand>(url);
 
     return { data, error };
   }
@@ -106,22 +101,22 @@ export class WcAdminProductBrandService extends BaseService {
    * Batch create/update/delete product brands
    */
   async batch(operations: {
-    create?: WcAdminProductBrandRequest[];
-    update?: Array<WcAdminProductBrandRequest & { id: number }>;
+    create?: AdminBrandRequest[];
+    update?: Array<AdminBrandRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminProductBrand[];
-      update: WcAdminProductBrand[];
-      delete: WcAdminProductBrand[];
+      create: AdminBrand[];
+      update: AdminBrand[];
+      delete: AdminBrand[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductBrand[];
-        update: WcAdminProductBrand[];
-        delete: WcAdminProductBrand[];
+        create: AdminBrand[];
+        update: AdminBrand[];
+        delete: AdminBrand[];
       },
       typeof operations
     >(url, operations);

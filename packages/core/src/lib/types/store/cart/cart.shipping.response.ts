@@ -1,12 +1,20 @@
-export interface CartShippingResponse {
-  first_name: string;
-  last_name: string;
-  company: string;
-  address_1: string;
-  address_2: string;
-  city: string;
-  state: string;
-  postcode: string;
-  country: string;
-  phone: string;
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const CartShippingResponseSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  phone: z.string(),
+});
+
+export type CartShippingResponse = z.infer<typeof CartShippingResponseSchema>;
+export class ApiCartShippingResponse extends createZodDto(
+  CartShippingResponseSchema
+) {}

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcAdminProductReviewRequest,
-  WcAdminProductReview,
+  AdminProductReviewRequest,
+  AdminProductReview,
 } from '../../../types/admin/product-review.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -65,7 +65,7 @@ describe('Integration: Admin Product Reviews', () => {
     const productId = products.data[0].id;
 
     const ts = Date.now();
-    const req: WcAdminProductReviewRequest = {
+    const req: AdminProductReviewRequest = {
       product_id: productId,
       reviewer: `itest-reviewer-${ts}`,
       reviewer_email: `itest-${ts}@example.com`,

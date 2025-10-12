@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductCategory,
-  WcAdminProductCategoryRequest,
-  WcAdminProductCategoryQueryParams,
+  AdminTaxonomyCategory,
+  AdminTaxonomyCategoryRequest,
+  AdminTaxonomyCategoryQueryParams,
 } from '../../types/admin/taxonomy.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,19 +19,19 @@ import qs from 'qs';
  *
  * Manages product categories through the WooCommerce REST API (wp-json/wc/v3/products/categories)
  */
-export class WcAdminProductCategoryService extends BaseService {
+export class AdminProductCategoryService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/categories';
 
   /**
    * List product categories
    */
   async list(
-    params?: WcAdminProductCategoryQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductCategory[]>> {
+    params?: AdminTaxonomyCategoryQueryParams
+  ): Promise<ApiPaginationResult<AdminTaxonomyCategory[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductCategory[]>(url);
+    const { data, error, headers } = await doGet<AdminTaxonomyCategory[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -49,11 +49,11 @@ export class WcAdminProductCategoryService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductCategory>> {
+  ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductCategory>(url);
+    const { data, error } = await doGet<AdminTaxonomyCategory>(url);
     return { data, error };
   }
 
@@ -61,12 +61,12 @@ export class WcAdminProductCategoryService extends BaseService {
    * Create a new product category
    */
   async create(
-    category: WcAdminProductCategoryRequest
-  ): Promise<ApiResult<WcAdminProductCategory>> {
+    category: AdminTaxonomyCategoryRequest
+  ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminProductCategory,
-      WcAdminProductCategoryRequest
+      AdminTaxonomyCategory,
+      AdminTaxonomyCategoryRequest
     >(url, category);
 
     return { data, error };
@@ -77,12 +77,12 @@ export class WcAdminProductCategoryService extends BaseService {
    */
   async update(
     id: number,
-    category: WcAdminProductCategoryRequest
-  ): Promise<ApiResult<WcAdminProductCategory>> {
+    category: AdminTaxonomyCategoryRequest
+  ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminProductCategory,
-      WcAdminProductCategoryRequest
+      AdminTaxonomyCategory,
+      AdminTaxonomyCategoryRequest
     >(url, category);
 
     return { data, error };
@@ -94,10 +94,10 @@ export class WcAdminProductCategoryService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminProductCategory>> {
+  ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductCategory>(url);
+    const { data, error } = await doDelete<AdminTaxonomyCategory>(url);
 
     return { data, error };
   }
@@ -106,22 +106,22 @@ export class WcAdminProductCategoryService extends BaseService {
    * Batch create/update/delete product categories
    */
   async batch(operations: {
-    create?: WcAdminProductCategoryRequest[];
-    update?: Array<WcAdminProductCategoryRequest & { id: number }>;
+    create?: AdminTaxonomyCategoryRequest[];
+    update?: Array<AdminTaxonomyCategoryRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminProductCategory[];
-      update: WcAdminProductCategory[];
-      delete: WcAdminProductCategory[];
+      create: AdminTaxonomyCategory[];
+      update: AdminTaxonomyCategory[];
+      delete: AdminTaxonomyCategory[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductCategory[];
-        update: WcAdminProductCategory[];
-        delete: WcAdminProductCategory[];
+        create: AdminTaxonomyCategory[];
+        update: AdminTaxonomyCategory[];
+        delete: AdminTaxonomyCategory[];
       },
       typeof operations
     >(url, operations);

@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductAttributeTerm,
-  WcAdminProductAttributeTermRequest,
-  WcAdminProductAttributeTermQueryParams,
+  AdminProductAttributeTerm,
+  AdminProductAttributeTermRequest,
+  AdminProductAttributeTermQueryParams,
 } from '../../types/admin/attribute.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -19,19 +19,19 @@ import qs from 'qs';
  *
  * Manages attribute terms through the WooCommerce REST API (wp-json/wc/v3/products/attributes/:attribute_id/terms)
  */
-export class WcAdminAttributeTermService extends BaseService {
+export class AdminProductAttributeTermService extends BaseService {
   /**
    * List attribute terms for a specific attribute
    */
   async list(
     attributeId: number,
-    params?: WcAdminProductAttributeTermQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductAttributeTerm[]>> {
+    params?: AdminProductAttributeTermQueryParams
+  ): Promise<ApiPaginationResult<AdminProductAttributeTerm[]>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductAttributeTerm[]>(
+    const { data, error, headers } = await doGet<AdminProductAttributeTerm[]>(
       url
     );
 
@@ -52,12 +52,12 @@ export class WcAdminAttributeTermService extends BaseService {
     attributeId: number,
     termId: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductAttributeTerm>> {
+  ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${endpoint}/${termId}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductAttributeTerm>(url);
+    const { data, error } = await doGet<AdminProductAttributeTerm>(url);
     return { data, error };
   }
 
@@ -66,13 +66,13 @@ export class WcAdminAttributeTermService extends BaseService {
    */
   async create(
     attributeId: number,
-    term: WcAdminProductAttributeTermRequest
-  ): Promise<ApiResult<WcAdminProductAttributeTerm>> {
+    term: AdminProductAttributeTermRequest
+  ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}`;
     const { data, error } = await doPost<
-      WcAdminProductAttributeTerm,
-      WcAdminProductAttributeTermRequest
+      AdminProductAttributeTerm,
+      AdminProductAttributeTermRequest
     >(url, term);
 
     return { data, error };
@@ -84,13 +84,13 @@ export class WcAdminAttributeTermService extends BaseService {
   async update(
     attributeId: number,
     termId: number,
-    term: WcAdminProductAttributeTermRequest
-  ): Promise<ApiResult<WcAdminProductAttributeTerm>> {
+    term: AdminProductAttributeTermRequest
+  ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/${termId}`;
     const { data, error } = await doPut<
-      WcAdminProductAttributeTerm,
-      WcAdminProductAttributeTermRequest
+      AdminProductAttributeTerm,
+      AdminProductAttributeTermRequest
     >(url, term);
 
     return { data, error };
@@ -103,11 +103,11 @@ export class WcAdminAttributeTermService extends BaseService {
     attributeId: number,
     termId: number,
     force = false
-  ): Promise<ApiResult<WcAdminProductAttributeTerm>> {
+  ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${endpoint}/${termId}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductAttributeTerm>(url);
+    const { data, error } = await doDelete<AdminProductAttributeTerm>(url);
 
     return { data, error };
   }
@@ -118,24 +118,24 @@ export class WcAdminAttributeTermService extends BaseService {
   async batch(
     attributeId: number,
     operations: {
-      create?: WcAdminProductAttributeTermRequest[];
-      update?: Array<WcAdminProductAttributeTermRequest & { id: number }>;
+      create?: AdminProductAttributeTermRequest[];
+      update?: Array<AdminProductAttributeTermRequest & { id: number }>;
       delete?: number[];
     }
   ): Promise<
     ApiResult<{
-      create: WcAdminProductAttributeTerm[];
-      update: WcAdminProductAttributeTerm[];
-      delete: WcAdminProductAttributeTerm[];
+      create: AdminProductAttributeTerm[];
+      update: AdminProductAttributeTerm[];
+      delete: AdminProductAttributeTerm[];
     }>
   > {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductAttributeTerm[];
-        update: WcAdminProductAttributeTerm[];
-        delete: WcAdminProductAttributeTerm[];
+        create: AdminProductAttributeTerm[];
+        update: AdminProductAttributeTerm[];
+        delete: AdminProductAttributeTerm[];
       },
       typeof operations
     >(url, operations);

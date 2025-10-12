@@ -1,24 +1,34 @@
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
 /**
  * Cart extensions response
  */
-export interface CartExtensionsResponse {
+export const CartExtensionsResponseSchema = z.object({
   /**
    * Extension namespace
    */
-  namespace: string;
+  namespace: z.string(),
 
   /**
    * Extension data that was stored
    */
-  data: Record<string, unknown>;
+  data: z.record(z.string(), z.unknown()),
 
   /**
    * Success status
    */
-  success: boolean;
+  success: z.boolean(),
 
   /**
    * Error message if operation failed
    */
-  error?: string;
-}
+  error: z.string().optional(),
+});
+
+export type CartExtensionsResponse = z.infer<
+  typeof CartExtensionsResponseSchema
+>;
+export class ApiCartExtensionsResponse extends createZodDto(
+  CartExtensionsResponseSchema
+) {}

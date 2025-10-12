@@ -1,6 +1,10 @@
-export interface AuthTokenRequest {
-  login: string;
-  password: string;
-  refresh_ttl?: number;
-  access_ttl?: number;
-}
+import { z } from 'zod';
+
+export const AuthTokenRequestSchema = z.object({
+  login: z.string(),
+  password: z.string(),
+  refresh_ttl: z.number().optional(),
+  access_ttl: z.number().optional(),
+});
+
+export type AuthTokenRequest = z.infer<typeof AuthTokenRequestSchema>;

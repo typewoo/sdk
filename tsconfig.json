@@ -16,7 +16,10 @@
       "path": "./packages/simple-jwt-login"
     },
     {
-      "path": "./apps/example-angular-shop"
+      "path": "./apps/nestjs-e2e"
+    },
+    {
+      "path": "./apps/nestjs"
     }
   ]
 }

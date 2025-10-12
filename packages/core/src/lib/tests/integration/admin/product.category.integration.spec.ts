@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type { WcAdminProductCategoryRequest } from '../../../types/admin/taxonomy.types.js';
+import type { AdminProductCategoryRequest } from '../../../types/admin/taxonomy.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -54,7 +54,7 @@ describe('Integration: Admin Product Categories', () => {
 
   it('creates, retrieves, updates, and deletes a category', async () => {
     const ts = Date.now();
-    const req: WcAdminProductCategoryRequest = {
+    const req: AdminProductCategoryRequest = {
       name: `itest-cat-${ts}`,
       description: 'Integration category',
       display: 'default',

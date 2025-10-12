@@ -1,12 +1,20 @@
-export interface OrderShippingResponse {
-  first_name: string;
-  last_name: string;
-  company: string;
-  address_1: string;
-  address_2: string;
-  city: string;
-  state: string;
-  postcode: string;
-  country: string;
-  phone: string;
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const OrderShippingResponseSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  phone: z.string(),
+});
+
+export type OrderShippingResponse = z.infer<typeof OrderShippingResponseSchema>;
+export class ApiOrderShippingResponse extends createZodDto(
+  OrderShippingResponseSchema
+) {}

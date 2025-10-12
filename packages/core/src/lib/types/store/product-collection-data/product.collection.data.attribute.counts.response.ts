@@ -1,4 +1,14 @@
-export interface ProductCollectionDataAttributeCountsResponse {
-  term: number;
-  count: number;
-}
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const ProductCollectionDataAttributeCountsResponseSchema = z.object({
+  term: z.number(),
+  count: z.number(),
+});
+
+export type ProductCollectionDataAttributeCountsResponse = z.infer<
+  typeof ProductCollectionDataAttributeCountsResponseSchema
+>;
+export class ApiProductCollectionDataAttributeCountsResponse extends createZodDto(
+  ProductCollectionDataAttributeCountsResponseSchema
+) {}

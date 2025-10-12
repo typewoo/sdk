@@ -1,11 +1,11 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminTax,
-  WcAdminTaxRequest,
-  WcAdminTaxQueryParams,
-  WcAdminTaxClass,
-  WcAdminTaxClassRequest,
-  WcAdminTaxClassQueryParams,
+  AdminTax,
+  AdminTaxRequest,
+  AdminTaxQueryParams,
+  AdminTaxClass,
+  AdminTaxClassRequest,
+  AdminTaxClassQueryParams,
 } from '../../types/admin/tax.types.js';
 import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import {
@@ -22,19 +22,19 @@ import qs from 'qs';
  *
  * Manages taxes through the WooCommerce REST API (wp-json/wc/v3/taxes)
  */
-export class WcAdminTaxService extends BaseService {
+export class AdminTaxService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/taxes';
 
   /**
    * List taxes
    */
   async list(
-    params?: WcAdminTaxQueryParams
-  ): Promise<ApiPaginationResult<WcAdminTax[]>> {
+    params?: AdminTaxQueryParams
+  ): Promise<ApiPaginationResult<AdminTax[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminTax[]>(url);
+    const { data, error, headers } = await doGet<AdminTax[]>(url);
 
     let total, totalPages, link;
     if (headers) {
@@ -52,23 +52,20 @@ export class WcAdminTaxService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminTax>> {
+  ): Promise<ApiResult<AdminTax>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminTax>(url);
+    const { data, error } = await doGet<AdminTax>(url);
     return { data, error };
   }
 
   /**
    * Create a new tax
    */
-  async create(tax: WcAdminTaxRequest): Promise<ApiResult<WcAdminTax>> {
+  async create(tax: AdminTaxRequest): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<WcAdminTax, WcAdminTaxRequest>(
-      url,
-      tax
-    );
+    const { data, error } = await doPost<AdminTax, AdminTaxRequest>(url, tax);
 
     return { data, error };
   }
@@ -76,15 +73,9 @@ export class WcAdminTaxService extends BaseService {
   /**
    * Update a tax
    */
-  async update(
-    id: number,
-    tax: WcAdminTaxRequest
-  ): Promise<ApiResult<WcAdminTax>> {
+  async update(id: number, tax: AdminTaxRequest): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<WcAdminTax, WcAdminTaxRequest>(
-      url,
-      tax
-    );
+    const { data, error } = await doPut<AdminTax, AdminTaxRequest>(url, tax);
 
     return { data, error };
   }
@@ -92,10 +83,10 @@ export class WcAdminTaxService extends BaseService {
   /**
    * Delete a tax
    */
-  async delete(id: number, force = true): Promise<ApiResult<WcAdminTax>> {
+  async delete(id: number, force = true): Promise<ApiResult<AdminTax>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminTax>(url);
+    const { data, error } = await doDelete<AdminTax>(url);
 
     return { data, error };
   }
@@ -104,22 +95,22 @@ export class WcAdminTaxService extends BaseService {
    * Batch create/update/delete taxes
    */
   async batch(operations: {
-    create?: WcAdminTaxRequest[];
-    update?: Array<WcAdminTaxRequest & { id: number }>;
+    create?: AdminTaxRequest[];
+    update?: Array<AdminTaxRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminTax[];
-      update: WcAdminTax[];
-      delete: WcAdminTax[];
+      create: AdminTax[];
+      update: AdminTax[];
+      delete: AdminTax[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminTax[];
-        update: WcAdminTax[];
-        delete: WcAdminTax[];
+        create: AdminTax[];
+        update: AdminTax[];
+        delete: AdminTax[];
       },
       typeof operations
     >(url, operations);
@@ -133,29 +124,29 @@ export class WcAdminTaxService extends BaseService {
  *
  * Manages tax classes through the WooCommerce REST API (wp-json/wc/v3/taxes/classes)
  */
-export class WcAdminTaxClassService extends BaseService {
+export class AdminTaxClassService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/taxes/classes';
 
   /**
    * List tax classes
    */
   async list(
-    params?: WcAdminTaxClassQueryParams
-  ): Promise<ApiResult<WcAdminTaxClass[]>> {
+    params?: AdminTaxClassQueryParams
+  ): Promise<ApiResult<AdminTaxClass[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminTaxClass[]>(url);
+    const { data, error } = await doGet<AdminTaxClass[]>(url);
     return { data, error };
   }
 
   /**
    * Get single tax class by slug
    */
-  async get(slug: string): Promise<ApiResult<WcAdminTaxClass[]>> {
+  async get(slug: string): Promise<ApiResult<AdminTaxClass[]>> {
     const url = `/${this.endpoint}/${slug}`;
 
-    const { data, error } = await doGet<WcAdminTaxClass[]>(url);
+    const { data, error } = await doGet<AdminTaxClass[]>(url);
     return { data, error };
   }
 
@@ -163,13 +154,13 @@ export class WcAdminTaxClassService extends BaseService {
    * Create a new tax class
    */
   async create(
-    taxClass: WcAdminTaxClassRequest
-  ): Promise<ApiResult<WcAdminTaxClass>> {
+    taxClass: AdminTaxClassRequest
+  ): Promise<ApiResult<AdminTaxClass>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
-      WcAdminTaxClass,
-      WcAdminTaxClassRequest
-    >(url, taxClass);
+    const { data, error } = await doPost<AdminTaxClass, AdminTaxClassRequest>(
+      url,
+      taxClass
+    );
 
     return { data, error };
   }
@@ -177,13 +168,10 @@ export class WcAdminTaxClassService extends BaseService {
   /**
    * Delete a tax class
    */
-  async delete(
-    slug: string,
-    force = true
-  ): Promise<ApiResult<WcAdminTaxClass>> {
+  async delete(slug: string, force = true): Promise<ApiResult<AdminTaxClass>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${slug}?${query}`;
-    const { data, error } = await doDelete<WcAdminTaxClass>(url);
+    const { data, error } = await doDelete<AdminTaxClass>(url);
 
     return { data, error };
   }

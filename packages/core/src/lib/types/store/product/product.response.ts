@@ -1,27 +1,32 @@
-import { ImageResponse } from '../image.response.js';
-import { ProductPriceResponse } from './product.price.response.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { ImageResponseSchema } from '../image.response.js';
+import { ProductPriceResponseSchema } from './product.price.response.js';
 
-export interface ProductResponse {
-  id: number;
-  name: string;
-  slug: string;
-  variation: string;
-  permalink: string;
-  sku: string;
-  summary: string;
-  short_description: string;
-  description: string;
-  on_sale: boolean;
-  prices: ProductPriceResponse;
-  average_rating: string;
-  review_count: number;
-  images: ImageResponse[];
-  has_options: boolean;
-  is_purchasable: boolean;
-  is_in_stock: boolean;
-  low_stock_remaining: unknown;
-  add_to_cart: {
-    text: string;
-    description: string;
-  };
-}
+export const ProductResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  variation: z.string(),
+  permalink: z.string(),
+  sku: z.string(),
+  summary: z.string(),
+  short_description: z.string(),
+  description: z.string(),
+  on_sale: z.boolean(),
+  prices: ProductPriceResponseSchema,
+  average_rating: z.string(),
+  review_count: z.number(),
+  images: z.array(ImageResponseSchema),
+  has_options: z.boolean(),
+  is_purchasable: z.boolean(),
+  is_in_stock: z.boolean(),
+  low_stock_remaining: z.unknown(),
+  add_to_cart: z.object({
+    text: z.string(),
+    description: z.string(),
+  }),
+});
+
+export type ProductResponse = z.infer<typeof ProductResponseSchema>;
+export class ApiProductResponse extends createZodDto(ProductResponseSchema) {}

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
 import type {
-  WcAdminShippingClassRequest,
-  WcAdminShippingClassQueryParams,
+  AdminShippingClassRequest,
+  AdminShippingClassQueryParams,
 } from '../../../types/admin/index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
@@ -31,7 +31,7 @@ describe('Integration: Admin Product Shipping Classes', () => {
   });
 
   it('lists shipping classes with pagination and search', async () => {
-    const params: WcAdminShippingClassQueryParams = { per_page: 5, page: 1 };
+    const params: AdminShippingClassQueryParams = { per_page: 5, page: 1 };
     const list = await StoreSdk.admin.shippingClasses.list(params);
     if (list.error) {
       expect(list.error.code).toMatch(/not_found|invalid|forbidden/i);
@@ -51,7 +51,7 @@ describe('Integration: Admin Product Shipping Classes', () => {
 
   it('creates, retrieves, updates, and deletes a shipping class', async () => {
     const ts = Date.now();
-    const req: WcAdminShippingClassRequest = {
+    const req: AdminShippingClassRequest = {
       name: `ship-class-${ts}`,
       slug: `ship-class-${ts}`,
       description: 'Integration test shipping class',

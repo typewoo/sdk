@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminSetting,
-  WcAdminSettingRequest,
-  WcAdminSettingGroup,
+  AdminSetting,
+  AdminSettingRequest,
+  AdminSettingGroup,
 } from '../../types/admin/setting.types.js';
 import { ApiResult } from '../../types/api.js';
 import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
@@ -12,26 +12,26 @@ import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
  *
  * Manages settings through the WooCommerce REST API (wp-json/wc/v3/settings)
  */
-export class WcAdminSettingService extends BaseService {
+export class AdminSettingService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/settings';
 
   /**
    * List setting groups
    */
-  async listGroups(): Promise<ApiResult<WcAdminSettingGroup[]>> {
+  async listGroups(): Promise<ApiResult<AdminSettingGroup[]>> {
     const url = `/${this.endpoint}`;
 
-    const { data, error } = await doGet<WcAdminSettingGroup[]>(url);
+    const { data, error } = await doGet<AdminSettingGroup[]>(url);
     return { data, error };
   }
 
   /**
    * List settings in a group
    */
-  async listSettings(groupId: string): Promise<ApiResult<WcAdminSetting[]>> {
+  async listSettings(groupId: string): Promise<ApiResult<AdminSetting[]>> {
     const url = `/${this.endpoint}/${groupId}`;
 
-    const { data, error } = await doGet<WcAdminSetting[]>(url);
+    const { data, error } = await doGet<AdminSetting[]>(url);
     return { data, error };
   }
 
@@ -41,10 +41,10 @@ export class WcAdminSettingService extends BaseService {
   async getSetting(
     groupId: string,
     settingId: string
-  ): Promise<ApiResult<WcAdminSetting>> {
+  ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
 
-    const { data, error } = await doGet<WcAdminSetting>(url);
+    const { data, error } = await doGet<AdminSetting>(url);
     return { data, error };
   }
 
@@ -54,10 +54,10 @@ export class WcAdminSettingService extends BaseService {
   async updateSetting(
     groupId: string,
     settingId: string,
-    setting: WcAdminSettingRequest
-  ): Promise<ApiResult<WcAdminSetting>> {
+    setting: AdminSettingRequest
+  ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
-    const { data, error } = await doPut<WcAdminSetting, WcAdminSettingRequest>(
+    const { data, error } = await doPut<AdminSetting, AdminSettingRequest>(
       url,
       setting
     );
@@ -71,12 +71,12 @@ export class WcAdminSettingService extends BaseService {
   async batchUpdateSettings(
     groupId: string,
     operations: {
-      update?: Array<WcAdminSettingRequest & { id: string }>;
+      update?: Array<AdminSettingRequest & { id: string }>;
     }
-  ): Promise<ApiResult<{ update: WcAdminSetting[] }>> {
+  ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/${groupId}/batch`;
     const { data, error } = await doPost<
-      { update: WcAdminSetting[] },
+      { update: AdminSetting[] },
       typeof operations
     >(url, operations);
 
@@ -87,11 +87,11 @@ export class WcAdminSettingService extends BaseService {
    * Batch update multiple settings across groups
    */
   async batchUpdate(operations: {
-    update?: Array<WcAdminSettingRequest & { group: string; id: string }>;
-  }): Promise<ApiResult<{ update: WcAdminSetting[] }>> {
+    update?: Array<AdminSettingRequest & { group: string; id: string }>;
+  }): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
-      { update: WcAdminSetting[] },
+      { update: AdminSetting[] },
       typeof operations
     >(url, operations);
 

@@ -1,29 +1,34 @@
-import { ImageResponse } from '../image.response.js';
-import { CartItemPriceResponse } from './cart.item.price.response.js';
-import { CartItemQuantityLimitsResponse } from './cart.item.quantity.limits.response.js';
-import { CartItemTotalResponse } from './cart.item.total.response.js';
-import { CartItemVariationResponse } from './cart.item.variation.response.js';
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+import { ImageResponseSchema } from '../image.response.js';
+import { CartItemPriceResponseSchema } from './cart.item.price.response.js';
+import { CartItemQuantityLimitsResponseSchema } from './cart.item.quantity.limits.response.js';
+import { CartItemTotalResponseSchema } from './cart.item.total.response.js';
+import { CartItemVariationResponseSchema } from './cart.item.variation.response.js';
 
-export interface CartItemResponse {
-  key: string;
-  id: number;
-  quantity: number;
-  type: string;
-  quantity_limits: CartItemQuantityLimitsResponse;
-  name: string;
-  short_description: string;
-  description: string;
-  sku: string;
-  low_stock_remaining: number | null;
-  backorders_allowed: boolean;
-  show_backorder_badge: boolean;
-  sold_individually: boolean;
-  permalink: string;
-  images: ImageResponse[];
-  variation: CartItemVariationResponse[];
-  item_data: unknown[];
-  prices: CartItemPriceResponse;
-  totals: CartItemTotalResponse;
-  catalog_visibility: string;
-  extensions: unknown;
-}
+export const CartItemResponseSchema = z.object({
+  key: z.string(),
+  id: z.number(),
+  quantity: z.number(),
+  type: z.string(),
+  quantity_limits: CartItemQuantityLimitsResponseSchema,
+  name: z.string(),
+  short_description: z.string(),
+  description: z.string(),
+  sku: z.string(),
+  low_stock_remaining: z.number().nullable(),
+  backorders_allowed: z.boolean(),
+  show_backorder_badge: z.boolean(),
+  sold_individually: z.boolean(),
+  permalink: z.string(),
+  images: z.array(ImageResponseSchema),
+  variation: z.array(CartItemVariationResponseSchema),
+  item_data: z.array(z.unknown()),
+  prices: CartItemPriceResponseSchema,
+  totals: CartItemTotalResponseSchema,
+  catalog_visibility: z.string(),
+  extensions: z.unknown(),
+});
+
+export type CartItemResponse = z.infer<typeof CartItemResponseSchema>;
+export class ApiCartItemResponse extends createZodDto(CartItemResponseSchema) {}

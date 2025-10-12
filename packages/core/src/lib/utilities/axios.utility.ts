@@ -57,7 +57,6 @@ export const doRequest = async <T>(
   options: AxiosRequestConfig
 ): Promise<AxiosApiResult<T>> => {
   const { method = 'get', data, params, headers } = options;
-
   try {
     const response = await instance.request<T>({
       ...options,
@@ -71,12 +70,14 @@ export const doRequest = async <T>(
     return {
       data: response.data,
       headers: response.headers,
+      status: response.status,
     } as AxiosApiResult<T>;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
     return {
       error: axiosError.response?.data ?? null,
       headers: axiosError.response?.headers,
+      status: axiosError.status,
     } as AxiosApiResult<T>;
   }
 };
