@@ -11,21 +11,21 @@ import {
   Res,
 } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import { ApiErrorResponse, ApiProduct } from '@store-sdk/core';
+import { ApiAdminProduct, ApiErrorResponse } from '@store-sdk/core';
 import type { ProductRequest, ProductQueryParams } from '@store-sdk/core';
 import qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/products')
+@Controller('wp-json/wc/v3/products')
 export class AdminProductController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 
   @Get()
   @ApiResponse({
     status: 200,
-    type: ApiProduct,
+    type: ApiAdminProduct,
     isArray: true,
   })
   list(
@@ -43,7 +43,7 @@ export class AdminProductController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    type: ApiProduct,
+    type: ApiAdminProduct,
   })
   get(
     @Param('id') id: string,
@@ -61,7 +61,7 @@ export class AdminProductController {
   @Post()
   @ApiResponse({
     status: 200,
-    type: ApiProduct,
+    type: ApiAdminProduct,
   })
   create(
     @Body() product: ProductRequest,
@@ -75,7 +75,7 @@ export class AdminProductController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    type: ApiProduct,
+    type: ApiAdminProduct,
   })
   update(
     @Param('id') id: string,
@@ -92,7 +92,7 @@ export class AdminProductController {
   @Delete(':id')
   @ApiResponse({
     status: 200,
-    type: ApiProduct,
+    type: ApiAdminProduct,
   })
   delete(
     @Param('id') id: string,

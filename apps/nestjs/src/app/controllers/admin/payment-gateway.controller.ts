@@ -19,7 +19,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/payment_gateways')
+@Controller('wp-json/wc/v3/payment_gateways')
 export class AdminPaymentGatewayController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 

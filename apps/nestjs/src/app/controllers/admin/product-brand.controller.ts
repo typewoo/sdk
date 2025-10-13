@@ -11,17 +11,18 @@ import {
   Res,
 } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import { ApiErrorResponse, ApiAdminProductBrand } from '@store-sdk/core';
-import type {
-  AdminProductBrandRequest,
-  AdminProductBrandQueryParams,
+import {
+  ApiErrorResponse,
+  ApiAdminProductBrand,
+  ApiAdminBrandQueryParams,
+  ApiAdminBrandRequest,
 } from '@store-sdk/core';
 import qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/products/brands')
+@Controller('wp-json/wc/v3/products/brands')
 export class AdminProductBrandController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 
@@ -32,7 +33,7 @@ export class AdminProductBrandController {
     isArray: true,
   })
   list(
-    @Query() params: AdminProductBrandQueryParams,
+    @Query() params: ApiAdminBrandQueryParams,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
@@ -67,7 +68,7 @@ export class AdminProductBrandController {
     type: ApiAdminProductBrand,
   })
   create(
-    @Body() brand: AdminProductBrandRequest,
+    @Body() brand: ApiAdminBrandQueryParams,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
@@ -82,7 +83,7 @@ export class AdminProductBrandController {
   })
   update(
     @Param('id') id: string,
-    @Body() brand: AdminProductBrandRequest,
+    @Body() brand: ApiAdminBrandRequest,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
@@ -117,8 +118,8 @@ export class AdminProductBrandController {
   batch(
     @Body()
     operations: {
-      create?: AdminProductBrandRequest[];
-      update?: Array<AdminProductBrandRequest & { id: number }>;
+      create?: ApiAdminBrandRequest[];
+      update?: Array<ApiAdminBrandRequest & { id: number }>;
       delete?: number[];
     },
     @Req() req: Request,

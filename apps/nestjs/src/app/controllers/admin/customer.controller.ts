@@ -21,7 +21,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/customers')
+@Controller('wp-json/wc/v3/customers')
 export class AdminCustomerController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 

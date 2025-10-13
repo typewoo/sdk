@@ -22,7 +22,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/orders/:orderId/refunds')
+@Controller('wp-json/wc/v3/orders/:orderId/refunds')
 export class AdminRefundController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 

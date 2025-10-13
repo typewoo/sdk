@@ -3,9 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
 import { AxiosApiResult, doRequest } from '@store-sdk/core';
-import { catchError, from, map, Observable, tap } from 'rxjs';
+import { from, map, Observable, tap } from 'rxjs';
 import type { Response, Request } from 'express';
-import { error } from 'console';
 
 @Injectable()
 export class WordPressHttpService {
@@ -44,6 +43,12 @@ export class WordPressHttpService {
   };
 
   proxy<T>(path: string, req: Request, res: Response, body?: T) {
+    if (!this.baseUrl) {
+      return {
+        error: 'STORE_API_URL is missing',
+        status: 400,
+      };
+    }
     const data = body ?? req?.body;
 
     const headers = req?.headers ?? {};

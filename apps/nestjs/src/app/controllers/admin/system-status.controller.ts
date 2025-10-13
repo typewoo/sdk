@@ -10,7 +10,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/system_status')
+@Controller('wp-json/wc/v3/system_status')
 export class AdminSystemStatusController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 

@@ -22,7 +22,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/products/attributes')
+@Controller('wp-json/wc/v3/products/attributes')
 export class AdminProductAttributeController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 

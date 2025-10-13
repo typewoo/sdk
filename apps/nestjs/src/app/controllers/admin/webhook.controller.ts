@@ -22,7 +22,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
-@Controller('wc/v3/webhooks')
+@Controller('wp-json/wc/v3/webhooks')
 export class AdminWebhookController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}
 
