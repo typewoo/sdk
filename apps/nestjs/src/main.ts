@@ -22,7 +22,9 @@ async function bootstrap() {
       .setVersion('1.0')
       .build()
   );
-  SwaggerModule.setup('api', app, cleanupOpenApiDoc(openApiDoc));
+  SwaggerModule.setup('api', app, cleanupOpenApiDoc(openApiDoc), {
+    jsonDocumentUrl: 'swagger/json',
+  });
 
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalFilters(new ZodFilter());

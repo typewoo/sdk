@@ -1,4 +1,5 @@
 services:
+  # MariaDB service (default WordPress database)
   db:
     image: mariadb:12
     restart: unless-stopped
@@ -14,6 +15,19 @@ services:
       interval: 5s
       timeout: 2s
       retries: 5
+
+  # PostgreSQL service (for NestJS backend and other services)
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: storesdk
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
 
   wp:
     image: wordpress:latest
@@ -80,3 +94,4 @@ services:
 volumes:
   db_data:
   wp_data:
+  postgres_data:

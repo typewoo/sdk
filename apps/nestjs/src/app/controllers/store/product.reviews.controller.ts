@@ -11,7 +11,7 @@ import { ApiResponse } from '@nestjs/swagger';
 
 const endpoint = 'wp-json/wc/store/v1/products/reviews';
 
-@Controller('wc/store/v1/products/reviews')
+@Controller(endpoint)
 @ApiResponse({ status: 400, type: ApiErrorResponse })
 export class ProductReviewsController {
   constructor(private readonly wpHttpService: WordPressHttpService) {}

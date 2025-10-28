@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 // Services
 import { WordPressHttpService } from './services/wordpress.http.service';
@@ -22,10 +23,6 @@ import { CheckoutController } from './controllers/store/checkout.controller';
 import { CheckoutOrderController } from './controllers/store/checkout.order.controller';
 import { OrderController } from './controllers/store/order.controller';
 import { BatchController } from './controllers/store/batch.controller';
-import { ClerkProvider } from './clerk/clerk.provider';
-import { APP_GUARD } from '@nestjs/core';
-import { ClerkAuthGuard } from './clerk/clerk.auth.guard';
-import { CoreAuthController } from './controllers/core/core.auth.controller';
 
 // Admin Controllers
 import { AdminAttributeTermController } from './controllers/admin/attribute-term.controller';
@@ -48,7 +45,31 @@ import { AdminSystemStatusController } from './controllers/admin/system-status.c
 import { AdminPaymentGatewayController } from './controllers/admin/payment-gateway.controller';
 
 @Module({
-  imports: [ConfigModule.forRoot(), HttpModule],
+  imports: [
+    HttpModule,
+    // AuthModule.forRoot({ auth }),
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService
+      ): Promise<TypeOrmModuleOptions> => {
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DATABASE_HOST'),
+          port: configService.get<number>('DATABASE_PORT'),
+          database: configService.get<string>('DATABASE_NAME'),
+          username: configService.get<string>('DATABASE_USERNAME'),
+          password: configService.get<string>('DATABASE_PASSWORD'),
+          entities: [],
+          logging: configService.get<string>('NODE_ENV') !== 'production',
+          synchronize: configService.get<string>('NODE_ENV') !== 'production',
+          autoLoadEntities: true,
+        };
+      },
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [
     ProductTagsController,
     ProductCategoriesController,
@@ -65,7 +86,6 @@ import { AdminPaymentGatewayController } from './controllers/admin/payment-gatew
     CheckoutOrderController,
     OrderController,
     BatchController,
-    CoreAuthController,
     AdminAttributeTermController,
     AdminProductAttributeController,
     AdminCouponController,
@@ -85,14 +105,6 @@ import { AdminPaymentGatewayController } from './controllers/admin/payment-gatew
     AdminSystemStatusController,
     AdminPaymentGatewayController,
   ],
-  providers: [
-    WordPressHttpService,
-    WordPressProxyService,
-    ClerkProvider,
-    {
-      provide: APP_GUARD,
-      useClass: ClerkAuthGuard,
-    },
-  ],
+  providers: [WordPressHttpService, WordPressProxyService],
 })
 export class AppModule {}

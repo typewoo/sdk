@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",
-    "axios": "^1.11.0"
+    "axios": "^1.11.0",
+    "drizzle-orm": "^0.44.6"
   }
 }
