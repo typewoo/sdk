@@ -1,8 +1,9 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import { ApiErrorResponse, ApiOrderResponse } from '@store-sdk/core';
 import { ApiResponse } from '@nestjs/swagger';
+import { ApiErrorResponse } from '../../types/api';
+import { ApiOrderResponse } from '../../types/store';
 
 const endpoint = 'wp-json/wc/store/v1/order';
 

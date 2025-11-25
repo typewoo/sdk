@@ -1,8 +1,8 @@
-import { BatchRequest, BatchResponse } from '../../types/store/batch/index.js';
-import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import { doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import { BatchRequest, BatchResponse } from '../../types/index.js';
 
 /**
  * Batch API

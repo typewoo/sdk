@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminPaymentGatewaySchema = z.object({
@@ -30,9 +29,6 @@ export const AdminPaymentGatewaySchema = z.object({
 });
 
 export type AdminPaymentGateway = z.infer<typeof AdminPaymentGatewaySchema>;
-export class ApiAdminPaymentGateway extends createZodDto(
-  AdminPaymentGatewaySchema
-) {}
 
 export const AdminPaymentGatewayRequestSchema = z.object({
   order: z.number().optional(),
@@ -43,9 +39,6 @@ export const AdminPaymentGatewayRequestSchema = z.object({
 export type AdminPaymentGatewayRequest = z.infer<
   typeof AdminPaymentGatewayRequestSchema
 >;
-export class ApiAdminPaymentGatewayRequest extends createZodDto(
-  AdminPaymentGatewayRequestSchema
-) {}
 
 export const AdminPaymentGatewayQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -54,6 +47,3 @@ export const AdminPaymentGatewayQueryParamsSchema = z.object({
 export type AdminPaymentGatewayQueryParams = z.infer<
   typeof AdminPaymentGatewayQueryParamsSchema
 >;
-export class ApiAdminPaymentGatewayQueryParams extends createZodDto(
-  AdminPaymentGatewayQueryParamsSchema
-) {}

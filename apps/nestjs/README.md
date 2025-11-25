@@ -196,6 +196,44 @@ For production deployment:
    npx nx serve nestjs --configuration=production
    ```
 
+## Docker
+
+You can build and run a Docker image for this API. A multi-stage Dockerfile is provided at `apps/nestjs/Dockerfile` which uses Nx to build and prunes dependencies for a slim runtime image.
+
+### Local build
+
+```powershell
+# From the repository root
+docker build -f apps/nestjs/Dockerfile -t store-sdk-nestjs:local .
+
+# Run (set env as needed)
+docker run --rm -p 3000:3000 `
+   -e NODE_ENV=production `
+   -e PORT=3000 `
+   -e STORE_API_PREFIX=api `
+   -e WORDPRESS_BASE_URL=https://your-wordpress-site.com `
+   -e HTTP_TIMEOUT=30000 `
+   -e DATABASE_HOST=localhost `
+   -e DATABASE_PORT=5432 `
+   -e DATABASE_NAME=postgres `
+   -e DATABASE_USERNAME=postgres `
+   -e DATABASE_PASSWORD=postgres `
+   store-sdk-nestjs:local
+```
+
+### CI publish to Docker Hub
+
+The workflow `.github/workflows/docker-publish-nestjs.yml` builds and pushes the image to Docker Hub.
+
+Required repository secrets:
+
+- `DOCKERHUB_USERNAME` – Docker Hub account or org name
+- `DOCKERHUB_TOKEN` – Docker Hub access token
+
+Image name: `docker.io/${DOCKERHUB_USERNAME}/store-sdk-nestjs`
+
+Tags: `latest` (on main), branch name, git tag, and commit SHA.
+
 ## Configuration
 
 ### Environment Variables

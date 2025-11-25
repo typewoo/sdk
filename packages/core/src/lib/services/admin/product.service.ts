@@ -1,20 +1,20 @@
 import { BaseService } from '../base.service.js';
 import {
-  AdminProduct,
-  AdminProductRequest,
-  ProductQueryParams,
-  AdminProductVariation,
-} from '../../types/admin/product.types.js';
-import type { ProductCustomFieldNameQueryParams } from '../../types/admin/product.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  ProductQueryParams,
+  AdminProduct,
+  AdminProductRequest,
+  AdminProductVariation,
+  ProductCustomFieldNameQueryParams,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Products Service
@@ -35,12 +35,7 @@ export class AdminProductService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminProduct[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -156,12 +151,7 @@ export class AdminProductService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminProductVariation[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

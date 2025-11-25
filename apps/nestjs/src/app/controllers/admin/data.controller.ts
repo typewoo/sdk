@@ -1,15 +1,15 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
+import * as qs from 'qs';
+import { ApiResponse } from '@nestjs/swagger';
+import type { Response, Request } from 'express';
+import { AdminDataQueryParams } from '@store-sdk/core';
 import {
-  ApiErrorResponse,
   ApiAdminCountry,
   ApiAdminCurrency,
   ApiAdminContinent,
-} from '@store-sdk/core';
-import type { AdminDataQueryParams } from '@store-sdk/core';
-import qs from 'qs';
-import { ApiResponse } from '@nestjs/swagger';
-import type { Response, Request } from 'express';
+} from '../../types/admin';
+import { ApiErrorResponse } from '../../types/api';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
 @Controller('wp-json/wc/v3/data')

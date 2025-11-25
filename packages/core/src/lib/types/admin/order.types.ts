@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminMetaData, AdminAddress } from './common.types.js';
 
@@ -34,9 +33,6 @@ export const AdminOrderLineItemSchema = z.object({
 });
 
 export type AdminOrderLineItem = z.infer<typeof AdminOrderLineItemSchema>;
-export class ApiAdminOrderLineItem extends createZodDto(
-  AdminOrderLineItemSchema
-) {}
 
 /**
  * Tax line in an order
@@ -54,9 +50,6 @@ export const AdminOrderTaxLineSchema = z.object({
 });
 
 export type AdminOrderTaxLine = z.infer<typeof AdminOrderTaxLineSchema>;
-export class ApiAdminOrderTaxLine extends createZodDto(
-  AdminOrderTaxLineSchema
-) {}
 
 /**
  * Shipping line in an order
@@ -80,9 +73,6 @@ export const AdminOrderShippingLineSchema = z.object({
 export type AdminOrderShippingLine = z.infer<
   typeof AdminOrderShippingLineSchema
 >;
-export class ApiAdminOrderShippingLine extends createZodDto(
-  AdminOrderShippingLineSchema
-) {}
 
 /**
  * Fee line in an order
@@ -105,9 +95,6 @@ export const AdminOrderFeeLineSchema = z.object({
 });
 
 export type AdminOrderFeeLine = z.infer<typeof AdminOrderFeeLineSchema>;
-export class ApiAdminOrderFeeLine extends createZodDto(
-  AdminOrderFeeLineSchema
-) {}
 
 /**
  * Coupon line in an order
@@ -121,9 +108,6 @@ export const AdminOrderCouponLineSchema = z.object({
 });
 
 export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
-export class ApiAdminOrderCouponLine extends createZodDto(
-  AdminOrderCouponLineSchema
-) {}
 
 /**
  * Order refund
@@ -143,7 +127,6 @@ export const AdminOrderRefundSchema = z.object({
 });
 
 export type AdminOrderRefund = z.infer<typeof AdminOrderRefundSchema>;
-export class ApiAdminOrderRefund extends createZodDto(AdminOrderRefundSchema) {}
 
 /**
  * WooCommerce REST API Order Response
@@ -217,7 +200,6 @@ export const AdminOrderSchema = z.object({
 });
 
 export type AdminOrder = z.infer<typeof AdminOrderSchema>;
-export class ApiAdminOrder extends createZodDto(AdminOrderSchema) {}
 
 /**
  * Order request parameters for creating/updating
@@ -253,9 +235,6 @@ export const AdminOrderRequestSchema = z.object({
 });
 
 export type AdminOrderRequest = z.infer<typeof AdminOrderRequestSchema>;
-export class ApiAdminOrderRequest extends createZodDto(
-  AdminOrderRequestSchema
-) {}
 
 /**
  * Order query parameters for listing
@@ -301,9 +280,6 @@ export const AdminOrderQueryParamsSchema = z.object({
 });
 
 export type AdminOrderQueryParams = z.infer<typeof AdminOrderQueryParamsSchema>;
-export class ApiAdminOrderQueryParams extends createZodDto(
-  AdminOrderQueryParamsSchema
-) {}
 
 /**
  * Order note
@@ -326,7 +302,6 @@ export const AdminOrderNoteSchema = z.object({
 });
 
 export type AdminOrderNote = z.infer<typeof AdminOrderNoteSchema>;
-export class ApiAdminOrderNote extends createZodDto(AdminOrderNoteSchema) {}
 
 /**
  * Order note request parameters
@@ -338,9 +313,6 @@ export const AdminOrderNoteRequestSchema = z.object({
 });
 
 export type AdminOrderNoteRequest = z.infer<typeof AdminOrderNoteRequestSchema>;
-export class ApiAdminOrderNoteRequest extends createZodDto(
-  AdminOrderNoteRequestSchema
-) {}
 
 /**
  * Order receipt generation request
@@ -354,9 +326,6 @@ export const AdminOrderReceiptRequestSchema = z.object({
 export type AdminOrderReceiptRequest = z.infer<
   typeof AdminOrderReceiptRequestSchema
 >;
-export class ApiAdminOrderReceiptRequest extends createZodDto(
-  AdminOrderReceiptRequestSchema
-) {}
 
 /**
  * Order receipt response
@@ -370,9 +339,6 @@ export const AdminOrderReceiptSchema = z.object({
 });
 
 export type AdminOrderReceipt = z.infer<typeof AdminOrderReceiptSchema>;
-export class ApiAdminOrderReceipt extends createZodDto(
-  AdminOrderReceiptSchema
-) {}
 
 /**
  * Email template for orders
@@ -389,9 +355,6 @@ export const AdminOrderEmailTemplateSchema = z.object({
 export type AdminOrderEmailTemplate = z.infer<
   typeof AdminOrderEmailTemplateSchema
 >;
-export class ApiAdminOrderEmailTemplate extends createZodDto(
-  AdminOrderEmailTemplateSchema
-) {}
 
 /**
  * Send order email request
@@ -422,9 +385,6 @@ export const AdminOrderSendEmailRequestSchema = z.object({
 export type AdminOrderSendEmailRequest = z.infer<
   typeof AdminOrderSendEmailRequestSchema
 >;
-export class ApiAdminOrderSendEmailRequest extends createZodDto(
-  AdminOrderSendEmailRequestSchema
-) {}
 
 /**
  * Send order details request
@@ -437,9 +397,6 @@ export const AdminOrderSendDetailsRequestSchema = z.object({
 export type AdminOrderSendDetailsRequest = z.infer<
   typeof AdminOrderSendDetailsRequestSchema
 >;
-export class ApiAdminOrderSendDetailsRequest extends createZodDto(
-  AdminOrderSendDetailsRequestSchema
-) {}
 
 /**
  * Available email template IDs
@@ -477,6 +434,3 @@ export const AdminOrderStatusInfoSchema = z.object({
 });
 
 export type AdminOrderStatusInfo = z.infer<typeof AdminOrderStatusInfoSchema>;
-export class ApiAdminOrderStatusInfo extends createZodDto(
-  AdminOrderStatusInfoSchema
-) {}

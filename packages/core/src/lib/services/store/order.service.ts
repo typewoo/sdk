@@ -1,8 +1,8 @@
-import { OrderResponse } from '../../types/store/order/order.response.js';
-import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import { doGet } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import { OrderResponse } from '../../types/index.js';
 
 /**
  * Order API

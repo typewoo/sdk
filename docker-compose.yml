@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nestjs:
+    build:
+      context: .
+      dockerfile: apps/nestjs/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: storedb
+      DATABASE_USERNAME: storeuser
+      DATABASE_PASSWORD: storepass
+      STORE_API_URL: https://staging2.herbally.gr
+      STORE_API_PREFIX:
+      STORE_API_VERSION: v1
+      STORE_API_FORWARD_HEADERS: cart-token,nonce,authorization
+      STORE_API_BACKWARD_HEADERS: cart-token,nonce
+    restart: unless-stopped
+    depends_on: [postgres]
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: storedb
+      POSTGRES_USER: storeuser
+      POSTGRES_PASSWORD: storepass
+    ports:
+      - '55432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

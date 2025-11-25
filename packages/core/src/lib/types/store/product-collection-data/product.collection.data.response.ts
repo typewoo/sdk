@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { ProductCollectionDataAttributeCountsResponseSchema } from './product.collection.data.attribute.counts.response.js';
 import { ProductCollectionDataPriceRangeResponseSchema } from './product.collection.data.price.range.response.js';
@@ -15,6 +14,3 @@ export const ProductCollectionDataResponseSchema = z.object({
 export type ProductCollectionDataResponse = z.infer<
   typeof ProductCollectionDataResponseSchema
 >;
-export class ApiProductCollectionDataResponse extends createZodDto(
-  ProductCollectionDataResponseSchema
-) {}

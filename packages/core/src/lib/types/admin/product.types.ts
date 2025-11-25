@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminMetaData, AdminImage, AdminDimensions } from './common.types.js';
 
@@ -12,9 +11,6 @@ export const AdminProductCategorySchema = z.object({
 });
 
 export type AdminProductCategory = z.infer<typeof AdminProductCategorySchema>;
-export class ApiAdminProductCategory extends createZodDto(
-  AdminProductCategorySchema
-) {}
 
 /**
  * Product tag reference in product
@@ -26,7 +22,6 @@ export const AdminProductTagSchema = z.object({
 });
 
 export type AdminProductTag = z.infer<typeof AdminProductTagSchema>;
-export class ApiAdminProductTag extends createZodDto(AdminProductTagSchema) {}
 
 /**
  * Product brand reference in product
@@ -38,9 +33,6 @@ export const AdminProductBrandSchema = z.object({
 });
 
 export type AdminProductBrand = z.infer<typeof AdminProductBrandSchema>;
-export class ApiAdminProductBrand extends createZodDto(
-  AdminProductBrandSchema
-) {}
 
 /**
  * Product attribute in product
@@ -55,9 +47,6 @@ export const AdminProductAttributeSchema = z.object({
 });
 
 export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
-export class ApiAdminProductAttribute extends createZodDto(
-  AdminProductAttributeSchema
-) {}
 
 /**
  * Product default attribute for variations
@@ -71,9 +60,6 @@ export const AdminProductDefaultAttributeSchema = z.object({
 export type AdminProductDefaultAttribute = z.infer<
   typeof AdminProductDefaultAttributeSchema
 >;
-export class ApiAdminProductDefaultAttribute extends createZodDto(
-  AdminProductDefaultAttributeSchema
-) {}
 
 /**
  * Downloadable file
@@ -85,9 +71,6 @@ export const AdminDownloadableFileSchema = z.object({
 });
 
 export type AdminDownloadableFile = z.infer<typeof AdminDownloadableFileSchema>;
-export class ApiAdminDownloadableFile extends createZodDto(
-  AdminDownloadableFileSchema
-) {}
 
 /**
  * WooCommerce REST API Product Response
@@ -169,7 +152,6 @@ export const AdminProductSchema = z.object({
 });
 
 export type AdminProduct = z.infer<typeof AdminProductSchema>;
-export class ApiAdminProduct extends createZodDto(AdminProductSchema) {}
 
 /**
  * Product variation for variable products
@@ -224,9 +206,6 @@ export const AdminProductVariationSchema = z.object({
 });
 
 export type AdminProductVariation = z.infer<typeof AdminProductVariationSchema>;
-export class ApiAdminProductVariation extends createZodDto(
-  AdminProductVariationSchema
-) {}
 
 /**
  * Product request parameters for creating/updating
@@ -283,9 +262,6 @@ export const AdminProductRequestSchema = z.object({
 });
 
 export type AdminProductRequest = z.infer<typeof AdminProductRequestSchema>;
-export class ApiAdminProductRequest extends createZodDto(
-  AdminProductRequestSchema
-) {}
 
 /**
  * Product query parameters for listing
@@ -330,9 +306,6 @@ export const AdminProductQueryParamsSchema = z.object({
 });
 
 export type ProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;
-export class ApiProductQueryParams extends createZodDto(
-  AdminProductQueryParamsSchema
-) {}
 
 /**
  * Query params for listing product custom-field names
@@ -348,6 +321,3 @@ export const AdminProductCustomFieldNameQueryParamsSchema = z.object({
 export type ProductCustomFieldNameQueryParams = z.infer<
   typeof AdminProductCustomFieldNameQueryParamsSchema
 >;
-export class ApiProductCustomFieldNameQueryParams extends createZodDto(
-  AdminProductCustomFieldNameQueryParamsSchema
-) {}

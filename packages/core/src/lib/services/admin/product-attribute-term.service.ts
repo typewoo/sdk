@@ -1,18 +1,18 @@
 import { BaseService } from '../base.service.js';
 import {
-  AdminProductAttributeTerm,
-  AdminProductAttributeTermRequest,
-  AdminProductAttributeTermQueryParams,
-} from '../../types/admin/attribute.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminProductAttributeTermQueryParams,
+  AdminProductAttributeTerm,
+  AdminProductAttributeTermRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Attribute Terms Service
@@ -35,12 +35,7 @@ export class AdminProductAttributeTermService extends BaseService {
       url
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

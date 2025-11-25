@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type { AdminProductCategoryRequest } from '../../../types/admin/taxonomy.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,

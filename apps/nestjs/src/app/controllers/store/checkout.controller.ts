@@ -10,13 +10,13 @@ import {
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
+import { ApiResponse } from '@nestjs/swagger';
+import { ApiErrorResponse } from '../../types/api';
 import {
-  ApiCheckoutCreateRequest,
   ApiCheckoutResponse,
   ApiCheckoutUpdateRequest,
-  ApiErrorResponse,
-} from '@store-sdk/core';
-import { ApiResponse } from '@nestjs/swagger';
+  ApiCheckoutCreateRequest,
+} from '../../types/store';
 
 const endpoint = 'wp-json/wc/store/v1/checkout';
 

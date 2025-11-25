@@ -1,12 +1,12 @@
 import { Controller, Post, Body, Req, Res } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import {
-  ApiCartExtensionsRequest,
-  ApiCartExtensionsResponse,
-  ApiErrorResponse,
-} from '@store-sdk/core';
 import { ApiResponse } from '@nestjs/swagger';
+import { ApiErrorResponse } from '../../types/api';
+import {
+  ApiCartExtensionsResponse,
+  ApiCartExtensionsRequest,
+} from '../../types/store';
 
 const endpoint = 'wp-json/wc/store/v1/cart/extensions';
 

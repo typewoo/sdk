@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminShippingMethodSchema = z.object({
@@ -12,9 +11,6 @@ export const AdminShippingMethodSchema = z.object({
 });
 
 export type AdminShippingMethod = z.infer<typeof AdminShippingMethodSchema>;
-export class ApiAdminShippingMethod extends createZodDto(
-  AdminShippingMethodSchema
-) {}
 
 export const AdminShippingMethodQueryParamsSchema = z.object({
   context: z.enum(['view']).optional(),
@@ -23,6 +19,3 @@ export const AdminShippingMethodQueryParamsSchema = z.object({
 export type AdminShippingMethodQueryParams = z.infer<
   typeof AdminShippingMethodQueryParamsSchema
 >;
-export class ApiAdminShippingMethodQueryParams extends createZodDto(
-  AdminShippingMethodQueryParamsSchema
-) {}

@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { ImageResponseSchema } from '../image.response.js';
 
@@ -19,6 +18,3 @@ export const ProductReviewResponseSchema = z.object({
 });
 
 export type ProductReviewResponse = z.infer<typeof ProductReviewResponseSchema>;
-export class ApiProductReviewResponse extends createZodDto(
-  ProductReviewResponseSchema
-) {}

@@ -4,13 +4,8 @@ import { StoreSdkEvent } from '../sdk.events.js';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
 import { StoreSdkState } from '../types/sdk.state.js';
 
-export type PluginId =
-  | 'simple-jwt-login'
-  | 'jwt-authentication-for-wp-rest-api'
-  | 'hippoo';
-
 export interface StoreSdkPlugin<T> {
-  id: PluginId;
+  id: string;
   init(): void;
   extend(sdk: Sdk): void;
   getConfig(): T;

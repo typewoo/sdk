@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Query, Req, Res } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import {
-  ApiCartItemAddRequest,
-  ApiCartCustomerRequest,
-  ApiCartResponse,
-  ApiErrorResponse,
-} from '@store-sdk/core';
-import qs from 'qs';
+import * as qs from 'qs';
 import type { Response, Request } from 'express';
 import { ApiResponse } from '@nestjs/swagger';
+import { ApiErrorResponse } from '../../types/api';
+import {
+  ApiCartResponse,
+  ApiCartItemAddRequest,
+  ApiCartCustomerRequest,
+} from '../../types/store';
 
 const endpoint = 'wp-json/wc/store/v1/cart';
 
@@ -28,10 +28,10 @@ export class CartController {
   add(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Body() body: ApiCartItemAddRequest
+    @Query() body: ApiCartItemAddRequest
   ) {
-    const url = `${endpoint}/add-item`;
-    return this.wpHttpService.proxy(url, req, res, body);
+    const url = `${endpoint}/add-item?${qs.stringify(body, { encode: false })}`;
+    return this.wpHttpService.proxy(url, req, res);
   }
 
   @Post('update-item')

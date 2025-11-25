@@ -1,8 +1,8 @@
 import { AxiosRequestConfig } from 'axios';
-import { ApiResult } from '../../types/api.js';
-import { CheckoutResponse, OrderRequest } from '../../types/store/index.js';
 import { BaseService } from '../base.service.js';
 import { doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import { OrderRequest, CheckoutResponse } from '../../types/index.js';
 
 /**
  * Checkout order API

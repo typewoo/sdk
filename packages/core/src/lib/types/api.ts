@@ -1,5 +1,3 @@
-import { RawAxiosResponseHeaders, AxiosResponseHeaders } from 'axios';
-import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
 
 export const ApiErrorSchema = z.object({
@@ -12,7 +10,6 @@ export const ApiErrorSchema = z.object({
   details: z.record(z.string(), z.record(z.string(), z.string())),
 });
 export type ApiError = z.infer<typeof ApiErrorSchema>;
-export class ApiErrorResponse extends createZodDto(ApiErrorSchema) {}
 
 export interface ApiData<T> {
   data: T;
@@ -24,6 +21,7 @@ export class ApiDataResponse<T> implements ApiData<T> {
 export interface ApiResult<T> {
   data?: T;
   error?: ApiError;
+  headers?: Record<string, string>;
 }
 export class ApiResultResponse<T> implements ApiResult<T> {}
 
@@ -48,6 +46,5 @@ export interface ApiPaginationResult<T> extends ApiResult<T> {
 }
 
 export interface AxiosApiResult<T> extends ApiResult<T> {
-  headers?: RawAxiosResponseHeaders | AxiosResponseHeaders;
   status?: number;
 }

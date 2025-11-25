@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminMetaData } from './common.types.js';
 
@@ -26,9 +25,6 @@ export const AdminRefundLineItemSchema = z.object({
 });
 
 export type AdminRefundLineItem = z.infer<typeof AdminRefundLineItemSchema>;
-export class ApiAdminRefundLineItem extends createZodDto(
-  AdminRefundLineItemSchema
-) {}
 
 export const AdminRefundShippingLineSchema = z.object({
   id: z.number(),
@@ -49,9 +45,6 @@ export const AdminRefundShippingLineSchema = z.object({
 export type AdminRefundShippingLine = z.infer<
   typeof AdminRefundShippingLineSchema
 >;
-export class ApiAdminRefundShippingLine extends createZodDto(
-  AdminRefundShippingLineSchema
-) {}
 
 export const AdminRefundTaxLineSchema = z.object({
   id: z.number(),
@@ -66,9 +59,6 @@ export const AdminRefundTaxLineSchema = z.object({
 });
 
 export type AdminRefundTaxLine = z.infer<typeof AdminRefundTaxLineSchema>;
-export class ApiAdminRefundTaxLine extends createZodDto(
-  AdminRefundTaxLineSchema
-) {}
 
 export const AdminRefundFeeLineSchema = z.object({
   id: z.number(),
@@ -88,9 +78,6 @@ export const AdminRefundFeeLineSchema = z.object({
 });
 
 export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
-export class ApiAdminRefundFeeLine extends createZodDto(
-  AdminRefundFeeLineSchema
-) {}
 
 export const AdminRefundSchema = z.object({
   id: z.number(),
@@ -116,7 +103,6 @@ export const AdminRefundSchema = z.object({
 });
 
 export type AdminRefund = z.infer<typeof AdminRefundSchema>;
-export class ApiAdminRefund extends createZodDto(AdminRefundSchema) {}
 
 export const AdminRefundQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -140,9 +126,6 @@ export const AdminRefundQueryParamsSchema = z.object({
 export type AdminRefundQueryParams = z.infer<
   typeof AdminRefundQueryParamsSchema
 >;
-export class ApiAdminRefundQueryParams extends createZodDto(
-  AdminRefundQueryParamsSchema
-) {}
 
 /**
  * Request payload for creating a refund for a specific order
@@ -165,6 +148,3 @@ export const AdminRefundCreateRequestSchema = z.object({
 export type AdminRefundCreateRequest = z.infer<
   typeof AdminRefundCreateRequestSchema
 >;
-export class ApiAdminRefundCreateRequest extends createZodDto(
-  AdminRefundCreateRequestSchema
-) {}

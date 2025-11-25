@@ -34,9 +34,6 @@ Primary deliverable: Published packages under `@store-sdk/*` (core + auth plugin
 ```
 packages/
   core/ (main SDK: services, interceptors, event bus, plugins infra)
-  simple-jwt-login/ (auth plugin)
-  jwt-authentication-for-wp-rest-api/ (auth plugin)
-  hippoo/ (auth plugin)
 apps/
   example-angular-shop/ (demo storefront)
 infra/wordpress/ (docker-compose + setup scripts)

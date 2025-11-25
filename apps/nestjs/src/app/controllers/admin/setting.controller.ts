@@ -10,15 +10,15 @@ import {
   Res,
 } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import {
-  ApiErrorResponse,
-  ApiAdminSetting,
-  ApiAdminSettingRequest,
-  ApiAdminSettingGroup,
-} from '@store-sdk/core';
-import qs from 'qs';
+import * as qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
+import {
+  ApiAdminSettingGroup,
+  ApiAdminSetting,
+  ApiAdminSettingRequest,
+} from '../../types/admin';
+import { ApiErrorResponse } from '../../types/api';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
 @Controller('wp-json/wc/v3/settings')

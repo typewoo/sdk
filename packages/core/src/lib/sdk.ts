@@ -11,6 +11,7 @@ import { AuthService } from './services/auth/auth.service.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
 import { AdminService } from './services/admin.service.js';
 import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.js';
+import { addApiKeyInterceptor } from './interceptors/api-key.interceptor.js';
 
 export class Sdk {
   private _config!: StoreSdkConfig;
@@ -37,6 +38,8 @@ export class Sdk {
       baseURL: config.baseUrl,
     });
 
+    // Add API key interceptor first (will only add header if apiKey is provided)
+    addApiKeyInterceptor(config);
     addNonceInterceptors(config, this.state, this.events);
     addCartTokenInterceptors(config, this.state, this.events);
 

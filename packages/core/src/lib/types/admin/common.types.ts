@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 /**
@@ -26,7 +25,6 @@ export const AdminMetaData = z.object({
 });
 
 export type AdminMetaDataType = z.infer<typeof AdminMetaData>;
-export class ApiAdminMetaData extends createZodDto(AdminMetaData) {}
 
 /**
  * Common address structure for billing and shipping
@@ -46,7 +44,6 @@ export const AdminAddress = z.object({
 });
 
 export type AdminAddressType = z.infer<typeof AdminAddress>;
-export class ApiAdminAddress extends createZodDto(AdminAddress) {}
 
 /**
  * Common links structure
@@ -57,7 +54,6 @@ export const AdminLinks = z.object({
 });
 
 export type AdminLinksType = z.infer<typeof AdminLinks>;
-export class ApiAdminLinks extends createZodDto(AdminLinks) {}
 
 /**
  * Common image structure
@@ -74,7 +70,6 @@ export const AdminImage = z.object({
 });
 
 export type AdminImageType = z.infer<typeof AdminImage>;
-export class ApiAdminImage extends createZodDto(AdminImage) {}
 
 /**
  * Common dimension structure
@@ -86,7 +81,6 @@ export const AdminDimensions = z.object({
 });
 
 export type AdminDimensionsType = z.infer<typeof AdminDimensions>;
-export class ApiAdminDimensions extends createZodDto(AdminDimensions) {}
 
 /**
  * Common tax structure
@@ -98,7 +92,6 @@ export const AdminTaxLine = z.object({
 });
 
 export type AdminTaxLineType = z.infer<typeof AdminTaxLine>;
-export class ApiAdminTaxLine extends createZodDto(AdminTaxLine) {}
 
 /**
  * Common status values

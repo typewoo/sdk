@@ -1,21 +1,21 @@
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
+  AdminReportsQueryParams,
   AdminReport,
+  AdminSalesReportQueryParams,
   AdminSalesReport,
+  AdminTopSellersReportQueryParams,
   AdminTopSellersReport,
+  AdminCustomersReportQueryParams,
   AdminCustomersReport,
+  AdminOrdersReportQueryParams,
   AdminOrdersReport,
   AdminTotalsReportEntry,
-  AdminReportsQueryParams,
-  AdminSalesReportQueryParams,
-  AdminTopSellersReportQueryParams,
-  AdminCustomersReportQueryParams,
-  AdminOrdersReportQueryParams,
-} from '../../types/admin/report.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Reports Service
@@ -36,12 +36,7 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminReport[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -70,12 +65,7 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminTopSellersReport[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -91,12 +81,7 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCustomersReport[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -123,12 +108,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 
@@ -141,12 +121,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/products/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 
@@ -159,12 +134,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 
@@ -177,12 +147,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/coupons/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 
@@ -195,12 +160,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/reviews/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 }

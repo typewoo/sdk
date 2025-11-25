@@ -1,4 +1,4 @@
-import type { CartResponse } from './types/store/index.js';
+import { CartResponse } from './types';
 
 export type StoreSdkEvent = {
   'auth:changed': boolean;

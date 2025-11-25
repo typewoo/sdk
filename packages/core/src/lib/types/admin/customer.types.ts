@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminMetaData, AdminAddress } from './common.types.js';
 
@@ -60,7 +59,6 @@ export const AdminCustomerSchema = z.object({
 });
 
 export type AdminCustomer = z.infer<typeof AdminCustomerSchema>;
-export class ApiAdminCustomer extends createZodDto(AdminCustomerSchema) {}
 
 /**
  * Customer request parameters for creating/updating
@@ -77,9 +75,6 @@ export const AdminCustomerRequestSchema = z.object({
 });
 
 export type AdminCustomerRequest = z.infer<typeof AdminCustomerRequestSchema>;
-export class ApiAdminCustomerRequest extends createZodDto(
-  AdminCustomerRequestSchema
-) {}
 
 /**
  * Customer query parameters for listing
@@ -112,6 +107,3 @@ export const AdminCustomerQueryParamsSchema = z.object({
 export type AdminCustomerQueryParams = z.infer<
   typeof AdminCustomerQueryParamsSchema
 >;
-export class ApiAdminCustomerQueryParams extends createZodDto(
-  AdminCustomerQueryParamsSchema
-) {}

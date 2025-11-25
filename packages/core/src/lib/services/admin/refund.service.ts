@@ -1,12 +1,9 @@
 import { BaseService } from '../base.service.js';
-import {
-  AdminRefund,
-  AdminRefundQueryParams,
-} from '../../types/admin/refund.types.js';
-import { ApiPaginationResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult } from '../../types/api.js';
+import { AdminRefundQueryParams, AdminRefund } from '../../types/index.js';
 
 /**
  * WooCommerce REST API Refunds Service
@@ -28,12 +25,7 @@ export class AdminRefundService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminRefund[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

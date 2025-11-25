@@ -2,24 +2,5 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": [
-    {
-      "path": "./packages/core"
-    },
-    {
-      "path": "./packages/hippoo"
-    },
-    {
-      "path": "./packages/jwt-authentication-for-wp-rest-api"
-    },
-    {
-      "path": "./packages/simple-jwt-login"
-    },
-    {
-      "path": "./apps/nestjs-e2e"
-    },
-    {
-      "path": "./apps/nestjs"
-    }
-  ]
+  "references": []
 }

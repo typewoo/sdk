@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const ProductAttributeTermRequestSchema = z.object({
@@ -21,6 +20,3 @@ export const ProductAttributeTermRequestSchema = z.object({
 export type ProductAttributeTermRequest = z.infer<
   typeof ProductAttributeTermRequestSchema
 >;
-export class ApiProductAttributeTermRequest extends createZodDto(
-  ProductAttributeTermRequestSchema
-) {}

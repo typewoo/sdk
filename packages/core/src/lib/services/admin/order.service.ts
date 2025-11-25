@@ -1,31 +1,29 @@
 import { BaseService } from '../base.service.js';
 import {
-  AdminOrder,
-  AdminOrderRequest,
-  AdminOrderQueryParams,
-  AdminOrderNote,
-  AdminOrderNoteRequest,
-  AdminOrderReceipt,
-  AdminOrderReceiptRequest,
-  AdminOrderEmailTemplate,
-  AdminOrderSendEmailRequest,
-  AdminOrderSendDetailsRequest,
-  AdminOrderStatusInfo,
-} from '../../types/admin/order.types.js';
-import {
-  AdminRefund,
-  AdminRefundQueryParams,
-  AdminRefundCreateRequest,
-} from '../../types/admin/refund.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminOrderQueryParams,
+  AdminOrder,
+  AdminOrderRequest,
+  AdminOrderNote,
+  AdminOrderNoteRequest,
+  AdminOrderReceiptRequest,
+  AdminOrderReceipt,
+  AdminOrderEmailTemplate,
+  AdminOrderSendEmailRequest,
+  AdminOrderSendDetailsRequest,
+  AdminOrderStatusInfo,
+  AdminRefundQueryParams,
+  AdminRefund,
+  AdminRefundCreateRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Orders Service
@@ -46,12 +44,7 @@ export class AdminOrderService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminOrder[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

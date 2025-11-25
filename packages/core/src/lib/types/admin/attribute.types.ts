@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 /**
@@ -18,11 +17,7 @@ export const AdminProductAttributeSchema = z.object({
     })
     .optional(),
 });
-
 export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
-export class ApiAdminProductAttribute extends createZodDto(
-  AdminProductAttributeSchema
-) {}
 
 /**
  * Product attribute request parameters for creating/updating
@@ -38,9 +33,6 @@ export const AdminProductAttributeRequestSchema = z.object({
 export type AdminProductAttributeRequest = z.infer<
   typeof AdminProductAttributeRequestSchema
 >;
-export class ApiAdminProductAttributeRequest extends createZodDto(
-  AdminProductAttributeRequestSchema
-) {}
 
 /**
  * Product attribute query parameters for listing
@@ -55,9 +47,6 @@ export const AdminProductAttributeQueryParamsSchema = z.object({
 export type AdminProductAttributeQueryParams = z.infer<
   typeof AdminProductAttributeQueryParamsSchema
 >;
-export class ApiAdminProductAttributeQueryParams extends createZodDto(
-  AdminProductAttributeQueryParamsSchema
-) {}
 
 /**
  * WooCommerce REST API Product Attribute Term Response
@@ -81,9 +70,6 @@ export const AdminProductAttributeTermSchema = z.object({
 export type AdminProductAttributeTerm = z.infer<
   typeof AdminProductAttributeTermSchema
 >;
-export class ApiAdminProductAttributeTerm extends createZodDto(
-  AdminProductAttributeTermSchema
-) {}
 
 /**
  * Product attribute term request parameters for creating/updating
@@ -98,9 +84,6 @@ export const AdminProductAttributeTermRequestSchema = z.object({
 export type AdminProductAttributeTermRequest = z.infer<
   typeof AdminProductAttributeTermRequestSchema
 >;
-export class ApiAdminProductAttributeTermRequest extends createZodDto(
-  AdminProductAttributeTermRequestSchema
-) {}
 
 /**
  * Product attribute term query parameters for listing
@@ -134,6 +117,3 @@ export const AdminProductAttributeTermQueryParamsSchema = z.object({
 export type AdminProductAttributeTermQueryParams = z.infer<
   typeof AdminProductAttributeTermQueryParamsSchema
 >;
-export class ApiAdminProductAttributeTermQueryParams extends createZodDto(
-  AdminProductAttributeTermQueryParamsSchema
-) {}

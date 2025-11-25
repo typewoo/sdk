@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const CartCustomerRequestSchema = z.object({
@@ -30,6 +29,3 @@ export const CartCustomerRequestSchema = z.object({
 });
 
 export type CartCustomerRequest = z.infer<typeof CartCustomerRequestSchema>;
-export class ApiCartCustomerRequest extends createZodDto(
-  CartCustomerRequestSchema
-) {}

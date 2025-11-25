@@ -18,8 +18,6 @@ export * from './shipping-method.types.js';
 export * from './system-status.types.js';
 export * from './data.types.js';
 export * from './taxonomy.types.js';
-
-// Export brand management types (entity-level operations)
 export * from './product-brand.types.js';
 
 export {
@@ -29,12 +27,6 @@ export {
   AdminProductAttributeTermSchema,
   AdminProductAttributeTermRequestSchema,
   AdminProductAttributeTermQueryParamsSchema,
-  ApiAdminProductAttribute as ApiAdminProductAttributeEntity,
-  ApiAdminProductAttributeRequest,
-  ApiAdminProductAttributeQueryParams,
-  ApiAdminProductAttributeTerm,
-  ApiAdminProductAttributeTermRequest,
-  ApiAdminProductAttributeTermQueryParams,
 } from './attribute.types.js';
 
 export type {

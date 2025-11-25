@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type {
-  AdminOrderRequest,
-  AdminOrderEmailTemplateId,
-} from '../../../types/admin/order.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -11,6 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { AdminOrderRequest, AdminOrderEmailTemplateId } from '@store-sdk/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 

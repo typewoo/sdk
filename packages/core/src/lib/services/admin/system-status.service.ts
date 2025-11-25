@@ -1,11 +1,11 @@
 import { BaseService } from '../base.service.js';
-import {
-  AdminSystemStatus,
-  AdminSystemStatusQueryParams,
-} from '../../types/admin/system-status.types.js';
-import { ApiResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import qs from 'qs';
+import * as qs from 'qs';
+import { ApiResult } from '../../types/api.js';
+import {
+  AdminSystemStatusQueryParams,
+  AdminSystemStatus,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API System Status Service

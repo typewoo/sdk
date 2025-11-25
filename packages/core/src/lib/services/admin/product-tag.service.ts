@@ -1,18 +1,18 @@
 import { BaseService } from '../base.service.js';
 import {
-  AdminTaxonomyTag,
-  AdminTaxonomyTagRequest,
-  AdminTaxonomyTagQueryParams,
-} from '../../types/admin/taxonomy.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminTaxonomyTagQueryParams,
+  AdminTaxonomyTag,
+  AdminTaxonomyTagRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Product Tags Service
@@ -33,12 +33,7 @@ export class AdminProductTagService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

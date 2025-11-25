@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminWebhookSchema = z.object({
@@ -22,7 +21,6 @@ export const AdminWebhookSchema = z.object({
 });
 
 export type AdminWebhook = z.infer<typeof AdminWebhookSchema>;
-export class ApiAdminWebhook extends createZodDto(AdminWebhookSchema) {}
 
 export const AdminWebhookRequestSchema = z.object({
   name: z.string().optional(),
@@ -33,9 +31,6 @@ export const AdminWebhookRequestSchema = z.object({
 });
 
 export type AdminWebhookRequest = z.infer<typeof AdminWebhookRequestSchema>;
-export class ApiAdminWebhookRequest extends createZodDto(
-  AdminWebhookRequestSchema
-) {}
 
 export const AdminWebhookQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -55,6 +50,3 @@ export const AdminWebhookQueryParamsSchema = z.object({
 export type AdminWebhookQueryParams = z.infer<
   typeof AdminWebhookQueryParamsSchema
 >;
-export class ApiAdminWebhookQueryParams extends createZodDto(
-  AdminWebhookQueryParamsSchema
-) {}

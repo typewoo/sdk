@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { PaginatedSchema } from '../paginated.js';
 
@@ -23,6 +22,3 @@ export const ProductReviewRequestSchema = PaginatedSchema.extend({
 });
 
 export type ProductReviewRequest = z.infer<typeof ProductReviewRequestSchema>;
-export class ApiProductReviewRequest extends createZodDto(
-  ProductReviewRequestSchema
-) {}

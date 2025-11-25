@@ -1,11 +1,11 @@
 import { BaseService } from '../base.service.js';
+import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 import {
+  AdminSettingGroup,
   AdminSetting,
   AdminSettingRequest,
-  AdminSettingGroup,
-} from '../../types/admin/setting.types.js';
-import { ApiResult } from '../../types/api.js';
-import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Settings Service

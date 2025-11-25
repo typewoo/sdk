@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../../index.js';
-import type { AdminCustomerRequest } from '../../../types/admin/customer.types.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -8,6 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { AdminCustomerRequest } from '@store-sdk/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 

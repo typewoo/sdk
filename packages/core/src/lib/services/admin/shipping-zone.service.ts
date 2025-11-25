@@ -1,23 +1,23 @@
 import { BaseService } from '../base.service.js';
 import {
-  AdminShippingZone,
-  AdminShippingZoneRequest,
-  AdminShippingZoneQueryParams,
-  AdminShippingZoneLocation,
-  AdminShippingZoneLocationRequest,
-  AdminShippingZoneMethod,
-  AdminShippingZoneMethodRequest,
-  AdminShippingZoneMethodQueryParams,
-} from '../../types/admin/shipping-zone.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminShippingZoneQueryParams,
+  AdminShippingZone,
+  AdminShippingZoneRequest,
+  AdminShippingZoneLocation,
+  AdminShippingZoneLocationRequest,
+  AdminShippingZoneMethodQueryParams,
+  AdminShippingZoneMethod,
+  AdminShippingZoneMethodRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Shipping Zones Service
@@ -38,12 +38,7 @@ export class AdminShippingZoneService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminShippingZone[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -146,12 +141,7 @@ export class AdminShippingZoneService extends BaseService {
       url
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

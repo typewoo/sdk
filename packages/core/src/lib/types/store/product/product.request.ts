@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { PaginatedSchema } from '../paginated.js';
 
@@ -168,4 +167,3 @@ export const ProductRequestSchema = PaginatedSchema.extend({
 });
 
 export type ProductRequest = z.infer<typeof ProductRequestSchema>;
-export class ApiProductRequest extends createZodDto(ProductRequestSchema) {}

@@ -11,15 +11,15 @@ import {
   Res,
 } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
+import * as qs from 'qs';
+import { ApiResponse } from '@nestjs/swagger';
+import type { Response, Request } from 'express';
 import {
-  ApiErrorResponse,
   ApiAdminProductAttributeTerm,
   ApiAdminProductAttributeTermQueryParams,
   ApiAdminProductAttributeTermRequest,
-} from '@store-sdk/core';
-import qs from 'qs';
-import { ApiResponse } from '@nestjs/swagger';
-import type { Response, Request } from 'express';
+} from '../../types/admin';
+import { ApiErrorResponse } from '../../types/api';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
 @Controller('wp-json/wc/v3/products/attributes/:attributeId/terms')

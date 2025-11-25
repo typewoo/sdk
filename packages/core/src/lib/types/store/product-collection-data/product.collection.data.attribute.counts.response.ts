@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const ProductCollectionDataAttributeCountsResponseSchema = z.object({
@@ -9,6 +8,3 @@ export const ProductCollectionDataAttributeCountsResponseSchema = z.object({
 export type ProductCollectionDataAttributeCountsResponse = z.infer<
   typeof ProductCollectionDataAttributeCountsResponseSchema
 >;
-export class ApiProductCollectionDataAttributeCountsResponse extends createZodDto(
-  ProductCollectionDataAttributeCountsResponseSchema
-) {}

@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminMetaData } from './common.types.js';
 
@@ -128,7 +127,6 @@ export const AdminCouponSchema = z.object({
 });
 
 export type AdminCoupon = z.infer<typeof AdminCouponSchema>;
-export class ApiAdminCoupon extends createZodDto(AdminCouponSchema) {}
 
 /**
  * Coupon request parameters for creating/updating
@@ -157,9 +155,6 @@ export const AdminCouponRequestSchema = z.object({
 });
 
 export type AdminCouponRequest = z.infer<typeof AdminCouponRequestSchema>;
-export class ApiAdminCouponRequest extends createZodDto(
-  AdminCouponRequestSchema
-) {}
 
 /**
  * Coupon query parameters for listing
@@ -232,6 +227,3 @@ export const AdminCouponQueryParamsSchema = z.object({
 export type AdminCouponQueryParams = z.infer<
   typeof AdminCouponQueryParamsSchema
 >;
-export class ApiAdminCouponQueryParams extends createZodDto(
-  AdminCouponQueryParamsSchema
-) {}

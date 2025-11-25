@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const OrderShippingResponseSchema = z.object({
@@ -15,6 +14,3 @@ export const OrderShippingResponseSchema = z.object({
 });
 
 export type OrderShippingResponse = z.infer<typeof OrderShippingResponseSchema>;
-export class ApiOrderShippingResponse extends createZodDto(
-  OrderShippingResponseSchema
-) {}

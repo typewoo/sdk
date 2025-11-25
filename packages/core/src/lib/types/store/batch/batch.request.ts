@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { createZodDto } from 'nestjs-zod';
 
 export const BatchRequestItemSchema = z.object({
   /**
@@ -25,7 +24,6 @@ export const BatchRequestItemSchema = z.object({
     .optional(),
 });
 export type BatchRequestItem = z.infer<typeof BatchRequestItemSchema>;
-export class ApiBatchRequestItem extends createZodDto(BatchRequestItemSchema) {}
 
 export const BatchRequestSchema = z.object({
   /**
@@ -42,4 +40,3 @@ export const BatchRequestSchema = z.object({
   requests: z.array(BatchRequestItemSchema).max(25),
 });
 export type BatchRequest = z.infer<typeof BatchRequestSchema>;
-export class ApiBatchRequest extends createZodDto(BatchRequestSchema) {}

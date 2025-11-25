@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminImage } from './common.types.js';
 
@@ -37,9 +36,6 @@ export const AdminTaxonomyCategorySchema = z.object({
 });
 
 export type AdminTaxonomyCategory = z.infer<typeof AdminTaxonomyCategorySchema>;
-export class ApiAdminTaxonomyCategory extends createZodDto(
-  AdminTaxonomyCategorySchema
-) {}
 
 /**
  * Product category request parameters for creating/updating
@@ -57,9 +53,6 @@ export const AdminTaxonomyCategoryRequestSchema = z.object({
 export type AdminTaxonomyCategoryRequest = z.infer<
   typeof AdminTaxonomyCategoryRequestSchema
 >;
-export class ApiAdminTaxonomyCategoryRequest extends createZodDto(
-  AdminTaxonomyCategoryRequestSchema
-) {}
 
 /**
  * Product category query parameters for listing
@@ -93,9 +86,6 @@ export const AdminTaxonomyCategoryQueryParamsSchema = z.object({
 export type AdminTaxonomyCategoryQueryParams = z.infer<
   typeof AdminTaxonomyCategoryQueryParamsSchema
 >;
-export class ApiAdminTaxonomyCategoryQueryParams extends createZodDto(
-  AdminTaxonomyCategoryQueryParamsSchema
-) {}
 
 /**
  * WooCommerce REST API Product Tag Response
@@ -115,7 +105,6 @@ export const AdminTaxonomyTagSchema = z.object({
 });
 
 export type AdminTaxonomyTag = z.infer<typeof AdminTaxonomyTagSchema>;
-export class ApiAdminTaxonomyTag extends createZodDto(AdminTaxonomyTagSchema) {}
 
 /**
  * Product tag request parameters for creating/updating
@@ -129,9 +118,6 @@ export const AdminTaxonomyTagRequestSchema = z.object({
 export type AdminTaxonomyTagRequest = z.infer<
   typeof AdminTaxonomyTagRequestSchema
 >;
-export class ApiAdminTaxonomyTagRequest extends createZodDto(
-  AdminTaxonomyTagRequestSchema
-) {}
 
 /**
  * Product tag query parameters for listing
@@ -165,10 +151,6 @@ export const AdminTaxonomyTagQueryParamsSchema = z.object({
 export type AdminTaxonomyTagQueryParams = z.infer<
   typeof AdminTaxonomyTagQueryParamsSchema
 >;
-export class ApiAdminTaxonomyTagQueryParams extends createZodDto(
-  AdminTaxonomyTagQueryParamsSchema
-) {}
-
 /**
  * WooCommerce REST API Shipping Class Response
  */
@@ -187,9 +169,6 @@ export const AdminShippingClassSchema = z.object({
 });
 
 export type AdminShippingClass = z.infer<typeof AdminShippingClassSchema>;
-export class ApiAdminShippingClass extends createZodDto(
-  AdminShippingClassSchema
-) {}
 
 /**
  * Shipping class request parameters for creating/updating
@@ -203,9 +182,6 @@ export const AdminShippingClassRequestSchema = z.object({
 export type AdminShippingClassRequest = z.infer<
   typeof AdminShippingClassRequestSchema
 >;
-export class ApiAdminShippingClassRequest extends createZodDto(
-  AdminShippingClassRequestSchema
-) {}
 
 /**
  * Shipping class query parameters for listing
@@ -239,6 +215,3 @@ export const AdminShippingClassQueryParamsSchema = z.object({
 export type AdminShippingClassQueryParams = z.infer<
   typeof AdminShippingClassQueryParamsSchema
 >;
-export class ApiAdminShippingClassQueryParams extends createZodDto(
-  AdminShippingClassQueryParamsSchema
-) {}

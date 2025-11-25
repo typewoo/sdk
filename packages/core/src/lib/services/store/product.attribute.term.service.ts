@@ -1,10 +1,12 @@
-import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
-import { ProductAttributeTermRequest } from '../../types/store/product-attribute-term/product.attribute.term.request.js';
-import qs from 'qs';
-import { ApiPaginationResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import { ApiPaginationResult } from '../../types/api.js';
+import {
+  ProductAttributeTermRequest,
+  ProductAttributeResponse,
+} from '../../types/index.js';
 
 /**
  * Product Attribute Terms API
@@ -28,12 +30,7 @@ export class ProductAttributeTermService extends BaseService {
       url
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 }

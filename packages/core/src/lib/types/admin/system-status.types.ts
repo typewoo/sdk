@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminSystemStatusSchema = z.object({
@@ -144,9 +143,6 @@ export const AdminSystemStatusSchema = z.object({
 });
 
 export type AdminSystemStatus = z.infer<typeof AdminSystemStatusSchema>;
-export class ApiAdminSystemStatus extends createZodDto(
-  AdminSystemStatusSchema
-) {}
 
 export const AdminSystemStatusQueryParamsSchema = z.object({
   context: z.enum(['view']).optional(),
@@ -155,6 +151,3 @@ export const AdminSystemStatusQueryParamsSchema = z.object({
 export type AdminSystemStatusQueryParams = z.infer<
   typeof AdminSystemStatusQueryParamsSchema
 >;
-export class ApiAdminSystemStatusQueryParams extends createZodDto(
-  AdminSystemStatusQueryParamsSchema
-) {}

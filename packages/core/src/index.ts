@@ -1,10 +1,6 @@
 export * from './lib/sdk.js';
 export * from './lib/configs/sdk.config.js';
 
-export * from './lib/types/store/index.js';
-export * from './lib/types/auth/index.js';
-export * from './lib/types/admin/index.js';
-
 export * from './lib/configs/index.js';
 
 // Utilities
@@ -13,9 +9,9 @@ export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 // Common
 export { httpClient, createHttpClient } from './lib/services/api.js';
 export * from './lib/configs/sdk.config.js';
-export * from './lib/types/api.js';
 export * from './lib/plugins/index.js';
 export * from './lib/utilities/axios.utility.js';
+export * from './lib/utilities/common.js';
 
 // REST API Services
 export { AdminService } from './lib/services/admin.service.js';
@@ -49,7 +45,11 @@ export { AdminShippingMethodService } from './lib/services/admin/shipping-method
 export { AdminSystemStatusService } from './lib/services/admin/system-status.service.js';
 export { AdminDataService } from './lib/services/admin/data.service.js';
 
+// Interceptors
+export { addApiKeyInterceptor } from './lib/interceptors/api-key.interceptor.js';
+
 // Plugin architecture support
 export { EventBus } from './lib/bus/event.bus.js';
 export * from './lib/sdk.events.js';
 export * from './lib/types/sdk.state.js';
+export * from './lib/types/index.js';

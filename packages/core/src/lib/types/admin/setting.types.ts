@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminSettingSchema = z.object({
@@ -29,16 +28,12 @@ export const AdminSettingSchema = z.object({
 });
 
 export type AdminSetting = z.infer<typeof AdminSettingSchema>;
-export class ApiAdminSetting extends createZodDto(AdminSettingSchema) {}
 
 export const AdminSettingRequestSchema = z.object({
   value: z.union([z.string(), z.number(), z.boolean()]),
 });
 
 export type AdminSettingRequest = z.infer<typeof AdminSettingRequestSchema>;
-export class ApiAdminSettingRequest extends createZodDto(
-  AdminSettingRequestSchema
-) {}
 
 export const AdminSettingGroupSchema = z.object({
   id: z.string(),
@@ -52,6 +47,3 @@ export const AdminSettingGroupSchema = z.object({
 });
 
 export type AdminSettingGroup = z.infer<typeof AdminSettingGroupSchema>;
-export class ApiAdminSettingGroup extends createZodDto(
-  AdminSettingGroupSchema
-) {}

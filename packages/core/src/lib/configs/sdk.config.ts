@@ -2,6 +2,12 @@ import { StoreSdkPlugin } from '../plugins/plugin.js';
 
 export interface StoreSdkConfig {
   baseUrl: string;
+  /**
+   * API key for authenticating requests to the backend API (e.g., NestJS proxy).
+   * When provided, the SDK will automatically include this key in the `x-api-key` header.
+   * This is optional and only needed when your backend requires API key authentication.
+   */
+  apiKey?: string;
   admin?: {
     consumer_key?: string;
     consumer_secret?: string;

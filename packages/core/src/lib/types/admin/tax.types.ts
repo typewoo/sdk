@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminTaxSchema = z.object({
@@ -23,7 +22,6 @@ export const AdminTaxSchema = z.object({
 });
 
 export type AdminTax = z.infer<typeof AdminTaxSchema>;
-export class ApiAdminTax extends createZodDto(AdminTaxSchema) {}
 
 export const AdminTaxRequestSchema = z.object({
   country: z.string().optional(),
@@ -42,7 +40,6 @@ export const AdminTaxRequestSchema = z.object({
 });
 
 export type AdminTaxRequest = z.infer<typeof AdminTaxRequestSchema>;
-export class ApiAdminTaxRequest extends createZodDto(AdminTaxRequestSchema) {}
 
 export const AdminTaxQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -55,9 +52,6 @@ export const AdminTaxQueryParamsSchema = z.object({
 });
 
 export type AdminTaxQueryParams = z.infer<typeof AdminTaxQueryParamsSchema>;
-export class ApiAdminTaxQueryParams extends createZodDto(
-  AdminTaxQueryParamsSchema
-) {}
 
 export const AdminTaxClassSchema = z.object({
   slug: z.string(),
@@ -69,17 +63,12 @@ export const AdminTaxClassSchema = z.object({
 });
 
 export type AdminTaxClass = z.infer<typeof AdminTaxClassSchema>;
-export class ApiAdminTaxClass extends createZodDto(AdminTaxClassSchema) {}
 
 export const AdminTaxClassRequestSchema = z.object({
   name: z.string(),
 });
 
 export type AdminTaxClassRequest = z.infer<typeof AdminTaxClassRequestSchema>;
-export class ApiAdminTaxClassRequest extends createZodDto(
-  AdminTaxClassRequestSchema
-) {}
-
 export const AdminTaxClassQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
 });
@@ -87,6 +76,3 @@ export const AdminTaxClassQueryParamsSchema = z.object({
 export type AdminTaxClassQueryParams = z.infer<
   typeof AdminTaxClassQueryParamsSchema
 >;
-export class ApiAdminTaxClassQueryParams extends createZodDto(
-  AdminTaxClassQueryParamsSchema
-) {}

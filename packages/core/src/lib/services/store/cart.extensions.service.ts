@@ -1,11 +1,11 @@
-import {
-  CartExtensionsRequest,
-  CartExtensionsResponse,
-} from '../../types/store/cart-extensions/index.js';
-import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import { doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import {
+  CartExtensionsRequest,
+  CartExtensionsResponse,
+} from '../../types/index.js';
 
 /**
  * Cart Extensions API

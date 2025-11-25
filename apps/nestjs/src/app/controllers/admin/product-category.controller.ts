@@ -11,14 +11,15 @@ import {
   Res,
 } from '@nestjs/common';
 import { WordPressHttpService } from '../../services/wordpress.http.service';
-import { ApiErrorResponse, ApiAdminTaxonomyCategory } from '@store-sdk/core';
-import type {
-  AdminTaxonomyCategoryRequest,
-  AdminTaxonomyCategoryQueryParams,
-} from '@store-sdk/core';
-import qs from 'qs';
+import * as qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
+import {
+  AdminTaxonomyCategoryQueryParams,
+  AdminTaxonomyCategoryRequest,
+} from '@store-sdk/core';
+import { ApiAdminTaxonomyCategory } from '../../types/admin';
+import { ApiErrorResponse } from '../../types/api';
 
 @ApiResponse({ status: 400, type: ApiErrorResponse })
 @Controller('wp-json/wc/v3/products/categories')

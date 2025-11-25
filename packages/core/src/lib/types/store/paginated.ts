@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const PaginatedSchema = z.object({
@@ -18,4 +17,3 @@ export const PaginatedSchema = z.object({
 });
 
 export type Paginated = z.infer<typeof PaginatedSchema>;
-export class ApiPaginated extends createZodDto(PaginatedSchema) {}

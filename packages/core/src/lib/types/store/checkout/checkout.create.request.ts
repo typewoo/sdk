@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { CheckoutBillingResponseSchema } from './checkout.billing.response.js';
 import { CheckoutShippingResponseSchema } from './checkout.shipping.js';
@@ -39,6 +38,3 @@ export const CheckoutCreateRequestSchema = z.object({
 });
 
 export type CheckoutCreateRequest = z.infer<typeof CheckoutCreateRequestSchema>;
-export class ApiCheckoutCreateRequest extends createZodDto(
-  CheckoutCreateRequestSchema
-) {}

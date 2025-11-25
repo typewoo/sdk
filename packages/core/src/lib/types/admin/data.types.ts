@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminCountrySchema = z.object({
@@ -17,7 +16,6 @@ export const AdminCountrySchema = z.object({
 });
 
 export type AdminCountry = z.infer<typeof AdminCountrySchema>;
-export class ApiAdminCountry extends createZodDto(AdminCountrySchema) {}
 
 export const AdminCurrencySchema = z.object({
   code: z.string(),
@@ -30,7 +28,6 @@ export const AdminCurrencySchema = z.object({
 });
 
 export type AdminCurrency = z.infer<typeof AdminCurrencySchema>;
-export class ApiAdminCurrency extends createZodDto(AdminCurrencySchema) {}
 
 export const AdminContinentSchema = z.object({
   code: z.string(),
@@ -61,13 +58,9 @@ export const AdminContinentSchema = z.object({
 });
 
 export type AdminContinent = z.infer<typeof AdminContinentSchema>;
-export class ApiAdminContinent extends createZodDto(AdminContinentSchema) {}
 
 export const AdminDataQueryParamsSchema = z.object({
   context: z.literal('view').optional(),
 });
 
 export type AdminDataQueryParams = z.infer<typeof AdminDataQueryParamsSchema>;
-export class ApiAdminDataQueryParams extends createZodDto(
-  AdminDataQueryParamsSchema
-) {}

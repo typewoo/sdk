@@ -97,9 +97,11 @@ export class WordPressHttpService {
 
     return source.pipe(
       tap((sourceRes) => {
-        if (sourceRes.status) {
-          res.status(sourceRes.status);
-        }
+        // Set status code - prioritize error status over success status
+        const statusCode = sourceRes.error
+          ? sourceRes.status ?? 500
+          : sourceRes.status ?? 200;
+        res.status(statusCode);
 
         const resHeaders = sourceRes.headers ?? {};
         for (const header of this.storeBackwardHeaders) {
@@ -109,10 +111,7 @@ export class WordPressHttpService {
         }
       }),
       map((e) => {
-        return {
-          data: e.data,
-          error: e.error,
-        };
+        return e.error ?? e.data;
       })
     );
   }

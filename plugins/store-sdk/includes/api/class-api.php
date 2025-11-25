@@ -282,6 +282,8 @@ class Store_SDK_API {
 				'id'           => $user->ID,
 				'login'        => $user->user_login,
 				'email'        => $user->user_email,
+				'first_name'   => $user->first_name,
+				'last_name'    => $user->last_name,
 				'display_name' => $user->display_name
 			)
 		));
@@ -361,6 +363,8 @@ class Store_SDK_API {
 				'id'           => $user->ID,
 				'login'        => $user->user_login,
 				'email'        => $user->user_email,
+				'first_name'   => $user->first_name,
+				'last_name'    => $user->last_name,
 				'display_name' => $user->display_name
 			)
 		));
@@ -491,6 +495,8 @@ class Store_SDK_API {
 				'id'           => $user->ID,
 				'login'        => $user->user_login,
 				'email'        => $user->user_email,
+				'first_name'   => $user->first_name,
+				'last_name'    => $user->last_name,
 				'display_name' => $user->display_name
 			),
 			'redirect' => $safe_redirect

@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminReportSchema = z.object({
@@ -11,7 +10,6 @@ export const AdminReportSchema = z.object({
 });
 
 export type AdminReport = z.infer<typeof AdminReportSchema>;
-export class ApiAdminReport extends createZodDto(AdminReportSchema) {}
 
 export const AdminSalesReportSchema = z.object({
   total_sales: z.string(),
@@ -42,7 +40,6 @@ export const AdminSalesReportSchema = z.object({
 });
 
 export type AdminSalesReport = z.infer<typeof AdminSalesReportSchema>;
-export class ApiAdminSalesReport extends createZodDto(AdminSalesReportSchema) {}
 
 export const AdminTopSellersReportSchema = z.object({
   title: z.string(),
@@ -55,9 +52,6 @@ export const AdminTopSellersReportSchema = z.object({
 });
 
 export type AdminTopSellersReport = z.infer<typeof AdminTopSellersReportSchema>;
-export class ApiAdminTopSellersReport extends createZodDto(
-  AdminTopSellersReportSchema
-) {}
 
 export const AdminCustomersReportSchema = z.object({
   slug: z.string(),
@@ -66,9 +60,6 @@ export const AdminCustomersReportSchema = z.object({
 });
 
 export type AdminCustomersReport = z.infer<typeof AdminCustomersReportSchema>;
-export class ApiAdminCustomersReport extends createZodDto(
-  AdminCustomersReportSchema
-) {}
 
 export const AdminOrdersReportSchema = z.object({
   slug: z.string(),
@@ -77,9 +68,6 @@ export const AdminOrdersReportSchema = z.object({
 });
 
 export type AdminOrdersReport = z.infer<typeof AdminOrdersReportSchema>;
-export class ApiAdminOrdersReport extends createZodDto(
-  AdminOrdersReportSchema
-) {}
 
 // Generic totals report entry used by several totals endpoints
 export const AdminTotalsReportEntrySchema = z.object({
@@ -91,9 +79,6 @@ export const AdminTotalsReportEntrySchema = z.object({
 export type AdminTotalsReportEntry = z.infer<
   typeof AdminTotalsReportEntrySchema
 >;
-export class ApiAdminTotalsReportEntry extends createZodDto(
-  AdminTotalsReportEntrySchema
-) {}
 
 export const AdminReportsQueryParamsSchema = z.object({
   context: z.enum(['view']).optional(),
@@ -106,9 +91,6 @@ export const AdminReportsQueryParamsSchema = z.object({
 export type AdminReportsQueryParams = z.infer<
   typeof AdminReportsQueryParamsSchema
 >;
-export class ApiAdminReportsQueryParams extends createZodDto(
-  AdminReportsQueryParamsSchema
-) {}
 
 export const AdminSalesReportQueryParamsSchema =
   AdminReportsQueryParamsSchema.extend({
@@ -118,9 +100,6 @@ export const AdminSalesReportQueryParamsSchema =
 export type AdminSalesReportQueryParams = z.infer<
   typeof AdminSalesReportQueryParamsSchema
 >;
-export class ApiAdminSalesReportQueryParams extends createZodDto(
-  AdminSalesReportQueryParamsSchema
-) {}
 
 export const AdminTopSellersReportQueryParamsSchema =
   AdminReportsQueryParamsSchema.extend({
@@ -131,9 +110,6 @@ export const AdminTopSellersReportQueryParamsSchema =
 export type AdminTopSellersReportQueryParams = z.infer<
   typeof AdminTopSellersReportQueryParamsSchema
 >;
-export class ApiAdminTopSellersReportQueryParams extends createZodDto(
-  AdminTopSellersReportQueryParamsSchema
-) {}
 
 export const AdminCustomersReportQueryParamsSchema =
   AdminReportsQueryParamsSchema.extend({
@@ -154,9 +130,6 @@ export const AdminCustomersReportQueryParamsSchema =
 export type AdminCustomersReportQueryParams = z.infer<
   typeof AdminCustomersReportQueryParamsSchema
 >;
-export class ApiAdminCustomersReportQueryParams extends createZodDto(
-  AdminCustomersReportQueryParamsSchema
-) {}
 
 export const AdminOrdersReportQueryParamsSchema =
   AdminReportsQueryParamsSchema.extend({
@@ -172,6 +145,3 @@ export const AdminOrdersReportQueryParamsSchema =
 export type AdminOrdersReportQueryParams = z.infer<
   typeof AdminOrdersReportQueryParamsSchema
 >;
-export class ApiAdminOrdersReportQueryParams extends createZodDto(
-  AdminOrdersReportQueryParamsSchema
-) {}

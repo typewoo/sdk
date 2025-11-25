@@ -1,11 +1,13 @@
-import { CartResponse } from '../../types/store/cart/cart.response.js';
-import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
-import { CartCustomerRequest } from '../../types/store/cart/cart.customer.request.js';
-import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import { doGet, doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import {
+  CartResponse,
+  CartItemAddRequest,
+  CartCustomerRequest,
+} from '../../types/index.js';
 
 /**
  * Cart API

@@ -1,14 +1,14 @@
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
+  AdminDataQueryParams,
   AdminCountry,
   AdminCurrency,
   AdminContinent,
-  AdminDataQueryParams,
-} from '../../types/admin/data.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Data Service
@@ -29,12 +29,7 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCountry[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -66,12 +61,7 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCurrency[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -103,12 +93,7 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminContinent[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

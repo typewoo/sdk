@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminShippingZoneSchema = z.object({
@@ -13,9 +12,6 @@ export const AdminShippingZoneSchema = z.object({
 });
 
 export type AdminShippingZone = z.infer<typeof AdminShippingZoneSchema>;
-export class ApiAdminShippingZone extends createZodDto(
-  AdminShippingZoneSchema
-) {}
 
 export const AdminShippingZoneRequestSchema = z.object({
   name: z.string().optional(),
@@ -25,9 +21,6 @@ export const AdminShippingZoneRequestSchema = z.object({
 export type AdminShippingZoneRequest = z.infer<
   typeof AdminShippingZoneRequestSchema
 >;
-export class ApiAdminShippingZoneRequest extends createZodDto(
-  AdminShippingZoneRequestSchema
-) {}
 
 export const AdminShippingZoneQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -36,9 +29,6 @@ export const AdminShippingZoneQueryParamsSchema = z.object({
 export type AdminShippingZoneQueryParams = z.infer<
   typeof AdminShippingZoneQueryParamsSchema
 >;
-export class ApiAdminShippingZoneQueryParams extends createZodDto(
-  AdminShippingZoneQueryParamsSchema
-) {}
 
 export const AdminShippingZoneLocationSchema = z.object({
   code: z.string(),
@@ -52,9 +42,6 @@ export const AdminShippingZoneLocationSchema = z.object({
 export type AdminShippingZoneLocation = z.infer<
   typeof AdminShippingZoneLocationSchema
 >;
-export class ApiAdminShippingZoneLocation extends createZodDto(
-  AdminShippingZoneLocationSchema
-) {}
 
 export const AdminShippingZoneLocationRequestSchema = z.object({
   code: z.string(),
@@ -64,9 +51,6 @@ export const AdminShippingZoneLocationRequestSchema = z.object({
 export type AdminShippingZoneLocationRequest = z.infer<
   typeof AdminShippingZoneLocationRequestSchema
 >;
-export class ApiAdminShippingZoneLocationRequest extends createZodDto(
-  AdminShippingZoneLocationRequestSchema
-) {}
 
 export const AdminShippingZoneMethodSchema = z.object({
   instance_id: z.number(),
@@ -99,9 +83,6 @@ export const AdminShippingZoneMethodSchema = z.object({
 export type AdminShippingZoneMethod = z.infer<
   typeof AdminShippingZoneMethodSchema
 >;
-export class ApiAdminShippingZoneMethod extends createZodDto(
-  AdminShippingZoneMethodSchema
-) {}
 
 export const AdminShippingZoneMethodRequestSchema = z.object({
   order: z.number().optional(),
@@ -112,9 +93,6 @@ export const AdminShippingZoneMethodRequestSchema = z.object({
 export type AdminShippingZoneMethodRequest = z.infer<
   typeof AdminShippingZoneMethodRequestSchema
 >;
-export class ApiAdminShippingZoneMethodRequest extends createZodDto(
-  AdminShippingZoneMethodRequestSchema
-) {}
 
 export const AdminShippingZoneMethodQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -123,6 +101,3 @@ export const AdminShippingZoneMethodQueryParamsSchema = z.object({
 export type AdminShippingZoneMethodQueryParams = z.infer<
   typeof AdminShippingZoneMethodQueryParamsSchema
 >;
-export class ApiAdminShippingZoneMethodQueryParams extends createZodDto(
-  AdminShippingZoneMethodQueryParamsSchema
-) {}

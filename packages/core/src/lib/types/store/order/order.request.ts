@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { OrderBillingResponseSchema } from './order.billing.response.js';
 import { OrderShippingResponseSchema } from './order.shipping.response.js';
@@ -38,4 +37,3 @@ export const OrderRequestSchema = z.object({
 });
 
 export type OrderRequest = z.infer<typeof OrderRequestSchema>;
-export class ApiOrderRequest extends createZodDto(OrderRequestSchema) {}

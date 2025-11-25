@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 export const AdminProductReviewSchema = z.object({
@@ -27,9 +26,6 @@ export const AdminProductReviewSchema = z.object({
 });
 
 export type AdminProductReview = z.infer<typeof AdminProductReviewSchema>;
-export class ApiAdminProductReview extends createZodDto(
-  AdminProductReviewSchema
-) {}
 
 export const AdminProductReviewRequestSchema = z.object({
   product_id: z.number().optional(),
@@ -46,9 +42,6 @@ export const AdminProductReviewRequestSchema = z.object({
 export type AdminProductReviewRequest = z.infer<
   typeof AdminProductReviewRequestSchema
 >;
-export class ApiAdminProductReviewRequest extends createZodDto(
-  AdminProductReviewRequestSchema
-) {}
 
 export const AdminProductReviewQueryParamsSchema = z.object({
   context: z.enum(['view', 'edit']).optional(),
@@ -72,6 +65,3 @@ export const AdminProductReviewQueryParamsSchema = z.object({
 export type AdminProductReviewQueryParams = z.infer<
   typeof AdminProductReviewQueryParamsSchema
 >;
-export class ApiAdminProductReviewQueryParams extends createZodDto(
-  AdminProductReviewQueryParamsSchema
-) {}

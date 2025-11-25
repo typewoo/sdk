@@ -1,4 +1,3 @@
-import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { AdminImage } from './common.types.js';
 
@@ -20,7 +19,6 @@ export const AdminBrandSchema = z.object({
 });
 
 export type AdminBrand = z.infer<typeof AdminBrandSchema>;
-export class ApiAdminBrand extends createZodDto(AdminBrandSchema) {}
 
 export const AdminBrandRequestSchema = z.object({
   name: z.string().optional(),
@@ -33,9 +31,6 @@ export const AdminBrandRequestSchema = z.object({
 });
 
 export type AdminBrandRequest = z.infer<typeof AdminBrandRequestSchema>;
-export class ApiAdminBrandRequest extends createZodDto(
-  AdminBrandRequestSchema
-) {}
 
 export const AdminBrandQueryParamsSchema = z.object({
   /**
@@ -66,6 +61,3 @@ export const AdminBrandQueryParamsSchema = z.object({
 });
 
 export type AdminBrandQueryParams = z.infer<typeof AdminBrandQueryParamsSchema>;
-export class ApiAdminBrandQueryParams extends createZodDto(
-  AdminBrandQueryParamsSchema
-) {}
