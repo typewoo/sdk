@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CartResponseSchema } from './store';
+import { CartResponseSchema } from './store/index.js';
 
 export const SdkStateSchema = z.object({
   cart: CartResponseSchema.optional(),
