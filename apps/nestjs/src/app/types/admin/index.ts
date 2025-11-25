@@ -22,7 +22,7 @@ export * from './taxonomy.types.js';
 // Export brand management types (entity-level operations)
 export * from './product-brand.types.js';
 
-// Export attribute schemas from @store-sdk/types
+// Export attribute schemas
 export {
   AdminProductAttributeSchema as AdminProductAttributeEntitySchema,
   AdminProductAttributeRequestSchema,
@@ -42,7 +42,7 @@ export {
   ApiAdminProductAttributeTermQueryParams,
 } from './attribute.types.js';
 
-// Export attribute types from @store-sdk/types
+// Export attribute types
 export type {
   AdminProductAttributeRequest,
   AdminProductAttributeQueryParams,

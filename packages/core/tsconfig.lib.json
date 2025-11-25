@@ -10,9 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
     "composite": true,
-    "paths": {
-      "@store-sdk/types": ["../types/dist/index.d.ts"]
-    }
+    "paths": {}
   },
   "include": ["src/**/*.ts"],
   "references": [],

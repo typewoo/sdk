@@ -15,8 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@store-sdk/core": ["packages/core/src/index.ts"],
-      "@store-sdk/types": ["packages/types/src/index.ts"]
+      "@store-sdk/core": ["packages/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

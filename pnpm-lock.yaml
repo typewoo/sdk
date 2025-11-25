@@ -341,9 +341,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@store-sdk/types':
-        specifier: workspace:*
-        version: link:../types
       axios:
         specifier: ^1.11.0
         version: 1.13.1
@@ -355,18 +352,6 @@ importers:
         version: 2.8.1
       zod:
         specifier: 4.0.0
-        version: 4.0.0
-
-  packages/types:
-    dependencies:
-      axios:
-        specifier: ^1.11.0
-        version: 1.13.1
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-      zod:
-        specifier: ^4.0.0
         version: 4.0.0
 
 packages:
