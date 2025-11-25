@@ -35,8 +35,7 @@
     "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=summary",
     "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table --severity=info",
     "release": "npx nx release",
-    "release:alpha": "npx nx release prerelease --preid alpha",
-    "ttt": "NX_SKIP_PROVENANCE_CHECK=true pnpm nx migrate --run-migrations"
+    "release:alpha": "npx nx release prerelease --preid alpha"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.21.0",
