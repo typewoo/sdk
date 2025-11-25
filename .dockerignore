@@ -1,0 +1,31 @@
+# Root dockerignore for TypeWoo monorepo
+# Keep Docker build context small and avoid platform-specific caches
+
+# VCS and tooling
+.git
+.gitignore
+.nx
+.graph
+.graph/**
+# Nx generated project graph (Windows paths can break Linux builds)
+graph.json
+
+# Dependencies and caches
+node_modules
+**/node_modules
+npm-debug.log*
+
+# Angular build caches (can confuse Nx project graph in Linux containers)
+.angular
+apps/**/.angular
+
+# Build outputs and coverage
+**/dist
+**/coverage
+
+# Editor/OS noise
+**/.vscode
+**/.idea
+**/.DS_Store
+
+# Docker files themselves are fine to include; no ignore

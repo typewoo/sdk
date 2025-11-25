@@ -1,57 +1,50 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminOrder,
-  WcAdminOrderRequest,
-  WcAdminOrderQueryParams,
-  WcAdminOrderNote,
-  WcAdminOrderNoteRequest,
-  WcAdminOrderReceipt,
-  WcAdminOrderReceiptRequest,
-  WcAdminOrderEmailTemplate,
-  WcAdminOrderSendEmailRequest,
-  WcAdminOrderSendDetailsRequest,
-  WcAdminOrderStatusInfo,
-} from '../../types/admin/order.types.js';
-import {
-  WcAdminRefund,
-  WcAdminRefundQueryParams,
-  WcAdminRefundCreateRequest,
-} from '../../types/admin/refund.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminOrderQueryParams,
+  AdminOrder,
+  AdminOrderRequest,
+  AdminOrderNote,
+  AdminOrderNoteRequest,
+  AdminOrderReceiptRequest,
+  AdminOrderReceipt,
+  AdminOrderEmailTemplate,
+  AdminOrderSendEmailRequest,
+  AdminOrderSendDetailsRequest,
+  AdminOrderStatusInfo,
+  AdminRefundQueryParams,
+  AdminRefund,
+  AdminRefundCreateRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Orders Service
  *
  * Manages orders through the WooCommerce REST API (wp-json/wc/v3/orders)
  */
-export class WcAdminOrderService extends BaseService {
+export class AdminOrderService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/orders';
 
   /**
    * List orders
    */
   async list(
-    params?: WcAdminOrderQueryParams
-  ): Promise<ApiPaginationResult<WcAdminOrder[]>> {
+    params?: AdminOrderQueryParams
+  ): Promise<ApiPaginationResult<AdminOrder[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminOrder[]>(url);
+    const { data, error, headers } = await doGet<AdminOrder[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -62,20 +55,20 @@ export class WcAdminOrderService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminOrder>> {
+  ): Promise<ApiResult<AdminOrder>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminOrder>(url);
+    const { data, error } = await doGet<AdminOrder>(url);
     return { data, error };
   }
 
   /**
    * Create a new order
    */
-  async create(order: WcAdminOrderRequest): Promise<ApiResult<WcAdminOrder>> {
+  async create(order: AdminOrderRequest): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<WcAdminOrder, WcAdminOrderRequest>(
+    const { data, error } = await doPost<AdminOrder, AdminOrderRequest>(
       url,
       order
     );
@@ -88,10 +81,10 @@ export class WcAdminOrderService extends BaseService {
    */
   async update(
     id: number,
-    order: WcAdminOrderRequest
-  ): Promise<ApiResult<WcAdminOrder>> {
+    order: AdminOrderRequest
+  ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<WcAdminOrder, WcAdminOrderRequest>(
+    const { data, error } = await doPut<AdminOrder, AdminOrderRequest>(
       url,
       order
     );
@@ -102,10 +95,10 @@ export class WcAdminOrderService extends BaseService {
   /**
    * Delete an order
    */
-  async delete(id: number, force = false): Promise<ApiResult<WcAdminOrder>> {
+  async delete(id: number, force = false): Promise<ApiResult<AdminOrder>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminOrder>(url);
+    const { data, error } = await doDelete<AdminOrder>(url);
 
     return { data, error };
   }
@@ -114,22 +107,22 @@ export class WcAdminOrderService extends BaseService {
    * Batch create/update/delete orders
    */
   async batch(operations: {
-    create?: WcAdminOrderRequest[];
-    update?: Array<WcAdminOrderRequest & { id: number }>;
+    create?: AdminOrderRequest[];
+    update?: Array<AdminOrderRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminOrder[];
-      update: WcAdminOrder[];
-      delete: WcAdminOrder[];
+      create: AdminOrder[];
+      update: AdminOrder[];
+      delete: AdminOrder[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminOrder[];
-        update: WcAdminOrder[];
-        delete: WcAdminOrder[];
+        create: AdminOrder[];
+        update: AdminOrder[];
+        delete: AdminOrder[];
       },
       typeof operations
     >(url, operations);
@@ -146,11 +139,11 @@ export class WcAdminOrderService extends BaseService {
       context?: 'view' | 'edit';
       type?: 'any' | 'customer' | 'internal';
     }
-  ): Promise<ApiResult<WcAdminOrderNote[]>> {
+  ): Promise<ApiResult<AdminOrderNote[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/notes${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminOrderNote[]>(url);
+    const { data, error } = await doGet<AdminOrderNote[]>(url);
     return { data, error };
   }
 
@@ -160,9 +153,9 @@ export class WcAdminOrderService extends BaseService {
   async getNote(
     orderId: number,
     noteId: number
-  ): Promise<ApiResult<WcAdminOrderNote>> {
+  ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}`;
-    const { data, error } = await doGet<WcAdminOrderNote>(url);
+    const { data, error } = await doGet<AdminOrderNote>(url);
     return { data, error };
   }
 
@@ -171,13 +164,13 @@ export class WcAdminOrderService extends BaseService {
    */
   async createNote(
     orderId: number,
-    note: WcAdminOrderNoteRequest
-  ): Promise<ApiResult<WcAdminOrderNote>> {
+    note: AdminOrderNoteRequest
+  ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes`;
-    const { data, error } = await doPost<
-      WcAdminOrderNote,
-      WcAdminOrderNoteRequest
-    >(url, note);
+    const { data, error } = await doPost<AdminOrderNote, AdminOrderNoteRequest>(
+      url,
+      note
+    );
 
     return { data, error };
   }
@@ -189,10 +182,10 @@ export class WcAdminOrderService extends BaseService {
     orderId: number,
     noteId: number,
     force = false
-  ): Promise<ApiResult<WcAdminOrderNote>> {
+  ): Promise<ApiResult<AdminOrderNote>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}?${query}`;
-    const { data, error } = await doDelete<WcAdminOrderNote>(url);
+    const { data, error } = await doDelete<AdminOrderNote>(url);
 
     return { data, error };
   }
@@ -202,12 +195,12 @@ export class WcAdminOrderService extends BaseService {
    */
   async generateReceipt(
     orderId: number,
-    params?: WcAdminOrderReceiptRequest
-  ): Promise<ApiResult<WcAdminOrderReceipt>> {
+    params?: AdminOrderReceiptRequest
+  ): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
     const { data, error } = await doPost<
-      WcAdminOrderReceipt,
-      WcAdminOrderReceiptRequest
+      AdminOrderReceipt,
+      AdminOrderReceiptRequest
     >(url, params || {});
 
     return { data, error };
@@ -216,9 +209,9 @@ export class WcAdminOrderService extends BaseService {
   /**
    * Get order receipt
    */
-  async getReceipt(orderId: number): Promise<ApiResult<WcAdminOrderReceipt>> {
+  async getReceipt(orderId: number): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
-    const { data, error } = await doGet<WcAdminOrderReceipt>(url);
+    const { data, error } = await doGet<AdminOrderReceipt>(url);
 
     return { data, error };
   }
@@ -228,9 +221,9 @@ export class WcAdminOrderService extends BaseService {
    */
   async getEmailTemplates(
     orderId: number
-  ): Promise<ApiResult<WcAdminOrderEmailTemplate[]>> {
+  ): Promise<ApiResult<AdminOrderEmailTemplate[]>> {
     const url = `/${this.endpoint}/${orderId}/actions/email_templates`;
-    const { data, error } = await doGet<WcAdminOrderEmailTemplate[]>(url);
+    const { data, error } = await doGet<AdminOrderEmailTemplate[]>(url);
 
     return { data, error };
   }
@@ -240,12 +233,12 @@ export class WcAdminOrderService extends BaseService {
    */
   async sendEmail(
     orderId: number,
-    params: WcAdminOrderSendEmailRequest
+    params: AdminOrderSendEmailRequest
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_email`;
     const { data, error } = await doPost<
       { message: string },
-      WcAdminOrderSendEmailRequest
+      AdminOrderSendEmailRequest
     >(url, params);
 
     return { data, error };
@@ -256,12 +249,12 @@ export class WcAdminOrderService extends BaseService {
    */
   async sendOrderDetails(
     orderId: number,
-    params?: WcAdminOrderSendDetailsRequest
+    params?: AdminOrderSendDetailsRequest
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_order_details`;
     const { data, error } = await doPost<
       { message: string },
-      WcAdminOrderSendDetailsRequest
+      AdminOrderSendDetailsRequest
     >(url, params || {});
 
     return { data, error };
@@ -270,9 +263,9 @@ export class WcAdminOrderService extends BaseService {
   /**
    * Get order statuses with counts
    */
-  async getStatuses(): Promise<ApiResult<WcAdminOrderStatusInfo[]>> {
+  async getStatuses(): Promise<ApiResult<AdminOrderStatusInfo[]>> {
     const url = `/wp-json/wc/v3/orders/statuses`;
-    const { data, error } = await doGet<WcAdminOrderStatusInfo[]>(url);
+    const { data, error } = await doGet<AdminOrderStatusInfo[]>(url);
 
     return { data, error };
   }
@@ -282,13 +275,13 @@ export class WcAdminOrderService extends BaseService {
    */
   async listRefunds(
     orderId: number,
-    params?: WcAdminRefundQueryParams
-  ): Promise<ApiResult<WcAdminRefund[]>> {
+    params?: AdminRefundQueryParams
+  ): Promise<ApiResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<WcAdminRefund[]>(url);
+    const { data, error } = await doGet<AdminRefund[]>(url);
     return { data, error };
   }
 
@@ -299,12 +292,12 @@ export class WcAdminOrderService extends BaseService {
     orderId: number,
     refundId: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminRefund>> {
+  ): Promise<ApiResult<AdminRefund>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<WcAdminRefund>(url);
+    const { data, error } = await doGet<AdminRefund>(url);
     return { data, error };
   }
 
@@ -313,13 +306,13 @@ export class WcAdminOrderService extends BaseService {
    */
   async createRefund(
     orderId: number,
-    refund: WcAdminRefundCreateRequest
-  ): Promise<ApiResult<WcAdminRefund>> {
+    refund: AdminRefundCreateRequest
+  ): Promise<ApiResult<AdminRefund>> {
     const url = `/${this.endpoint}/${orderId}/refunds`;
-    const { data, error } = await doPost<
-      WcAdminRefund,
-      WcAdminRefundCreateRequest
-    >(url, refund);
+    const { data, error } = await doPost<AdminRefund, AdminRefundCreateRequest>(
+      url,
+      refund
+    );
     return { data, error };
   }
 
@@ -330,10 +323,10 @@ export class WcAdminOrderService extends BaseService {
     orderId: number,
     refundId: number,
     force = true
-  ): Promise<ApiResult<WcAdminRefund>> {
+  ): Promise<ApiResult<AdminRefund>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}?${query}`;
-    const { data, error } = await doDelete<WcAdminRefund>(url);
+    const { data, error } = await doDelete<AdminRefund>(url);
     return { data, error };
   }
 }

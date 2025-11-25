@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,11 +10,11 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Product Reviews', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('lists product reviews (expects deterministic seeding of 3 reviews per product)', async () => {
-    const { data: reviews, total } = await StoreSdk.store.reviews.list({
+    const { data: reviews, total } = await Typewoo.store.reviews.list({
       per_page: 9, // should capture at least first few products' reviews
     });
     expect(Array.isArray(reviews)).toBe(true);
@@ -46,7 +46,7 @@ describe('Integration: Product Reviews', () => {
   });
 
   it('lists reviews with small per_page (pagination sanity)', async () => {
-    const { data, totalPages, total } = await StoreSdk.store.reviews.list({
+    const { data, totalPages, total } = await Typewoo.store.reviews.list({
       per_page: 2,
       page: 1,
     });
@@ -62,14 +62,14 @@ describe('Integration: Product Reviews', () => {
 
   it('filters reviews by product_id (best-effort, tolerant)', async () => {
     // Grab some reviews, pick a product_id and filter by it
-    const seed = await StoreSdk.store.reviews.list({ per_page: 10 });
+    const seed = await Typewoo.store.reviews.list({ per_page: 10 });
     const first = (seed.data || [])[0];
     if (!first) {
       expect(Array.isArray(seed.data)).toBe(true);
       return;
     }
     const pid = first.product_id;
-    const filtered = await StoreSdk.store.reviews.list({
+    const filtered = await Typewoo.store.reviews.list({
       product_id: String(pid),
       per_page: 5,
     });

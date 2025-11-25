@@ -23,3 +23,17 @@ export const parseLinkHeader = (linkHeader?: string) => {
 
   return links;
 };
+
+export const extractPagination = (headers?: Record<string, string>) => {
+  if (!headers) return {};
+
+  const link = parseLinkHeader(headers['link']);
+  const total = headers['x-wp-total']
+    ? parseInt(headers['x-wp-total'], 10)
+    : undefined;
+  const totalPages = headers['x-wp-totalpages']
+    ? parseInt(headers['x-wp-totalpages'], 10)
+    : undefined;
+
+  return { total, totalPages, link };
+};

@@ -1,12 +1,11 @@
 /**
- * Export all REST API types
+ * Export all REST API types with selective exports to avoid conflicts
  */
 export * from './common.types.js';
 export * from './product.types.js';
 export * from './order.types.js';
 export * from './customer.types.js';
 export * from './coupon.types.js';
-export * from './product-brand.types.js';
 export * from './product-review.types.js';
 export * from './refund.types.js';
 export * from './tax.types.js';
@@ -18,26 +17,22 @@ export * from './payment-gateway.types.js';
 export * from './shipping-method.types.js';
 export * from './system-status.types.js';
 export * from './data.types.js';
+export * from './taxonomy.types.js';
+export * from './product-brand.types.js';
 
-// Export taxonomy types with different names to avoid conflicts
-export type {
-  WcAdminProductCategory,
-  WcAdminProductCategoryRequest,
-  WcAdminProductCategoryQueryParams,
-  WcAdminProductTag,
-  WcAdminProductTagRequest,
-  WcAdminProductTagQueryParams,
-  WcAdminShippingClass,
-  WcAdminShippingClassRequest,
-  WcAdminShippingClassQueryParams,
-} from './taxonomy.types.js';
+export {
+  AdminProductAttributeSchema as AdminProductAttributeEntitySchema,
+  AdminProductAttributeRequestSchema,
+  AdminProductAttributeQueryParamsSchema,
+  AdminProductAttributeTermSchema,
+  AdminProductAttributeTermRequestSchema,
+  AdminProductAttributeTermQueryParamsSchema,
+} from './attribute.types.js';
 
-// Export attribute types with different names to avoid conflicts
 export type {
-  WcAdminProductAttribute,
-  WcAdminProductAttributeRequest,
-  WcAdminProductAttributeQueryParams,
-  WcAdminProductAttributeTerm,
-  WcAdminProductAttributeTermRequest,
-  WcAdminProductAttributeTermQueryParams,
+  AdminProductAttributeRequest,
+  AdminProductAttributeQueryParams,
+  AdminProductAttributeTerm,
+  AdminProductAttributeTermRequest,
+  AdminProductAttributeTermQueryParams,
 } from './attribute.types.js';

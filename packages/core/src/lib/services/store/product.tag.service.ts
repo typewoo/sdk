@@ -1,10 +1,9 @@
-import { ProductTagResponse } from '../../types/store/product-tag/product.tag.response.js';
-import { ProductTagRequest } from '../../types/store/product-tag/product.tag.request.js';
-import qs from 'qs';
-import { ApiPaginationResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import { ApiPaginationResult } from '../../types/api.js';
+import { ProductTagRequest, ProductTagResponse } from '../../types/index.js';
 
 /**
  * Product Tags API
@@ -24,12 +23,7 @@ export class ProductTagService extends BaseService {
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductTagResponse[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 }

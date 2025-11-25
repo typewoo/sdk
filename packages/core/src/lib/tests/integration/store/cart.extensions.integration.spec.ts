@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_CUSTOMER_PASSWORD,
   GET_WP_CUSTOMER_USER,
@@ -16,16 +16,16 @@ const CUSTOMER_PASS = GET_WP_CUSTOMER_PASSWORD();
 
 describe('Integration: Cart Extensions API Operations', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('stores extension data for third-party plugin', async () => {
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
 
-    await StoreSdk.store.cart.get();
+    await Typewoo.store.cart.get();
 
     const extensionRequest = {
       namespace: 'test-plugin',
@@ -38,7 +38,7 @@ describe('Integration: Cart Extensions API Operations', () => {
       },
     };
 
-    const res = await StoreSdk.store.cartExtensions.store(extensionRequest);
+    const res = await Typewoo.store.cartExtensions.store(extensionRequest);
     console.log(res);
 
     if (res.error) {
@@ -66,14 +66,14 @@ describe('Integration: Cart Extensions API Operations', () => {
         someData: 'value',
       },
     };
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
 
-    await StoreSdk.store.cart.get();
+    await Typewoo.store.cart.get();
 
-    const res = await StoreSdk.store.cartExtensions.store(extensionRequest);
+    const res = await Typewoo.store.cartExtensions.store(extensionRequest);
 
     if (res.error) {
       // Should get validation error for invalid namespace
@@ -114,14 +114,14 @@ describe('Integration: Cart Extensions API Operations', () => {
       },
     };
 
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
 
-    await StoreSdk.store.cart.get();
+    await Typewoo.store.cart.get();
 
-    const res = await StoreSdk.store.cartExtensions.store(extensionRequest);
+    const res = await Typewoo.store.cartExtensions.store(extensionRequest);
 
     if (res.error) {
       // Extensions might not be supported

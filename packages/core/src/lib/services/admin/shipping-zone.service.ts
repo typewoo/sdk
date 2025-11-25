@@ -1,49 +1,44 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminShippingZone,
-  WcAdminShippingZoneRequest,
-  WcAdminShippingZoneQueryParams,
-  WcAdminShippingZoneLocation,
-  WcAdminShippingZoneLocationRequest,
-  WcAdminShippingZoneMethod,
-  WcAdminShippingZoneMethodRequest,
-  WcAdminShippingZoneMethodQueryParams,
-} from '../../types/admin/shipping-zone.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminShippingZoneQueryParams,
+  AdminShippingZone,
+  AdminShippingZoneRequest,
+  AdminShippingZoneLocation,
+  AdminShippingZoneLocationRequest,
+  AdminShippingZoneMethodQueryParams,
+  AdminShippingZoneMethod,
+  AdminShippingZoneMethodRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Shipping Zones Service
  *
  * Manages shipping zones through the WooCommerce REST API (wp-json/wc/v3/shipping/zones)
  */
-export class WcAdminShippingZoneService extends BaseService {
+export class AdminShippingZoneService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/shipping/zones';
 
   /**
    * List shipping zones
    */
   async list(
-    params?: WcAdminShippingZoneQueryParams
-  ): Promise<ApiPaginationResult<WcAdminShippingZone[]>> {
+    params?: AdminShippingZoneQueryParams
+  ): Promise<ApiPaginationResult<AdminShippingZone[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminShippingZone[]>(url);
+    const { data, error, headers } = await doGet<AdminShippingZone[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -53,12 +48,12 @@ export class WcAdminShippingZoneService extends BaseService {
    */
   async get(
     id: number,
-    params?: WcAdminShippingZoneQueryParams
-  ): Promise<ApiResult<WcAdminShippingZone>> {
+    params?: AdminShippingZoneQueryParams
+  ): Promise<ApiResult<AdminShippingZone>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminShippingZone>(url);
+    const { data, error } = await doGet<AdminShippingZone>(url);
     return { data, error };
   }
 
@@ -66,12 +61,12 @@ export class WcAdminShippingZoneService extends BaseService {
    * Create a new shipping zone
    */
   async create(
-    zone: WcAdminShippingZoneRequest
-  ): Promise<ApiResult<WcAdminShippingZone>> {
+    zone: AdminShippingZoneRequest
+  ): Promise<ApiResult<AdminShippingZone>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminShippingZone,
-      WcAdminShippingZoneRequest
+      AdminShippingZone,
+      AdminShippingZoneRequest
     >(url, zone);
     return { data, error };
   }
@@ -81,12 +76,12 @@ export class WcAdminShippingZoneService extends BaseService {
    */
   async update(
     id: number,
-    zone: WcAdminShippingZoneRequest
-  ): Promise<ApiResult<WcAdminShippingZone>> {
+    zone: AdminShippingZoneRequest
+  ): Promise<ApiResult<AdminShippingZone>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminShippingZone,
-      WcAdminShippingZoneRequest
+      AdminShippingZone,
+      AdminShippingZoneRequest
     >(url, zone);
     return { data, error };
   }
@@ -97,10 +92,10 @@ export class WcAdminShippingZoneService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminShippingZone>> {
+  ): Promise<ApiResult<AdminShippingZone>> {
     const query = force ? '?force=true' : '';
     const url = `/${this.endpoint}/${id}${query}`;
-    const { data, error } = await doDelete<WcAdminShippingZone>(url);
+    const { data, error } = await doDelete<AdminShippingZone>(url);
     return { data, error };
   }
 
@@ -109,9 +104,9 @@ export class WcAdminShippingZoneService extends BaseService {
    */
   async listLocations(
     zoneId: number
-  ): Promise<ApiResult<WcAdminShippingZoneLocation[]>> {
+  ): Promise<ApiResult<AdminShippingZoneLocation[]>> {
     const url = `/${this.endpoint}/${zoneId}/locations`;
-    const { data, error } = await doGet<WcAdminShippingZoneLocation[]>(url);
+    const { data, error } = await doGet<AdminShippingZoneLocation[]>(url);
     return { data, error };
   }
 
@@ -120,12 +115,12 @@ export class WcAdminShippingZoneService extends BaseService {
    */
   async updateLocations(
     zoneId: number,
-    locations: WcAdminShippingZoneLocationRequest[]
-  ): Promise<ApiResult<WcAdminShippingZoneLocation[]>> {
+    locations: AdminShippingZoneLocationRequest[]
+  ): Promise<ApiResult<AdminShippingZoneLocation[]>> {
     const url = `/${this.endpoint}/${zoneId}/locations`;
     const { data, error } = await doPut<
-      WcAdminShippingZoneLocation[],
-      WcAdminShippingZoneLocationRequest[]
+      AdminShippingZoneLocation[],
+      AdminShippingZoneLocationRequest[]
     >(url, locations);
     return { data, error };
   }
@@ -135,23 +130,18 @@ export class WcAdminShippingZoneService extends BaseService {
    */
   async listMethods(
     zoneId: number,
-    params?: WcAdminShippingZoneMethodQueryParams
-  ): Promise<ApiPaginationResult<WcAdminShippingZoneMethod[]>> {
+    params?: AdminShippingZoneMethodQueryParams
+  ): Promise<ApiPaginationResult<AdminShippingZoneMethod[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${zoneId}/methods${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error, headers } = await doGet<WcAdminShippingZoneMethod[]>(
+    const { data, error, headers } = await doGet<AdminShippingZoneMethod[]>(
       url
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -162,14 +152,14 @@ export class WcAdminShippingZoneService extends BaseService {
   async getMethod(
     zoneId: number,
     instanceId: number,
-    params?: WcAdminShippingZoneMethodQueryParams
-  ): Promise<ApiResult<WcAdminShippingZoneMethod>> {
+    params?: AdminShippingZoneMethodQueryParams
+  ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<WcAdminShippingZoneMethod>(url);
+    const { data, error } = await doGet<AdminShippingZoneMethod>(url);
     return { data, error };
   }
 
@@ -179,14 +169,14 @@ export class WcAdminShippingZoneService extends BaseService {
   async addMethod(
     zoneId: number,
     methodId: string,
-    params?: WcAdminShippingZoneMethodRequest
-  ): Promise<ApiResult<WcAdminShippingZoneMethod>> {
+    params?: AdminShippingZoneMethodRequest
+  ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const url = `/${this.endpoint}/${zoneId}/methods`;
     const body = { method_id: methodId, ...params };
-    const { data, error } = await doPost<
-      WcAdminShippingZoneMethod,
-      typeof body
-    >(url, body);
+    const { data, error } = await doPost<AdminShippingZoneMethod, typeof body>(
+      url,
+      body
+    );
     return { data, error };
   }
 
@@ -196,12 +186,12 @@ export class WcAdminShippingZoneService extends BaseService {
   async updateMethod(
     zoneId: number,
     instanceId: number,
-    method: WcAdminShippingZoneMethodRequest
-  ): Promise<ApiResult<WcAdminShippingZoneMethod>> {
+    method: AdminShippingZoneMethodRequest
+  ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}`;
     const { data, error } = await doPut<
-      WcAdminShippingZoneMethod,
-      WcAdminShippingZoneMethodRequest
+      AdminShippingZoneMethod,
+      AdminShippingZoneMethodRequest
     >(url, method);
     return { data, error };
   }
@@ -213,10 +203,10 @@ export class WcAdminShippingZoneService extends BaseService {
     zoneId: number,
     instanceId: number,
     force = false
-  ): Promise<ApiResult<WcAdminShippingZoneMethod>> {
+  ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const query = force ? '?force=true' : '';
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}${query}`;
-    const { data, error } = await doDelete<WcAdminShippingZoneMethod>(url);
+    const { data, error } = await doDelete<AdminShippingZoneMethod>(url);
     return { data, error };
   }
 }

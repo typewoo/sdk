@@ -1,13 +1,17 @@
-export interface CartItemTotalResponse {
-  line_subtotal: string;
-  line_subtotal_tax: string;
-  line_total: string;
-  line_total_tax: string;
-  currency_code: string;
-  currency_symbol: string;
-  currency_minor_unit: number;
-  currency_decimal_separator: string;
-  currency_thousand_separator: string;
-  currency_prefix: string;
-  currency_suffix: string;
-}
+import { z } from 'zod';
+
+export const CartItemTotalResponseSchema = z.object({
+  line_subtotal: z.string(),
+  line_subtotal_tax: z.string(),
+  line_total: z.string(),
+  line_total_tax: z.string(),
+  currency_code: z.string(),
+  currency_symbol: z.string(),
+  currency_minor_unit: z.number(),
+  currency_decimal_separator: z.string(),
+  currency_thousand_separator: z.string(),
+  currency_prefix: z.string(),
+  currency_suffix: z.string(),
+});
+
+export type CartItemTotalResponse = z.infer<typeof CartItemTotalResponseSchema>;

@@ -1,11 +1,17 @@
-export interface ProductCollectionDataPriceRangeResponse {
-  min_price: string;
-  max_price: string;
-  currency_code: string;
-  currency_decimal_separator: string;
-  currency_minor_unit: number;
-  currency_prefix: string;
-  currency_suffix: string;
-  currency_symbol: string;
-  currency_thousand_separator: string;
-}
+import { z } from 'zod';
+
+export const ProductCollectionDataPriceRangeResponseSchema = z.object({
+  min_price: z.string(),
+  max_price: z.string(),
+  currency_code: z.string(),
+  currency_symbol: z.string(),
+  currency_minor_unit: z.number(),
+  currency_decimal_separator: z.string(),
+  currency_thousand_separator: z.string(),
+  currency_prefix: z.string(),
+  currency_suffix: z.string(),
+});
+
+export type ProductCollectionDataPriceRangeResponse = z.infer<
+  typeof ProductCollectionDataPriceRangeResponseSchema
+>;

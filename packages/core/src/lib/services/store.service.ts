@@ -1,7 +1,7 @@
 import { EventBus } from '../bus/event.bus.js';
-import { StoreSdkConfig } from '../configs/sdk.config.js';
-import { StoreSdkEvent } from '../sdk.events.js';
-import { StoreSdkState } from '../types/sdk.state.js';
+import { SdkConfig } from '../configs/sdk.config.js';
+import { SdkEvent } from '../sdk.events.js';
+import { SdkState } from '../types/sdk.state.js';
 import { CartCouponService } from './store/cart.coupon.service.js';
 import { CartItemService } from './store/cart.item.service.js';
 import { CartService } from './store/cart.service.js';
@@ -39,11 +39,7 @@ export class StoreService {
 
   private _batch!: BatchService;
 
-  constructor(
-    state: StoreSdkState,
-    config: StoreSdkConfig,
-    events: EventBus<StoreSdkEvent>
-  ) {
+  constructor(state: SdkState, config: SdkConfig, events: EventBus<SdkEvent>) {
     this._tags = new ProductTagService(state, config, events);
     this._orders = new OrderService(state, config, events);
     this._brands = new ProductBrandService(state, config, events);

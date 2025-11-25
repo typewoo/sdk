@@ -4,14 +4,14 @@ import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
-const srcDir = join(ROOT, 'plugins', 'store-sdk');
+const srcDir = join(ROOT, 'plugins', 'typewoo');
 const distDir = join(ROOT, 'dist/plugin');
-const zipPath = join(distDir, 'store-sdk.zip');
+const zipPath = join(distDir, 'typewoo.zip');
 
 // Ensure dist directory exists
 mkdirSync(distDir, { recursive: true });
 
-// Create zip containing the store-sdk folder
+// Create zip containing the typewoo folder
 try {
   execFileSync(
     'powershell',

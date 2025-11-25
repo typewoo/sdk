@@ -1,8 +1,8 @@
-import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response.js';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { doDelete, doGet, doPost } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import { CartCouponResponse } from '../../types/index.js';
 
 /**
  * Cart Coupons API
@@ -18,12 +18,7 @@ export class CartCouponService extends BaseService {
     const url = `/${this.endpoint}`;
     const { data, error, headers } = await doGet<CartCouponResponse[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total: total, totalPages, link };
   }

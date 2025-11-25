@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -17,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Webhooks', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -29,7 +29,7 @@ describe('Integration: Admin Webhooks', () => {
 
   it('lists webhooks with optional headers', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.webhooks.list({
+      await Typewoo.admin.webhooks.list({
         per_page: 5,
         page: 1,
         status: 'all',
@@ -45,7 +45,7 @@ describe('Integration: Admin Webhooks', () => {
 
   it('can create, get, update, batch and delete webhooks', async () => {
     // Create a webhook. Use a dummy delivery URL valid format to pass validation.
-    const created = await StoreSdk.admin.webhooks.create({
+    const created = await Typewoo.admin.webhooks.create({
       name: `INT-WH-${Date.now()}`,
       status: 'paused',
       topic: 'order.created',
@@ -64,19 +64,19 @@ describe('Integration: Admin Webhooks', () => {
 
     try {
       // Get
-      const get = await StoreSdk.admin.webhooks.get(idA);
+      const get = await Typewoo.admin.webhooks.get(idA);
       expect(get.error).toBeFalsy();
       expect(get.data?.id).toBe(idA);
 
       // Update
-      const updated = await StoreSdk.admin.webhooks.update(idA, {
+      const updated = await Typewoo.admin.webhooks.update(idA, {
         name: `${created.data.name}-UPD`,
         status: 'active',
       });
       expect(updated.error).toBeFalsy();
 
       // Create a second webhook for batch delete
-      const createdB = await StoreSdk.admin.webhooks.create({
+      const createdB = await Typewoo.admin.webhooks.create({
         name: `INT-WH-B-${Date.now()}`,
         status: 'paused',
         topic: 'order.updated',
@@ -84,7 +84,7 @@ describe('Integration: Admin Webhooks', () => {
       });
       if (!createdB.error && createdB.data) {
         const idB = createdB.data.id;
-        const batch = await StoreSdk.admin.webhooks.batch({
+        const batch = await Typewoo.admin.webhooks.batch({
           update: [{ id: idA, name: `${created.data.name}-BATCH` }],
           delete: [idB],
         });
@@ -96,11 +96,11 @@ describe('Integration: Admin Webhooks', () => {
       }
 
       // Delete first webhook
-      const del = await StoreSdk.admin.webhooks.delete(idA, true);
+      const del = await Typewoo.admin.webhooks.delete(idA, true);
       expect(del.error).toBeFalsy();
     } finally {
       // Best-effort cleanup if update or batch failed
-      await StoreSdk.admin.webhooks.delete(idA, true);
+      await Typewoo.admin.webhooks.delete(idA, true);
     }
   });
 });

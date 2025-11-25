@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
-import type {
-  WcAdminProductReviewRequest,
-  WcAdminProductReview,
-} from '../../../types/admin/product-review.types.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -11,6 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { AdminProductReviewRequest } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -20,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Reviews', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -32,7 +29,7 @@ describe('Integration: Admin Product Reviews', () => {
 
   it('lists reviews with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.productReviews.list({ per_page: 5, page: 1 });
+      await Typewoo.admin.productReviews.list({ per_page: 5, page: 1 });
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
     if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
@@ -41,7 +38,7 @@ describe('Integration: Admin Product Reviews', () => {
 
   it('searches reviews by reviewer or content', async () => {
     const query = 'test';
-    const { data, error } = await StoreSdk.admin.productReviews.list({
+    const { data, error } = await Typewoo.admin.productReviews.list({
       search: query,
       per_page: 10,
     });
@@ -59,13 +56,13 @@ describe('Integration: Admin Product Reviews', () => {
 
   it('creates, retrieves, updates, and deletes a review', async () => {
     // Try to find an existing product to attach a review to
-    const products = await StoreSdk.admin.products.list({ per_page: 1 });
+    const products = await Typewoo.admin.products.list({ per_page: 1 });
     expect(products.error).toBeFalsy();
     if (!products.data || products.data.length === 0) return; // environment may not have products
     const productId = products.data[0].id;
 
     const ts = Date.now();
-    const req: WcAdminProductReviewRequest = {
+    const req: AdminProductReviewRequest = {
       product_id: productId,
       reviewer: `itest-reviewer-${ts}`,
       reviewer_email: `itest-${ts}@example.com`,
@@ -75,7 +72,7 @@ describe('Integration: Admin Product Reviews', () => {
     };
 
     // Create
-    const createRes = await StoreSdk.admin.productReviews.create(req);
+    const createRes = await Typewoo.admin.productReviews.create(req);
     if (createRes.error) {
       // Some environments may disallow programmatic reviews; accept expected admin errors
       expect(createRes.error.code).toMatch(/invalid|forbidden|unsupported/i);
@@ -86,12 +83,12 @@ describe('Integration: Admin Product Reviews', () => {
     const reviewId = createRes.data.id;
 
     // Get
-    const getRes = await StoreSdk.admin.productReviews.get(reviewId);
+    const getRes = await Typewoo.admin.productReviews.get(reviewId);
     expect(getRes.error).toBeFalsy();
     expect(getRes.data?.id).toBe(reviewId);
 
     // Update
-    const updateRes = await StoreSdk.admin.productReviews.update(reviewId, {
+    const updateRes = await Typewoo.admin.productReviews.update(reviewId, {
       review: 'Updated review body',
       rating: 4,
     });
@@ -102,23 +99,23 @@ describe('Integration: Admin Product Reviews', () => {
     }
 
     // Delete (force)
-    const delRes = await StoreSdk.admin.productReviews.delete(reviewId, true);
+    const delRes = await Typewoo.admin.productReviews.delete(reviewId, true);
     expect(delRes.error).toBeFalsy();
 
     // Verify deleted
-    const getDeleted = await StoreSdk.admin.productReviews.get(reviewId);
+    const getDeleted = await Typewoo.admin.productReviews.get(reviewId);
     expect(getDeleted.error).toBeTruthy();
     expect(getDeleted.error?.code).toMatch(/not_found|invalid/i);
   });
 
   it('handles batch create and delete', async () => {
-    const products = await StoreSdk.admin.products.list({ per_page: 1 });
+    const products = await Typewoo.admin.products.list({ per_page: 1 });
     expect(products.error).toBeFalsy();
     if (!products.data || products.data.length === 0) return;
     const productId = products.data[0].id;
 
     const ts = Date.now();
-    const batch = await StoreSdk.admin.productReviews.batch({
+    const batch = await Typewoo.admin.productReviews.batch({
       create: [
         {
           product_id: productId,
@@ -146,23 +143,23 @@ describe('Integration: Admin Product Reviews', () => {
     if (!batch.data) return;
     const ids = batch.data.create.map((r) => r.id);
 
-    const batchDel = await StoreSdk.admin.productReviews.batch({ delete: ids });
+    const batchDel = await Typewoo.admin.productReviews.batch({ delete: ids });
     expect(batchDel.error).toBeFalsy();
   });
 
   it('retrieves review in different contexts', async () => {
-    const list = await StoreSdk.admin.productReviews.list({ per_page: 1 });
+    const list = await Typewoo.admin.productReviews.list({ per_page: 1 });
     expect(list.error).toBeFalsy();
     if (!list.data || list.data.length === 0) return;
     const id = list.data[0].id;
 
-    const view = await StoreSdk.admin.productReviews.get(id, {
+    const view = await Typewoo.admin.productReviews.get(id, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(id);
 
-    const edit = await StoreSdk.admin.productReviews.get(id, {
+    const edit = await Typewoo.admin.productReviews.get(id, {
       context: 'edit',
     });
     expect(edit.error).toBeFalsy();
@@ -170,13 +167,13 @@ describe('Integration: Admin Product Reviews', () => {
   });
 
   it('handles review error cases gracefully', async () => {
-    const notFound = await StoreSdk.admin.productReviews.get(999999);
+    const notFound = await Typewoo.admin.productReviews.get(999999);
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(
       /not_found|invalid|forbidden|unsupported/i
     );
 
-    const badCreate = await StoreSdk.admin.productReviews.create({
+    const badCreate = await Typewoo.admin.productReviews.create({
       product_id: 0,
       reviewer: '',
       reviewer_email: 'not-an-email',
@@ -185,12 +182,12 @@ describe('Integration: Admin Product Reviews', () => {
     });
     expect(badCreate.error).toBeTruthy();
 
-    const badUpdate = await StoreSdk.admin.productReviews.update(999999, {
+    const badUpdate = await Typewoo.admin.productReviews.update(999999, {
       review: 'Nope',
     });
     expect(badUpdate.error).toBeTruthy();
 
-    const badDelete = await StoreSdk.admin.productReviews.delete(999999);
+    const badDelete = await Typewoo.admin.productReviews.delete(999999);
     expect(badDelete.error).toBeTruthy();
   });
 });

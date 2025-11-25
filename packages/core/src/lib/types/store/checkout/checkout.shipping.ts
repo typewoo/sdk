@@ -1,11 +1,18 @@
-export interface CheckoutShippingResponse {
-  first_name: string;
-  last_name: string;
-  company: string;
-  address_1: string;
-  address_2: string;
-  city: string;
-  state: string;
-  postcode: string;
-  country: string;
-}
+import { z } from 'zod';
+
+export const CheckoutShippingResponseSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  phone: z.string(),
+});
+
+export type CheckoutShippingResponse = z.infer<
+  typeof CheckoutShippingResponseSchema
+>;

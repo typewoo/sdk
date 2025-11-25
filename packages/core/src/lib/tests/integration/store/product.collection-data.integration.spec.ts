@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,11 +10,11 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Product Collection Data', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('calculates aggregate collection data (min/max price)', async () => {
-    const { data } = await StoreSdk.store.collectionData.calculate();
+    const { data } = await Typewoo.store.collectionData.calculate();
     expect(data).toBeTruthy();
     if (data && data.price_range) {
       const pr = data.price_range;
@@ -28,8 +28,8 @@ describe('Integration: Product Collection Data', () => {
   });
 
   it('re-calculates collection data after a product list request (consistency)', async () => {
-    await StoreSdk.store.products.list({ per_page: 3 });
-    const second = await StoreSdk.store.collectionData.calculate();
+    await Typewoo.store.products.list({ per_page: 3 });
+    const second = await Typewoo.store.collectionData.calculate();
     expect(second.data).toBeTruthy();
     if (second.data?.price_range) {
       expect(typeof second.data.price_range).toBe('object');

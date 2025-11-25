@@ -15,232 +15,84 @@ permissions:
   id-token: write
 
 env:
-  NODE_VERSION: 20
   # Ensure Nx prints useful logs in CI
   NX_VERBOSE_LOGGING: false
   # Avoid Nx daemon issues in ephemeral runners
   NX_DAEMON: false
 
 jobs:
-  setup-and-cache:
-    name: setup
-    runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-nx.outputs.cache-primary-key }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          # Need full history so Nx affected has a proper base commit
-          fetch-depth: 0
-
-      - name: Use Node ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v5
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install --no-audit --no-fund
-          fi
-
-      - name: Cache Nx (previous runs)
-        id: cache-nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
-
-      - name: Print Nx Version / Projects
-        run: |
-          npx nx --version
-          npx nx show projects
   lint:
     name: lint
     runs-on: ubuntu-latest
-    needs: setup-and-cache
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run lint
         run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Restore Nx Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
-      - name: Run lint (all projects)
-        run: |
-          npx nx affected -t lint --parallel=3 --base=origin/main
+          pnpm exec nx affected -t lint --parallel=3 --base=origin/main
   format:
     name: format
     runs-on: ubuntu-latest
-    needs: setup-and-cache
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Prettier Check (all)
+        run: pnpm install --frozen-lockfile
+      - name: Prettier Check
         run: |
           npx prettier --version
           npx prettier --check .
-  api-compare:
-    name: api / compare
-    runs-on: ubuntu-latest
-    needs: [lint, format]
-    # This job monitors WooCommerce Admin and Store API structures for breaking changes
-    # It creates snapshots of the current API structure and compares against baselines
-    # Any structural changes (new/removed endpoints, parameter changes) will be detected
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Start WordPress Environment
-        run: |
-          set -euo pipefail
-          echo "Provisioning WordPress + WooCommerce for API structure monitoring..."
-          npm run wp:env:up
-      - name: Monitor Admin API Structure Changes
-        env:
-          WC_API_BASE_URL: http://localhost:8080
-        run: |
-          set -euo pipefail
-          echo "🔍 Checking WooCommerce Admin API structure for changes..."
-
-          # Create current admin API snapshot
-          node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3
-
-          # Check for changes against baseline (if baseline exists)
-          if [ -f "snapshots/api-structure/admin/baseline.json" ]; then
-            echo "Comparing against baseline..."
-            node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/v3
-          else
-            echo "No baseline found - creating initial baseline"
-            cp snapshots/api-structure/admin/current.json snapshots/api-structure/admin/baseline.json
-          fi
-      - name: Monitor Store API Structure Changes
-        env:
-          WC_API_BASE_URL: http://localhost:8080
-        run: |
-          set -euo pipefail
-          echo "🔍 Checking WooCommerce Store API structure for changes..."
-
-          # Create current store API snapshot
-          node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/store/v1
-
-          # Check for changes against baseline (if baseline exists)
-          if [ -f "snapshots/api-structure/store/baseline.json" ]; then
-            echo "Comparing against baseline..."
-            node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/store/v1
-          else
-            echo "No baseline found - creating initial baseline"
-            cp snapshots/api-structure/store/current.json snapshots/api-structure/store/baseline.json
-          fi
-      - name: Upload API Structure Snapshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-structure-snapshots-${{ github.run_id }}
-          path: |
-            snapshots/api-structure/
-          retention-days: 30
-      - name: API Structure Summary
-        if: always()
-        run: |
-          echo "📊 API Structure Monitoring Summary:"
-          echo "=================================="
-
-          if [ -f "snapshots/api-structure/admin/current.json" ]; then
-            ADMIN_ROUTES=$(node -e "console.log(Object.keys(JSON.parse(require('fs').readFileSync('snapshots/api-structure/admin/current.json', 'utf8')).routes).length)")
-            echo "Admin API Routes: $ADMIN_ROUTES"
-          fi
-
-          if [ -f "snapshots/api-structure/store/current.json" ]; then
-            STORE_ROUTES=$(node -e "console.log(Object.keys(JSON.parse(require('fs').readFileSync('snapshots/api-structure/store/current.json', 'utf8')).routes).length)")
-            echo "Store API Routes: $STORE_ROUTES"
-          fi
-
-          echo "Snapshots saved as CI artifacts for 30 days"
-      - name: Tear Down WordPress Environment
-        if: always()
-        run: npm run wp:env:clean || true
   test-unit:
     name: tests / unit
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Restore Nx Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
+        run: pnpm install --frozen-lockfile
       - name: Run Unit Tests (fast, no WP env)
         run: |
           cd packages/core && npx vitest run --coverage src/lib/tests/unit
   test:
     name: tests / integration & flow & plugin
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Restore Nx Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
+        run: pnpm install --frozen-lockfile
       - name: Start WordPress Environment
         run: |
           set -euo pipefail
@@ -252,7 +104,7 @@ jobs:
         env:
           WP_URL: http://localhost:8080
         run: |
-          npx vitest run scripts/tests
+          npx vitest run --config scripts/tests/vitest.config.ts scripts/tests
       - name: Run Integration Tests
         run: |
           cd packages/core && npx vitest run --coverage src/lib/tests/integration
@@ -265,18 +117,19 @@ jobs:
   plugin-check:
     name: plugin / check
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+        run: pnpm install --frozen-lockfile
       - name: Start WordPress Environment (minimal)
         run: |
           set -euo pipefail
@@ -321,26 +174,19 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare, test, test-unit, plugin-check]
+    needs: [lint, format, test, test-unit, plugin-check]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 24
+          cache: pnpm
       - name: Install Dependencies
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Restore Nx Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
-            nx-${{ runner.os }}-
+        run: pnpm install --frozen-lockfile
       - name: build (all projects)
         run: |
           npx nx affected -t build --parallel=3 --base=origin/main

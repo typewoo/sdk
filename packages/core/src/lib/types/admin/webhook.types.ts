@@ -1,42 +1,52 @@
-export interface WcAdminWebhook {
-  id: number;
-  name: string;
-  status: 'active' | 'paused' | 'disabled';
-  topic: string;
-  resource: string;
-  event: string;
-  hooks: string[];
-  delivery_url: string;
-  secret: string;
-  date_created: string;
-  date_created_gmt: string;
-  date_modified: string;
-  date_modified_gmt: string;
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+import { z } from 'zod';
 
-export interface WcAdminWebhookRequest {
-  name?: string;
-  status?: 'active' | 'paused' | 'disabled';
-  topic?: string;
-  secret?: string;
-  delivery_url?: string;
-}
+export const AdminWebhookSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  status: z.enum(['active', 'paused', 'disabled']),
+  topic: z.string(),
+  resource: z.string(),
+  event: z.string(),
+  hooks: z.array(z.string()),
+  delivery_url: z.string(),
+  secret: z.string(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminWebhookQueryParams {
-  context?: 'view' | 'edit';
-  page?: number;
-  per_page?: number;
-  search?: string;
-  after?: string;
-  before?: string;
-  exclude?: number[];
-  include?: number[];
-  offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?: 'date' | 'id' | 'title';
-  status?: 'all' | 'active' | 'paused' | 'disabled';
-}
+export type AdminWebhook = z.infer<typeof AdminWebhookSchema>;
+
+export const AdminWebhookRequestSchema = z.object({
+  name: z.string().optional(),
+  status: z.enum(['active', 'paused', 'disabled']).optional(),
+  topic: z.string().optional(),
+  secret: z.string().optional(),
+  delivery_url: z.string().optional(),
+});
+
+export type AdminWebhookRequest = z.infer<typeof AdminWebhookRequestSchema>;
+
+export const AdminWebhookQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  search: z.string().optional(),
+  after: z.string().optional(),
+  before: z.string().optional(),
+  exclude: z.array(z.number()).optional(),
+  include: z.array(z.number()).optional(),
+  offset: z.number().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  orderby: z.enum(['date', 'id', 'title']).optional(),
+  status: z.enum(['all', 'active', 'paused', 'disabled']).optional(),
+});
+
+export type AdminWebhookQueryParams = z.infer<
+  typeof AdminWebhookQueryParamsSchema
+>;

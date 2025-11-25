@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,27 +10,27 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Cart Items (read-only robustness)', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('lists cart items (may be empty) and tolerates add attempt', async () => {
-    const listBefore = await StoreSdk.store.cartItems.list();
+    const listBefore = await Typewoo.store.cartItems.list();
     expect(Array.isArray(listBefore.data)).toBe(true);
     // Attempt to add an item (best-effort) then re-list
-    const { data: products } = await StoreSdk.store.products.list({
+    const { data: products } = await Typewoo.store.products.list({
       per_page: 3,
     });
     const prod = products?.find((p) => p.is_in_stock);
     if (prod?.id) {
-      await StoreSdk.store.cartItems.add({ id: prod.id, quantity: 1 });
+      await Typewoo.store.cartItems.add({ id: prod.id, quantity: 1 });
     }
-    const listAfter = await StoreSdk.store.cartItems.list();
+    const listAfter = await Typewoo.store.cartItems.list();
     expect(Array.isArray(listAfter.data)).toBe(true);
     // We do not assert increased length due to possible missing session persistence.
   });
 
   it('adds the same product twice (if possible) and quantity is stable or increases', async () => {
-    const { data: products } = await StoreSdk.store.products.list({
+    const { data: products } = await Typewoo.store.products.list({
       per_page: 5,
     });
     const prod = products?.find((p) => p.is_in_stock);
@@ -40,9 +40,9 @@ describe('Integration: Cart Items (read-only robustness)', () => {
     }
 
     // First add (best-effort)
-    await StoreSdk.store.cartItems.add({ id: prod.id, quantity: 1 });
+    await Typewoo.store.cartItems.add({ id: prod.id, quantity: 1 });
     // Accept either success or error; we just continue
-    const afterFirst = await StoreSdk.store.cartItems.list();
+    const afterFirst = await Typewoo.store.cartItems.list();
     expect(Array.isArray(afterFirst.data)).toBe(true);
     const item1 = afterFirst.data?.find(
       (i: { id?: number; quantity?: number }) => i?.id === prod.id
@@ -50,8 +50,8 @@ describe('Integration: Cart Items (read-only robustness)', () => {
     const qty1 = item1?.quantity ?? 0;
 
     // Second add (best-effort)
-    await StoreSdk.store.cartItems.add({ id: prod.id, quantity: 1 });
-    const afterSecond = await StoreSdk.store.cartItems.list();
+    await Typewoo.store.cartItems.add({ id: prod.id, quantity: 1 });
+    const afterSecond = await Typewoo.store.cartItems.list();
     expect(Array.isArray(afterSecond.data)).toBe(true);
     const item2 = afterSecond.data?.find(
       (i: { id?: number }) => i?.id === prod.id
@@ -69,7 +69,7 @@ describe('Integration: Cart Items (read-only robustness)', () => {
 
   it('gracefully handles attempt to add an invalid product id', async () => {
     const invalidId = 999999999;
-    const attempt = await StoreSdk.store.cartItems.add({
+    const attempt = await Typewoo.store.cartItems.add({
       id: invalidId,
       quantity: 1,
     });
@@ -78,7 +78,7 @@ describe('Integration: Cart Items (read-only robustness)', () => {
       expect(attempt.error.code).toMatch(/invalid|not|product|id/i);
     }
     // Ensure invalid id not present
-    const list = await StoreSdk.store.cartItems.list();
+    const list = await Typewoo.store.cartItems.list();
     const found = (list.data || []).some(
       (i: { id?: number }) => i?.id === invalidId
     );
@@ -87,14 +87,14 @@ describe('Integration: Cart Items (read-only robustness)', () => {
 
   it('lists remains consistent array after multiple best-effort operations', async () => {
     // Chain a few best-effort adds using first page of products
-    const { data: products } = await StoreSdk.store.products.list({
+    const { data: products } = await Typewoo.store.products.list({
       per_page: 3,
     });
     for (const p of products || []) {
       if (!p?.is_in_stock || !p?.id) continue;
-      await StoreSdk.store.cartItems.add({ id: p.id, quantity: 1 });
+      await Typewoo.store.cartItems.add({ id: p.id, quantity: 1 });
     }
-    const finalList = await StoreSdk.store.cartItems.list();
+    const finalList = await Typewoo.store.cartItems.list();
     expect(Array.isArray(finalList.data)).toBe(true);
     // Ensure no obviously malformed items (light validation)
     for (const item of finalList.data || []) {

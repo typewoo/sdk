@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,7 +10,7 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Products', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('lists products with pagination and filtering (search by Category 1)', async () => {
@@ -19,7 +19,7 @@ describe('Integration: Products', () => {
       data: page1,
       total,
       totalPages,
-    } = await StoreSdk.store.products.list({ per_page: 10, page: 1 });
+    } = await Typewoo.store.products.list({ per_page: 10, page: 1 });
     expect(Array.isArray(page1)).toBe(true);
     expect((page1 || []).length).toBeGreaterThan(0);
     // If headers exposed, totals should be >= 50 (10 categories * 10 products) but we guard
@@ -31,7 +31,7 @@ describe('Integration: Products', () => {
     }
     const cat1 = (page1 || []).find((p) => /category 1/i.test(p.name));
     if (cat1) {
-      const searchRes = await StoreSdk.store.products.list({
+      const searchRes = await Typewoo.store.products.list({
         search: cat1.name.split(' ')[0],
       });
       expect(Array.isArray(searchRes.data)).toBe(true);
@@ -39,16 +39,16 @@ describe('Integration: Products', () => {
   });
 
   it('fetches single product by id and slug equivalence', async () => {
-    const { data: list } = await StoreSdk.store.products.list({ per_page: 5 });
+    const { data: list } = await Typewoo.store.products.list({ per_page: 5 });
     const first = list?.[0];
     expect(first).toBeTruthy();
     if (!first) return;
-    const byId = await StoreSdk.store.products.single({ id: first.id });
+    const byId = await Typewoo.store.products.single({ id: first.id });
     expect(byId.data?.id).toBe(first.id);
   });
 
   it('filters products by on_sale=false (most seeded simple products not explicitly on sale)', async () => {
-    const { data } = await StoreSdk.store.products.list({
+    const { data } = await Typewoo.store.products.list({
       on_sale: false,
       per_page: 5,
     });
@@ -56,7 +56,7 @@ describe('Integration: Products', () => {
   });
 
   it('sorts products by price ascending (best-effort, tolerant)', async () => {
-    const { data } = await StoreSdk.store.products.list({
+    const { data } = await Typewoo.store.products.list({
       orderby: 'price',
       order: 'asc',
       per_page: 5,
@@ -79,14 +79,14 @@ describe('Integration: Products', () => {
   });
 
   it('handles non-existent product id with error', async () => {
-    const res = await StoreSdk.store.products.single({ id: 999999999 });
+    const res = await Typewoo.store.products.single({ id: 999999999 });
     expect(res.data).toBeFalsy();
     expect((res as unknown as { error?: unknown }).error).toBeTruthy();
   });
 
   it('filters by category (best-effort) if any category products seeded', async () => {
     type ProdWithCats = { categories?: { id?: number }[] };
-    const list = await StoreSdk.store.products.list({ per_page: 10 });
+    const list = await Typewoo.store.products.list({ per_page: 10 });
     const first = list.data?.find(
       (p) =>
         Array.isArray((p as ProdWithCats).categories) &&
@@ -101,7 +101,7 @@ describe('Integration: Products', () => {
       expect(true).toBe(true);
       return;
     }
-    const byCat = await StoreSdk.store.products.list({
+    const byCat = await Typewoo.store.products.list({
       per_page: 10,
       category: String(catId),
     });
@@ -118,7 +118,7 @@ describe('Integration: Products', () => {
   });
 
   it('search with unlikely token returns empty or array', async () => {
-    const res = await StoreSdk.store.products.list({
+    const res = await Typewoo.store.products.list({
       search: 'unlikely_token_zzz',
       per_page: 5,
     });
@@ -132,7 +132,7 @@ describe('Integration: Products', () => {
   });
 
   it('sorts products by price descending (best-effort)', async () => {
-    const { data } = await StoreSdk.store.products.list({
+    const { data } = await Typewoo.store.products.list({
       orderby: 'price',
       order: 'desc',
       per_page: 5,

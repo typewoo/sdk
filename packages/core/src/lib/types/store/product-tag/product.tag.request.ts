@@ -1,3 +1,6 @@
-import { Paginated } from '../paginated.js';
+import { z } from 'zod';
+import { PaginatedSchema } from '../paginated.js';
 
-export type ProductTagRequest = Paginated;
+export const ProductTagRequestSchema = PaginatedSchema;
+
+export type ProductTagRequest = z.infer<typeof ProductTagRequestSchema>;

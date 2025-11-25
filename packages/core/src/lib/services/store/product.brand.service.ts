@@ -1,10 +1,9 @@
-import { ProductBrandResponse } from '../../types/store/product-brand/product.brand.response.js';
-import { Paginated } from '../../types/store/paginated.js';
-import qs from 'qs';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import { Paginated, ProductBrandResponse } from '../../types/index.js';
 
 /**
  * Product Brands API
@@ -23,12 +22,7 @@ export class ProductBrandService extends BaseService {
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductBrandResponse[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 

@@ -1,4 +1,4 @@
-# Store SDK for WooCommerce
+# TypeWoo for WooCommerce
 
 A modern, TypeScript-first SDK for integrating with the **WooCommerce Store API**.
 This library provides typed client utilities and convenient abstractions to simplify working with WooCommerce headless or decoupled storefronts.
@@ -14,5 +14,5 @@ This library provides typed client utilities and convenient abstractions to simp
 ## 📦 Installation
 
 ```bash
-npm install @store-sdk/core
+npm install @typewoo/core
 ```

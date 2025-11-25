@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -17,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Refunds (Global)', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -28,12 +28,13 @@ describe('Integration: Admin Refunds (Global)', () => {
   });
 
   it('lists refunds (global) with optional headers', async () => {
-    const { data, error, total, totalPages } =
-      await StoreSdk.admin.refunds.list({
+    const { data, error, total, totalPages } = await Typewoo.admin.refunds.list(
+      {
         per_page: 5,
         page: 1,
         context: 'view',
-      });
+      }
+    );
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
     if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);

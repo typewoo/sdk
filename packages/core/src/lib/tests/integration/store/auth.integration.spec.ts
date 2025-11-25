@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
-import { StoreSdk } from '../../../sdk.js';
-import { StoreSdkConfig } from '../../../configs/sdk.config.js';
+import { Typewoo } from '../../../sdk.js';
+import { SdkConfig } from '../../../configs/sdk.config.js';
 import { resetRefreshTokenState } from '../../../interceptors/refresh.token.interceptor.js';
 import {
   GET_WP_CUSTOMER_PASSWORD,
@@ -21,7 +21,7 @@ let accessToken = '';
 let refreshToken = '';
 
 // Initialize SDK once and use exposed auth facade
-const sdk = StoreSdk;
+const sdk = Typewoo;
 // We'll init lazily in beforeAll so baseUrl & config callbacks are wired
 let pluginActive: boolean | undefined;
 
@@ -36,7 +36,7 @@ describe('Integration: Auth', () => {
   beforeAll(async () => {
     // Probe status first; if unreachable or inactive, later tests will soft-pass
 
-    const config: StoreSdkConfig = {
+    const config: SdkConfig = {
       baseUrl: WP_URL,
       auth: {
         getToken: async () => {
@@ -141,7 +141,7 @@ describe('Integration: Auth', () => {
 
   it('logs in, token expires, 401 triggers refresh interceptor, retried request succeeds', async () => {
     // 1) Login and set a very short access_ttl to force expiry
-    const { data, error } = await StoreSdk.auth.token({
+    const { data, error } = await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
       access_ttl: 1, // seconds
@@ -157,7 +157,7 @@ describe('Integration: Auth', () => {
     await new Promise((r) => setTimeout(r, 3000));
 
     // 3) Call a protected WP endpoint; initial 401 should be auto-refreshed and retried
-    const { data: cartData } = await StoreSdk.store.cart.get();
+    const { data: cartData } = await Typewoo.store.cart.get();
 
     // If the refresh interceptor worked, we should have a 200 and cart data
     expect(cartData).toBeTruthy();

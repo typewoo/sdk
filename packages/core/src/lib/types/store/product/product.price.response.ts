@@ -1,13 +1,17 @@
-export interface ProductPriceResponse {
-  currency_code: string;
-  currency_symbol: string;
-  currency_minor_unit: number;
-  currency_decimal_separator: string;
-  currency_thousand_separator: string;
-  currency_prefix: string;
-  currency_suffix: string;
-  price: string;
-  regular_price: string;
-  sale_price: string;
-  price_range: unknown;
-}
+import { z } from 'zod';
+
+export const ProductPriceResponseSchema = z.object({
+  currency_code: z.string(),
+  currency_symbol: z.string(),
+  currency_minor_unit: z.number(),
+  currency_decimal_separator: z.string(),
+  currency_thousand_separator: z.string(),
+  currency_prefix: z.string(),
+  currency_suffix: z.string(),
+  price: z.string(),
+  regular_price: z.string(),
+  sale_price: z.string(),
+  price_range: z.unknown(),
+});
+
+export type ProductPriceResponse = z.infer<typeof ProductPriceResponseSchema>;

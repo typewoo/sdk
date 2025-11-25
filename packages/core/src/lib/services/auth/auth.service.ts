@@ -1,24 +1,22 @@
 import { AxiosRequestConfig } from 'axios';
+import { doGet, doPost } from '../../utilities/axios.utility.js';
+import { BaseService } from '../base.service.js';
+import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
   AuthTokenRequest,
   AuthTokenResponse,
-} from '../../types/auth/token/index.js';
-import { doGet, doPost } from '../../utilities/axios.utility.js';
-import {
+  AuthRefreshRequest,
   AuthRevokeRequest,
   AuthRevokeResponse,
-} from '../../types/auth/revoke/index.js';
-import { AuthRefreshRequest } from '../../types/auth/refresh/index.js';
-import { AuthValidateResponse } from '../../types/auth/validate/index.js';
-import { AuthOneTimeTokenRequest } from '../../types/auth/one-time-token/auth.one.time.token.request.js';
-import { AuthOneTimeTokenResponse } from '../../types/auth/one-time-token/auth.one.time.token.response.js';
-import { AuthStatusResponse } from '../../types/auth/status/auth.status.response.js';
-import { BaseService } from '../base.service.js';
-import qs from 'qs';
+  AuthOneTimeTokenRequest,
+  AuthOneTimeTokenResponse,
+  AuthValidateResponse,
+  AuthStatusResponse,
+} from '../../types/index.js';
 
 export class AuthService extends BaseService {
-  private readonly endpoint = 'wp-json/store-sdk/v1/auth';
+  private readonly endpoint = 'wp-json/typewoo/v1/auth';
 
   async getAutoLoginUrl(
     ott: string,

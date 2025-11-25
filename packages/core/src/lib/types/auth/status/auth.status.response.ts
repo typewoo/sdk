@@ -1,11 +1,18 @@
-export interface AuthStatusResponse {
-  active: boolean;
-  flag_defined: boolean;
-  flag_enabled: boolean;
-  secret_defined: boolean;
-  secret_length: number;
-  inactive_reason?: 'missing_flag' | 'disabled_flag' | 'missing_secret' | null;
-  endpoints: Record<string, boolean>;
-  version: string;
-  timestamp: number;
-}
+import { z } from 'zod';
+
+export const AuthStatusResponseSchema = z.object({
+  active: z.boolean(),
+  flag_defined: z.boolean(),
+  flag_enabled: z.boolean(),
+  secret_defined: z.boolean(),
+  secret_length: z.number(),
+  inactive_reason: z
+    .enum(['missing_flag', 'disabled_flag', 'missing_secret'])
+    .nullable()
+    .optional(),
+  endpoints: z.record(z.string(), z.boolean()),
+  version: z.string(),
+  timestamp: z.number(),
+});
+
+export type AuthStatusResponse = z.infer<typeof AuthStatusResponseSchema>;

@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
-import type {
-  WcAdminProductAttributeRequest,
-  WcAdminProductAttributeTermRequest,
-} from '../../../types/admin/attribute.types.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -11,6 +7,10 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import {
+  AdminProductAttributeRequest,
+  AdminProductAttributeTermRequest,
+} from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -20,7 +20,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Attributes & Terms', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -32,7 +32,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
   it('lists product attributes', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.productAttributes.list({});
+      await Typewoo.admin.productAttributes.list({});
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
@@ -42,44 +42,44 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
   it('creates, retrieves, updates, and deletes a product attribute', async () => {
     const ts = Date.now();
-    const req: WcAdminProductAttributeRequest = {
+    const req: AdminProductAttributeRequest = {
       name: `Material ${ts}`,
       order_by: 'menu_order',
       has_archives: false,
     };
 
     // Create
-    const createRes = await StoreSdk.admin.productAttributes.create(req);
+    const createRes = await Typewoo.admin.productAttributes.create(req);
     expect(createRes.error).toBeFalsy();
     expect(createRes.data).toBeTruthy();
     if (!createRes.data) return;
     const attrId = createRes.data.id;
 
     // Get
-    const getRes = await StoreSdk.admin.productAttributes.get(attrId);
+    const getRes = await Typewoo.admin.productAttributes.get(attrId);
     expect(getRes.error).toBeFalsy();
     expect(getRes.data?.id).toBe(attrId);
 
     // Update
-    const updateRes = await StoreSdk.admin.productAttributes.update(attrId, {
+    const updateRes = await Typewoo.admin.productAttributes.update(attrId, {
       has_archives: true,
     });
     expect(updateRes.error).toBeFalsy();
     expect(updateRes.data?.has_archives).toBe(true);
 
     // Delete (force)
-    const delRes = await StoreSdk.admin.productAttributes.delete(attrId, true);
+    const delRes = await Typewoo.admin.productAttributes.delete(attrId, true);
     expect(delRes.error).toBeFalsy();
 
     // Verify deleted
-    const getDeleted = await StoreSdk.admin.productAttributes.get(attrId);
+    const getDeleted = await Typewoo.admin.productAttributes.get(attrId);
     expect(getDeleted.error).toBeTruthy();
     expect(getDeleted.error?.code).toMatch(/not_found|invalid/i);
   });
 
   it('handles attribute batch create & delete', async () => {
     const ts = Date.now();
-    const batch = await StoreSdk.admin.productAttributes.batch({
+    const batch = await Typewoo.admin.productAttributes.batch({
       create: [
         { name: `Attr A ${ts}`, order_by: 'menu_order', has_archives: false },
         { name: `Attr B ${ts}`, order_by: 'menu_order', has_archives: false },
@@ -89,25 +89,25 @@ describe('Integration: Admin Product Attributes & Terms', () => {
     if (!batch.data) return;
     const ids = batch.data.create.map((a) => a.id);
 
-    const batchDel = await StoreSdk.admin.productAttributes.batch({
+    const batchDel = await Typewoo.admin.productAttributes.batch({
       delete: ids,
     });
     expect(batchDel.error).toBeFalsy();
   });
 
   it('retrieves attribute in different contexts', async () => {
-    const list = await StoreSdk.admin.productAttributes.list({});
+    const list = await Typewoo.admin.productAttributes.list({});
     expect(list.error).toBeFalsy();
     if (!list.data || list.data.length === 0) return;
     const id = list.data[0].id;
 
-    const view = await StoreSdk.admin.productAttributes.get(id, {
+    const view = await Typewoo.admin.productAttributes.get(id, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(id);
 
-    const edit = await StoreSdk.admin.productAttributes.get(id, {
+    const edit = await Typewoo.admin.productAttributes.get(id, {
       context: 'edit',
     });
     expect(edit.error).toBeFalsy();
@@ -115,27 +115,27 @@ describe('Integration: Admin Product Attributes & Terms', () => {
   });
 
   it('handles attribute error cases', async () => {
-    const notFound = await StoreSdk.admin.productAttributes.get(999999);
+    const notFound = await Typewoo.admin.productAttributes.get(999999);
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(/not_found|invalid/i);
 
-    const badCreate = await StoreSdk.admin.productAttributes.create({
+    const badCreate = await Typewoo.admin.productAttributes.create({
       name: '',
     });
     expect(badCreate.error).toBeTruthy();
 
-    const badUpdate = await StoreSdk.admin.productAttributes.update(999999, {
+    const badUpdate = await Typewoo.admin.productAttributes.update(999999, {
       name: 'Nope',
     });
     expect(badUpdate.error).toBeTruthy();
 
-    const badDelete = await StoreSdk.admin.productAttributes.delete(999999);
+    const badDelete = await Typewoo.admin.productAttributes.delete(999999);
     expect(badDelete.error).toBeTruthy();
   });
 
   it('lists, creates, retrieves, updates, and deletes attribute terms', async () => {
     // Ensure an attribute exists to attach terms to
-    const base = await StoreSdk.admin.productAttributes.create({
+    const base = await Typewoo.admin.productAttributes.create({
       name: `Color ${Date.now()}`,
       order_by: 'menu_order',
       has_archives: false,
@@ -146,18 +146,18 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
     try {
       // List terms (empty is fine)
-      const list0 = await StoreSdk.admin.attributeTerms.list(attributeId, {
+      const list0 = await Typewoo.admin.attributeTerms.list(attributeId, {
         per_page: 10,
       });
       expect(list0.error).toBeFalsy();
 
       // Create a term
-      const termReq: WcAdminProductAttributeTermRequest = {
+      const termReq: AdminProductAttributeTermRequest = {
         name: 'Red',
         description: 'A red color',
         menu_order: 0,
       };
-      const created = await StoreSdk.admin.attributeTerms.create(
+      const created = await Typewoo.admin.attributeTerms.create(
         attributeId,
         termReq
       );
@@ -166,12 +166,12 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       const termId = created.data.id;
 
       // Get term
-      const got = await StoreSdk.admin.attributeTerms.get(attributeId, termId);
+      const got = await Typewoo.admin.attributeTerms.get(attributeId, termId);
       expect(got.error).toBeFalsy();
       expect(got.data?.id).toBe(termId);
 
       // Update term
-      const updated = await StoreSdk.admin.attributeTerms.update(
+      const updated = await Typewoo.admin.attributeTerms.update(
         attributeId,
         termId,
         { description: 'Updated red' }
@@ -180,7 +180,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       expect(updated.data?.description).toContain('Updated');
 
       // List and ensure presence
-      const list1 = await StoreSdk.admin.attributeTerms.list(attributeId, {
+      const list1 = await Typewoo.admin.attributeTerms.list(attributeId, {
         per_page: 10,
       });
       expect(list1.error).toBeFalsy();
@@ -190,7 +190,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       }
 
       // Delete term
-      const del = await StoreSdk.admin.attributeTerms.delete(
+      const del = await Typewoo.admin.attributeTerms.delete(
         attributeId,
         termId,
         true
@@ -198,13 +198,13 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       expect(del.error).toBeFalsy();
     } finally {
       // Cleanup attribute
-      await StoreSdk.admin.productAttributes.delete(attributeId, true);
+      await Typewoo.admin.productAttributes.delete(attributeId, true);
     }
   });
 
   it('handles attribute terms batch and errors', async () => {
     // Ensure an attribute exists
-    const base = await StoreSdk.admin.productAttributes.create({
+    const base = await Typewoo.admin.productAttributes.create({
       name: `Size ${Date.now()}`,
       order_by: 'menu_order',
       has_archives: false,
@@ -215,7 +215,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
     try {
       // Batch create two terms
-      const batch = await StoreSdk.admin.attributeTerms.batch(attributeId, {
+      const batch = await Typewoo.admin.attributeTerms.batch(attributeId, {
         create: [
           { name: 'S', menu_order: 0 },
           { name: 'M', menu_order: 1 },
@@ -226,39 +226,38 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       const termIds = batch.data.create.map((t) => t.id);
 
       // Batch delete
-      const batchDel = await StoreSdk.admin.attributeTerms.batch(attributeId, {
+      const batchDel = await Typewoo.admin.attributeTerms.batch(attributeId, {
         delete: termIds,
       });
       expect(batchDel.error).toBeFalsy();
 
       // Error paths
-      const notFound = await StoreSdk.admin.attributeTerms.get(
+      const notFound = await Typewoo.admin.attributeTerms.get(
         attributeId,
         999999
       );
       expect(notFound.error).toBeTruthy();
       expect(notFound.error?.code).toMatch(/not_found|invalid/i);
 
-      const badCreate = await StoreSdk.admin.attributeTerms.create(
-        attributeId,
-        { name: '' }
-      );
+      const badCreate = await Typewoo.admin.attributeTerms.create(attributeId, {
+        name: '',
+      });
       expect(badCreate.error).toBeTruthy();
 
-      const badUpdate = await StoreSdk.admin.attributeTerms.update(
+      const badUpdate = await Typewoo.admin.attributeTerms.update(
         attributeId,
         999999,
         { description: 'Nope' }
       );
       expect(badUpdate.error).toBeTruthy();
 
-      const badDelete = await StoreSdk.admin.attributeTerms.delete(
+      const badDelete = await Typewoo.admin.attributeTerms.delete(
         attributeId,
         999999
       );
       expect(badDelete.error).toBeTruthy();
     } finally {
-      await StoreSdk.admin.productAttributes.delete(attributeId, true);
+      await Typewoo.admin.productAttributes.delete(attributeId, true);
     }
   });
 });

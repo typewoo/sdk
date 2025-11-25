@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
-import type {
-  WcAdminOrderRequest,
-  WcAdminOrderEmailTemplateId,
-} from '../../../types/admin/order.types.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -11,6 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { AdminOrderRequest, AdminOrderEmailTemplateId } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -20,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Order Service', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -31,12 +28,10 @@ describe('Integration: Admin Order Service', () => {
   });
 
   it('lists orders with pagination', async () => {
-    const { data, error, total, totalPages } = await StoreSdk.admin.orders.list(
-      {
-        per_page: 5,
-        page: 1,
-      }
-    );
+    const { data, error, total, totalPages } = await Typewoo.admin.orders.list({
+      per_page: 5,
+      page: 1,
+    });
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
@@ -47,7 +42,7 @@ describe('Integration: Admin Order Service', () => {
 
   it('creates, retrieves, updates, and deletes an order', async () => {
     // Get an existing product to add as a line item
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     expect(prodList.data && prodList.data.length > 0).toBe(true);
 
@@ -57,7 +52,7 @@ describe('Integration: Admin Order Service', () => {
 
     const productId = prodList.data[0].id;
 
-    const orderData: WcAdminOrderRequest = {
+    const orderData: AdminOrderRequest = {
       status: 'pending',
       line_items: [
         {
@@ -92,7 +87,7 @@ describe('Integration: Admin Order Service', () => {
     };
 
     // Create order
-    const createResult = await StoreSdk.admin.orders.create(orderData);
+    const createResult = await Typewoo.admin.orders.create(orderData);
     expect(createResult.error).toBeFalsy();
     expect(createResult.data).toBeTruthy();
 
@@ -101,40 +96,37 @@ describe('Integration: Admin Order Service', () => {
     const orderId = createResult.data.id;
 
     // Retrieve the created order
-    const getResult = await StoreSdk.admin.orders.get(orderId);
+    const getResult = await Typewoo.admin.orders.get(orderId);
     expect(getResult.error).toBeFalsy();
     expect(getResult.data).toBeTruthy();
     expect(getResult.data?.id).toBe(orderId);
 
     // Update the order status and note
-    const updateData: WcAdminOrderRequest = {
+    const updateData: AdminOrderRequest = {
       status: 'processing',
       customer_note: 'Updated via integration test',
     };
 
-    const updateResult = await StoreSdk.admin.orders.update(
-      orderId,
-      updateData
-    );
+    const updateResult = await Typewoo.admin.orders.update(orderId, updateData);
     expect(updateResult.error).toBeFalsy();
     expect(updateResult.data).toBeTruthy();
     expect(updateResult.data?.status).toBe('processing');
     expect(updateResult.data?.customer_note).toBe(updateData.customer_note);
 
     // Delete the order (force delete)
-    const deleteResult = await StoreSdk.admin.orders.delete(orderId, true);
+    const deleteResult = await Typewoo.admin.orders.delete(orderId, true);
     expect(deleteResult.error).toBeFalsy();
     expect(deleteResult.data).toBeTruthy();
 
     // Verify order is deleted
-    const getDeletedResult = await StoreSdk.admin.orders.get(orderId);
+    const getDeletedResult = await Typewoo.admin.orders.get(orderId);
     expect(getDeletedResult.error).toBeTruthy();
     expect(getDeletedResult.error?.code).toMatch(/not_found|invalid/i);
   });
 
   it('handles batch operations', async () => {
     // Get an existing product to add as a line item
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     expect(prodList.data && prodList.data.length > 0).toBe(true);
 
@@ -165,10 +157,10 @@ describe('Integration: Admin Order Service', () => {
             },
           ],
         },
-      ] as WcAdminOrderRequest[],
+      ] as AdminOrderRequest[],
     };
 
-    const batchResult = await StoreSdk.admin.orders.batch(batchData);
+    const batchResult = await Typewoo.admin.orders.batch(batchData);
     expect(batchResult.error).toBeFalsy();
     expect(batchResult.data).toBeTruthy();
 
@@ -184,50 +176,50 @@ describe('Integration: Admin Order Service', () => {
 
       // Clean up
       await Promise.all([
-        StoreSdk.admin.orders.delete(created1.id, true),
-        StoreSdk.admin.orders.delete(created2.id, true),
+        Typewoo.admin.orders.delete(created1.id, true),
+        Typewoo.admin.orders.delete(created2.id, true),
       ]);
     }
   });
 
   it('handles error cases gracefully', async () => {
     // Non-existent order
-    const nonExistentResult = await StoreSdk.admin.orders.get(999999);
+    const nonExistentResult = await Typewoo.admin.orders.get(999999);
     expect(nonExistentResult.error).toBeTruthy();
     expect(nonExistentResult.error?.code).toMatch(/not_found|invalid/i);
 
     // Invalid create (invalid product_id)
-    const invalidCreate = await StoreSdk.admin.orders.create({
+    const invalidCreate = await Typewoo.admin.orders.create({
       line_items: [{ product_id: 0 as unknown as number, quantity: 1 }],
     });
     expect(invalidCreate.error).toBeTruthy();
 
     // Update non-existent
-    const invalidUpdate = await StoreSdk.admin.orders.update(999999, {
+    const invalidUpdate = await Typewoo.admin.orders.update(999999, {
       status: 'cancelled',
     });
     expect(invalidUpdate.error).toBeTruthy();
 
     // Delete non-existent
-    const invalidDelete = await StoreSdk.admin.orders.delete(999999);
+    const invalidDelete = await Typewoo.admin.orders.delete(999999);
     expect(invalidDelete.error).toBeTruthy();
   });
 
   it('retrieves order in different contexts', async () => {
-    const listResult = await StoreSdk.admin.orders.list({ per_page: 1 });
+    const listResult = await Typewoo.admin.orders.list({ per_page: 1 });
     expect(listResult.error).toBeFalsy();
 
     if (listResult.data && listResult.data.length > 0) {
       const orderId = listResult.data[0].id;
 
-      const viewResult = await StoreSdk.admin.orders.get(orderId, {
+      const viewResult = await Typewoo.admin.orders.get(orderId, {
         context: 'view',
       });
       expect(viewResult.error).toBeFalsy();
       expect(viewResult.data).toBeTruthy();
       expect(viewResult.data?.id).toBe(orderId);
 
-      const editResult = await StoreSdk.admin.orders.get(orderId, {
+      const editResult = await Typewoo.admin.orders.get(orderId, {
         context: 'edit',
       });
       expect(editResult.error).toBeFalsy();
@@ -237,7 +229,7 @@ describe('Integration: Admin Order Service', () => {
   });
 
   it('retrieves order statuses summary', async () => {
-    const statuses = await StoreSdk.admin.orders.getStatuses();
+    const statuses = await Typewoo.admin.orders.getStatuses();
     expect(statuses.error).toBeFalsy();
     expect(Array.isArray(statuses.data)).toBe(true);
     if (statuses.data && statuses.data.length > 0) {
@@ -250,7 +242,7 @@ describe('Integration: Admin Order Service', () => {
 
   it('manages order notes (create/list/get/delete)', async () => {
     // Ensure we have a product to create an order
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     expect(prodList.data && prodList.data.length > 0).toBe(true);
     if (!prodList.data || prodList.data.length === 0) return;
@@ -258,7 +250,7 @@ describe('Integration: Admin Order Service', () => {
     const productId = prodList.data[0].id;
 
     // Create an order to attach notes to
-    const createOrder = await StoreSdk.admin.orders.create({
+    const createOrder = await Typewoo.admin.orders.create({
       status: 'pending',
       line_items: [{ product_id: productId, quantity: 1 }],
       billing: {
@@ -292,7 +284,7 @@ describe('Integration: Admin Order Service', () => {
 
     // Create a note
     const noteText = `Integration note ${Date.now()}`;
-    const createNote = await StoreSdk.admin.orders.createNote(orderId, {
+    const createNote = await Typewoo.admin.orders.createNote(orderId, {
       note: noteText,
       customer_note: false,
     });
@@ -301,7 +293,7 @@ describe('Integration: Admin Order Service', () => {
     const noteId = createNote.data?.id as number;
 
     // List notes and verify presence
-    const listNotes = await StoreSdk.admin.orders.listNotes(orderId, {
+    const listNotes = await Typewoo.admin.orders.listNotes(orderId, {
       type: 'any',
     });
     expect(listNotes.error).toBeFalsy();
@@ -312,12 +304,12 @@ describe('Integration: Admin Order Service', () => {
     }
 
     // Get the note
-    const getNote = await StoreSdk.admin.orders.getNote(orderId, noteId);
+    const getNote = await Typewoo.admin.orders.getNote(orderId, noteId);
     expect(getNote.error).toBeFalsy();
     expect(getNote.data?.id).toBe(noteId);
 
     // Delete the note
-    const deleteNote = await StoreSdk.admin.orders.deleteNote(
+    const deleteNote = await Typewoo.admin.orders.deleteNote(
       orderId,
       noteId,
       true
@@ -325,17 +317,17 @@ describe('Integration: Admin Order Service', () => {
     expect(deleteNote.error).toBeFalsy();
 
     // Cleanup order
-    await StoreSdk.admin.orders.delete(orderId, true);
+    await Typewoo.admin.orders.delete(orderId, true);
   });
 
   it('generates and fetches receipt (if supported)', async () => {
     // Prepare an order
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     if (!prodList.data || prodList.data.length === 0) return;
 
     const productId = prodList.data[0].id;
-    const order = await StoreSdk.admin.orders.create({
+    const order = await Typewoo.admin.orders.create({
       status: 'pending',
       line_items: [{ product_id: productId, quantity: 1 }],
       billing: {
@@ -368,7 +360,7 @@ describe('Integration: Admin Order Service', () => {
     const orderId = order.data.id;
 
     // Generate receipt
-    const gen = await StoreSdk.admin.orders.generateReceipt(orderId, {
+    const gen = await Typewoo.admin.orders.generateReceipt(orderId, {
       force_new: true,
     });
     // Either supported (data) or not (error) depending on env
@@ -381,7 +373,7 @@ describe('Integration: Admin Order Service', () => {
     }
 
     // Fetch receipt
-    const get = await StoreSdk.admin.orders.getReceipt(orderId);
+    const get = await Typewoo.admin.orders.getReceipt(orderId);
     if (get.error) {
       expect(get.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -391,17 +383,17 @@ describe('Integration: Admin Order Service', () => {
     }
 
     // Cleanup
-    await StoreSdk.admin.orders.delete(orderId, true);
+    await Typewoo.admin.orders.delete(orderId, true);
   });
 
   it('retrieves email templates and can send emails (if supported)', async () => {
     // Prepare an order
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     if (!prodList.data || prodList.data.length === 0) return;
 
     const productId = prodList.data[0].id;
-    const order = await StoreSdk.admin.orders.create({
+    const order = await Typewoo.admin.orders.create({
       status: 'pending',
       line_items: [{ product_id: productId, quantity: 1 }],
       billing: {
@@ -434,7 +426,7 @@ describe('Integration: Admin Order Service', () => {
     const orderId = order.data.id;
 
     // Get templates
-    const templates = await StoreSdk.admin.orders.getEmailTemplates(orderId);
+    const templates = await Typewoo.admin.orders.getEmailTemplates(orderId);
     if (templates.error) {
       expect(templates.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -445,8 +437,8 @@ describe('Integration: Admin Order Service', () => {
       // Attempt to send email with first available template
       if (templates.data && templates.data.length > 0) {
         const templateId = templates.data[0]
-          .id as unknown as WcAdminOrderEmailTemplateId; // use returned template id
-        const sent = await StoreSdk.admin.orders.sendEmail(orderId, {
+          .id as unknown as AdminOrderEmailTemplateId; // use returned template id
+        const sent = await Typewoo.admin.orders.sendEmail(orderId, {
           template_id: templateId,
           email: `notify-${Date.now()}@example.com`,
           force_email_update: true,
@@ -462,7 +454,7 @@ describe('Integration: Admin Order Service', () => {
     }
 
     // Send order details
-    const details = await StoreSdk.admin.orders.sendOrderDetails(orderId, {
+    const details = await Typewoo.admin.orders.sendOrderDetails(orderId, {
       email: `details-${Date.now()}@example.com`,
       force_email_update: true,
     });
@@ -475,18 +467,18 @@ describe('Integration: Admin Order Service', () => {
     }
 
     // Cleanup
-    await StoreSdk.admin.orders.delete(orderId, true);
+    await Typewoo.admin.orders.delete(orderId, true);
   });
 
   it('lists refunds globally (no single-refund fetch via global endpoint)', async () => {
-    const list = await StoreSdk.admin.refunds.list({ per_page: 1 });
+    const list = await Typewoo.admin.refunds.list({ per_page: 1 });
     expect(list.error).toBeFalsy();
     expect(Array.isArray(list.data)).toBe(true);
   });
 
   it('creates, lists, gets and deletes an order refund', async () => {
     // Ensure we have a product to create an order
-    const prodList = await StoreSdk.admin.products.list({ per_page: 1 });
+    const prodList = await Typewoo.admin.products.list({ per_page: 1 });
     expect(prodList.error).toBeFalsy();
     if (!prodList.data || prodList.data.length === 0) {
       throw new Error('No products found');
@@ -495,7 +487,7 @@ describe('Integration: Admin Order Service', () => {
     const productId = prodList.data[0].id;
 
     // Create an order with a single line item
-    const createOrder = await StoreSdk.admin.orders.create({
+    const createOrder = await Typewoo.admin.orders.create({
       status: 'pending',
       line_items: [{ product_id: productId, quantity: 1 }],
       billing: {
@@ -529,7 +521,7 @@ describe('Integration: Admin Order Service', () => {
 
     try {
       // Read line items to compute a safe refund payload
-      const order = await StoreSdk.admin.orders.get(orderId);
+      const order = await Typewoo.admin.orders.get(orderId);
       expect(order.error).toBeFalsy();
       if (
         !order.data ||
@@ -542,7 +534,7 @@ describe('Integration: Admin Order Service', () => {
       const itemTotal = firstItem.total || '0';
 
       // Create a refund without attempting gateway refund to keep environment-agnostic
-      const createRefund = await StoreSdk.admin.orders.createRefund(orderId, {
+      const createRefund = await Typewoo.admin.orders.createRefund(orderId, {
         amount: itemTotal,
         reason: 'Integration test refund',
         refunded_payment: false,
@@ -568,7 +560,7 @@ describe('Integration: Admin Order Service', () => {
       const refundId = createRefund.data.id;
 
       // List refunds for the order
-      const listRefunds = await StoreSdk.admin.orders.listRefunds(orderId, {
+      const listRefunds = await Typewoo.admin.orders.listRefunds(orderId, {
         per_page: 10,
       });
       expect(listRefunds.error).toBeFalsy();
@@ -579,15 +571,12 @@ describe('Integration: Admin Order Service', () => {
       }
 
       // Get the refund
-      const getRefund = await StoreSdk.admin.orders.getRefund(
-        orderId,
-        refundId
-      );
+      const getRefund = await Typewoo.admin.orders.getRefund(orderId, refundId);
       expect(getRefund.error).toBeFalsy();
       expect(getRefund.data?.id).toBe(refundId);
 
       // Delete the refund
-      const delRefund = await StoreSdk.admin.orders.deleteRefund(
+      const delRefund = await Typewoo.admin.orders.deleteRefund(
         orderId,
         refundId,
         true
@@ -595,12 +584,12 @@ describe('Integration: Admin Order Service', () => {
       expect(delRefund.error).toBeFalsy();
     } finally {
       // Cleanup order
-      await StoreSdk.admin.orders.delete(orderId, true);
+      await Typewoo.admin.orders.delete(orderId, true);
     }
   });
 
   it('handles order refund get error for non-existent id', async () => {
-    const res = await StoreSdk.admin.orders.getRefund(999999, 999999);
+    const res = await Typewoo.admin.orders.getRefund(999999, 999999);
     expect(res.error).toBeTruthy();
     expect(res.error?.code).toMatch(/not_found|invalid/i);
   });

@@ -1,13 +1,13 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { httpClient } from '../services/api.js';
-import { StoreSdkConfig } from '../configs/sdk.config.js';
+import { SdkConfig } from '../configs/sdk.config.js';
 
-export const addTokenInterceptor = (config: StoreSdkConfig) => {
+export const addTokenInterceptor = (config: SdkConfig) => {
   httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (
         !axiosConfig.url?.startsWith('/wp-json/wc/store/v1/') &&
-        !axiosConfig.url?.startsWith('/wp-json/store-sdk/')
+        !axiosConfig.url?.startsWith('/wp-json/typewoo/')
       ) {
         return axiosConfig;
       }

@@ -1,27 +1,70 @@
-import { ImageResponse } from '../image.response.js';
-import { ProductPriceResponse } from './product.price.response.js';
+import { z } from 'zod';
+import { ImageResponseSchema } from '../image.response.js';
+import { ProductPriceResponseSchema } from './product.price.response.js';
 
-export interface ProductResponse {
-  id: number;
-  name: string;
-  slug: string;
-  variation: string;
-  permalink: string;
-  sku: string;
-  summary: string;
-  short_description: string;
-  description: string;
-  on_sale: boolean;
-  prices: ProductPriceResponse;
-  average_rating: string;
-  review_count: number;
-  images: ImageResponse[];
-  has_options: boolean;
-  is_purchasable: boolean;
-  is_in_stock: boolean;
-  low_stock_remaining: unknown;
-  add_to_cart: {
-    text: string;
-    description: string;
-  };
-}
+export const ProductResponseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  parent: z.number(),
+  type: z.string(),
+  variation: z.string(),
+  permalink: z.string(),
+  sku: z.string(),
+  short_description: z.string(),
+  description: z.string(),
+  on_sale: z.boolean(),
+  prices: ProductPriceResponseSchema,
+  price_html: z.string(),
+  average_rating: z.string(),
+  review_count: z.number(),
+  images: z.array(ImageResponseSchema),
+  categories: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      slug: z.string(),
+      link: z.string(),
+    })
+  ),
+  tags: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      slug: z.string(),
+      link: z.string(),
+    })
+  ),
+  brands: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      slug: z.string(),
+      link: z.string(),
+    })
+  ),
+  attributes: z.array(z.unknown()),
+  variations: z.array(z.unknown()),
+  grouped_products: z.array(z.unknown()),
+  has_options: z.boolean(),
+  is_purchasable: z.boolean(),
+  is_in_stock: z.boolean(),
+  is_on_backorder: z.boolean(),
+  low_stock_remaining: z.unknown(),
+  stock_availability: z.object({
+    text: z.string(),
+    class: z.string(),
+  }),
+  sold_individually: z.boolean(),
+  add_to_cart: z.object({
+    text: z.string(),
+    description: z.string(),
+    url: z.string(),
+    single_text: z.string(),
+    maximum: z.number(),
+    minimum: z.number(),
+    multiple_of: z.number(),
+  }),
+  extensions: z.unknown(),
+});
+export type ProductResponse = z.infer<typeof ProductResponseSchema>;

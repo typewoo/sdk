@@ -1,14 +1,18 @@
-export interface CartItemAddRequest {
+import { z } from 'zod';
+
+export const CartItemAddRequestSchema = z.object({
   /**
    * The cart item product or variation ID.
    */
-  id: number;
+  id: z.number(),
   /**
    * Quantity of this item in the cart.
    */
-  quantity?: number;
+  quantity: z.number().optional(),
   /**
    * Chosen attributes (for variations) containing an array of objects with keys `attribute` and `value`.
    */
-  variation?: { [key: string]: string }[];
-}
+  variation: z.array(z.record(z.string(), z.string())).optional(),
+});
+
+export type CartItemAddRequest = z.infer<typeof CartItemAddRequestSchema>;

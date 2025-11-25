@@ -1,63 +1,78 @@
-export interface WcAdminTax {
-  id: number;
-  country: string;
-  state: string;
-  postcode: string;
-  city: string;
-  postcodes: string[];
-  cities: string[];
-  rate: string;
-  name: string;
-  priority: number;
-  compound: boolean;
-  shipping: boolean;
-  order: number;
-  class: 'standard' | 'reduced-rate' | 'zero-rate';
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+import { z } from 'zod';
 
-export interface WcAdminTaxRequest {
-  country?: string;
-  state?: string;
-  postcode?: string;
-  city?: string;
-  postcodes?: string[];
-  cities?: string[];
-  rate?: string;
-  name?: string;
-  priority?: number;
-  compound?: boolean;
-  shipping?: boolean;
-  order?: number;
-  class?: 'standard' | 'reduced-rate' | 'zero-rate';
-}
+export const AdminTaxSchema = z.object({
+  id: z.number(),
+  country: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  city: z.string(),
+  postcodes: z.array(z.string()),
+  cities: z.array(z.string()),
+  rate: z.string(),
+  name: z.string(),
+  priority: z.number(),
+  compound: z.boolean(),
+  shipping: z.boolean(),
+  order: z.number(),
+  class: z.enum(['standard', 'reduced-rate', 'zero-rate']),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+  }),
+});
 
-export interface WcAdminTaxQueryParams {
-  context?: 'view' | 'edit';
-  page?: number;
-  per_page?: number;
-  offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?: 'id' | 'order' | 'priority';
-  class?: 'standard' | 'reduced-rate' | 'zero-rate';
-}
+export type AdminTax = z.infer<typeof AdminTaxSchema>;
 
-export interface WcAdminTaxClass {
-  slug: string;
-  name: string;
-  _links: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+export const AdminTaxRequestSchema = z.object({
+  country: z.string().optional(),
+  state: z.string().optional(),
+  postcode: z.string().optional(),
+  city: z.string().optional(),
+  postcodes: z.array(z.string()).optional(),
+  cities: z.array(z.string()).optional(),
+  rate: z.string().optional(),
+  name: z.string().optional(),
+  priority: z.number().optional(),
+  compound: z.boolean().optional(),
+  shipping: z.boolean().optional(),
+  order: z.number().optional(),
+  class: z.enum(['standard', 'reduced-rate', 'zero-rate']).optional(),
+});
 
-export interface WcAdminTaxClassRequest {
-  name: string;
-}
+export type AdminTaxRequest = z.infer<typeof AdminTaxRequestSchema>;
 
-export interface WcAdminTaxClassQueryParams {
-  context?: 'view' | 'edit';
-}
+export const AdminTaxQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  offset: z.number().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  orderby: z.enum(['id', 'order', 'priority']).optional(),
+  class: z.enum(['standard', 'reduced-rate', 'zero-rate']).optional(),
+});
+
+export type AdminTaxQueryParams = z.infer<typeof AdminTaxQueryParamsSchema>;
+
+export const AdminTaxClassSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  _links: z.object({
+    self: z.array(z.object({ href: z.string() })),
+    collection: z.array(z.object({ href: z.string() })),
+  }),
+});
+
+export type AdminTaxClass = z.infer<typeof AdminTaxClassSchema>;
+
+export const AdminTaxClassRequestSchema = z.object({
+  name: z.string(),
+});
+
+export type AdminTaxClassRequest = z.infer<typeof AdminTaxClassRequestSchema>;
+export const AdminTaxClassQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+});
+
+export type AdminTaxClassQueryParams = z.infer<
+  typeof AdminTaxClassQueryParamsSchema
+>;

@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { BatchRequest, Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import z from 'zod';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -10,13 +11,13 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Batch API Operations', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('executes batch request with multiple operations', async () => {
     // Test batch operation with cart get and product listing
-    const batchRequest = {
-      validation: 'normal' as const,
+    const batchRequest: z.infer<typeof BatchRequest> = {
+      validation: 'normal',
       requests: [
         {
           method: 'POST',
@@ -29,7 +30,7 @@ describe('Integration: Batch API Operations', () => {
       ],
     };
 
-    const res = await StoreSdk.store.batch.execute(batchRequest);
+    const res = await Typewoo.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Batch API might not be supported on all installations
@@ -55,8 +56,8 @@ describe('Integration: Batch API Operations', () => {
   });
 
   it('handles batch request with require-all-validate mode', async () => {
-    const batchRequest = {
-      validation: 'require-all-validate' as const,
+    const batchRequest: z.infer<typeof BatchRequest> = {
+      validation: 'require-all-validate',
       requests: [
         {
           method: 'POST',
@@ -65,7 +66,7 @@ describe('Integration: Batch API Operations', () => {
       ],
     };
 
-    const res = await StoreSdk.store.batch.execute(batchRequest);
+    const res = await Typewoo.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Batch API or validation mode might not be supported
@@ -86,7 +87,7 @@ describe('Integration: Batch API Operations', () => {
       requests: [],
     };
 
-    const res = await StoreSdk.store.batch.execute(batchRequest);
+    const res = await Typewoo.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Should get validation error for empty requests

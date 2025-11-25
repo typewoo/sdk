@@ -1,40 +1,35 @@
 import { BaseService } from '../base.service.js';
-import {
-  WcAdminCountry,
-  WcAdminCurrency,
-  WcAdminContinent,
-  WcAdminDataQueryParams,
-} from '../../types/admin/data.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminDataQueryParams,
+  AdminCountry,
+  AdminCurrency,
+  AdminContinent,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Data Service
  *
  * Manages data endpoints through the WooCommerce REST API (wp-json/wc/v3/data)
  */
-export class WcAdminDataService extends BaseService {
+export class AdminDataService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/data';
 
   /**
    * List countries
    */
   async listCountries(
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiPaginationResult<WcAdminCountry[]>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiPaginationResult<AdminCountry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/countries${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminCountry[]>(url);
+    const { data, error, headers } = await doGet<AdminCountry[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -44,14 +39,14 @@ export class WcAdminDataService extends BaseService {
    */
   async getCountry(
     code: string,
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiResult<WcAdminCountry>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiResult<AdminCountry>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/countries/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<WcAdminCountry>(url);
+    const { data, error } = await doGet<AdminCountry>(url);
     return { data, error };
   }
 
@@ -59,19 +54,14 @@ export class WcAdminDataService extends BaseService {
    * List currencies
    */
   async listCurrencies(
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiPaginationResult<WcAdminCurrency[]>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiPaginationResult<AdminCurrency[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/currencies${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminCurrency[]>(url);
+    const { data, error, headers } = await doGet<AdminCurrency[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -81,14 +71,14 @@ export class WcAdminDataService extends BaseService {
    */
   async getCurrency(
     code: string,
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiResult<WcAdminCurrency>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiResult<AdminCurrency>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/currencies/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<WcAdminCurrency>(url);
+    const { data, error } = await doGet<AdminCurrency>(url);
     return { data, error };
   }
 
@@ -96,19 +86,14 @@ export class WcAdminDataService extends BaseService {
    * List continents
    */
   async listContinents(
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiPaginationResult<WcAdminContinent[]>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiPaginationResult<AdminContinent[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/continents${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminContinent[]>(url);
+    const { data, error, headers } = await doGet<AdminContinent[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -118,14 +103,14 @@ export class WcAdminDataService extends BaseService {
    */
   async getContinent(
     code: string,
-    params?: WcAdminDataQueryParams
-  ): Promise<ApiResult<WcAdminContinent>> {
+    params?: AdminDataQueryParams
+  ): Promise<ApiResult<AdminContinent>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/continents/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<WcAdminContinent>(url);
+    const { data, error } = await doGet<AdminContinent>(url);
     return { data, error };
   }
 }

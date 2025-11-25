@@ -13,9 +13,9 @@ import { createInterface } from 'node:readline';
 
 // Configuration
 const CONFIG = {
-  PLUGIN_SLUG: 'store-sdk',
-  SVN_URL: 'https://plugins.svn.wordpress.org/store-sdk',
-  PLUGIN_DIR: resolve('plugins/store-sdk'),
+  PLUGIN_SLUG: 'typewoo',
+  SVN_URL: 'https://plugins.svn.wordpress.org/typewoo',
+  PLUGIN_DIR: resolve('plugins/typewoo'),
   BUILD_DIR: resolve('dist/wp-plugin'),
   SVN_DIR: resolve('dist/svn-checkout'),
   ASSETS_DIR: resolve('assets/wordpress-org'), // Screenshots, banners, icons
@@ -117,7 +117,7 @@ function promptUser(question) {
 }
 
 function getPluginVersion() {
-  const pluginFile = join(CONFIG.PLUGIN_DIR, 'store-sdk.php');
+  const pluginFile = join(CONFIG.PLUGIN_DIR, 'typewoo.php');
 
   if (!existsSync(pluginFile)) {
     error(`Plugin file not found: ${pluginFile}`);
@@ -166,9 +166,9 @@ function validateReadmeFile() {
 
 function validatePluginStructure() {
   const requiredFiles = [
-    'store-sdk.php',
+    'typewoo.php',
     'readme.txt',
-    'includes/class-store-sdk.php',
+    'includes/class-typewoo.php',
   ];
 
   for (const file of requiredFiles) {

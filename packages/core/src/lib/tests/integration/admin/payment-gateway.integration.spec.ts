@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -16,7 +16,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Payment Gateways', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -27,7 +27,7 @@ describe('Integration: Admin Payment Gateways', () => {
   });
 
   it('lists payment gateways and gets one by id', async () => {
-    const list = await StoreSdk.admin.paymentGateways.list({ context: 'view' });
+    const list = await Typewoo.admin.paymentGateways.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -38,7 +38,7 @@ describe('Integration: Admin Payment Gateways', () => {
     if (!list.data || list.data.length === 0) return;
 
     const gw = list.data[0];
-    const get = await StoreSdk.admin.paymentGateways.get(gw.id, {
+    const get = await Typewoo.admin.paymentGateways.get(gw.id, {
       context: 'view',
     });
     if (get.error) {
@@ -51,7 +51,7 @@ describe('Integration: Admin Payment Gateways', () => {
   });
 
   it('updates a payment gateway safely (enabled toggle or no-op settings)', async () => {
-    const list = await StoreSdk.admin.paymentGateways.list({ context: 'edit' });
+    const list = await Typewoo.admin.paymentGateways.list({ context: 'edit' });
     if (list.error || !list.data || list.data.length === 0) return;
     const gw = list.data[0];
 
@@ -69,7 +69,7 @@ describe('Integration: Admin Payment Gateways', () => {
       return {};
     })();
 
-    const upd = await StoreSdk.admin.paymentGateways.update(gw.id, safePayload);
+    const upd = await Typewoo.admin.paymentGateways.update(gw.id, safePayload);
     if (upd.error) {
       expect(upd.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i

@@ -1,44 +1,39 @@
 import { BaseService } from '../base.service.js';
 import {
-  WcAdminProductReview,
-  WcAdminProductReviewRequest,
-  WcAdminProductReviewQueryParams,
-} from '../../types/admin/product-review.types.js';
-import { ApiResult, ApiPaginationResult } from '../../types/api.js';
-import {
   doGet,
   doPost,
   doPut,
   doDelete,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
-import qs from 'qs';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  AdminProductReviewQueryParams,
+  AdminProductReview,
+  AdminProductReviewRequest,
+} from '../../types/index.js';
 
 /**
  * WooCommerce REST API Product Reviews Service
  *
  * Manages product reviews through the WooCommerce REST API (wp-json/wc/v3/products/reviews)
  */
-export class WcAdminProductReviewService extends BaseService {
+export class AdminProductReviewService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/products/reviews';
 
   /**
    * List product reviews
    */
   async list(
-    params?: WcAdminProductReviewQueryParams
-  ): Promise<ApiPaginationResult<WcAdminProductReview[]>> {
+    params?: AdminProductReviewQueryParams
+  ): Promise<ApiPaginationResult<AdminProductReview[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<WcAdminProductReview[]>(url);
+    const { data, error, headers } = await doGet<AdminProductReview[]>(url);
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }
@@ -49,11 +44,11 @@ export class WcAdminProductReviewService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' }
-  ): Promise<ApiResult<WcAdminProductReview>> {
+  ): Promise<ApiResult<AdminProductReview>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<WcAdminProductReview>(url);
+    const { data, error } = await doGet<AdminProductReview>(url);
     return { data, error };
   }
 
@@ -61,12 +56,12 @@ export class WcAdminProductReviewService extends BaseService {
    * Create a new product review
    */
   async create(
-    review: WcAdminProductReviewRequest
-  ): Promise<ApiResult<WcAdminProductReview>> {
+    review: AdminProductReviewRequest
+  ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
-      WcAdminProductReview,
-      WcAdminProductReviewRequest
+      AdminProductReview,
+      AdminProductReviewRequest
     >(url, review);
 
     return { data, error };
@@ -77,12 +72,12 @@ export class WcAdminProductReviewService extends BaseService {
    */
   async update(
     id: number,
-    review: WcAdminProductReviewRequest
-  ): Promise<ApiResult<WcAdminProductReview>> {
+    review: AdminProductReviewRequest
+  ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
-      WcAdminProductReview,
-      WcAdminProductReviewRequest
+      AdminProductReview,
+      AdminProductReviewRequest
     >(url, review);
 
     return { data, error };
@@ -94,10 +89,10 @@ export class WcAdminProductReviewService extends BaseService {
   async delete(
     id: number,
     force = false
-  ): Promise<ApiResult<WcAdminProductReview>> {
+  ): Promise<ApiResult<AdminProductReview>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<WcAdminProductReview>(url);
+    const { data, error } = await doDelete<AdminProductReview>(url);
 
     return { data, error };
   }
@@ -106,22 +101,22 @@ export class WcAdminProductReviewService extends BaseService {
    * Batch create/update/delete product reviews
    */
   async batch(operations: {
-    create?: WcAdminProductReviewRequest[];
-    update?: Array<WcAdminProductReviewRequest & { id: number }>;
+    create?: AdminProductReviewRequest[];
+    update?: Array<AdminProductReviewRequest & { id: number }>;
     delete?: number[];
   }): Promise<
     ApiResult<{
-      create: WcAdminProductReview[];
-      update: WcAdminProductReview[];
-      delete: WcAdminProductReview[];
+      create: AdminProductReview[];
+      update: AdminProductReview[];
+      delete: AdminProductReview[];
     }>
   > {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       {
-        create: WcAdminProductReview[];
-        update: WcAdminProductReview[];
-        delete: WcAdminProductReview[];
+        create: AdminProductReview[];
+        update: AdminProductReview[];
+        delete: AdminProductReview[];
       },
       typeof operations
     >(url, operations);

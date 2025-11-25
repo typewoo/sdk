@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,17 +10,17 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Product Attributes & Terms', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('lists attributes and retrieves terms for the size attribute', async () => {
-    const { data: attributes } = await StoreSdk.store.attributes.list();
+    const { data: attributes } = await Typewoo.store.attributes.list();
     expect(Array.isArray(attributes)).toBe(true);
     const size =
       attributes?.find((a) => /size/i.test(a.name || '')) || attributes?.[0];
     if (size?.id) {
       // Request without unsupported paging params; default ordering
-      const { data: terms } = await StoreSdk.store.attributesTerms.list(
+      const { data: terms } = await Typewoo.store.attributesTerms.list(
         size.id,
         {
           id: size.id,
@@ -38,7 +38,7 @@ describe('Integration: Product Attributes & Terms', () => {
   });
 
   it('handles terms request for non-existent attribute id', async () => {
-    const res = await StoreSdk.store.attributesTerms.list(999999, {
+    const res = await Typewoo.store.attributesTerms.list(999999, {
       id: 999999,
       order: 'asc',
       orderby: 'name',

@@ -1,95 +1,109 @@
-import { WcAdminMetaData, WcAdminAddress } from './common.types.js';
+import { z } from 'zod';
+import { AdminMetaData, AdminAddress } from './common.types.js';
 
 /**
  * WooCommerce REST API Customer Response
  */
-export interface WcAdminCustomer {
+export const AdminCustomerSchema = z.object({
   /**
    * Unique identifier for the resource.
    */
-  id: number;
+  id: z.number(),
   /**
    * The date the customer was created, in the site's timezone.
    */
-  date_created: string;
+  date_created: z.string(),
   /**
    * The date the customer was created, as GMT.
    */
-  date_created_gmt: string;
+  date_created_gmt: z.string(),
   /**
    * The date the customer was last modified, in the site's timezone.
    */
-  date_modified: string;
+  date_modified: z.string(),
   /**
    * The date the customer was last modified, as GMT.
    */
-  date_modified_gmt: string;
+  date_modified_gmt: z.string(),
   /**
    * The email address for the customer.
    */
-  email: string;
+  email: z.string(),
   /**
    * Customer first name.
    */
-  first_name: string;
+  first_name: z.string(),
   /**
    * Customer last name.
    */
-  last_name: string;
+  last_name: z.string(),
   /**
    * Customer role.
    */
-  role: string;
+  role: z.string(),
   /**
    * Customer login name.
    */
-  username: string;
-  billing: WcAdminAddress;
-  shipping: Omit<WcAdminAddress, 'email' | 'phone'>;
-  is_paying_customer: boolean;
-  avatar_url: string;
-  meta_data: WcAdminMetaData[];
-  _links?: {
-    self: Array<{ href: string }>;
-    collection: Array<{ href: string }>;
-  };
-}
+  username: z.string(),
+  billing: AdminAddress,
+  shipping: AdminAddress.omit({ email: true, phone: true }),
+  is_paying_customer: z.boolean(),
+  avatar_url: z.string(),
+  meta_data: z.array(AdminMetaData),
+  _links: z
+    .object({
+      self: z.array(z.object({ href: z.string() })),
+      collection: z.array(z.object({ href: z.string() })),
+    })
+    .optional(),
+});
+
+export type AdminCustomer = z.infer<typeof AdminCustomerSchema>;
 
 /**
  * Customer request parameters for creating/updating
  */
-export interface WcAdminCustomerRequest {
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-  username?: string;
-  password?: string;
-  billing?: WcAdminAddress;
-  shipping?: Omit<WcAdminAddress, 'email' | 'phone'>;
-  meta_data?: WcAdminMetaData[];
-}
+export const AdminCustomerRequestSchema = z.object({
+  email: z.string().optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  username: z.string().optional(),
+  password: z.string().optional(),
+  billing: AdminAddress.optional(),
+  shipping: AdminAddress.omit({ email: true, phone: true }).optional(),
+  meta_data: z.array(AdminMetaData).optional(),
+});
+
+export type AdminCustomerRequest = z.infer<typeof AdminCustomerRequestSchema>;
 
 /**
  * Customer query parameters for listing
  */
-export interface WcAdminCustomerQueryParams {
-  context?: 'view' | 'edit';
-  page?: number;
-  per_page?: number;
-  search?: string;
-  exclude?: number[];
-  include?: number[];
-  offset?: number;
-  order?: 'asc' | 'desc';
-  orderby?: 'id' | 'include' | 'name' | 'registered_date';
-  email?: string;
-  role?:
-    | 'all'
-    | 'administrator'
-    | 'editor'
-    | 'author'
-    | 'contributor'
-    | 'subscriber'
-    | 'customer'
-    | 'shop_manager';
-}
+export const AdminCustomerQueryParamsSchema = z.object({
+  context: z.enum(['view', 'edit']).optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  search: z.string().optional(),
+  exclude: z.array(z.number()).optional(),
+  include: z.array(z.number()).optional(),
+  offset: z.number().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  orderby: z.enum(['id', 'include', 'name', 'registered_date']).optional(),
+  email: z.string().optional(),
+  role: z
+    .enum([
+      'all',
+      'administrator',
+      'editor',
+      'author',
+      'contributor',
+      'subscriber',
+      'customer',
+      'shop_manager',
+    ])
+    .optional(),
+});
+
+export type AdminCustomerQueryParams = z.infer<
+  typeof AdminCustomerQueryParamsSchema
+>;

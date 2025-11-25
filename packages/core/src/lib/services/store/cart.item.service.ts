@@ -1,7 +1,3 @@
-import { CartItemResponse } from '../../types/store/cart-item/cart.item.response.js';
-import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
-import qs from 'qs';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import {
@@ -10,7 +6,10 @@ import {
   doPost,
   doPut,
 } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import * as qs from 'qs';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import { CartItemResponse, CartItemAddRequest } from '../../types/index.js';
 
 /**
  * Cart Items API
@@ -32,12 +31,7 @@ export class CartItemService extends BaseService {
       options
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
 
     return { data, error, total, totalPages, link };
   }

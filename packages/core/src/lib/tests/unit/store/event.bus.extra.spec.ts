@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { EventBus } from '../../../bus/event.bus.js';
-import type { StoreSdkEvent } from '../../../sdk.events.js';
+import type { SdkEvent } from '../../../sdk.events.js';
 
-type T = StoreSdkEvent & { 't:ev': void };
+type T = SdkEvent & { 't:ev': void };
 
 describe('EventBus extra coverage', () => {
   it('middleware disposer removes middleware', () => {

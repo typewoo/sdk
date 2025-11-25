@@ -1,6 +1,6 @@
 # WordPress + WooCommerce Test Environment
 
-Environment for running a real WordPress + WooCommerce instance with the Store SDK JWT mu‑plugin enabled. Suitable for development and can be adapted for production with the hardening steps outlined below.
+Environment for running a real WordPress + WooCommerce instance with the TypeWoo JWT mu‑plugin enabled. Suitable for development and can be adapted for production with the hardening steps outlined below.
 
 ## Features
 
@@ -129,24 +129,24 @@ If you want to skip seeding entirely, create the guard manually before first run
 npm run wp:cli -- option add store_sdk_seeded 1
 ```
 
-<!-- Simple JWT Login plugin has been removed from this environment. Use the Store SDK Auth endpoints instead. -->
+<!-- Simple JWT Login plugin has been removed from this environment. Use the TypeWoo Auth endpoints instead. -->
 
-## Store SDK Auth Plugin
+## TypeWoo Auth Plugin
 
-This environment includes the unified authentication plugin (slug: `store-sdk`).
+This environment includes the unified authentication plugin (slug: `typewoo`).
 
 It provides lightweight JWT issuance, one-time autologin tokens, refresh token rotation, and forced authentication via `Authorization: Bearer` without depending on external plugins. Configure the constants below and apply recommended hardening for production use.
 
 ### REST Endpoints
 
-| Endpoint                                           | Method(s) | Purpose                                                                  |
-| -------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
-| `/wp-json/store-sdk/v1/auth/token`                 | POST      | Issue access + refresh token (login/email + password).                   |
-| `/wp-json/store-sdk/v1/auth/one-time-token`        | POST      | Issue single-use autologin token (requires existing auth).               |
-| `/wp-json/store-sdk/v1/auth/autologin`             | POST/GET  | Consume one-time token; establishes WP auth cookies (optional redirect). |
-| `/wp-json/store-sdk/v1/auth/refresh`               | POST      | Rotate refresh token and obtain new access + refresh tokens.             |
-| `/wp-json/store-sdk/v1/auth/validate`              | GET       | Validate an access token (returns payload).                              |
-| Front-channel (`/?storesdk_autologin=1&token=...`) | GET       | Browser deep link autologin (optional redirect).                         |
+| Endpoint                                          | Method(s) | Purpose                                                                  |
+| ------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
+| `/wp-json/typewoo/v1/auth/token`                  | POST      | Issue access + refresh token (login/email + password).                   |
+| `/wp-json/typewoo/v1/auth/one-time-token`         | POST      | Issue single-use autologin token (requires existing auth).               |
+| `/wp-json/typewoo/v1/auth/autologin`              | POST/GET  | Consume one-time token; establishes WP auth cookies (optional redirect). |
+| `/wp-json/typewoo/v1/auth/refresh`                | POST      | Rotate refresh token and obtain new access + refresh tokens.             |
+| `/wp-json/typewoo/v1/auth/validate`               | GET       | Validate an access token (returns payload).                              |
+| Front-channel (`/?typewoo_autologin=1&token=...`) | GET       | Browser deep link autologin (optional redirect).                         |
 
 ### Request Parameters (Summary)
 
@@ -162,20 +162,20 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 
 ### Configurable Constants (define in `wp-config.php` before WordPress loads)
 
-| Constant                                      | Default                | Description                                                          |
-| --------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
-| `STORESDK_JWT_SECRET`                         | (no default, REQUIRED) | HMAC signing secret (HS256). Must be explicitly defined.             |
-| `STORESDK_JWT_ACCESS_TTL`                     | `3600`                 | Base access token lifetime (seconds). Filter can still override.     |
-| `STORESDK_JWT_ENABLED`                        | `true`                 | Master enable flag. If `false`, plugin is inert (no routes).         |
-| `STORESDK_JWT_REFRESH_TTL`                    | `1209600` (14d)        | Default refresh token lifetime.                                      |
-| `STORESDK_JWT_REFRESH_MIN_TTL`                | `86400` (1d)           | Minimum allowed `refresh_ttl`.                                       |
-| `STORESDK_JWT_REFRESH_MAX_TTL`                | `2592000` (30d)        | Maximum allowed `refresh_ttl`.                                       |
-| `STORESDK_JWT_ONE_TIME_TTL`                   | `300` (5m)             | Default one-time token TTL.                                          |
-| `STORESDK_JWT_ONE_TIME_MIN_TTL`               | `30`                   | Minimum one-time TTL.                                                |
-| `STORESDK_JWT_ONE_TIME_MAX_TTL`               | `900` (15m)            | Maximum one-time TTL.                                                |
-| `STORESDK_JWT_REFRESH_MAX_TOKENS`             | `10`                   | Max stored refresh tokens per user (oldest pruned). `0` = unlimited. |
-| `STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN` | `true`                 | Enforce one-time token for `/autologin` & front-channel.             |
-| `STORESDK_JWT_ENABLE_FRONT_CHANNEL`           | `true`                 | Enable front-channel `?storesdk_autologin=1` flow.                   |
+| Constant                                     | Default                | Description                                                          |
+| -------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| `TYPEWOO_JWT_SECRET`                         | (no default, REQUIRED) | HMAC signing secret (HS256). Must be explicitly defined.             |
+| `TYPEWOO_JWT_ACCESS_TTL`                     | `3600`                 | Base access token lifetime (seconds). Filter can still override.     |
+| `TYPEWOO_JWT_ENABLED`                        | `true`                 | Master enable flag. If `false`, plugin is inert (no routes).         |
+| `TYPEWOO_JWT_REFRESH_TTL`                    | `1209600` (14d)        | Default refresh token lifetime.                                      |
+| `TYPEWOO_JWT_REFRESH_MIN_TTL`                | `86400` (1d)           | Minimum allowed `refresh_ttl`.                                       |
+| `TYPEWOO_JWT_REFRESH_MAX_TTL`                | `2592000` (30d)        | Maximum allowed `refresh_ttl`.                                       |
+| `TYPEWOO_JWT_ONE_TIME_TTL`                   | `300` (5m)             | Default one-time token TTL.                                          |
+| `TYPEWOO_JWT_ONE_TIME_MIN_TTL`               | `30`                   | Minimum one-time TTL.                                                |
+| `TYPEWOO_JWT_ONE_TIME_MAX_TTL`               | `900` (15m)            | Maximum one-time TTL.                                                |
+| `TYPEWOO_JWT_REFRESH_MAX_TOKENS`             | `10`                   | Max stored refresh tokens per user (oldest pruned). `0` = unlimited. |
+| `TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN` | `true`                 | Enforce one-time token for `/autologin` & front-channel.             |
+| `TYPEWOO_JWT_ENABLE_FRONT_CHANNEL`           | `true`                 | Enable front-channel `?typewoo_autologin=1` flow.                    |
 
 ### Filter Hooks
 
@@ -184,36 +184,36 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 ### Example `wp-config.php` Snippet
 
 ```php
-// --- Store SDK JWT Auth overrides ---
-define('STORESDK_JWT_SECRET', 'prod_super_secret_at_least_32_chars');
-define('STORESDK_JWT_ENABLED', true);
-define('STORESDK_JWT_ACCESS_TTL', 3600); // 1h
-define('STORESDK_JWT_REFRESH_TTL', 60 * 60 * 24 * 7); // 7 days
-define('STORESDK_JWT_REFRESH_MAX_TOKENS', 5); // Keep last 5 refresh tokens
-define('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true); // Enforce hardened autologin
+// --- TypeWoo JWT Auth overrides ---
+define('TYPEWOO_JWT_SECRET', 'prod_super_secret_at_least_32_chars');
+define('TYPEWOO_JWT_ENABLED', true);
+define('TYPEWOO_JWT_ACCESS_TTL', 3600); // 1h
+define('TYPEWOO_JWT_REFRESH_TTL', 60 * 60 * 24 * 7); // 7 days
+define('TYPEWOO_JWT_REFRESH_MAX_TOKENS', 5); // Keep last 5 refresh tokens
+define('TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true); // Enforce hardened autologin
 // Disable front-channel autologin in certain environments
-define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', false);
+define('TYPEWOO_JWT_ENABLE_FRONT_CHANNEL', false);
 ```
 
 ### Security & Hardening
 
-- Always set a strong `STORESDK_JWT_SECRET` (rotate if leaked/after staging refreshes).
-- Restrict refresh token lifetime (`STORESDK_JWT_REFRESH_TTL`) to business needs; prune aggressively via `STORESDK_JWT_REFRESH_MAX_TOKENS`.
-- Disable front-channel autologin (`STORESDK_JWT_ENABLE_FRONT_CHANNEL=false`) unless a controlled deep-link scenario is required.
+- Always set a strong `TYPEWOO_JWT_SECRET` (rotate if leaked/after staging refreshes).
+- Restrict refresh token lifetime (`TYPEWOO_JWT_REFRESH_TTL`) to business needs; prune aggressively via `TYPEWOO_JWT_REFRESH_MAX_TOKENS`.
+- Disable front-channel autologin (`TYPEWOO_JWT_ENABLE_FRONT_CHANNEL=false`) unless a controlled deep-link scenario is required.
 - Consider adding IP / User-Agent binding in a fork for higher assurance (e.g., store alongside refresh token metadata and validate on consume).
 - Implement rate limiting (at reverse proxy or WAF) for `/token` and `/refresh` endpoints to mitigate brute force and token stuffing.
 - Log anomalous events (multiple failed refresh consumes, signature failures) to your SIEM.
 - Enforce HTTPS everywhere; never allow tokens over plain HTTP in production.
-- Shorten access token TTL (`STORESDK_JWT_ACCESS_TTL`) while relying on refresh rotation for session continuity.
+- Shorten access token TTL (`TYPEWOO_JWT_ACCESS_TTL`) while relying on refresh rotation for session continuity.
 - Consider adding a revocation list (e.g., transient storing revoked JTI or user version) if you need immediate logout semantics.
 
 ### When To Use This vs Simple JWT Login
 
-| Scenario                                                       | Recommended Approach                                              |
-| -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Local integration tests needing one-time / refresh / autologin | Store SDK auth plugin (default config)                            |
-| Production minimal dependency JWT with custom flows            | Store SDK auth plugin (hardened config + external rate limiting)  |
-| Need admin UI for revocation / blacklisting                    | Extend the Store SDK plugin or pair with an admin management tool |
+| Scenario                                                       | Recommended Approach                                            |
+| -------------------------------------------------------------- | --------------------------------------------------------------- |
+| Local integration tests needing one-time / refresh / autologin | TypeWoo auth plugin (default config)                            |
+| Production minimal dependency JWT with custom flows            | TypeWoo auth plugin (hardened config + external rate limiting)  |
+| Need admin UI for revocation / blacklisting                    | Extend the TypeWoo plugin or pair with an admin management tool |
 
 Select based on operational requirements; both options can coexist if endpoints are namespaced distinctly (already the case here).
 

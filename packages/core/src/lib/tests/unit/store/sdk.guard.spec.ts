@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Sdk } from '../../../sdk.js';
 import { createHttpClient } from '../../../services/api.js';
-import type { StoreSdkConfig } from '../../../configs/sdk.config.js';
+import type { SdkConfig } from '../../../configs/sdk.config.js';
 
 describe('Sdk guards', () => {
   it('throws when accessing store before init', () => {
@@ -24,9 +24,9 @@ describe('Sdk guards', () => {
       addNonceInterceptors: vi.fn(),
     }));
     createHttpClient({ baseURL: 'https://example.test' });
-    const config: StoreSdkConfig = {
+    const config: SdkConfig = {
       baseUrl: 'https://example.test',
-    } as StoreSdkConfig;
+    } as SdkConfig;
     await sdk.init(config);
     // Spy on internal store.cart.get to ensure not invoked twice
     const firstStore = sdk.store as unknown as {

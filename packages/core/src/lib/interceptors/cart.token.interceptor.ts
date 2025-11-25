@@ -1,14 +1,14 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { StoreSdkConfig } from '../configs/sdk.config.js';
+import { SdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
-import { StoreSdkState } from '../types/sdk.state.js';
+import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
-import { StoreSdkEvent } from '../sdk.events.js';
+import { SdkEvent } from '../sdk.events.js';
 
 export const addCartTokenInterceptors = (
-  config: StoreSdkConfig,
-  state: StoreSdkState,
-  events: EventBus<StoreSdkEvent>
+  config: SdkConfig,
+  state: SdkState,
+  events: EventBus<SdkEvent>
 ) => {
   // Add interceptor for cart token
   httpClient.interceptors.request.use(

@@ -1,5 +1,9 @@
-export interface AuthRevokeResponse {
-  revoked: boolean;
-  scope: string;
-  new_version: number;
-}
+import { z } from 'zod';
+
+export const AuthRevokeResponseSchema = z.object({
+  revoked: z.boolean(),
+  scope: z.string(),
+  new_version: z.number(),
+});
+
+export type AuthRevokeResponse = z.infer<typeof AuthRevokeResponseSchema>;

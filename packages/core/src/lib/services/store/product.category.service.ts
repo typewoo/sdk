@@ -1,10 +1,12 @@
-import { ProductCategoryResponse } from '../../types/store/product-category/product.category.response.js';
-import { ProductCategoryRequest } from '../../types/store/product-category/product.category.request.js';
-import qs from 'qs';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
-import { parseLinkHeader } from '../../utilities/common.js';
+import { extractPagination } from '../../utilities/common.js';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import {
+  ProductCategoryRequest,
+  ProductCategoryResponse,
+} from '../../types/index.js';
 
 /**
  * Product Categories API
@@ -26,12 +28,7 @@ export class ProductCategoryService extends BaseService {
       url
     );
 
-    let total, totalPages, link;
-    if (headers) {
-      link = parseLinkHeader(headers['link']);
-      total = headers['x-wp-total'];
-      totalPages = headers['x-wp-totalpages'];
-    }
+    const { total, totalPages, link } = extractPagination(headers);
     return { data, error, total, totalPages, link };
   }
 

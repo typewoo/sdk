@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -16,7 +16,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Reports', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -27,8 +27,9 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('lists available reports (headers if provided)', async () => {
-    const { data, error, total, totalPages } =
-      await StoreSdk.admin.reports.list({});
+    const { data, error, total, totalPages } = await Typewoo.admin.reports.list(
+      {}
+    );
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
     if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
@@ -36,7 +37,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets sales report for a recent period', async () => {
-    const res = await StoreSdk.admin.reports.getSalesReport({
+    const res = await Typewoo.admin.reports.getSalesReport({
       period: 'month',
     });
     if (res.error) {
@@ -57,7 +58,7 @@ describe('Integration: Admin Reports', () => {
 
   it('gets top sellers report with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.reports.getTopSellersReport({
+      await Typewoo.admin.reports.getTopSellersReport({
         period: 'month',
         per_page: 5,
         page: 1,
@@ -77,7 +78,7 @@ describe('Integration: Admin Reports', () => {
 
   it('gets customers report with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.reports.getCustomersReport({
+      await Typewoo.admin.reports.getCustomersReport({
         period: 'month',
         per_page: 5,
         page: 1,
@@ -97,7 +98,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets orders report for a recent period', async () => {
-    const res = await StoreSdk.admin.reports.getOrdersReport({
+    const res = await Typewoo.admin.reports.getOrdersReport({
       period: 'month',
     });
     if (res.error) {
@@ -114,7 +115,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets orders totals report', async () => {
-    const { data, error } = await StoreSdk.admin.reports.getOrdersTotals({});
+    const { data, error } = await Typewoo.admin.reports.getOrdersTotals({});
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -128,7 +129,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets products totals report', async () => {
-    const { data, error } = await StoreSdk.admin.reports.getProductsTotals({});
+    const { data, error } = await Typewoo.admin.reports.getProductsTotals({});
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -141,7 +142,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets customers totals report', async () => {
-    const { data, error } = await StoreSdk.admin.reports.getCustomersTotals({});
+    const { data, error } = await Typewoo.admin.reports.getCustomersTotals({});
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -154,7 +155,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets coupons totals report', async () => {
-    const { data, error } = await StoreSdk.admin.reports.getCouponsTotals({});
+    const { data, error } = await Typewoo.admin.reports.getCouponsTotals({});
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -167,7 +168,7 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets reviews totals report', async () => {
-    const { data, error } = await StoreSdk.admin.reports.getReviewsTotals({});
+    const { data, error } = await Typewoo.admin.reports.getReviewsTotals({});
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {

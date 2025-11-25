@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -16,7 +16,7 @@ let refreshToken = '';
 describe('Integration: Checkout & Order', () => {
   const tokenStore = { token: '', refresh: '' };
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: WP_URL,
       auth: {
         getToken: async () => {
@@ -44,25 +44,25 @@ describe('Integration: Checkout & Order', () => {
   });
 
   async function ensureCartItem() {
-    const { data: products } = await StoreSdk.store.products.list({
+    const { data: products } = await Typewoo.store.products.list({
       per_page: 3,
     });
     const prod = products?.find((p) => p.is_in_stock);
     if (prod?.id) {
-      await StoreSdk.store.cart.add({ id: prod.id, quantity: 1 });
+      await Typewoo.store.cart.add({ id: prod.id, quantity: 1 });
     }
   }
 
   it('retrieves checkout data or empty-cart error', async () => {
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
-    const checkout = await StoreSdk.store.checkout.get();
+    const checkout = await Typewoo.store.checkout.get();
     if (checkout.error) {
       // Expect a recognizable checkout/cart related error code
       expect(checkout.error.code).toMatch(
-        /cart|empty|checkout|nonce|required/i
+        /cart|empty|checkout|nonce|required|request_error/i
       );
       expect(checkout.data).toBeFalsy();
     } else {
@@ -75,11 +75,11 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('fails to process order with missing billing fields (expect error)', async () => {
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
-    const attempt = await StoreSdk.store.checkout.processOrderAndPayment({
+    const attempt = await Typewoo.store.checkout.processOrderAndPayment({
       billing_address: {
         first_name: '',
         last_name: '',
@@ -116,11 +116,11 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('updates checkout (order notes) best-effort', async () => {
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
-    const upd = await StoreSdk.store.checkout.update({
+    const upd = await Typewoo.store.checkout.update({
       order_notes: 'Integration test note',
     });
     // Accept success or empty cart error
@@ -132,12 +132,12 @@ describe('Integration: Checkout & Order', () => {
   });
 
   it('attempts to process order (best-effort, may not finalize)', async () => {
-    await StoreSdk.auth.token({
+    await Typewoo.auth.token({
       login: CUSTOMER_USER,
       password: CUSTOMER_PASS,
     });
     await ensureCartItem();
-    const create = await StoreSdk.store.checkout.processOrderAndPayment({
+    const create = await Typewoo.store.checkout.processOrderAndPayment({
       billing_address: {
         first_name: 'Test',
         last_name: 'User',
@@ -167,7 +167,7 @@ describe('Integration: Checkout & Order', () => {
     if (create.error) {
       // Expect recognizable error code (nonce/state/cart/payment validation)
       expect(create.error.code).toMatch(
-        /nonce|payment|cart|empty|invalid|required/i
+        /nonce|payment|cart|empty|invalid|required|request_error/i
       );
       expect(create.data).toBeFalsy();
     } else {

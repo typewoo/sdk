@@ -1,9 +1,12 @@
-import { CartResponse } from './store/index.js';
+import { z } from 'zod';
+import { CartResponseSchema } from './store';
 
-export interface StoreSdkState {
-  cart?: CartResponse;
-  nonce?: string;
-  cartHash?: string;
-  cartToken?: string;
-  authenticated?: boolean;
-}
+export const SdkStateSchema = z.object({
+  cart: CartResponseSchema.optional(),
+  nonce: z.string().optional(),
+  cartHash: z.string().optional(),
+  cartToken: z.string().optional(),
+  authenticated: z.boolean().optional(),
+});
+
+export type SdkState = z.infer<typeof SdkStateSchema>;

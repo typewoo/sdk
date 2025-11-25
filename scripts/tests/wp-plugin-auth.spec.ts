@@ -90,7 +90,7 @@ const CUSTOMER_PASSWORD = process.env.TEST_CUSTOMER_PASSWORD || 'customer123';
 // Helper to get standard token
 async function issueStandardToken() {
   const r = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-    `${BASE}/wp-json/store-sdk/v1/auth/token`,
+    `${BASE}/wp-json/typewoo/v1/auth/token`,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -109,7 +109,7 @@ async function issueStandardToken() {
 async function issueOneTimeToken() {
   // Use Bearer of standard token
   const r = await jsonFetch<OneTimeTokenResponse | ErrorResponse>(
-    `${BASE}/wp-json/store-sdk/v1/auth/one-time-token`,
+    `${BASE}/wp-json/typewoo/v1/auth/one-time-token`,
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${passwordToken}` },
@@ -121,7 +121,7 @@ async function issueOneTimeToken() {
   oneTimeToken = (r.data as OneTimeTokenResponse).one_time_token;
 }
 
-describe('Store SDK JWT mu-plugin', () => {
+describe('TypeWoo JWT mu-plugin', () => {
   beforeAll(async () => {
     // Acquire baseline token once
     await issueStandardToken();
@@ -129,7 +129,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
   it('rejects invalid credentials', async () => {
     const r = await jsonFetch<ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/token`,
+      `${BASE}/wp-json/typewoo/v1/auth/token`,
       {
         method: 'POST',
         body: JSON.stringify({ login: 'nope', password: 'wrong' }),
@@ -142,7 +142,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
   it('silently ignores invalid bearer by default (no 401)', async () => {
     const r = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
+      `${BASE}/wp-json/typewoo/v1/auth/validate`,
       { headers: { Authorization: 'Bearer totally.invalid.token' } }
     );
     expect(r.ok).toBe(false);
@@ -150,14 +150,14 @@ describe('Store SDK JWT mu-plugin', () => {
     if (r.data && isErrorResponse(r.data)) {
       const code = r.data.code || '';
       expect(code).toMatch(
-        /storesdk_jwt\.(malformed|bad_signature|invalid_json)/
+        /typewoo_jwt\.(malformed|bad_signature|invalid_json)/
       );
     }
   });
 
   it('validates standard token', async () => {
     const r = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
+      `${BASE}/wp-json/typewoo/v1/auth/validate`,
       {
         headers: { Authorization: `Bearer ${passwordToken}` },
       }
@@ -176,7 +176,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('fails autologin with standard token (must be one-time)', async () => {
     if (!passwordToken) throw new Error('passwordToken missing');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
         passwordToken
       )}`
     );
@@ -184,7 +184,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(r.status).toBe(401);
     if (!r.data) throw new Error('No response body');
     expect(isErrorResponse(r.data) ? r.data.code : undefined).toBe(
-      'storesdk_jwt.not_one_time'
+      'typewoo_jwt.not_one_time'
     );
   });
 
@@ -197,7 +197,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!refreshToken) throw new Error('Missing initial refresh token');
     // First refresh
     const r1 = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
+      `${BASE}/wp-json/typewoo/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
@@ -215,7 +215,7 @@ describe('Store SDK JWT mu-plugin', () => {
     refreshToken = data1.refresh_token;
     // Second refresh using new refresh token works
     const r2 = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
+      `${BASE}/wp-json/typewoo/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
@@ -230,7 +230,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(data2.refresh_token).toBeTruthy();
     // Reuse of first refresh token should now fail
     const reuse = await jsonFetch<ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
+      `${BASE}/wp-json/typewoo/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: oldRefresh }),
@@ -245,7 +245,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!oneTimeToken)
       throw new Error('oneTimeToken missing (issueOneTimeToken failed)');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
         oneTimeToken
       )}`
     );
@@ -260,7 +260,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('one-time token cannot be reused', async () => {
     if (!oneTimeToken) throw new Error('oneTimeToken missing for reuse test');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
         oneTimeToken
       )}`
     );
@@ -268,7 +268,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(r.status).toBe(401);
     if (!r.data) throw new Error('Missing response for reuse test');
     expect(isErrorResponse(r.data) ? r.data.code : undefined).toBe(
-      'storesdk_jwt.one_time_invalid'
+      'typewoo_jwt.one_time_invalid'
     );
   });
 
@@ -277,7 +277,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!passwordToken || !refreshToken)
       throw new Error('Prereq tokens missing');
     const revoke = await jsonFetch<RevokeResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/revoke`,
+      `${BASE}/wp-json/typewoo/v1/auth/revoke`,
       {
         method: 'POST',
         body: JSON.stringify({ scope: 'refresh' }),
@@ -290,7 +290,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect((revoke.data as RevokeResponse).scope).toBe('refresh');
     // Old access token should still validate
     const validate = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
+      `${BASE}/wp-json/typewoo/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validate.ok).toBe(true);
@@ -299,7 +299,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('revoke all bumps version and invalidates old access token', async () => {
     if (!passwordToken) throw new Error('Missing access token');
     const revoke = await jsonFetch<RevokeResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/revoke`,
+      `${BASE}/wp-json/typewoo/v1/auth/revoke`,
       {
         method: 'POST',
         body: JSON.stringify({ scope: 'all' }),
@@ -313,14 +313,14 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(rev.revoked).toBe(true);
     // Old token should now fail validation with version mismatch or unauthorized
     const validateOld = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
+      `${BASE}/wp-json/typewoo/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateOld.ok).toBe(false);
     // Issue a new token (login again) -> should have new version
     await issueStandardToken();
     const validateNew = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
+      `${BASE}/wp-json/typewoo/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateNew.ok).toBe(true);
@@ -335,7 +335,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('front-channel autologin ignores standard token silently (should not 200 success)', async () => {
     if (!passwordToken) throw new Error('passwordToken missing');
     const r = await fetch(
-      `${BASE}/?storesdk_autologin=1&token=${encodeURIComponent(passwordToken)}`
+      `${BASE}/?typewoo_autologin=1&token=${encodeURIComponent(passwordToken)}`
     );
     // We cannot easily assert cookie in this environment; just ensure not a redirect loop
     expect(r.status).toBeGreaterThanOrEqual(200);
@@ -349,7 +349,7 @@ describe('Store SDK JWT mu-plugin', () => {
     console.log('🔍 Testing force authentication functionality...');
 
     // Test 1: Try accessing a potentially protected endpoint without authentication
-    const testEndpoint = 'wp-json/store-sdk/v1/test/cart-protected';
+    const testEndpoint = 'wp-json/typewoo/v1/test/cart-protected';
     const unprotectedRequest = await jsonFetch<ErrorResponse>(
       `${BASE}/${testEndpoint}`,
       {
@@ -373,7 +373,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
         // Accept either our custom error or WordPress's built-in errors
         expect(
-          ['storesdk_jwt.auth_required', 'rest_not_logged_in'].includes(
+          ['typewoo_jwt.auth_required', 'rest_not_logged_in'].includes(
             errorCode || ''
           )
         ).toBe(true);
@@ -412,9 +412,7 @@ describe('Store SDK JWT mu-plugin', () => {
       // Endpoint is not protected
       console.log('ℹ️  Force authentication is NOT ACTIVE for this endpoint');
       console.log('   This could mean:');
-      console.log(
-        '   1. STORESDK_JWT_FORCE_AUTH_ENDPOINTS constant is not set'
-      );
+      console.log('   1. TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS constant is not set');
       console.log('   2. This specific endpoint is not in the protected list');
       console.log('   3. WordPress is handling the endpoint before our plugin');
 
@@ -425,7 +423,7 @@ describe('Store SDK JWT mu-plugin', () => {
     // Test 4: Ensure auth endpoints themselves are not affected by force auth
     const authEndpointRequest = await jsonFetch<
       ValidateResponse | ErrorResponse
-    >(`${BASE}/wp-json/store-sdk/v1/auth/validate`, {
+    >(`${BASE}/wp-json/typewoo/v1/auth/validate`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${passwordToken}` },
     });

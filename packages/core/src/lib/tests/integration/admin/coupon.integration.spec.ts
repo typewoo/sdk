@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
-import type { WcAdminCouponRequest } from '../../../types/admin/coupon.types.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -8,14 +7,15 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import { AdminCouponRequest } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
 describe('Integration: Admin Coupon Service', () => {
   beforeAll(async () => {
     // Initialize SDK with admin authentication for admin operations
-    // Note: StoreSdk.init() requires store access even for admin-only operations
-    await StoreSdk.init({
+    // Note: Typewoo.init() requires store access even for admin-only operations
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         // Admin operations require consumer key/secret authentication
@@ -28,11 +28,12 @@ describe('Integration: Admin Coupon Service', () => {
   });
 
   it('lists coupons with pagination', async () => {
-    const { data, error, total, totalPages } =
-      await StoreSdk.admin.coupons.list({
+    const { data, error, total, totalPages } = await Typewoo.admin.coupons.list(
+      {
         per_page: 5,
         page: 1,
-      });
+      }
+    );
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
@@ -48,7 +49,7 @@ describe('Integration: Admin Coupon Service', () => {
 
   it('searches coupons by code', async () => {
     const code = 'percent15';
-    const { data, error } = await StoreSdk.admin.coupons.list({
+    const { data, error } = await Typewoo.admin.coupons.list({
       search: code,
       per_page: 10,
     });
@@ -66,7 +67,7 @@ describe('Integration: Admin Coupon Service', () => {
   });
 
   it('creates, retrieves, updates, and deletes a coupon', async () => {
-    const testCouponData: WcAdminCouponRequest = {
+    const testCouponData: AdminCouponRequest = {
       code: `test-coupon-${Date.now()}`,
       discount_type: 'percent',
       amount: '10.00',
@@ -78,7 +79,7 @@ describe('Integration: Admin Coupon Service', () => {
     };
 
     // Create coupon
-    const createResult = await StoreSdk.admin.coupons.create(testCouponData);
+    const createResult = await Typewoo.admin.coupons.create(testCouponData);
     expect(createResult.error).toBeFalsy();
     expect(createResult.data).toBeTruthy();
 
@@ -89,21 +90,20 @@ describe('Integration: Admin Coupon Service', () => {
     expect(createResult.data.code).toBe(testCouponData.code);
     expect(createResult.data.discount_type).toBe(testCouponData.discount_type);
     expect(createResult.data.amount).toBe(testCouponData.amount);
-
     // Retrieve the created coupon
-    const getResult = await StoreSdk.admin.coupons.get(createResult.data.id);
+    const getResult = await Typewoo.admin.coupons.get(createResult.data.id);
     expect(getResult.error).toBeFalsy();
     expect(getResult.data).toBeTruthy();
     expect(getResult.data?.id).toBe(createResult.data.id);
     expect(getResult.data?.code).toBe(testCouponData.code);
 
     // Update the coupon
-    const updateData: WcAdminCouponRequest = {
+    const updateData: AdminCouponRequest = {
       amount: '15.00',
       description: 'Updated test coupon description',
     };
 
-    const updateResult = await StoreSdk.admin.coupons.update(
+    const updateResult = await Typewoo.admin.coupons.update(
       createResult.data.id,
       updateData
     );
@@ -113,7 +113,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(updateResult.data?.description).toBe(updateData.description);
 
     // Delete the coupon (force delete to skip trash)
-    const deleteResult = await StoreSdk.admin.coupons.delete(
+    const deleteResult = await Typewoo.admin.coupons.delete(
       createResult.data.id,
       true
     );
@@ -121,7 +121,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(deleteResult.data).toBeTruthy();
 
     // Verify coupon is deleted
-    const getDeletedResult = await StoreSdk.admin.coupons.get(
+    const getDeletedResult = await Typewoo.admin.coupons.get(
       createResult.data.id
     );
     expect(getDeletedResult.error).toBeTruthy();
@@ -146,7 +146,7 @@ describe('Integration: Admin Coupon Service', () => {
       ],
     };
 
-    const batchResult = await StoreSdk.admin.coupons.batch(batchData);
+    const batchResult = await Typewoo.admin.coupons.batch(batchData);
     expect(batchResult.error).toBeFalsy();
     expect(batchResult.data).toBeTruthy();
 
@@ -163,54 +163,53 @@ describe('Integration: Admin Coupon Service', () => {
 
       expect(created2.code).toBe(batchData.create[1].code);
       expect(created2.discount_type).toBe(batchData.create[1].discount_type);
-
       // Clean up - delete the created coupons
       await Promise.all([
-        StoreSdk.admin.coupons.delete(created1.id, true),
-        StoreSdk.admin.coupons.delete(created2.id, true),
+        Typewoo.admin.coupons.delete(created1.id, true),
+        Typewoo.admin.coupons.delete(created2.id, true),
       ]);
     }
   });
 
   it('handles error cases gracefully', async () => {
     // Test getting non-existent coupon
-    const nonExistentResult = await StoreSdk.admin.coupons.get(999999);
+    const nonExistentResult = await Typewoo.admin.coupons.get(999999);
     expect(nonExistentResult.error).toBeTruthy();
     expect(nonExistentResult.error?.code).toMatch(/not_found|invalid/i);
 
     // Test creating coupon with invalid data
-    const invalidCouponData: WcAdminCouponRequest = {
+    const invalidCouponData: AdminCouponRequest = {
       code: '', // Empty code should be invalid
       discount_type: 'percent',
       amount: 'invalid_amount', // Invalid amount
     };
 
-    const invalidCreateResult = await StoreSdk.admin.coupons.create(
+    const invalidCreateResult = await Typewoo.admin.coupons.create(
       invalidCouponData
     );
     expect(invalidCreateResult.error).toBeTruthy();
 
     // Test updating non-existent coupon
-    const invalidUpdateResult = await StoreSdk.admin.coupons.update(999999, {
+    const invalidUpdateResult = await Typewoo.admin.coupons.update(999999, {
       amount: '10',
     });
     expect(invalidUpdateResult.error).toBeTruthy();
 
     // Test deleting non-existent coupon
-    const invalidDeleteResult = await StoreSdk.admin.coupons.delete(999999);
+    const invalidDeleteResult = await Typewoo.admin.coupons.delete(999999);
     expect(invalidDeleteResult.error).toBeTruthy();
   });
 
   it('retrieves coupon in different contexts', async () => {
     // First get list to find an existing coupon
-    const listResult = await StoreSdk.admin.coupons.list({ per_page: 1 });
+    const listResult = await Typewoo.admin.coupons.list({ per_page: 1 });
     expect(listResult.error).toBeFalsy();
 
     if (listResult.data && listResult.data.length > 0) {
       const couponId = listResult.data[0].id;
 
       // Test view context
-      const viewResult = await StoreSdk.admin.coupons.get(couponId, {
+      const viewResult = await Typewoo.admin.coupons.get(couponId, {
         context: 'view',
       });
       expect(viewResult.error).toBeFalsy();
@@ -218,7 +217,7 @@ describe('Integration: Admin Coupon Service', () => {
       expect(viewResult.data?.id).toBe(couponId);
 
       // Test edit context
-      const editResult = await StoreSdk.admin.coupons.get(couponId, {
+      const editResult = await Typewoo.admin.coupons.get(couponId, {
         context: 'edit',
       });
       expect(editResult.error).toBeFalsy();

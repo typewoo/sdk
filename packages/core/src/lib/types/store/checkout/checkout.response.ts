@@ -1,21 +1,24 @@
-import { CheckoutBillingResponse } from './checkout.billing.response.js';
-import { CheckoutShippingResponse } from './checkout.shipping.js';
+import { z } from 'zod';
+import { CheckoutBillingResponseSchema } from './checkout.billing.response.js';
+import { CheckoutShippingResponseSchema } from './checkout.shipping.js';
 
-export interface CheckoutResponse {
-  order_id: number;
-  status: string;
-  order_key: string;
-  customer_note: string;
-  customer_id: number;
-  billing_address: CheckoutBillingResponse;
-  shipping_address: CheckoutShippingResponse;
-  payment_method: string;
-  payment_result: {
-    payment_status: string;
-    payment_details: [];
-    redirect_url: string;
-  };
-  additional_fields: { [key: string]: string }[];
-  __experimentalCart: unknown;
-  extensions: unknown;
-}
+export const CheckoutResponseSchema = z.object({
+  order_id: z.number(),
+  status: z.string(),
+  order_key: z.string(),
+  customer_note: z.string(),
+  customer_id: z.number(),
+  billing_address: CheckoutBillingResponseSchema,
+  shipping_address: CheckoutShippingResponseSchema,
+  payment_method: z.string(),
+  payment_result: z.object({
+    payment_status: z.string(),
+    payment_details: z.array(z.unknown()),
+    redirect_url: z.string(),
+  }),
+  additional_fields: z.array(z.record(z.string(), z.string())),
+  __experimentalCart: z.unknown(),
+  extensions: z.unknown(),
+});
+
+export type CheckoutResponse = z.infer<typeof CheckoutResponseSchema>;

@@ -1,87 +1,107 @@
+import { z } from 'zod';
+
 /**
  * Common meta data structure used across multiple WooCommerce resources
  */
-export interface WcAdminMetaData {
+export const AdminMetaData = z.object({
   /**
    * Meta ID.
    */
-  id: number;
+  id: z.number(),
   /**
    * Meta key.
    */
-  key: string;
+  key: z.string(),
   /**
    * Meta value.
    */
-  value: string | number | boolean | object | null;
-}
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
+
+export type AdminMetaDataType = z.infer<typeof AdminMetaData>;
 
 /**
  * Common address structure for billing and shipping
  */
-export interface WcAdminAddress {
-  first_name: string;
-  last_name: string;
-  company: string;
-  address_1: string;
-  address_2: string;
-  city: string;
-  state: string;
-  postcode: string;
-  country: string;
-  email?: string; // Only present on billing
-  phone?: string;
-}
+export const AdminAddress = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  email: z.string().optional(), // Only present on billing
+  phone: z.string().optional(),
+});
+
+export type AdminAddressType = z.infer<typeof AdminAddress>;
 
 /**
  * Common links structure
  */
-export interface WcAdminLinks {
-  self: Array<{ href: string }>;
-  collection?: Array<{ href: string }>;
-}
+export const AdminLinks = z.object({
+  self: z.array(z.object({ href: z.string() })),
+  collection: z.array(z.object({ href: z.string() })).optional(),
+});
+
+export type AdminLinksType = z.infer<typeof AdminLinks>;
 
 /**
  * Common image structure
  */
-export interface WcAdminImage {
-  id: number;
-  date_created: string;
-  date_created_gmt: string;
-  date_modified: string;
-  date_modified_gmt: string;
-  src: string;
-  name: string;
-  alt: string;
-}
+export const AdminImage = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  src: z.string(),
+  name: z.string(),
+  alt: z.string(),
+});
+
+export type AdminImageType = z.infer<typeof AdminImage>;
 
 /**
  * Common dimension structure
  */
-export interface WcAdminDimensions {
-  length: string;
-  width: string;
-  height: string;
-}
+export const AdminDimensions = z.object({
+  length: z.string(),
+  width: z.string(),
+  height: z.string(),
+});
+
+export type AdminDimensionsType = z.infer<typeof AdminDimensions>;
 
 /**
  * Common tax structure
  */
-export interface WcAdminTaxLine {
-  id: number;
-  total: string;
-  subtotal: string;
-}
+export const AdminTaxLine = z.object({
+  id: z.number(),
+  total: z.string(),
+  subtotal: z.string(),
+});
+
+export type AdminTaxLineType = z.infer<typeof AdminTaxLine>;
 
 /**
  * Common status values
  */
-export type WcAdminStatus = 'draft' | 'pending' | 'private' | 'publish';
+export type AdminStatus = 'draft' | 'pending' | 'private' | 'publish';
 
 /**
  * Order status values
  */
-export type WcAdminOrderStatus =
+export type AdminOrderStatus =
   | 'pending'
   | 'processing'
   | 'on-hold'
@@ -94,27 +114,27 @@ export type WcAdminOrderStatus =
 /**
  * Product type values
  */
-export type WcAdminProductType = 'simple' | 'grouped' | 'external' | 'variable';
+export type AdminProductType = 'simple' | 'grouped' | 'external' | 'variable';
 
 /**
  * Stock status values
  */
-export type WcAdminStockStatus = 'instock' | 'outofstock' | 'onbackorder';
+export type AdminStockStatus = 'instock' | 'outofstock' | 'onbackorder';
 
 /**
  * Backorder values
  */
-export type WcAdminBackorderStatus = 'no' | 'notify' | 'yes';
+export type AdminBackorderStatus = 'no' | 'notify' | 'yes';
 
 /**
  * Tax status values
  */
-export type WcAdminTaxStatus = 'taxable' | 'shipping' | 'none';
+export type AdminTaxStatus = 'taxable' | 'shipping' | 'none';
 
 /**
  * Catalog visibility values
  */
-export type WcAdminCatalogVisibility =
+export type AdminCatalogVisibility =
   | 'visible'
   | 'catalog'
   | 'search'

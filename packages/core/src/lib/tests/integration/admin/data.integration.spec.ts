@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -17,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Data', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -28,7 +28,7 @@ describe('Integration: Admin Data', () => {
   });
 
   it('lists countries and gets one by code', async () => {
-    const list = await StoreSdk.admin.data.listCountries({ context: 'view' });
+    const list = await Typewoo.admin.data.listCountries({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -38,7 +38,7 @@ describe('Integration: Admin Data', () => {
     expect(Array.isArray(list.data)).toBe(true);
     if (!list.data || list.data.length === 0) return;
     const code = list.data[0].code;
-    const get = await StoreSdk.admin.data.getCountry(code, { context: 'view' });
+    const get = await Typewoo.admin.data.getCountry(code, { context: 'view' });
     if (get.error) {
       expect(get.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -49,7 +49,7 @@ describe('Integration: Admin Data', () => {
   });
 
   it('lists currencies and gets one by code', async () => {
-    const list = await StoreSdk.admin.data.listCurrencies({ context: 'view' });
+    const list = await Typewoo.admin.data.listCurrencies({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -59,7 +59,7 @@ describe('Integration: Admin Data', () => {
     expect(Array.isArray(list.data)).toBe(true);
     if (!list.data || list.data.length === 0) return;
     const code = list.data[0].code;
-    const get = await StoreSdk.admin.data.getCurrency(code, {
+    const get = await Typewoo.admin.data.getCurrency(code, {
       context: 'view',
     });
     if (get.error) {
@@ -72,7 +72,7 @@ describe('Integration: Admin Data', () => {
   });
 
   it('lists continents and gets one by code', async () => {
-    const list = await StoreSdk.admin.data.listContinents({ context: 'view' });
+    const list = await Typewoo.admin.data.listContinents({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -82,7 +82,7 @@ describe('Integration: Admin Data', () => {
     expect(Array.isArray(list.data)).toBe(true);
     if (!list.data || list.data.length === 0) return;
     const code = list.data[0].code;
-    const get = await StoreSdk.admin.data.getContinent(code, {
+    const get = await Typewoo.admin.data.getContinent(code, {
       context: 'view',
     });
     if (get.error) {

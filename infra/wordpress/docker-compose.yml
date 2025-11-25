@@ -1,4 +1,5 @@
 services:
+  # MariaDB service (default WordPress database)
   db:
     image: mariadb:12
     restart: unless-stopped
@@ -15,6 +16,19 @@ services:
       timeout: 2s
       retries: 5
 
+  # PostgreSQL service
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: typewoo
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
   wp:
     image: wordpress:latest
     depends_on:
@@ -30,12 +44,12 @@ services:
       JWT_SECRET: ${JWT_SECRET:-local_dev_secret_please_change}
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_ENVIRONMENT_TYPE', 'local');
-        define('STORESDK_JWT_ENABLED', true);
-        define('STORESDK_JWT_SECRET', getenv('JWT_SECRET') ?: 'change_me');
+        define('TYPEWOO_JWT_ENABLED', true);
+        define('TYPEWOO_JWT_SECRET', getenv('JWT_SECRET') ?: 'change_me');
     volumes:
       - wp_data:/var/www/html
       # Mount shared plugin implementation (single source of truth)
-      - ../../plugins/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
+      - ../../plugins/typewoo:/var/www/html/wp-content/plugins/typewoo:ro
 
   wpcli:
     image: wordpress:cli
@@ -74,9 +88,10 @@ services:
       - wp_data:/var/www/html
       - ./scripts:/scripts
       # Mount plugin implementation for wpcli
-      - ../../plugins/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
+      - ../../plugins/typewoo:/var/www/html/wp-content/plugins/typewoo:ro
     entrypoint: ['bash', '/scripts/wp-entry.sh']
 
 volumes:
   db_data:
   wp_data:
+  postgres_data:

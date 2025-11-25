@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { StoreSdk } from '../sdk.js';
+import { Typewoo } from '../sdk.js';
 import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
-import { StoreSdkConfig } from '../configs/sdk.config.js';
+import { SdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
 
 // Interface for queued request item
@@ -43,18 +43,18 @@ const processQueue = (error: ApiError | null, token: string | null = null) => {
 };
 
 export const addRefreshTokenInterceptor = (
-  config: StoreSdkConfig,
+  config: SdkConfig,
   auth: AuthService
 ) => {
   httpClient.interceptors.response.use(
     (response) => response,
     async (error) => {
-      // Only handle errors for Store API or Store SDK endpoints
+      // Only handle errors for Store API or TypeWoo endpoints
       const reqUrl: string | undefined = error?.config?.url;
       if (
         !reqUrl ||
         (!reqUrl.startsWith('/wp-json/wc/store/v1/') &&
-          !reqUrl.startsWith('/wp-json/store-sdk/'))
+          !reqUrl.startsWith('/wp-json/typewoo/'))
       ) {
         return Promise.reject(error);
       }
@@ -140,12 +140,12 @@ export const addRefreshTokenInterceptor = (
   );
 };
 
-const refreshTokenFailed = async (config: StoreSdkConfig, reason?: unknown) => {
+const refreshTokenFailed = async (config: SdkConfig, reason?: unknown) => {
   if (config.auth?.clearToken) {
     await config.auth.clearToken();
   }
-  StoreSdk.state.authenticated = false;
-  StoreSdk.events.emit('auth:changed', false);
+  Typewoo.state.authenticated = false;
+  Typewoo.events.emit('auth:changed', false);
 
   // Always return a consistent ApiError structure
   let apiError: ApiError;

@@ -1,9 +1,11 @@
-import { ProductCollectionDataRequest } from '../../types/store/product-collection-data/product.collection.data.request.js';
-import { ProductCollectionDataResponse } from '../../types/store/product-collection-data/product.collection.data.response.js';
-import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import {
+  ProductCollectionDataRequest,
+  ProductCollectionDataResponse,
+} from '../../types/index.js';
 
 /**
  * Product Collection Data API

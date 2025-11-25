@@ -1,29 +1,39 @@
-import { OrderBillingResponse } from './order.billing.response.js';
-import { OrderShippingResponse } from './order.shipping.response.js';
+import { z } from 'zod';
+import { OrderBillingResponseSchema } from './order.billing.response.js';
+import { OrderShippingResponseSchema } from './order.shipping.response.js';
 
-export interface OrderRequest {
+export const OrderRequestSchema = z.object({
   /**
    * The key for the order verification.
    */
-  key: string;
+  key: z.string(),
   /**
    * The email address used to verify guest orders.
    */
-  billing_email?: string;
+  billing_email: z.string().optional(),
   /**
    * Object of updated billing address data for the customer.
    */
-  billing_address: OrderBillingResponse;
+  billing_address: OrderBillingResponseSchema,
   /**
    * Object of updated shipping address data for the customer.
    */
-  shipping_address: OrderShippingResponse;
+  shipping_address: OrderShippingResponseSchema,
   /**
    * The ID of the payment method being used to process the payment.
    */
-  payment_method: string;
+  payment_method: z.string(),
   /**
    * Data to pass through to the payment method when processing payment.
    */
-  payment_data?: { key: string; value: string }[];
-}
+  payment_data: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional(),
+});
+
+export type OrderRequest = z.infer<typeof OrderRequestSchema>;

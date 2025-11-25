@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, vi, beforeEach } from 'vitest';
-import { StoreSdk } from '../../../sdk.js';
-import { StoreSdkConfig } from '../../../configs/sdk.config.js';
+import { Typewoo } from '../../../sdk.js';
+import { SdkConfig } from '../../../configs/sdk.config.js';
 import { httpClient } from '../../../services/api.js';
 import { resetRefreshTokenState } from '../../../interceptors/refresh.token.interceptor.js';
 import { GET_WP_URL } from '../../config.tests.js';
@@ -18,7 +18,7 @@ let accessToken = '';
 let refreshToken = '';
 
 // Initialize SDK once and use exposed auth facade
-const sdk = StoreSdk;
+const sdk = Typewoo;
 let pluginActive: boolean | undefined;
 
 describe('Integration: Refresh Token Interceptor', () => {
@@ -32,7 +32,7 @@ describe('Integration: Refresh Token Interceptor', () => {
   beforeAll(async () => {
     // Probe status first; if unreachable or inactive, later tests will soft-pass
 
-    const config: StoreSdkConfig = {
+    const config: SdkConfig = {
       baseUrl: WP_URL,
       auth: {
         getToken: async () => {

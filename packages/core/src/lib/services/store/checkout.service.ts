@@ -1,11 +1,13 @@
-import { CheckoutResponse } from '../../types/store/checkout/checkout.response.js';
-import { CheckoutUpdateRequest } from '../../types/store/checkout/checkout.update.request.js';
-import { CheckoutCreateRequest } from '../../types/store/checkout/checkout.create.request.js';
-import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
+import {
+  CheckoutResponse,
+  CheckoutUpdateRequest,
+  CheckoutCreateRequest,
+} from '../../types/index.js';
 
 /**
  * Checkout API
