@@ -1,3 +1,36 @@
+## 3.0.0-alpha.1 (2025-11-25)
+
+### 🚀 Features
+
+- admin rest api ([3c54247](https://github.com/typewoo/sdk/commit/3c54247))
+- improve application password export process with temporary file handling ([d4b3524](https://github.com/typewoo/sdk/commit/d4b3524))
+- add dotenv support for environment variable management in integration tests ([619f385](https://github.com/typewoo/sdk/commit/619f385))
+- add dotenv configuration for environment variable management in customer checkout tests ([aa43408](https://github.com/typewoo/sdk/commit/aa43408))
+- implement Batch and Cart Extensions APIs with integration tests ([57d20cb](https://github.com/typewoo/sdk/commit/57d20cb))
+- api snapshots ([fa2e748](https://github.com/typewoo/sdk/commit/fa2e748))
+- enhance authentication endpoint handling with support for glob patterns ([ecbcc77](https://github.com/typewoo/sdk/commit/ecbcc77))
+- update types and add nestjs app ([0eee2dd](https://github.com/typewoo/sdk/commit/0eee2dd))
+
+### 🩹 Fixes
+
+- update passwords file path to use temporary directory ([6f53d84](https://github.com/typewoo/sdk/commit/6f53d84))
+- update password extraction process and script execution order ([115adba](https://github.com/typewoo/sdk/commit/115adba))
+- clean up WordPress environment teardown and improve logging during plugin tests ([387a7aa](https://github.com/typewoo/sdk/commit/387a7aa))
+- update build job dependencies and improve password handling script ([8f63b73](https://github.com/typewoo/sdk/commit/8f63b73))
+- enhance validation for invalid namespace in Cart Extensions API tests ([b863699](https://github.com/typewoo/sdk/commit/b863699))
+- update controller routes to include 'wp-json' prefix ([dd6e002](https://github.com/typewoo/sdk/commit/dd6e002))
+- add missing newline at end of package.json ([e475e36](https://github.com/typewoo/sdk/commit/e475e36))
+- add missing newline at end of package.json ([689a54f](https://github.com/typewoo/sdk/commit/689a54f))
+- tests ([5ff6dfd](https://github.com/typewoo/sdk/commit/5ff6dfd))
+- update vitest command to use specific config for unit tests ([965f319](https://github.com/typewoo/sdk/commit/965f319))
+- update package names from @typewoo/core to @typewoo/sdk ([e5a5ecf](https://github.com/typewoo/sdk/commit/e5a5ecf))
+- update import path for CartResponseSchema to include file extension ([b4b381a](https://github.com/typewoo/sdk/commit/b4b381a))
+- update workflows to use Node.js 24 and pnpm for dependency management ([da5e385](https://github.com/typewoo/sdk/commit/da5e385))
+
+### ❤️ Thank You
+
+- kmakris23
+
 ## 2.1.0 (2025-09-16)
 
 ### 🚀 Features
