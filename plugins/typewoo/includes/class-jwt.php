@@ -1,6 +1,6 @@
 <?php
 /**
- * Store SDK JWT Utilities
+ * TypeWoo JWT Utilities
  *
  * Handles JWT token encoding, decoding, and related utility functions.
  *
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK JWT Class.
+ * TypeWoo JWT Class.
  *
  * @class Store_SDK_JWT
  */
@@ -57,10 +57,10 @@ class Store_SDK_JWT {
 	 * @return string
 	 */
 	public function sign($header_payload) {
-		if (!defined('STORESDK_JWT_SECRET')) {
+		if (!defined('TYPEWOO_JWT_SECRET')) {
 			return '';
 		}
-		return $this->base64url_encode(hash_hmac('sha256', $header_payload, STORESDK_JWT_SECRET, true));
+		return $this->base64url_encode(hash_hmac('sha256', $header_payload, TYPEWOO_JWT_SECRET, true));
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Store_SDK_JWT {
 	public function decode($token, $options = array()) {
 		$parts = explode('.', $token);
 		if (count($parts) !== 3) {
-			return new WP_Error('storesdk_jwt.malformed', __('Malformed JWT', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.malformed', __('Malformed JWT', 'typewoo'));
 		}
 
 		list($header64, $payload64, $signature) = $parts;
@@ -100,13 +100,13 @@ class Store_SDK_JWT {
 		$payload = json_decode($this->base64url_decode($payload64), true);
 
 		if (empty($header) || empty($payload) || !is_array($header) || !is_array($payload)) {
-			return new WP_Error('storesdk_jwt.invalid_json', __('Invalid JWT JSON', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.invalid_json', __('Invalid JWT JSON', 'typewoo'));
 		}
 
 		// Verify signature
 		$expected_signature = $this->sign($header64 . '.' . $payload64);
 		if (!hash_equals($expected_signature, $signature)) {
-			return new WP_Error('storesdk_jwt.bad_signature', __('Invalid JWT signature', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.bad_signature', __('Invalid JWT signature', 'typewoo'));
 		}
 
 		// Validate time-based claims
@@ -138,17 +138,17 @@ class Store_SDK_JWT {
 
 		// Not before
 		if (isset($payload['nbf']) && $payload['nbf'] > $now + $leeway) {
-			return new WP_Error('storesdk_jwt.nbf', __('Token not yet valid', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.nbf', __('Token not yet valid', 'typewoo'));
 		}
 
 		// Issued at
 		if (isset($payload['iat']) && $payload['iat'] > $now + $leeway) {
-			return new WP_Error('storesdk_jwt.iat', __('Token issued in the future', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.iat', __('Token issued in the future', 'typewoo'));
 		}
 
 		// Expiration
 		if (isset($payload['exp']) && !$ignore_exp && $payload['exp'] < ($now - $leeway)) {
-			return new WP_Error('storesdk_jwt.expired', __('Token expired', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.expired', __('Token expired', 'typewoo'));
 		}
 
 		return true;
@@ -162,7 +162,7 @@ class Store_SDK_JWT {
 	 */
 	private function validate_audience($payload) {
 		if (!empty($payload['aud']) && $payload['aud'] !== get_site_url()) {
-			return new WP_Error('storesdk_jwt.aud', __('Invalid token audience', 'store-sdk'));
+			return new WP_Error('typewoo_jwt.aud', __('Invalid token audience', 'typewoo'));
 		}
 		return true;
 	}
@@ -173,7 +173,7 @@ class Store_SDK_JWT {
 	 * @return int
 	 */
 	private function get_leeway() {
-		return defined('STORESDK_JWT_LEEWAY') ? (int) STORESDK_JWT_LEEWAY : 1;
+		return defined('TYPEWOO_JWT_LEEWAY') ? (int) TYPEWOO_JWT_LEEWAY : 1;
 	}
 
 	/**
@@ -185,7 +185,7 @@ class Store_SDK_JWT {
 		try {
 			return bin2hex(random_bytes(16));
 		} catch (Exception $e) {
-			return wp_hash(uniqid('storesdk_jti_', true));
+			return wp_hash(uniqid('typewoo_jti_', true));
 		}
 	}
 
@@ -198,7 +198,7 @@ class Store_SDK_JWT {
 		try {
 			return bin2hex(random_bytes(32));
 		} catch (Exception $e) {
-			return wp_hash(uniqid('storesdk_refresh_', true));
+			return wp_hash(uniqid('typewoo_refresh_', true));
 		}
 	}
 
@@ -209,10 +209,10 @@ class Store_SDK_JWT {
 	 * @return string
 	 */
 	public function hash_refresh_token($raw_token) {
-		if (!defined('STORESDK_JWT_SECRET')) {
+		if (!defined('TYPEWOO_JWT_SECRET')) {
 			return '';
 		}
-		return hash_hmac('sha256', $raw_token, STORESDK_JWT_SECRET);
+		return hash_hmac('sha256', $raw_token, TYPEWOO_JWT_SECRET);
 	}
 
 	/**
@@ -221,8 +221,8 @@ class Store_SDK_JWT {
 	 * @return int
 	 */
 	public function get_default_expiration() {
-		$ttl = defined('STORESDK_JWT_ACCESS_TTL') ? (int) STORESDK_JWT_ACCESS_TTL : 3600;
-		return (int) apply_filters('storesdk_jwt_default_expiration', $ttl);
+		$ttl = defined('TYPEWOO_JWT_ACCESS_TTL') ? (int) TYPEWOO_JWT_ACCESS_TTL : 3600;
+		return (int) apply_filters('typewoo_jwt_default_expiration', $ttl);
 	}
 
 	/**
@@ -232,7 +232,7 @@ class Store_SDK_JWT {
 	 * @return int
 	 */
 	public function get_user_token_version($user_id) {
-		$version = get_user_meta($user_id, 'storesdk_token_version', true);
+		$version = get_user_meta($user_id, 'typewoo_token_version', true);
 		if (!$version || !is_numeric($version)) {
 			return 1;
 		}
@@ -247,7 +247,7 @@ class Store_SDK_JWT {
 	 */
 	public function bump_user_token_version($user_id) {
 		$version = $this->get_user_token_version($user_id) + 1;
-		update_user_meta($user_id, 'storesdk_token_version', $version);
+		update_user_meta($user_id, 'typewoo_token_version', $version);
 		return $version;
 	}
 
@@ -264,7 +264,7 @@ class Store_SDK_JWT {
 		$expires = $now + $ttl;
 		$hash = $this->hash_refresh_token($raw_token);
 
-		$tokens = get_user_meta($user_id, 'storesdk_refresh_tokens', true);
+		$tokens = get_user_meta($user_id, 'typewoo_refresh_tokens', true);
 		if (!is_array($tokens)) {
 			$tokens = array();
 		}
@@ -277,15 +277,15 @@ class Store_SDK_JWT {
 		}));
 
 		// Enforce max tokens limit
-		$max_tokens = defined('STORESDK_JWT_REFRESH_MAX_TOKENS') ? (int) STORESDK_JWT_REFRESH_MAX_TOKENS : 10;
+		$max_tokens = defined('TYPEWOO_JWT_REFRESH_MAX_TOKENS') ? (int) TYPEWOO_JWT_REFRESH_MAX_TOKENS : 10;
 		if ($max_tokens > 0 && count($tokens) > $max_tokens) {
 			$excess = count($tokens) - $max_tokens;
 			$tokens = array_slice($tokens, $excess);
 		}
 
-		$success = update_user_meta($user_id, 'storesdk_refresh_tokens', $tokens);
+		$success = update_user_meta($user_id, 'typewoo_refresh_tokens', $tokens);
 		if (!$success) {
-			return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), array('status' => 500));
+			return new WP_Error('typewoo_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'typewoo'), array('status' => 500));
 		}
 
 		return array(
@@ -303,11 +303,11 @@ class Store_SDK_JWT {
 	 */
 	public function consume_refresh_token($user_id, $raw_token) {
 		$hash = $this->hash_refresh_token($raw_token);
-		$key = 'storesdk_refresh_tokens';
+		$key = 'typewoo_refresh_tokens';
 
 		$tokens = get_user_meta($user_id, $key, true);
 		if (!is_array($tokens) || empty($tokens)) {
-			return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.refresh_invalid', __('Invalid refresh token', 'typewoo'), array('status' => 401));
 		}
 
 		$now = time();
@@ -321,7 +321,7 @@ class Store_SDK_JWT {
 
 			if ($token['hash'] === $hash) {
 				if ($token['exp'] < $now) {
-					return new WP_Error('storesdk_jwt.refresh_expired', __('Refresh token expired', 'store-sdk'), array('status' => 401));
+					return new WP_Error('typewoo_jwt.refresh_expired', __('Refresh token expired', 'typewoo'), array('status' => 401));
 				}
 				$found = true;
 				continue; // Skip - this token is consumed
@@ -333,12 +333,12 @@ class Store_SDK_JWT {
 		}
 
 		if (!$found) {
-			return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.refresh_invalid', __('Invalid refresh token', 'typewoo'), array('status' => 401));
 		}
 
 		$success = update_user_meta($user_id, $key, $remaining);
 		if (!$success) {
-			return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), array('status' => 500));
+			return new WP_Error('typewoo_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'typewoo'), array('status' => 500));
 		}
 
 		return true;

@@ -10,14 +10,14 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY . .
 
 RUN pnpm -w install --frozen-lockfile
-RUN pnpm nx build @store-sdk/nestjs
-RUN pnpm nx prune @store-sdk/nestjs
-RUN pnpm nx run @store-sdk/nestjs:copy-workspace-modules
+RUN pnpm nx build @typewoo/nestjs
+RUN pnpm nx prune @typewoo/nestjs
+RUN pnpm nx run @typewoo/nestjs:copy-workspace-modules
 
 # RUN pnpm nx sync || true
 
-# RUN pnpm nx build @store-sdk/nestjs
-# RUN pnpm nx prune @store-sdk/nestjs
+# RUN pnpm nx build @typewoo/nestjs
+# RUN pnpm nx prune @typewoo/nestjs
 
 
 FROM node:20-alpine AS production

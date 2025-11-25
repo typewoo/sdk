@@ -1,4 +1,4 @@
-import { CartItemQuantityLimitsResponseSchema } from '@store-sdk/core';
+import { CartItemQuantityLimitsResponseSchema } from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiCartItemQuantityLimitsResponse extends createZodDto(
   CartItemQuantityLimitsResponseSchema

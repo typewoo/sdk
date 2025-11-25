@@ -1,10 +1,10 @@
-import { StoreSdkConfig } from './configs/sdk.config.js';
-import { StoreSdkState } from './types/sdk.state.js';
+import { SdkConfig } from './configs/sdk.config.js';
+import { SdkState } from './types/sdk.state.js';
 import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
 import { StoreService } from './services/store.service.js';
-import { StoreSdkEvent } from './sdk.events.js';
+import { SdkEvent } from './sdk.events.js';
 import { EventBus } from './bus/event.bus.js';
 import { addTokenInterceptor } from './interceptors/token.interceptor.js';
 import { AuthService } from './services/auth/auth.service.js';
@@ -14,8 +14,8 @@ import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.j
 import { addApiKeyInterceptor } from './interceptors/api-key.interceptor.js';
 
 export class Sdk {
-  private _config!: StoreSdkConfig;
-  state: StoreSdkState = {};
+  private _config!: SdkConfig;
+  state: SdkState = {};
 
   private _auth!: AuthService;
   private _store!: StoreService;
@@ -23,9 +23,9 @@ export class Sdk {
 
   private _initialized = false;
 
-  events = new EventBus<StoreSdkEvent>();
+  events = new EventBus<SdkEvent>();
 
-  public async init(config: StoreSdkConfig): Promise<void> {
+  public async init(config: SdkConfig): Promise<void> {
     if (this._initialized) return;
 
     this._config = config;
@@ -64,23 +64,9 @@ export class Sdk {
     // This is useful if the token is already set
     if (config.auth?.getToken) {
       config.auth.getToken().then((token) => {
-        StoreSdk.state.authenticated = !!token;
-        StoreSdk.events.emit('auth:changed', !!token);
+        Typewoo.state.authenticated = !!token;
+        Typewoo.events.emit('auth:changed', !!token);
       });
-    }
-
-    const allPlugins = [...(config.plugins ?? [])];
-    for (const plugin of allPlugins) {
-      plugin.init();
-
-      // Allow plugins to register their own event handlers
-      if (plugin.registerEventHandlers) {
-        plugin.registerEventHandlers(this.events, this.state, config, this);
-      }
-
-      if (plugin.extend) {
-        plugin.extend(this);
-      }
     }
 
     this._initialized = true;
@@ -115,8 +101,8 @@ export class Sdk {
 
   private throwIfNotInitized() {
     if (this._initialized) return;
-    throw new Error('SDK not initialized. Call `await StoreSdk.init()` first.');
+    throw new Error('SDK not initialized. Call `await Typewoo.init()` first.');
   }
 }
 
-export const StoreSdk = new Sdk();
+export const Typewoo = new Sdk();

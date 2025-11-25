@@ -5,7 +5,7 @@ import {
   AdminTaxClassRequestSchema,
   AdminTaxClassQueryParamsSchema,
   AdminTaxRequestSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminTax extends createZodDto(AdminTaxSchema) {}
 export class ApiAdminTaxQueryParams extends createZodDto(

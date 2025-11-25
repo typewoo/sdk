@@ -1,8 +1,8 @@
 <?php
 /**
- * Store SDK CORS Handling
+ * TypeWoo CORS Handling
  *
- * Handles Cross-Origin Resource Sharing (CORS) for the Store SDK plugin.
+ * Handles Cross-Origin Resource Sharing (CORS) for the TypeWoo plugin.
  *
  * @since 1.0.0
  */
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK CORS Class.
+ * TypeWoo CORS Class.
  *
  * @class Store_SDK_CORS
  */
@@ -41,7 +41,7 @@ class Store_SDK_CORS {
 	 * @return bool
 	 */
 	private function is_cors_enabled() {
-		return defined('STORESDK_JWT_CORS_ENABLE') && STORESDK_JWT_CORS_ENABLE;
+		return defined('TYPEWOO_JWT_CORS_ENABLE') && TYPEWOO_JWT_CORS_ENABLE;
 	}
 
 	/**
@@ -83,10 +83,10 @@ class Store_SDK_CORS {
 	 * @return array
 	 */
 	private function get_allowed_origins() {
-		$allowed = array_filter(array_map('trim', explode(',', (string) STORESDK_JWT_CORS_ALLOWED_ORIGINS)));
+		$allowed = array_filter(array_map('trim', explode(',', (string) TYPEWOO_JWT_CORS_ALLOWED_ORIGINS)));
 		
 		// Allow customization via filter
-		return apply_filters('storesdk_jwt_cors_allowed_origins', $allowed, isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
+		return apply_filters('typewoo_jwt_cors_allowed_origins', $allowed, isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '');
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Store_SDK_CORS {
 	 * @return bool
 	 */
 	private function credentials_allowed() {
-		return defined('STORESDK_JWT_CORS_ALLOW_CREDENTIALS') && STORESDK_JWT_CORS_ALLOW_CREDENTIALS;
+		return defined('TYPEWOO_JWT_CORS_ALLOW_CREDENTIALS') && TYPEWOO_JWT_CORS_ALLOW_CREDENTIALS;
 	}
 
 	/**
@@ -148,7 +148,7 @@ class Store_SDK_CORS {
 	 * @return string
 	 */
 	private function get_allowed_methods() {
-		return defined('STORESDK_JWT_CORS_ALLOW_METHODS') ? STORESDK_JWT_CORS_ALLOW_METHODS : 'GET, POST, PUT, PATCH, DELETE, OPTIONS';
+		return defined('TYPEWOO_JWT_CORS_ALLOW_METHODS') ? TYPEWOO_JWT_CORS_ALLOW_METHODS : 'GET, POST, PUT, PATCH, DELETE, OPTIONS';
 	}
 
 	/**
@@ -157,7 +157,7 @@ class Store_SDK_CORS {
 	 * @return string
 	 */
 	private function get_allowed_headers() {
-		return defined('STORESDK_JWT_CORS_ALLOW_HEADERS') ? STORESDK_JWT_CORS_ALLOW_HEADERS : 'Authorization, Content-Type, cart-token';
+		return defined('TYPEWOO_JWT_CORS_ALLOW_HEADERS') ? TYPEWOO_JWT_CORS_ALLOW_HEADERS : 'Authorization, Content-Type, cart-token';
 	}
 
 	/**

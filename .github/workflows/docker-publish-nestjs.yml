@@ -18,7 +18,7 @@ permissions:
   packages: read
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/store-sdk-nestjs
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/typewoo-nestjs
 
 jobs:
   docker:

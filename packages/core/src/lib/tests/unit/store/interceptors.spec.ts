@@ -3,8 +3,8 @@ import { addCartTokenInterceptors } from '../../../interceptors/cart.token.inter
 import { addNonceInterceptors } from '../../../interceptors/nonce.interceptor.js';
 import { createHttpClient, httpClient } from '../../../services/api.js';
 import { EventBus } from '../../../bus/event.bus.js';
-import type { StoreSdkEvent } from '../../../sdk.events.js';
-import type { StoreSdkConfig } from '../../../configs/sdk.config.js';
+import type { SdkEvent } from '../../../sdk.events.js';
+import type { SdkConfig } from '../../../configs/sdk.config.js';
 
 type AnyConfig = { headers: Record<string, unknown> };
 interface InterceptorEntry<T> {
@@ -29,14 +29,14 @@ describe('Interceptors', () => {
 
   it('cart token interceptor adds header, sets state, emits event', async () => {
     const state: Record<string, unknown> = {};
-    const events = new EventBus<StoreSdkEvent>();
+    const events = new EventBus<SdkEvent>();
     const listener = vi.fn();
     events.on('cart:token:changed', listener);
     const setToken = vi.fn();
     const cfg = {
       baseUrl: '',
       cartToken: { getToken: async () => 'abc', setToken },
-    } as unknown as StoreSdkConfig;
+    } as unknown as SdkConfig;
     addCartTokenInterceptors(cfg, state, events);
 
     // simulate request phase
@@ -57,11 +57,11 @@ describe('Interceptors', () => {
 
   it('cart token interceptor disabled path', async () => {
     const state: Record<string, unknown> = {};
-    const events = new EventBus<StoreSdkEvent>();
+    const events = new EventBus<SdkEvent>();
     const cfg = {
       baseUrl: '',
       cartToken: { disabled: true },
-    } as unknown as StoreSdkConfig;
+    } as unknown as SdkConfig;
     addCartTokenInterceptors(cfg, state, events);
     const handlers = castClient().interceptors.request.handlers;
     const reqHandler = handlers[handlers.length - 1];
@@ -71,14 +71,14 @@ describe('Interceptors', () => {
 
   it('nonce interceptor adds header and emits event', async () => {
     const state: Record<string, unknown> = {};
-    const events = new EventBus<StoreSdkEvent>();
+    const events = new EventBus<SdkEvent>();
     const listener = vi.fn();
     events.on('nonce:changed', listener);
     const setToken = vi.fn();
     const cfg = {
       baseUrl: '',
       nonce: { getToken: async () => 'nnn', setToken },
-    } as unknown as StoreSdkConfig;
+    } as unknown as SdkConfig;
     addNonceInterceptors(cfg, state, events);
     const maybeReq = castClient().interceptors.request.handlers.find((h) =>
       h.fulfilled.toString().includes('nonce')
@@ -98,11 +98,11 @@ describe('Interceptors', () => {
 
   it('nonce interceptor disabled path', async () => {
     const state: Record<string, unknown> = {};
-    const events = new EventBus<StoreSdkEvent>();
+    const events = new EventBus<SdkEvent>();
     const cfg = {
       baseUrl: '',
       nonce: { disabled: true },
-    } as unknown as StoreSdkConfig;
+    } as unknown as SdkConfig;
     addNonceInterceptors(cfg, state, events);
     const handlers = castClient().interceptors.request.handlers;
     const reqHandler = handlers[handlers.length - 1];

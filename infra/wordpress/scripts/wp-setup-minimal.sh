@@ -38,7 +38,7 @@ else
   # Install WordPress
   wp core install \
     --url="http://localhost:8080" \
-    --title="Store SDK Test" \
+    --title="TypeWoo Test" \
     --admin_user="admin" \
     --admin_password="password" \
     --admin_email="test@example.com" \
@@ -47,24 +47,24 @@ else
   log "WordPress installed successfully"
 fi
 
-# Install/activate the Store SDK plugin
-log "Installing Store SDK plugin..."
+# Install/activate the TypeWoolugin
+log "Installing TypeWoo plugin..."
 
 # Check if plugin exists and activate it
-if wp plugin is-installed store-sdk 2>/dev/null; then
-  log "Store SDK plugin already installed"
-  if ! wp plugin is-active store-sdk 2>/dev/null; then
-    wp plugin activate store-sdk
-    log "Store SDK plugin activated"
+if wp plugin is-installed typewoo 2>/dev/null; then
+  log "TypeWoo plugin already installed"
+  if ! wp plugin is-active typewoo 2>/dev/null; then
+    wp plugin activate typewoo
+    log "TypeWoo plugin activated"
   else
-    log "Store SDK plugin already active"
+    log "TypeWoo plugin already active"
   fi
 else
-  log "Store SDK plugin not found - this should be mounted in the container"
+  log "TypeWoo plugin not found - this should be mounted in the container"
   wp plugin list
   exit 1
 fi
 
 log "Minimal WordPress setup complete!"
 log "- WordPress version: $(wp core version)"
-log "- Store SDK plugin: $(wp plugin is-active store-sdk && echo 'Active' || echo 'Inactive')"
+log "- TypeWoo plugin: $(wp plugin is-active typewoo && echo 'Active' || echo 'Inactive')"

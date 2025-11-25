@@ -1,6 +1,6 @@
 <?php
 /**
- * Store SDK Authentication
+ * TypeWoo Authentication
  *
  * Handles WordPress authentication integration and user management.
  *
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK Authentication Class.
+ * TypeWoo Authentication Class.
  *
  * @class Store_SDK_Auth
  */
@@ -52,7 +52,7 @@ class Store_SDK_Auth {
 	 * @return bool
 	 */
 	private function is_plugin_active() {
-		return defined('STORESDK_JWT_PLUGIN_ACTIVE') && STORESDK_JWT_PLUGIN_ACTIVE;
+		return defined('TYPEWOO_JWT_PLUGIN_ACTIVE') && TYPEWOO_JWT_PLUGIN_ACTIVE;
 	}
 
 	/**
@@ -87,10 +87,10 @@ class Store_SDK_Auth {
 		if (is_wp_error($payload)) {
 			// Don't poison auth pipeline for our own auth endpoints
 			if ($route_info['is_auth_namespace']) {
-				return 0; // Anonymous for /store-sdk/v1/auth/*
+				return 0; // Anonymous for /typewoo/v1/auth/*
 			}
 			// Store error for other routes
-			global $storesdk_jwt_last_error;
+			global $typewoo_jwt_last_error;
 			$data = $payload->get_error_data();
 			if (!is_array($data)) {
 				$data = array();
@@ -98,9 +98,9 @@ class Store_SDK_Auth {
 			if (empty($data['status'])) {
 				$data['status'] = 401;
 			}
-			$storesdk_jwt_last_error = new WP_Error(
-				$payload->get_error_code() ?: 'storesdk_jwt.invalid_bearer',
-				$payload->get_error_message() ?: __('Invalid bearer token', 'store-sdk'),
+			$typewoo_jwt_last_error = new WP_Error(
+				$payload->get_error_code() ?: 'typewoo_jwt.invalid_bearer',
+				$payload->get_error_message() ?: __('Invalid bearer token', 'typewoo'),
 				$data
 			);
 			return 0;
@@ -141,8 +141,8 @@ class Store_SDK_Auth {
 			$user = wp_get_current_user();
 			if (!$user || $user->ID === 0) {
 				return new WP_Error(
-					'storesdk_jwt.auth_required',
-					__('Authentication required for this endpoint', 'store-sdk'),
+					'typewoo_jwt.auth_required',
+					__('Authentication required for this endpoint', 'typewoo'),
 					array('status' => 401)
 				);
 			}
@@ -162,10 +162,10 @@ class Store_SDK_Auth {
 			return $result;
 		}
 
-		global $storesdk_jwt_last_error;
-		if ($storesdk_jwt_last_error instanceof WP_Error) {
-			$error = $storesdk_jwt_last_error;
-			$storesdk_jwt_last_error = null;
+		global $typewoo_jwt_last_error;
+		if ($typewoo_jwt_last_error instanceof WP_Error) {
+			$error = $typewoo_jwt_last_error;
+			$typewoo_jwt_last_error = null;
 			return $error;
 		}
 
@@ -180,7 +180,7 @@ class Store_SDK_Auth {
 			return;
 		}
 
-		if (!isset($_GET['storesdk_autologin']) || !isset($_GET['token'])) {
+		if (!isset($_GET['typewoo_autologin']) || !isset($_GET['token'])) {
 			return;
 		}
 
@@ -200,7 +200,7 @@ class Store_SDK_Auth {
 		}
 
 		// Check JTI validity
-		$jti_key = 'storesdk_jti_' . sanitize_key($payload['jti']);
+		$jti_key = 'typewoo_jti_' . sanitize_key($payload['jti']);
 		$marker = get_transient($jti_key);
 		if ($marker !== 'valid') {
 			return;
@@ -298,19 +298,19 @@ class Store_SDK_Auth {
 
 		// Pretty URLs
 		if (!empty($path)) {
-			if (preg_match('#^' . preg_quote($prefix, '#') . '/store-sdk/v1/auth/refresh/?$#', $path)) {
+			if (preg_match('#^' . preg_quote($prefix, '#') . '/typewoo/v1/auth/refresh/?$#', $path)) {
 				$is_refresh = true;
 			}
-			if (preg_match('#^' . preg_quote($prefix, '#') . '/store-sdk/v1/auth(/|$)#', $path)) {
+			if (preg_match('#^' . preg_quote($prefix, '#') . '/typewoo/v1/auth(/|$)#', $path)) {
 				$is_auth_namespace = true;
 			}
 		}
 
 		// Non-pretty URLs
-		if (!$is_refresh && $route && $route === '/store-sdk/v1/auth/refresh') {
+		if (!$is_refresh && $route && $route === '/typewoo/v1/auth/refresh') {
 			$is_refresh = true;
 		}
-		if (!$is_auth_namespace && $route && strpos($route, '/store-sdk/v1/auth') === 0) {
+		if (!$is_auth_namespace && $route && strpos($route, '/typewoo/v1/auth') === 0) {
 			$is_auth_namespace = true;
 		}
 
@@ -357,7 +357,7 @@ class Store_SDK_Auth {
 	 * @return bool
 	 */
 	public function endpoint_requires_auth($route_path = null) {
-		$protected_endpoints = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') ? STORESDK_JWT_FORCE_AUTH_ENDPOINTS : '';
+		$protected_endpoints = defined('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS') ? TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS : '';
 
 		if ($route_path === null) {
 			$route_path = $this->get_current_route_path();
@@ -385,16 +385,16 @@ class Store_SDK_Auth {
 
 		$route_path = $normalize_path($route_path);
 		if ($route_path === '') {
-			return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
+			return apply_filters('typewoo_jwt_endpoint_requires_auth', false, $route_path, null);
 		}
 
 		// Parse endpoints list (supports commas, spaces, and newlines)
 		$endpoints_list = is_string($protected_endpoints) ? wp_parse_list($protected_endpoints) : (array) $protected_endpoints;
 		$endpoints_list = array_filter(array_map('trim', $endpoints_list));
-		$endpoints_list = apply_filters('storesdk_jwt_force_auth_endpoints', $endpoints_list, $route_path);
+		$endpoints_list = apply_filters('typewoo_jwt_force_auth_endpoints', $endpoints_list, $route_path);
 
 		if (empty($endpoints_list)) {
-			return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
+			return apply_filters('typewoo_jwt_endpoint_requires_auth', false, $route_path, null);
 		}
 
 		foreach ($endpoints_list as $endpoint) {
@@ -405,7 +405,7 @@ class Store_SDK_Auth {
 
 			// Exact match first (most performant)
 			if ($normalized_endpoint === $route_path) {
-				return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
+				return apply_filters('typewoo_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
 			}
 
 			// Skip glob processing if no wildcards present
@@ -424,11 +424,11 @@ class Store_SDK_Auth {
 
 			// Validate and match pattern
 			if (@preg_match($pattern, '') !== false && preg_match($pattern, $route_path)) {
-				return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
+				return apply_filters('typewoo_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
 			}
 		}
 
-		return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
+		return apply_filters('typewoo_jwt_endpoint_requires_auth', false, $route_path, null);
 	}
 
 
@@ -438,7 +438,7 @@ class Store_SDK_Auth {
 	 * @return bool
 	 */
 	private function is_front_channel_enabled() {
-		return defined('STORESDK_JWT_ENABLE_FRONT_CHANNEL') && STORESDK_JWT_ENABLE_FRONT_CHANNEL;
+		return defined('TYPEWOO_JWT_ENABLE_FRONT_CHANNEL') && TYPEWOO_JWT_ENABLE_FRONT_CHANNEL;
 	}
 
 	/**
@@ -447,7 +447,7 @@ class Store_SDK_Auth {
 	 * @return bool
 	 */
 	private function requires_one_time_for_autologin() {
-		return defined('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN') && STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN;
+		return defined('TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN') && TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN;
 	}
 
 	/**

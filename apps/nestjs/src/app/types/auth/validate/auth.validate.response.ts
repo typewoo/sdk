@@ -1,4 +1,4 @@
-import { AuthValidateResponseSchema } from '@store-sdk/core';
+import { AuthValidateResponseSchema } from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAuthValidateResponse extends createZodDto(
   AuthValidateResponseSchema

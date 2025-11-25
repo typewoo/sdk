@@ -1,10 +1,10 @@
-# Store SDK WordPress Plugin
+# TypeWoo WordPress Plugin
 
-A comprehensive JWT authentication plugin designed to support headless WooCommerce integrations through the `@store-sdk/core` package.
+A comprehensive JWT authentication plugin designed to support headless WooCommerce integrations through the `@typewoo/core` package.
 
 ## Overview
 
-The Store SDK plugin provides secure JWT-based authentication endpoints for headless e-commerce applications built with WooCommerce. It offers token issuance, refresh rotation, validation, one-time tokens, autologin flows, and token revocation capabilities.
+The TypeWoo plugin provides secure JWT-based authentication endpoints for headless e-commerce applications built with WooCommerce. It offers token issuance, refresh rotation, validation, one-time tokens, autologin flows, and token revocation capabilities.
 
 ## Features
 
@@ -29,7 +29,7 @@ The Store SDK plugin provides secure JWT-based authentication endpoints for head
 
 ```bash
 # Upload to your WordPress plugins directory
-wp-content/plugins/store-sdk/
+wp-content/plugins/typewoo/
 ```
 
 ### 2. Define JWT Secret
@@ -37,7 +37,7 @@ wp-content/plugins/store-sdk/
 Add the following to your `wp-config.php`:
 
 ```php
-define('STORESDK_JWT_SECRET', 'your-very-long-random-secret-key-here');
+define('TYPEWOO_JWT_SECRET', 'your-very-long-random-secret-key-here');
 ```
 
 **⚠️ Important**: Use a strong, random secret key. This is critical for security.
@@ -47,7 +47,7 @@ define('STORESDK_JWT_SECRET', 'your-very-long-random-secret-key-here');
 Activate the plugin through the WordPress admin interface or via WP-CLI:
 
 ```bash
-wp plugin activate store-sdk
+wp plugin activate typewoo
 ```
 
 ## Configuration
@@ -58,76 +58,76 @@ The plugin can be configured using WordPress constants in your `wp-config.php` f
 
 ```php
 // Access token TTL (default: 3600 seconds / 1 hour)
-define('STORESDK_JWT_ACCESS_TTL', 3600);
+define('TYPEWOO_JWT_ACCESS_TTL', 3600);
 
 // Refresh token TTL (default: 1209600 seconds / 14 days)
-define('STORESDK_JWT_REFRESH_TTL', 60 * 60 * 24 * 14);
+define('TYPEWOO_JWT_REFRESH_TTL', 60 * 60 * 24 * 14);
 
 // Refresh token minimum TTL (default: 86400 seconds / 1 day)
-define('STORESDK_JWT_REFRESH_MIN_TTL', 60 * 60 * 24);
+define('TYPEWOO_JWT_REFRESH_MIN_TTL', 60 * 60 * 24);
 
 // Refresh token maximum TTL (default: 2592000 seconds / 30 days)
-define('STORESDK_JWT_REFRESH_MAX_TTL', 60 * 60 * 24 * 30);
+define('TYPEWOO_JWT_REFRESH_MAX_TTL', 60 * 60 * 24 * 30);
 
 // Maximum refresh tokens per user (default: 10)
-define('STORESDK_JWT_REFRESH_MAX_TOKENS', 10);
+define('TYPEWOO_JWT_REFRESH_MAX_TOKENS', 10);
 
 // JWT leeway for time validation (default: 1 second)
-define('STORESDK_JWT_LEEWAY', 1);
+define('TYPEWOO_JWT_LEEWAY', 1);
 ```
 
 ### One-Time Token Settings
 
 ```php
 // One-time token TTL (default: 300 seconds / 5 minutes)
-define('STORESDK_JWT_ONE_TIME_TTL', 300);
+define('TYPEWOO_JWT_ONE_TIME_TTL', 300);
 
 // One-time token minimum TTL (default: 30 seconds)
-define('STORESDK_JWT_ONE_TIME_MIN_TTL', 30);
+define('TYPEWOO_JWT_ONE_TIME_MIN_TTL', 30);
 
 // One-time token maximum TTL (default: 900 seconds / 15 minutes)
-define('STORESDK_JWT_ONE_TIME_MAX_TTL', 900);
+define('TYPEWOO_JWT_ONE_TIME_MAX_TTL', 900);
 
 // Require one-time token for autologin (default: true)
-define('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true);
+define('TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true);
 ```
 
 ### CORS Configuration
 
 ```php
 // Enable CORS (default: true)
-define('STORESDK_JWT_CORS_ENABLE', true);
+define('TYPEWOO_JWT_CORS_ENABLE', true);
 
 // Allowed origins (default: '*')
-define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', 'https://yourfrontend.com,https://admin.yoursite.com');
+define('TYPEWOO_JWT_CORS_ALLOWED_ORIGINS', 'https://yourfrontend.com,https://admin.yoursite.com');
 
 // Allow credentials (default: true)
-define('STORESDK_JWT_CORS_ALLOW_CREDENTIALS', true);
+define('TYPEWOO_JWT_CORS_ALLOW_CREDENTIALS', true);
 
 // Allowed methods (default: 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-define('STORESDK_JWT_CORS_ALLOW_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+define('TYPEWOO_JWT_CORS_ALLOW_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
 
 // Allowed headers (default: 'Authorization, Content-Type, cart-token')
-define('STORESDK_JWT_CORS_ALLOW_HEADERS', 'Authorization, Content-Type, cart-token');
+define('TYPEWOO_JWT_CORS_ALLOW_HEADERS', 'Authorization, Content-Type, cart-token');
 ```
 
 ### Plugin Control
 
 ```php
 // Enable/disable plugin functionality (default: true)
-define('STORESDK_JWT_ENABLED', true);
+define('TYPEWOO_JWT_ENABLED', true);
 
 // Enable front-channel logout (default: true)
-define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', true);
+define('TYPEWOO_JWT_ENABLE_FRONT_CHANNEL', true);
 ```
 
 ## API Endpoints
 
-All endpoints are available under the `/wp-json/storesdk/v1/` namespace:
+All endpoints are available under the `/wp-json/typewoo/v1/` namespace:
 
 ### 1. Token Issuance
 
-**POST** `/wp-json/storesdk/v1/token`
+**POST** `/wp-json/typewoo/v1/token`
 
 Issues access and refresh tokens for valid user credentials.
 
@@ -154,7 +154,7 @@ Issues access and refresh tokens for valid user credentials.
 
 ### 2. Token Refresh
 
-**POST** `/wp-json/storesdk/v1/token/refresh`
+**POST** `/wp-json/typewoo/v1/token/refresh`
 
 Refreshes an access token using a valid refresh token.
 
@@ -166,7 +166,7 @@ Refreshes an access token using a valid refresh token.
 
 ### 3. Token Validation
 
-**POST** `/wp-json/storesdk/v1/token/validate`
+**POST** `/wp-json/typewoo/v1/token/validate`
 
 Validates a JWT access token.
 
@@ -178,7 +178,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ### 4. One-Time Token
 
-**POST** `/wp-json/storesdk/v1/token/one-time`
+**POST** `/wp-json/typewoo/v1/token/one-time`
 
 Generates a one-time use token for secure operations.
 
@@ -198,7 +198,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ### 5. Autologin
 
-**POST** `/wp-json/storesdk/v1/autologin`
+**POST** `/wp-json/typewoo/v1/autologin`
 
 Performs automatic login using a one-time token.
 
@@ -210,7 +210,7 @@ Performs automatic login using a one-time token.
 
 ### 6. Token Revocation
 
-**POST** `/wp-json/storesdk/v1/token/revoke`
+**POST** `/wp-json/typewoo/v1/token/revoke`
 
 Revokes refresh tokens (single or all).
 
@@ -226,13 +226,13 @@ Revokes refresh tokens (single or all).
 The plugin follows WordPress best practices with a modular, object-oriented architecture:
 
 ```
-store-sdk/
-├── store-sdk.php              # Main plugin file (bootstrap)
+typewoo/
+├── typewoo.php              # Main plugin file (bootstrap)
 ├── uninstall.php             # Clean uninstallation
 ├── readme.txt                # WordPress.org readme
 ├── README.md                 # This documentation
 └── includes/
-    ├── class-store-sdk.php   # Main orchestrator class
+    ├── class-typewoo.php   # Main orchestrator class
     ├── class-auth.php        # Authentication integration
     ├── class-cors.php        # CORS handling
     ├── class-jwt.php         # JWT utilities
@@ -281,32 +281,32 @@ The plugin provides various hooks for customization:
 
 ```php
 // Plugin fully loaded
-do_action('storesdk_jwt_auth_loaded');
+do_action('typewoo_jwt_auth_loaded');
 
 // Token issued
-do_action('storesdk_jwt_token_issued', $user_id, $token_data);
+do_action('typewoo_jwt_token_issued', $user_id, $token_data);
 
 // Token refreshed
-do_action('storesdk_jwt_token_refreshed', $user_id, $new_token_data);
+do_action('typewoo_jwt_token_refreshed', $user_id, $new_token_data);
 
 // Token revoked
-do_action('storesdk_jwt_token_revoked', $user_id, $revoke_all);
+do_action('typewoo_jwt_token_revoked', $user_id, $revoke_all);
 ```
 
 ### Filters
 
 ```php
 // Modify token payload before encoding
-apply_filters('storesdk_jwt_token_payload', $payload, $user);
+apply_filters('typewoo_jwt_token_payload', $payload, $user);
 
 // Customize token TTL
-apply_filters('storesdk_jwt_access_ttl', $ttl, $user);
+apply_filters('typewoo_jwt_access_ttl', $ttl, $user);
 
 // Filter refresh token data
-apply_filters('storesdk_jwt_refresh_token_data', $data, $user);
+apply_filters('typewoo_jwt_refresh_token_data', $data, $user);
 
 // Modify CORS origins
-apply_filters('storesdk_jwt_cors_allowed_origins', $origins);
+apply_filters('typewoo_jwt_cors_allowed_origins', $origins);
 ```
 
 ## Development
@@ -317,7 +317,7 @@ Extend the API by hooking into the registration process:
 
 ```php
 add_action('rest_api_init', function() {
-    register_rest_route('storesdk/v1', '/custom-endpoint', [
+    register_rest_route('typewoo/v1', '/custom-endpoint', [
         'methods' => 'POST',
         'callback' => 'your_custom_callback',
         'permission_callback' => function() {
@@ -332,7 +332,7 @@ add_action('rest_api_init', function() {
 Override authentication behavior using filters:
 
 ```php
-add_filter('storesdk_jwt_token_payload', function($payload, $user) {
+add_filter('typewoo_jwt_token_payload', function($payload, $user) {
     // Add custom claims
     $payload['custom_role'] = $user->roles[0];
     return $payload;
@@ -343,7 +343,7 @@ add_filter('storesdk_jwt_token_payload', function($payload, $user) {
 
 ### Common Issues
 
-1. **"Invalid JWT Secret"**: Ensure `STORESDK_JWT_SECRET` is defined and not empty
+1. **"Invalid JWT Secret"**: Ensure `TYPEWOO_JWT_SECRET` is defined and not empty
 2. **CORS Errors**: Check your CORS configuration and allowed origins
 3. **Token Expired**: Verify system time synchronization and TTL settings
 4. **Permission Denied**: Ensure proper user capabilities and authentication
@@ -359,7 +359,7 @@ define('WP_DEBUG_LOG', true);
 
 ### Support
 
-For issues and feature requests, please visit the [GitHub repository](https://github.com/kmakris23/store-sdk).
+For issues and feature requests, please visit the [GitHub repository](https://github.com/typewoo/sdk).
 
 ## License
 

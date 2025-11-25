@@ -3,7 +3,7 @@ import {
   AdminCurrencySchema,
   AdminContinentSchema,
   AdminDataQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminCountry extends createZodDto(AdminCountrySchema) {}
 export class ApiAdminCurrency extends createZodDto(AdminCurrencySchema) {}

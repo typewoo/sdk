@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -16,7 +16,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin System Status', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -27,7 +27,7 @@ describe('Integration: Admin System Status', () => {
   });
 
   it('gets system status', async () => {
-    const res = await StoreSdk.admin.systemStatus.get({ context: 'view' });
+    const res = await Typewoo.admin.systemStatus.get({ context: 'view' });
     if (res.error) {
       expect(res.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i

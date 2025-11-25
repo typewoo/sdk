@@ -14,7 +14,7 @@ This NestJS application acts as a proxy between client applications and WordPres
 
 - Node.js 20+
 - WordPress with WooCommerce installed
-- Store SDK WordPress plugin (optional, for authentication features)
+- TypeWoo WordPress plugin (optional, for authentication features)
 
 ## Installation
 
@@ -171,17 +171,17 @@ src/
 
 ### Testing
 
-The proxy can be tested with any HTTP client or by using the Store SDK:
+The proxy can be tested with any HTTP client or by using the TypeWoo:
 
 ```typescript
-import { StoreSdk } from '@store-sdk/core';
+import { Typewoo } from '@typewoo/core';
 
-await StoreSdk.init({
+await Typewoo.init({
   baseUrl: 'http://localhost:3000', // Point to the NestJS proxy
 });
 
-// All Store SDK methods will now use the proxy
-const { data: products } = await StoreSdk.store.products.list();
+// All TypeWoohods will now use the proxy
+const { data: products } = await Typewoo.store.products.list();
 ```
 
 ## Deployment
@@ -204,7 +204,7 @@ You can build and run a Docker image for this API. A multi-stage Dockerfile is p
 
 ```powershell
 # From the repository root
-docker build -f apps/nestjs/Dockerfile -t store-sdk-nestjs:local .
+docker build -f apps/nestjs/Dockerfile -t typewoo-nestjs:local .
 
 # Run (set env as needed)
 docker run --rm -p 3000:3000 `
@@ -218,7 +218,7 @@ docker run --rm -p 3000:3000 `
    -e DATABASE_NAME=postgres `
    -e DATABASE_USERNAME=postgres `
    -e DATABASE_PASSWORD=postgres `
-   store-sdk-nestjs:local
+   typewoo-nestjs:local
 ```
 
 ### CI publish to Docker Hub
@@ -230,7 +230,7 @@ Required repository secrets:
 - `DOCKERHUB_USERNAME` – Docker Hub account or org name
 - `DOCKERHUB_TOKEN` – Docker Hub access token
 
-Image name: `docker.io/${DOCKERHUB_USERNAME}/store-sdk-nestjs`
+Image name: `docker.io/${DOCKERHUB_USERNAME}/typewoo-nestjs`
 
 Tags: `latest` (on main), branch name, git tag, and commit SHA.
 
@@ -247,4 +247,4 @@ Tags: `latest` (on main), branch name, git tag, and commit SHA.
 
 ### CORS
 
-The application inherits CORS settings from your WordPress installation. If you need custom CORS settings, configure them in the WordPress Store SDK plugin.
+The application inherits CORS settings from your WordPress installation. If you need custom CORS settings, configure them in the WordPress TypeWoo plugin.

@@ -1,18 +1,18 @@
-# Store SDK WordPress Plugin - Architecture Documentation
+# TypeWoo WordPress Plugin - Architecture Documentation
 
 This WordPress plugin has been reorganized following WordPress best practices for better maintainability, readability, and extensibility.
 
 ## Directory Structure
 
 ```
-store-sdk/
-├── store-sdk.php              # Main plugin bootstrap file
+typewoo/
+├── typewoo.php              # Main plugin bootstrap file
 ├── uninstall.php             # Clean uninstallation procedures
 ├── readme.txt                # WordPress.org plugin directory format
 ├── README.md                 # Comprehensive documentation
 ├── STRUCTURE.md              # This architecture guide
 └── includes/                 # All plugin classes and logic
-    ├── class-store-sdk.php   # Main orchestrator class
+    ├── class-typewoo.php   # Main orchestrator class
     ├── class-auth.php        # WordPress authentication integration
     ├── class-cors.php        # CORS handling and headers
     ├── class-jwt.php         # JWT utilities and token management
@@ -24,7 +24,7 @@ store-sdk/
 
 ## Class Architecture
 
-### Bootstrap File (`store-sdk.php`)
+### Bootstrap File (`typewoo.php`)
 
 - **Purpose**: Plugin initialization and constant definitions
 - **Responsibilities**:
@@ -34,7 +34,7 @@ store-sdk/
   - Provide global access function
 - **Lines of Code**: ~90 (down from 1000+ in monolithic version)
 
-### Main Orchestrator (`class-store-sdk.php`)
+### Main Orchestrator (`class-typewoo.php`)
 
 - **Class**: `Store_SDK`
 - **Pattern**: Singleton
@@ -137,7 +137,7 @@ All configuration handled via WordPress constants:
 ## Component Interactions
 
 ```
-store-sdk.php
+typewoo.php
     ↓
 Store_SDK (orchestrator)
     ↓
@@ -214,7 +214,7 @@ Store_SDK (orchestrator)
 - **API Tests**: Test REST endpoint functionality
 - **Security Tests**: Validate authentication and authorization
 
-This architecture provides a solid foundation for maintaining and extending the Store SDK plugin while following WordPress best practices.
+This architecture provides a solid foundation for maintaining and extending the TypeWoo plugin while following WordPress best practices.
 
 - Front-channel autologin handling
 
@@ -244,14 +244,14 @@ All plugin configuration is handled through WordPress constants defined in `wp-c
 
 ```php
 // Required
-define('STORESDK_JWT_ENABLED', true);
-define('STORESDK_JWT_SECRET', 'your-secret-key-here');
+define('TYPEWOO_JWT_ENABLED', true);
+define('TYPEWOO_JWT_SECRET', 'your-secret-key-here');
 
 // Optional (with defaults)
-define('STORESDK_JWT_ACCESS_TTL', 3600);
-define('STORESDK_JWT_REFRESH_TTL', 60 * 60 * 24 * 14);
-define('STORESDK_JWT_CORS_ENABLE', true);
-define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', '*');
+define('TYPEWOO_JWT_ACCESS_TTL', 3600);
+define('TYPEWOO_JWT_REFRESH_TTL', 60 * 60 * 24 * 14);
+define('TYPEWOO_JWT_CORS_ENABLE', true);
+define('TYPEWOO_JWT_CORS_ALLOWED_ORIGINS', '*');
 // ... and more
 ```
 
@@ -278,4 +278,4 @@ When adding new features:
 4. **New API endpoints**: Add to `includes/api/class-api.php`
 5. **Admin features**: Enhance `includes/admin/class-admin.php`
 
-The main `store-sdk.php` file should rarely need changes unless adding entirely new component classes.
+The main `typewoo.php` file should rarely need changes unless adding entirely new component classes.

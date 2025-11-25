@@ -15,7 +15,7 @@ import {
   ApiAuthStatusResponse,
 } from '../../types/auth';
 
-const endpoint = 'wp-json/store-sdk/v1/auth';
+const endpoint = 'wp-json/typewoo/v1/auth';
 
 @Controller(endpoint)
 @ApiResponse({ status: 400, type: ApiErrorResponse })
@@ -31,7 +31,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/token';
+    const endpoint = 'wp-json/typewoo/v1/auth/token';
     return this.wpHttpService.proxy(endpoint, req, res, body);
   }
 
@@ -45,7 +45,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/refresh';
+    const endpoint = 'wp-json/typewoo/v1/auth/refresh';
     return this.wpHttpService.proxy(endpoint, req, res, body);
   }
 
@@ -59,7 +59,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/revoke';
+    const endpoint = 'wp-json/typewoo/v1/auth/revoke';
     return this.wpHttpService.proxy(endpoint, req, res, body);
   }
 
@@ -73,7 +73,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/one-time-token';
+    const endpoint = 'wp-json/typewoo/v1/auth/one-time-token';
     return this.wpHttpService.proxy(endpoint, req, res, body);
   }
 
@@ -83,7 +83,7 @@ export class AuthController {
     type: ApiAuthValidateResponse,
   })
   validate(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/validate';
+    const endpoint = 'wp-json/typewoo/v1/auth/validate';
     return this.wpHttpService.proxy(endpoint, req, res);
   }
 
@@ -93,7 +93,7 @@ export class AuthController {
     type: ApiAuthStatusResponse,
   })
   status(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const endpoint = 'wp-json/store-sdk/v1/auth/status';
+    const endpoint = 'wp-json/typewoo/v1/auth/status';
     return this.wpHttpService.proxy(endpoint, req, res);
   }
 }

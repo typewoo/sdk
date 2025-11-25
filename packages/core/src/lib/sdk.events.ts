@@ -1,6 +1,6 @@
 import { CartResponse } from './types';
 
-export type StoreSdkEvent = {
+export type SdkEvent = {
   'auth:changed': boolean;
   'auth:login:start': void;
   'auth:login:success': void;

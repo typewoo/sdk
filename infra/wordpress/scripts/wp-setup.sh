@@ -185,11 +185,11 @@ if [ "$CURRENT_PERMALINK" != "/%postname%/" ]; then
 fi
 
 # Ensure JWT secret constants present in wp-config.php (WordPress image supports appending)
-if ! grep -q 'STORESDK_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
-  log "Adding STORESDK_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
-  echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/store-sdk/v1/test/cart-protected');" >> wp-config.php
+if ! grep -q 'TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
+  log "Adding TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
+  echo "define('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/typewoo/v1/test/cart-protected');" >> wp-config.php
 else
-  log "STORESDK_JWT_FORCE_AUTH_ENDPOINTS already exists in wp-config.php"
+  log "TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS already exists in wp-config.php"
 fi
 
 # Ensure debug mode is properly configured and debug log file exists
@@ -216,26 +216,26 @@ chmod 666 wp-content/debug.log
 log "Debug log file created and made writable"
 
 # ---------------------------------------------------------------------------
-# Verify Store SDK JWT plugin presence & REST route registration
+# Verify TypeWoo JWT plugin presence & REST route registration
 # ---------------------------------------------------------------------------
-log "Verifying Store SDK plugin (slug: store-sdk)..."
-if wp plugin is-installed store-sdk >/dev/null 2>&1; then
-  if ! wp plugin is-active store-sdk >/dev/null 2>&1; then
-    log "Activating store-sdk plugin"
-    wp plugin activate store-sdk || log "[storesdk-jwt][WARN] Activation failed"
+log "Verifying TypeWoo plugin (slug: typewoo)..."
+if wp plugin is-installed typewoo >/dev/null 2>&1; then
+  if ! wp plugin is-active typewoo >/dev/null 2>&1; then
+    log "Activating typewoolugin"
+    wp plugin activate typewoo || log "[typewoo-jwt][WARN] Activation failed"
   fi
   wp eval '
     $server = rest_get_server();
     $routes = $server ? $server->get_routes() : [];
-    $warn = function($m){ echo "[storesdk-jwt][WARN] $m\n"; };
-    if (!function_exists("storesdk_jwt_encode")) { $warn("storesdk_jwt_encode() missing (core not loaded)"); } else { echo "[storesdk-jwt] core functions loaded\n"; }
+    $warn = function($m){ echo "[typewoo-jwt][WARN] $m\n"; };
+    if (!function_exists("typewoo_jwt_encode")) { $warn("typewoo_jwt_encode() missing (core not loaded)"); } else { echo "[typewoo-jwt] core functions loaded\n"; }
     foreach (["token","validate","autologin","one-time-token","refresh"] as $endpoint) {
-      $path = "/store-sdk/v1/auth/$endpoint";
-      if (isset($routes[$path])) { echo "[storesdk-jwt] $path route registered\n"; } else { $warn("$endpoint route not registered"); }
+      $path = "/typewoo/v1/auth/$endpoint";
+      if (isset($routes[$path])) { echo "[typewoo-jwt] $path route registered\n"; } else { $warn("$endpoint route not registered"); }
     }
   ' || true
 else
-  log "[storesdk-jwt][WARN] Plugin store-sdk not installed"
+  log "[typewoo-jwt][WARN] Plugin typewoo not installed"
 fi
 
 # Create a test customer user (always ensure exists) using env overrides or defaults

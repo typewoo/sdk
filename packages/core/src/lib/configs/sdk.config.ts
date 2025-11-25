@@ -1,6 +1,4 @@
-import { StoreSdkPlugin } from '../plugins/plugin.js';
-
-export interface StoreSdkConfig {
+export interface SdkConfig {
   baseUrl: string;
   /**
    * API key for authenticating requests to the backend API (e.g., NestJS proxy).
@@ -48,8 +46,4 @@ export interface StoreSdkConfig {
     setToken?: (cartToken: string) => Promise<void>;
     clearToken?: () => Promise<void>;
   };
-  /**
-   * Plugins extending the SDK. Use generic parameter on StoreSdkPlugin to strongly type plugin config.
-   */
-  plugins?: StoreSdkPlugin<unknown>[];
 }

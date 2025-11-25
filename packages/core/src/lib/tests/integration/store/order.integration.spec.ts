@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -18,35 +18,35 @@ describe('Integration: Order (pay-for-order endpoint)', () => {
   let createdOrderKey: string | undefined;
 
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
 
     // Ensure we have at least one product in cart to attempt order creation
-    const { data: products } = await StoreSdk.store.products.list({
+    const { data: products } = await Typewoo.store.products.list({
       per_page: 5,
     });
     const prod = products?.find((p) => p.is_in_stock);
     if (prod?.id) {
-      await StoreSdk.store.cart.add({ id: prod.id, quantity: 1 });
+      await Typewoo.store.cart.add({ id: prod.id, quantity: 1 });
     }
 
     // Attempt to create an order using only gateways we enable in test WP env (configure-woocommerce.php keeps only COD active).
     const paymentMethods = ['cod'];
 
     // Ensure cart has at least one item (redundant safeguard in case earlier add failed)
-    const cart = await StoreSdk.store.cart.get();
+    const cart = await Typewoo.store.cart.get();
     if (!cart.data || cart.data.items.length === 0) {
-      const { data: products2 } = await StoreSdk.store.products.list({
+      const { data: products2 } = await Typewoo.store.products.list({
         per_page: 5,
       });
       const fallback = products2?.find((p) => p.is_in_stock);
       if (fallback?.id) {
-        await StoreSdk.store.cart.add({ id: fallback.id, quantity: 1 });
+        await Typewoo.store.cart.add({ id: fallback.id, quantity: 1 });
       }
     }
 
     // lastError no longer required since we don't throw on failure
     for (const method of paymentMethods) {
-      const attempt = await StoreSdk.store.checkout.processOrderAndPayment({
+      const attempt = await Typewoo.store.checkout.processOrderAndPayment({
         billing_address: {
           first_name: 'Test',
           last_name: 'User',
@@ -89,7 +89,7 @@ describe('Integration: Order (pay-for-order endpoint)', () => {
     // If we failed to create an order we still exercise error path deterministically.
     const key = createdOrderKey || 'missing_key_123';
     const id = String(createdOrderId || 99999999);
-    const res = await StoreSdk.store.orders.get(key, id);
+    const res = await Typewoo.store.orders.get(key, id);
     if (createdOrderId && createdOrderKey && res.data) {
       expect(res.error).toBeFalsy();
       // OrderResponse returns 'id' (not 'order_id' or 'order_key').
@@ -106,7 +106,7 @@ describe('Integration: Order (pay-for-order endpoint)', () => {
   it('retrieves order with billing email (expects data if created else explicit error)', async () => {
     const key = createdOrderKey || 'missing_key_123';
     const id = String(createdOrderId || 99999999);
-    const res = await StoreSdk.store.orders.get(key, id, 'test@example.com');
+    const res = await Typewoo.store.orders.get(key, id, 'test@example.com');
     if (createdOrderId && createdOrderKey && res.data) {
       expect(res.error).toBeFalsy();
       expect(res.data.id).toBe(createdOrderId);

@@ -10,7 +10,7 @@ import {
   AdminProductRequestSchema,
   AdminProductQueryParamsSchema,
   AdminProductCustomFieldNameQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminProductCategory extends createZodDto(
   AdminProductCategorySchema

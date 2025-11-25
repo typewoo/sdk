@@ -6,7 +6,7 @@ import {
   AdminRefundSchema,
   AdminRefundQueryParamsSchema,
   AdminRefundCreateRequestSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminRefundLineItem extends createZodDto(
   AdminRefundLineItemSchema

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -18,7 +18,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Taxes', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -30,7 +30,7 @@ describe('Integration: Admin Taxes', () => {
 
   it('lists tax classes and can CRUD a custom class', async () => {
     // List classes
-    const list = await StoreSdk.admin.taxClasses.list({ context: 'view' });
+    const list = await Typewoo.admin.taxClasses.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -41,7 +41,7 @@ describe('Integration: Admin Taxes', () => {
 
     // Create class
     const name = `Integration Class ${Date.now()}`;
-    const created = await StoreSdk.admin.taxClasses.create({ name });
+    const created = await Typewoo.admin.taxClasses.create({ name });
     if (created.error) {
       expect(created.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -52,7 +52,7 @@ describe('Integration: Admin Taxes', () => {
     if (!created.data) return;
     const slug = created.data.slug;
     // Get class
-    const get = await StoreSdk.admin.taxClasses.get(slug);
+    const get = await Typewoo.admin.taxClasses.get(slug);
     expect(get.data).toBeTruthy();
     expect(get.error).toBeFalsy();
 
@@ -61,13 +61,13 @@ describe('Integration: Admin Taxes', () => {
     }
 
     // Delete class
-    const del = await StoreSdk.admin.taxClasses.delete(slug, true);
+    const del = await Typewoo.admin.taxClasses.delete(slug, true);
     expect(del.error).toBeFalsy();
   });
 
   it('lists tax rates and can CRUD + batch', async () => {
     // List rates
-    const list = await StoreSdk.admin.taxes.list({ per_page: 5, page: 1 });
+    const list = await Typewoo.admin.taxes.list({ per_page: 5, page: 1 });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -77,7 +77,7 @@ describe('Integration: Admin Taxes', () => {
     }
 
     // Create a tax rate (ensure valid minimal fields)
-    const rateA = await StoreSdk.admin.taxes.create({
+    const rateA = await Typewoo.admin.taxes.create({
       country: 'US',
       state: '',
       rate: '5.0000',
@@ -98,7 +98,7 @@ describe('Integration: Admin Taxes', () => {
 
     try {
       // Update the tax rate
-      const updated = await StoreSdk.admin.taxes.update(idA, {
+      const updated = await Typewoo.admin.taxes.update(idA, {
         name: `${rateA.data.name}-UPD`,
         rate: '6.5000',
       });
@@ -108,12 +108,12 @@ describe('Integration: Admin Taxes', () => {
       }
 
       // Get the tax rate
-      const get = await StoreSdk.admin.taxes.get(idA);
+      const get = await Typewoo.admin.taxes.get(idA);
       expect(get.error).toBeFalsy();
       expect(get.data?.id).toBe(idA);
 
       // Create a second rate for batch
-      const rateB = await StoreSdk.admin.taxes.create({
+      const rateB = await Typewoo.admin.taxes.create({
         country: 'US',
         state: '',
         rate: '4.0000',
@@ -130,7 +130,7 @@ describe('Integration: Admin Taxes', () => {
         const idB = rateB.data.id;
 
         // Batch update/delete
-        const batch = await StoreSdk.admin.taxes.batch({
+        const batch = await Typewoo.admin.taxes.batch({
           update: [{ id: idA, name: `${rateA.data.name}-BATCH` }],
           delete: [idB],
         });
@@ -138,7 +138,7 @@ describe('Integration: Admin Taxes', () => {
       }
     } finally {
       // Cleanup created rateA
-      await StoreSdk.admin.taxes.delete(idA, true);
+      await Typewoo.admin.taxes.delete(idA, true);
     }
   });
 });

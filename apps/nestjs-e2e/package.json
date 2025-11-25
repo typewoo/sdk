@@ -1,10 +1,10 @@
 {
-  "name": "@store-sdk/nestjs-e2e",
+  "name": "@typewoo/nestjs-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@store-sdk/nestjs"
+      "@typewoo/nestjs"
     ],
     "targets": {
       "e2e": {
@@ -17,8 +17,8 @@
           "passWithNoTests": true
         },
         "dependsOn": [
-          "@store-sdk/nestjs:build",
-          "@store-sdk/nestjs:serve"
+          "@typewoo/nestjs:build",
+          "@typewoo/nestjs:serve"
         ]
       }
     }

@@ -1,8 +1,8 @@
 <?php
 /**
- * Store SDK Uninstall
+ * TypeWoo Uninstall
  *
- * Cleanup for Store SDK Authentication plugin.
+ * Cleanup for TypeWoo Authentication plugin.
  * Removes user meta and transient data created by the JWT auth module.
  *
  * @since 1.0.0
@@ -14,20 +14,20 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 }
 
 // Allow skipping cleanup
-if (defined('STORESDK_JWT_SKIP_UNINSTALL_CLEANUP') && STORESDK_JWT_SKIP_UNINSTALL_CLEANUP) {
+if (defined('TYPEWOO_JWT_SKIP_UNINSTALL_CLEANUP') && TYPEWOO_JWT_SKIP_UNINSTALL_CLEANUP) {
 	return;
 }
 
 // Allow external code to short-circuit cleanup
 if (function_exists('apply_filters')) {
-	$do_cleanup = apply_filters('storesdk_jwt_uninstall_cleanup', true);
+	$do_cleanup = apply_filters('typewoo_jwt_uninstall_cleanup', true);
 	if (!$do_cleanup) {
 		return;
 	}
 }
 
 /**
- * Store SDK Uninstaller Class
+ * TypeWoo Uninstaller Class
  */
 class Store_SDK_Uninstaller {
 
@@ -61,7 +61,7 @@ class Store_SDK_Uninstaller {
 		global $wpdb;
 
 		// Delete user meta (refresh tokens + token version counters)
-		$meta_keys = array('storesdk_refresh_tokens', 'storesdk_token_version');
+		$meta_keys = array('typewoo_refresh_tokens', 'typewoo_token_version');
 		foreach ($meta_keys as $meta_key) {
 			$wpdb->query(
 				$wpdb->prepare(
@@ -72,11 +72,11 @@ class Store_SDK_Uninstaller {
 		}
 
 		// Delete one-time token transients
-		// Stored as _transient_storesdk_jti_xxx and _transient_timeout_storesdk_jti_xxx
+		// Stored as _transient_typewoo_jti_xxx and _transient_timeout_typewoo_jti_xxx
 		// Find all transients matching the patterns and delete them using the API
 		$transient_patterns = array(
-			'_transient_storesdk_jti_%',
-			'_transient_timeout_storesdk_jti_%'
+			'_transient_typewoo_jti_%',
+			'_transient_timeout_typewoo_jti_%'
 		);
 		foreach ( $transient_patterns as $pattern ) {
 			$option_names = $wpdb->get_col(
@@ -98,7 +98,7 @@ class Store_SDK_Uninstaller {
 		}
 
 		// Allow additional cleanup via action
-		do_action('storesdk_jwt_after_uninstall_cleanup');
+		do_action('typewoo_jwt_after_uninstall_cleanup');
 	}
 }
 

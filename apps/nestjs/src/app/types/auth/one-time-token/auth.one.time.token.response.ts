@@ -1,4 +1,4 @@
-import { AuthOneTimeTokenResponseSchema } from '@store-sdk/core';
+import { AuthOneTimeTokenResponseSchema } from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAuthOneTimeTokenResponse extends createZodDto(
   AuthOneTimeTokenResponseSchema

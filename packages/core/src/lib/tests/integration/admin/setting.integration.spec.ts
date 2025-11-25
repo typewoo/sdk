@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -17,7 +17,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Settings', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -28,7 +28,7 @@ describe('Integration: Admin Settings', () => {
   });
 
   it('lists setting groups and lists settings for one group', async () => {
-    const groups = await StoreSdk.admin.settings.listGroups();
+    const groups = await Typewoo.admin.settings.listGroups();
     if (groups.error) {
       expect(groups.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -39,7 +39,7 @@ describe('Integration: Admin Settings', () => {
     if (!groups.data || groups.data.length === 0) return;
 
     const groupId = groups.data[0].id;
-    const list = await StoreSdk.admin.settings.listSettings(groupId);
+    const list = await Typewoo.admin.settings.listSettings(groupId);
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -50,18 +50,18 @@ describe('Integration: Admin Settings', () => {
   });
 
   it('gets, updates, and batch-updates settings (safe values)', async () => {
-    const groups = await StoreSdk.admin.settings.listGroups();
+    const groups = await Typewoo.admin.settings.listGroups();
     if (groups.error || !groups.data || groups.data.length === 0) return;
     const groupId = groups.data[0].id;
 
-    const settings = await StoreSdk.admin.settings.listSettings(groupId);
+    const settings = await Typewoo.admin.settings.listSettings(groupId);
     if (settings.error || !settings.data || settings.data.length === 0) return;
 
     const setting = settings.data[0];
     const settingId = setting.id;
 
     // Read original value to restore via batch
-    const get = await StoreSdk.admin.settings.getSetting(groupId, settingId);
+    const get = await Typewoo.admin.settings.getSetting(groupId, settingId);
     if (get.error || !get.data) return;
     const originalValue = get.data.value;
 
@@ -73,13 +73,9 @@ describe('Integration: Admin Settings', () => {
       return originalValue as unknown as string | number | boolean;
     })();
 
-    const upd = await StoreSdk.admin.settings.updateSetting(
-      groupId,
-      settingId,
-      {
-        value: nextValue,
-      }
-    );
+    const upd = await Typewoo.admin.settings.updateSetting(groupId, settingId, {
+      value: nextValue,
+    });
     if (upd.error) {
       expect(upd.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -89,12 +85,9 @@ describe('Integration: Admin Settings', () => {
     }
 
     // Batch update the same setting back to original, using group batch
-    const batchGrp = await StoreSdk.admin.settings.batchUpdateSettings(
-      groupId,
-      {
-        update: [{ id: settingId, value: originalValue }],
-      }
-    );
+    const batchGrp = await Typewoo.admin.settings.batchUpdateSettings(groupId, {
+      update: [{ id: settingId, value: originalValue }],
+    });
     if (batchGrp.error) {
       expect(batchGrp.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -104,7 +97,7 @@ describe('Integration: Admin Settings', () => {
     }
 
     // Multi-group batch update (noop echo of original to demonstrate API)
-    const batch = await StoreSdk.admin.settings.batchUpdate({
+    const batch = await Typewoo.admin.settings.batchUpdate({
       update: [{ group: groupId, id: settingId, value: originalValue }],
     });
     if (batch.error) {

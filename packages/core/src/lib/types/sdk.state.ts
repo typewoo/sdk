@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CartResponseSchema } from './store';
 
-export const StoreSdkStateSchema = z.object({
+export const SdkStateSchema = z.object({
   cart: CartResponseSchema.optional(),
   nonce: z.string().optional(),
   cartHash: z.string().optional(),
@@ -9,4 +9,4 @@ export const StoreSdkStateSchema = z.object({
   authenticated: z.boolean().optional(),
 });
 
-export type StoreSdkState = z.infer<typeof StoreSdkStateSchema>;
+export type SdkState = z.infer<typeof SdkStateSchema>;

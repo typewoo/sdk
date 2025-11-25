@@ -5,7 +5,7 @@ import {
   AdminImage,
   AdminDimensions,
   AdminTaxLine,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminMetaData extends createZodDto(AdminMetaData) {}
 export class ApiAdminAddress extends createZodDto(AdminAddress) {}

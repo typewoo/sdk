@@ -9,7 +9,6 @@ export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 // Common
 export { httpClient, createHttpClient } from './lib/services/api.js';
 export * from './lib/configs/sdk.config.js';
-export * from './lib/plugins/index.js';
 export * from './lib/utilities/axios.utility.js';
 export * from './lib/utilities/common.js';
 

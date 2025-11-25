@@ -17,7 +17,7 @@ import type { Response, Request } from 'express';
 import {
   AdminTaxonomyCategoryQueryParams,
   AdminTaxonomyCategoryRequest,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { ApiAdminTaxonomyCategory } from '../../types/admin';
 import { ApiErrorResponse } from '../../types/api';
 

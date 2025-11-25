@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -7,7 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { ProductRequest } from '@store-sdk/types';
+import { ProductRequest } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -18,7 +18,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Service', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -30,7 +30,7 @@ describe('Integration: Admin Product Service', () => {
 
   it('lists products with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.products.list({ per_page: 5, page: 1 });
+      await Typewoo.admin.products.list({ per_page: 5, page: 1 });
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
@@ -40,7 +40,7 @@ describe('Integration: Admin Product Service', () => {
 
   it('searches products by name', async () => {
     const query = 'test';
-    const { data, error } = await StoreSdk.admin.products.list({
+    const { data, error } = await Typewoo.admin.products.list({
       search: query,
       per_page: 10,
     });
@@ -67,37 +67,37 @@ describe('Integration: Admin Product Service', () => {
     };
 
     // Create
-    const createRes = await StoreSdk.admin.products.create(req);
+    const createRes = await Typewoo.admin.products.create(req);
     expect(createRes.error).toBeFalsy();
     expect(createRes.data).toBeTruthy();
     if (!createRes.data) return;
     const productId = createRes.data.id;
 
     // Get
-    const getRes = await StoreSdk.admin.products.getById(productId);
+    const getRes = await Typewoo.admin.products.getById(productId);
     expect(getRes.error).toBeFalsy();
     expect(getRes.data?.id).toBe(productId);
 
     // Update
-    const updateRes = await StoreSdk.admin.products.update(productId, {
+    const updateRes = await Typewoo.admin.products.update(productId, {
       regular_price: '12.49',
     });
     expect(updateRes.error).toBeFalsy();
     expect(updateRes.data?.regular_price).toBe('12.49');
 
     // Delete (force)
-    const delRes = await StoreSdk.admin.products.delete(productId, true);
+    const delRes = await Typewoo.admin.products.delete(productId, true);
     expect(delRes.error).toBeFalsy();
 
     // Verify deleted
-    const getDeleted = await StoreSdk.admin.products.getById(productId);
+    const getDeleted = await Typewoo.admin.products.getById(productId);
     expect(getDeleted.error).toBeTruthy();
     expect(getDeleted.error?.code).toMatch(/not_found|invalid/i);
   });
 
   it('handles batch create and batch delete', async () => {
     const ts = Date.now();
-    const batchCreate = await StoreSdk.admin.products.batch({
+    const batchCreate = await Typewoo.admin.products.batch({
       create: [
         {
           name: `batch-1-${ts}`,
@@ -123,7 +123,7 @@ describe('Integration: Admin Product Service', () => {
     expect(ids.length).toBe(2);
 
     // Batch delete the created ones
-    const batchDelete = await StoreSdk.admin.products.batch({
+    const batchDelete = await Typewoo.admin.products.batch({
       delete: ids,
     });
     expect(batchDelete.error).toBeFalsy();
@@ -133,7 +133,7 @@ describe('Integration: Admin Product Service', () => {
   it('duplicates a product', async () => {
     const ts = Date.now();
     // Create base product
-    const base = await StoreSdk.admin.products.create({
+    const base = await Typewoo.admin.products.create({
       name: `dup-base-${ts}`,
       type: 'simple',
       regular_price: '7.77',
@@ -145,7 +145,7 @@ describe('Integration: Admin Product Service', () => {
     const baseId = base.data.id;
 
     try {
-      const dup = await StoreSdk.admin.products.duplicate(baseId, {
+      const dup = await Typewoo.admin.products.duplicate(baseId, {
         regular_price: '8.88',
       });
       // Some environments may restrict duplication; accept error codes
@@ -158,14 +158,14 @@ describe('Integration: Admin Product Service', () => {
       expect(dup.data.id).not.toBe(baseId);
     } finally {
       // Cleanup both (best-effort)
-      await StoreSdk.admin.products.delete(baseId, true);
+      await Typewoo.admin.products.delete(baseId, true);
     }
   });
 
   it('manages variations for a variable product', async () => {
     const ts = Date.now();
     // Create a variable product with one custom attribute
-    const prod = await StoreSdk.admin.products.create({
+    const prod = await Typewoo.admin.products.create({
       name: `var-prod-${ts}`,
       type: 'variable',
       catalog_visibility: 'hidden',
@@ -186,13 +186,13 @@ describe('Integration: Admin Product Service', () => {
 
     try {
       // Initially no variations
-      const list0 = await StoreSdk.admin.products.listVariations(productId, {
+      const list0 = await Typewoo.admin.products.listVariations(productId, {
         per_page: 10,
       });
       expect(list0.error).toBeFalsy();
 
       // Create a variation for Size=S
-      const createVar = await StoreSdk.admin.products.createVariation(
+      const createVar = await Typewoo.admin.products.createVariation(
         productId,
         {
           attributes: [{ name: 'Size', option: 'S' }],
@@ -210,7 +210,7 @@ describe('Integration: Admin Product Service', () => {
       const variationId = createVar.data.id;
 
       // Get variation
-      const getVar = await StoreSdk.admin.products.getVariation(
+      const getVar = await Typewoo.admin.products.getVariation(
         productId,
         variationId
       );
@@ -218,7 +218,7 @@ describe('Integration: Admin Product Service', () => {
       expect(getVar.data?.id).toBe(variationId);
 
       // Update variation
-      const updVar = await StoreSdk.admin.products.updateVariation(
+      const updVar = await Typewoo.admin.products.updateVariation(
         productId,
         variationId,
         { regular_price: '16.00' }
@@ -227,7 +227,7 @@ describe('Integration: Admin Product Service', () => {
       expect(updVar.data?.regular_price).toBe('16.00');
 
       // List variations and ensure presence
-      const list1 = await StoreSdk.admin.products.listVariations(productId, {
+      const list1 = await Typewoo.admin.products.listVariations(productId, {
         per_page: 10,
       });
       expect(list1.error).toBeFalsy();
@@ -237,7 +237,7 @@ describe('Integration: Admin Product Service', () => {
       }
 
       // Delete variation
-      const delVar = await StoreSdk.admin.products.deleteVariation(
+      const delVar = await Typewoo.admin.products.deleteVariation(
         productId,
         variationId,
         true
@@ -245,14 +245,14 @@ describe('Integration: Admin Product Service', () => {
       expect(delVar.error).toBeFalsy();
     } finally {
       // Cleanup product
-      await StoreSdk.admin.products.delete(productId, true);
+      await Typewoo.admin.products.delete(productId, true);
     }
   });
 
   it('generates variations for a fresh variable product (if supported)', async () => {
     const ts = Date.now();
     // Create a fresh variable product with two options (no variations yet)
-    const prod = await StoreSdk.admin.products.create({
+    const prod = await Typewoo.admin.products.create({
       name: `var-gen-${ts}`,
       type: 'variable',
       catalog_visibility: 'hidden',
@@ -272,7 +272,7 @@ describe('Integration: Admin Product Service', () => {
     const productId = prod.data.id;
 
     try {
-      const gen = await StoreSdk.admin.products.generateVariations(productId);
+      const gen = await Typewoo.admin.products.generateVariations(productId);
       if (gen.error) {
         expect(gen.error.code).toMatch(/invalid|forbidden|not_found/i);
       } else {
@@ -282,23 +282,23 @@ describe('Integration: Admin Product Service', () => {
         }
       }
     } finally {
-      await StoreSdk.admin.products.delete(productId, true);
+      await Typewoo.admin.products.delete(productId, true);
     }
   });
 
   it('retrieves product in different contexts', async () => {
-    const list = await StoreSdk.admin.products.list({ per_page: 1 });
+    const list = await Typewoo.admin.products.list({ per_page: 1 });
     expect(list.error).toBeFalsy();
     if (!list.data || list.data.length === 0) return;
     const productId = list.data[0].id;
 
-    const view = await StoreSdk.admin.products.getById(productId, {
+    const view = await Typewoo.admin.products.getById(productId, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(productId);
 
-    const edit = await StoreSdk.admin.products.getById(productId, {
+    const edit = await Typewoo.admin.products.getById(productId, {
       context: 'edit',
     });
     expect(edit.error).toBeFalsy();
@@ -307,18 +307,18 @@ describe('Integration: Admin Product Service', () => {
 
   it('handles error cases gracefully', async () => {
     // Get non-existent
-    const getBad = await StoreSdk.admin.products.getById(999999);
+    const getBad = await Typewoo.admin.products.getById(999999);
     expect(getBad.error).toBeTruthy();
     expect(getBad.error?.code).toMatch(/not_found|invalid/i);
 
     // Update non-existent
-    const updateBad = await StoreSdk.admin.products.update(999999, {
+    const updateBad = await Typewoo.admin.products.update(999999, {
       regular_price: '1.00',
     });
     expect(updateBad.error).toBeTruthy();
 
     // Delete non-existent
-    const deleteBad = await StoreSdk.admin.products.delete(999999);
+    const deleteBad = await Typewoo.admin.products.delete(999999);
     expect(deleteBad.error).toBeTruthy();
   });
 });

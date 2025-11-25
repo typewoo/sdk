@@ -1,6 +1,6 @@
 <?php
 /**
- * The main Store SDK plugin class.
+ * The main TypeWoo plugin class.
  *
  * @since 1.0.0
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Main Store SDK Class.
+ * Main TypeWoo Class.
  *
  * @class Store_SDK
  */
@@ -75,9 +75,9 @@ final class Store_SDK {
 	private $initialized = false;
 
 	/**
-	 * Main Store SDK Instance.
+	 * Main TypeWoo Instance.
 	 *
-	 * Ensures only one instance of Store SDK is loaded or can be loaded.
+	 * Ensures only one instance of TypeWoo is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
@@ -91,7 +91,7 @@ final class Store_SDK {
 	}
 
 	/**
-	 * Store SDK Constructor.
+	 * TypeWoo Constructor.
 	 */
 	public function __construct() {
 		// Prevent double initialization
@@ -104,7 +104,7 @@ final class Store_SDK {
 		$this->init_hooks();
 		
 		$this->initialized = true;
-		do_action('storesdk_loaded');
+		do_action('typewoo_loaded');
 	}
 
 	/**
@@ -113,17 +113,17 @@ final class Store_SDK {
 	 * @since 1.0.0
 	 */
 	private function init_hooks() {
-		register_activation_hook(STORESDK_PLUGIN_FILE, array($this, 'activation_check'));
+		register_activation_hook(TYPEWOO_PLUGIN_FILE, array($this, 'activation_check'));
 		add_action('plugins_loaded', array($this, 'init'), 0);
 	}
 
 	/**
-	 * Define Store SDK Constants.
+	 * Define TypeWoo Constants.
 	 */
 	private function define_constants() {
-		$this->define('STORESDK_ABSPATH', dirname(STORESDK_PLUGIN_FILE) . '/');
-		$this->define('STORESDK_PLUGIN_BASENAME', plugin_basename(STORESDK_PLUGIN_FILE));
-		$this->define('STORESDK_VERSION', '1.0.0');
+		$this->define('TYPEWOO_ABSPATH', dirname(TYPEWOO_PLUGIN_FILE) . '/');
+		$this->define('TYPEWOO_PLUGIN_BASENAME', plugin_basename(TYPEWOO_PLUGIN_FILE));
+		$this->define('TYPEWOO_VERSION', '1.0.0');
 	}
 
 	/**
@@ -164,23 +164,23 @@ final class Store_SDK {
 		/**
 		 * Core classes.
 		 */
-		include_once STORESDK_ABSPATH . 'includes/class-cors.php';
-		include_once STORESDK_ABSPATH . 'includes/class-jwt.php';
-		include_once STORESDK_ABSPATH . 'includes/class-auth.php';
-		include_once STORESDK_ABSPATH . 'includes/api/class-api.php';
-		include_once STORESDK_ABSPATH . 'includes/class-tracking.php';
+		include_once TYPEWOO_ABSPATH . 'includes/class-cors.php';
+		include_once TYPEWOO_ABSPATH . 'includes/class-jwt.php';
+		include_once TYPEWOO_ABSPATH . 'includes/class-auth.php';
+		include_once TYPEWOO_ABSPATH . 'includes/api/class-api.php';
+		include_once TYPEWOO_ABSPATH . 'includes/class-tracking.php';
 		
 		if ($this->is_request('admin')) {
-			include_once STORESDK_ABSPATH . 'includes/admin/class-admin.php';
+			include_once TYPEWOO_ABSPATH . 'includes/admin/class-admin.php';
 		}
 	}
 
 	/**
-	 * Init Store SDK when WordPress Initialises.
+	 * Init TypeWoo when WordPress Initialises.
 	 */
 	public function init() {
 		// Before init action.
-		do_action('before_storesdk_init');
+		do_action('before_typewoo_init');
 
 		// Set up localisation.
 		$this->load_plugin_textdomain();
@@ -197,7 +197,7 @@ final class Store_SDK {
 		}
 
 		// Init action.
-		do_action('storesdk_init');
+		do_action('typewoo_init');
 	}
 
 	/**
@@ -205,10 +205,10 @@ final class Store_SDK {
 	 */
 	public function load_plugin_textdomain() {
 		$locale = determine_locale();
-		$locale = apply_filters('plugin_locale', $locale, 'store-sdk');
+		$locale = apply_filters('plugin_locale', $locale, 'typewoo');
 
-		unload_textdomain('store-sdk');
-		load_textdomain('store-sdk', WP_LANG_DIR . '/store-sdk/store-sdk-' . $locale . '.mo');
+		unload_textdomain('typewoo');
+		load_textdomain('typewoo', WP_LANG_DIR . '/typewoo/sdk-' . $locale . '.mo');
 		// WordPress automatically loads plugin translations from WordPress.org since 4.6
 	}
 
@@ -217,10 +217,10 @@ final class Store_SDK {
 	 */
 	public function activation_check() {
 		if (version_compare(PHP_VERSION, '8.0', '<')) {
-			deactivate_plugins(plugin_basename(STORESDK_PLUGIN_FILE));
+			deactivate_plugins(plugin_basename(TYPEWOO_PLUGIN_FILE));
 			wp_die(
-				esc_html__('Store SDK requires PHP version 8.0 or above.', 'store-sdk'),
-				esc_html__('Plugin Activation Error', 'store-sdk'),
+				esc_html__('TypeWoo requires PHP version 8.0 or above.', 'typewoo'),
+				esc_html__('Plugin Activation Error', 'typewoo'),
 				array('response' => 200, 'back_link' => true)
 			);
 		}
@@ -232,7 +232,7 @@ final class Store_SDK {
 	 * @return string
 	 */
 	public function plugin_url() {
-		return untrailingslashit(plugins_url('/', STORESDK_PLUGIN_FILE));
+		return untrailingslashit(plugins_url('/', TYPEWOO_PLUGIN_FILE));
 	}
 
 	/**
@@ -241,6 +241,6 @@ final class Store_SDK {
 	 * @return string
 	 */
 	public function plugin_path() {
-		return untrailingslashit(plugin_dir_path(STORESDK_PLUGIN_FILE));
+		return untrailingslashit(plugin_dir_path(TYPEWOO_PLUGIN_FILE));
 	}
 }

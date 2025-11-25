@@ -1,6 +1,6 @@
 <?php
 /**
- * Store SDK Admin
+ * TypeWoo Admin
  *
  * Handles admin interface and notices.
  *
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK Admin Class.
+ * TypeWoo Admin Class.
  *
  * @class Store_SDK_Admin
  */
@@ -47,7 +47,7 @@ class Store_SDK_Admin {
 		$should_show = $this->should_show_notice($config);
 		
 		// Allow filtering of notice display
-		$should_show = apply_filters('storesdk_jwt_show_admin_notice', $should_show, $config);
+		$should_show = apply_filters('typewoo_jwt_show_admin_notice', $should_show, $config);
 		
 		if (!$should_show) {
 			return;
@@ -62,13 +62,13 @@ class Store_SDK_Admin {
 	 * @return array
 	 */
 	private function get_plugin_config_status() {
-		$flag_defined = defined('STORESDK_JWT_ENABLED');
-		$flag_enabled = $flag_defined && (bool) STORESDK_JWT_ENABLED;
-		$secret_defined = defined('STORESDK_JWT_SECRET') && 
-			!empty(constant('STORESDK_JWT_SECRET')) && 
-			strtolower(constant('STORESDK_JWT_SECRET')) !== 'change_me';
+		$flag_defined = defined('TYPEWOO_JWT_ENABLED');
+		$flag_enabled = $flag_defined && (bool) TYPEWOO_JWT_ENABLED;
+		$secret_defined = defined('TYPEWOO_JWT_SECRET') && 
+			!empty(constant('TYPEWOO_JWT_SECRET')) && 
+			strtolower(constant('TYPEWOO_JWT_SECRET')) !== 'change_me';
 		$active = $flag_enabled && $secret_defined;
-		$debug_force = defined('STORESDK_JWT_DEBUG_SHOW_NOTICE') && STORESDK_JWT_DEBUG_SHOW_NOTICE;
+		$debug_force = defined('TYPEWOO_JWT_DEBUG_SHOW_NOTICE') && TYPEWOO_JWT_DEBUG_SHOW_NOTICE;
 
 		return array(
 			'flag_defined' => $flag_defined,
@@ -105,7 +105,7 @@ class Store_SDK_Admin {
 			return;
 		}
 
-		$title = __('Store SDK authentication configuration', 'store-sdk');
+		$title = __('TypeWoo authentication configuration', 'typewoo');
 		$notice_class = $config['active'] && $config['debug_force'] ? 'notice-info' : 'notice-error';
 		
 		echo '<div class="notice ' . esc_attr($notice_class) . '">';
@@ -120,7 +120,7 @@ class Store_SDK_Admin {
 		}
 		
 		if ($config['debug_force']) {
-			echo '<p><em>' . esc_html__('Debug mode: This notice is shown for testing purposes.', 'store-sdk') . '</em></p>';
+			echo '<p><em>' . esc_html__('Debug mode: This notice is shown for testing purposes.', 'typewoo') . '</em></p>';
 		}
 		
 		echo '</div>';
@@ -139,8 +139,8 @@ class Store_SDK_Admin {
 			$steps[] = array(
 				'type' => 'code',
 				/* translators: %s: PHP code snippet to define JWT enabled flag */
-				'text' => __('Required: Add %s.', 'store-sdk'),
-				'code' => "define('STORESDK_JWT_ENABLED', true);"
+				'text' => __('Required: Add %s.', 'typewoo'),
+				'code' => "define('TYPEWOO_JWT_ENABLED', true);"
 			);
 		}
 		
@@ -148,15 +148,15 @@ class Store_SDK_Admin {
 			$steps[] = array(
 				'type' => 'code',
 				/* translators: %s: PHP code snippet to define JWT secret */
-				'text' => __('Required: Add %s.', 'store-sdk'),
-				'code' => "define('STORESDK_JWT_SECRET', 'REPLACE_WITH_RANDOM_48_CHARS');"
+				'text' => __('Required: Add %s.', 'typewoo'),
+				'code' => "define('TYPEWOO_JWT_SECRET', 'REPLACE_WITH_RANDOM_48_CHARS');"
 			);
 		}
 		
 		if ($config['flag_defined'] && !$config['flag_enabled']) {
 			$steps[] = array(
 				'type' => 'text',
-				'text' => __('Plugin is disabled. Set STORESDK_JWT_ENABLED to true in wp-config.php.', 'store-sdk')
+				'text' => __('Plugin is disabled. Set TYPEWOO_JWT_ENABLED to true in wp-config.php.', 'typewoo')
 			);
 		}
 		
@@ -185,11 +185,11 @@ class Store_SDK_Admin {
 	 */
 	public function get_plugin_info() {
 		return array(
-			'version' => defined('STORESDK_VERSION') ? STORESDK_VERSION : '1.0.0',
-			'file' => defined('STORESDK_PLUGIN_FILE') ? STORESDK_PLUGIN_FILE : __FILE__,
-			'basename' => defined('STORESDK_PLUGIN_BASENAME') ? STORESDK_PLUGIN_BASENAME : plugin_basename(__FILE__),
-			'path' => defined('STORESDK_ABSPATH') ? STORESDK_ABSPATH : plugin_dir_path(__FILE__),
-			'url' => defined('STORESDK_PLUGIN_URL') ? STORESDK_PLUGIN_URL : plugin_dir_url(__FILE__),
+			'version' => defined('TYPEWOO_VERSION') ? TYPEWOO_VERSION : '1.0.0',
+			'file' => defined('TYPEWOO_PLUGIN_FILE') ? TYPEWOO_PLUGIN_FILE : __FILE__,
+			'basename' => defined('TYPEWOO_PLUGIN_BASENAME') ? TYPEWOO_PLUGIN_BASENAME : plugin_basename(__FILE__),
+			'path' => defined('TYPEWOO_ABSPATH') ? TYPEWOO_ABSPATH : plugin_dir_path(__FILE__),
+			'url' => defined('TYPEWOO_PLUGIN_URL') ? TYPEWOO_PLUGIN_URL : plugin_dir_url(__FILE__),
 		);
 	}
 
@@ -203,10 +203,10 @@ class Store_SDK_Admin {
 		$config = $this->get_plugin_config_status();
 		
 		if (!$config['active']) {
-			$setup_link = '<span style="color: #d63638;">' . __('Setup Required', 'store-sdk') . '</span>';
+			$setup_link = '<span style="color: #d63638;">' . __('Setup Required', 'typewoo') . '</span>';
 			array_unshift($links, $setup_link);
 		} else {
-			$status_link = '<span style="color: #00a32a;">' . __('Active', 'store-sdk') . '</span>';
+			$status_link = '<span style="color: #00a32a;">' . __('Active', 'typewoo') . '</span>';
 			array_unshift($links, $status_link);
 		}
 		
@@ -222,29 +222,29 @@ class Store_SDK_Admin {
 		$recommendations = array();
 		
 		// Check if CORS is properly configured
-		if (!defined('STORESDK_JWT_CORS_ENABLE') || !STORESDK_JWT_CORS_ENABLE) {
+		if (!defined('TYPEWOO_JWT_CORS_ENABLE') || !TYPEWOO_JWT_CORS_ENABLE) {
 			$recommendations[] = array(
 				'level' => 'info',
-				'message' => __('CORS is disabled. Enable it if you need cross-origin requests.', 'store-sdk'),
-				'code' => "define('STORESDK_JWT_CORS_ENABLE', true);"
+				'message' => __('CORS is disabled. Enable it if you need cross-origin requests.', 'typewoo'),
+				'code' => "define('TYPEWOO_JWT_CORS_ENABLE', true);"
 			);
 		}
 		
 		// Check refresh token limits
-		if (!defined('STORESDK_JWT_REFRESH_MAX_TOKENS')) {
+		if (!defined('TYPEWOO_JWT_REFRESH_MAX_TOKENS')) {
 			$recommendations[] = array(
 				'level' => 'info',
-				'message' => __('Consider setting a refresh token limit to prevent abuse.', 'store-sdk'),
-				'code' => "define('STORESDK_JWT_REFRESH_MAX_TOKENS', 10);"
+				'message' => __('Consider setting a refresh token limit to prevent abuse.', 'typewoo'),
+				'code' => "define('TYPEWOO_JWT_REFRESH_MAX_TOKENS', 10);"
 			);
 		}
 		
 		// Check if forced authentication endpoints are configured
-		if (!defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS')) {
+		if (!defined('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS')) {
 			$recommendations[] = array(
 				'level' => 'info',
-				'message' => __('You can force authentication on specific endpoints.', 'store-sdk'),
-				'code' => "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wc/store/v1/cart,wc/store/v1/checkout');"
+				'message' => __('You can force authentication on specific endpoints.', 'typewoo'),
+				'code' => "define('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS', 'wc/store/v1/cart,wc/store/v1/checkout');"
 			);
 		}
 		

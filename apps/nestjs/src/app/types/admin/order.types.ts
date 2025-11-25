@@ -16,7 +16,7 @@ import {
   AdminOrderSendEmailRequestSchema,
   AdminOrderSendDetailsRequestSchema,
   AdminOrderStatusInfoSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminOrderLineItem extends createZodDto(
   AdminOrderLineItemSchema

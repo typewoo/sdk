@@ -17,7 +17,7 @@ This directory contains all the assets required for the WordPress Plugin Directo
 
 ### Screenshots
 
-- **Not applicable for this plugin** - Store SDK is a headless authentication plugin with no admin UI
+- **Not applicable for this plugin** - TypeWoo is a headless authentication plugin with no admin UI
 
 ## Current Assets
 
@@ -79,7 +79,7 @@ Your WordPress.org SVN repository should have this structure:
     icon-256x256.png
     icon-128x128.png
   /trunk/
-    store-sdk.php
+    typewoo.php
     readme.txt
     /includes/
     etc...

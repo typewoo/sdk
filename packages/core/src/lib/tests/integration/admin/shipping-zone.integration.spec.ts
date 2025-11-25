@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -15,7 +15,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Shipping Zones', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -26,7 +26,7 @@ describe('Integration: Admin Shipping Zones', () => {
   });
 
   it('lists shipping zones and can CRUD a zone', async () => {
-    const list = await StoreSdk.admin.shippingZones.list({ context: 'view' });
+    const list = await Typewoo.admin.shippingZones.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported/i
@@ -35,7 +35,7 @@ describe('Integration: Admin Shipping Zones', () => {
       expect(Array.isArray(list.data)).toBe(true);
     }
 
-    const created = await StoreSdk.admin.shippingZones.create({
+    const created = await Typewoo.admin.shippingZones.create({
       name: `INT-ZONE-${Date.now()}`,
       order: 9999,
     });
@@ -50,27 +50,27 @@ describe('Integration: Admin Shipping Zones', () => {
     const zoneId = created.data.id;
 
     try {
-      const get = await StoreSdk.admin.shippingZones.get(zoneId, {
+      const get = await Typewoo.admin.shippingZones.get(zoneId, {
         context: 'view',
       });
       expect(get.error).toBeFalsy();
       expect(get.data?.id).toBe(zoneId);
 
-      const upd = await StoreSdk.admin.shippingZones.update(zoneId, {
+      const upd = await Typewoo.admin.shippingZones.update(zoneId, {
         name: `${created.data.name}-UPD`,
       });
       expect(upd.error).toBeFalsy();
 
-      const del = await StoreSdk.admin.shippingZones.delete(zoneId, true);
+      const del = await Typewoo.admin.shippingZones.delete(zoneId, true);
       expect(del.error).toBeFalsy();
     } finally {
-      await StoreSdk.admin.shippingZones.delete(zoneId, true);
+      await Typewoo.admin.shippingZones.delete(zoneId, true);
     }
   });
 
   it('manages zone locations and methods', async () => {
     // Create a zone to attach locations/methods
-    const created = await StoreSdk.admin.shippingZones.create({
+    const created = await Typewoo.admin.shippingZones.create({
       name: `INT-ZONE-M-${Date.now()}`,
     });
     if (created.error || !created.data) {
@@ -85,13 +85,13 @@ describe('Integration: Admin Shipping Zones', () => {
 
     try {
       // Locations: list then attempt a no-op update
-      const locList = await StoreSdk.admin.shippingZones.listLocations(zoneId);
+      const locList = await Typewoo.admin.shippingZones.listLocations(zoneId);
       if (locList.error) {
         expect(locList.error.code).toMatch(
           /not_found|invalid|forbidden|unsupported/i
         );
       } else {
-        const update = await StoreSdk.admin.shippingZones.updateLocations(
+        const update = await Typewoo.admin.shippingZones.updateLocations(
           zoneId,
           locList.data ?? []
         );
@@ -105,7 +105,7 @@ describe('Integration: Admin Shipping Zones', () => {
       }
 
       // Methods: list existing
-      const methods = await StoreSdk.admin.shippingZones.listMethods(zoneId, {
+      const methods = await Typewoo.admin.shippingZones.listMethods(zoneId, {
         context: 'view',
       });
       if (methods.error) {
@@ -117,7 +117,7 @@ describe('Integration: Admin Shipping Zones', () => {
       }
 
       // Try to add a common method (flat_rate) if possible
-      const added = await StoreSdk.admin.shippingZones.addMethod(
+      const added = await Typewoo.admin.shippingZones.addMethod(
         zoneId,
         'flat_rate',
         {
@@ -135,7 +135,7 @@ describe('Integration: Admin Shipping Zones', () => {
       const instanceId = added.data.instance_id;
 
       // Get method
-      const getM = await StoreSdk.admin.shippingZones.getMethod(
+      const getM = await Typewoo.admin.shippingZones.getMethod(
         zoneId,
         instanceId
       );
@@ -144,7 +144,7 @@ describe('Integration: Admin Shipping Zones', () => {
 
       // Update method: toggle enabled or no-op settings
       const payload = { enabled: !(getM.data?.enabled ?? false) };
-      const updM = await StoreSdk.admin.shippingZones.updateMethod(
+      const updM = await Typewoo.admin.shippingZones.updateMethod(
         zoneId,
         instanceId,
         payload
@@ -158,14 +158,14 @@ describe('Integration: Admin Shipping Zones', () => {
       }
 
       // Delete method
-      const delM = await StoreSdk.admin.shippingZones.deleteMethod(
+      const delM = await Typewoo.admin.shippingZones.deleteMethod(
         zoneId,
         instanceId,
         true
       );
       expect(delM.error).toBeFalsy();
     } finally {
-      await StoreSdk.admin.shippingZones.delete(zoneId, true);
+      await Typewoo.admin.shippingZones.delete(zoneId, true);
     }
   });
 });

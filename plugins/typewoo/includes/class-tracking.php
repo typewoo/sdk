@@ -1,6 +1,6 @@
 <?php
 /**
- * Store SDK Tracking Functionality
+ * TypeWoo Tracking Functionality
  *
  * Handles parameter tracking and order attribution.
  *
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK Tracking Class.
+ * TypeWoo Tracking Class.
  *
  * @class Store_SDK_Tracking
  */
@@ -41,9 +41,9 @@ class Store_SDK_Tracking {
 	}
 
 	public function woocommerce_new_order( $order_id ) {
-		if (!STORESDK_TRACKING_ENABLE) return;
+		if (!TYPEWOO_TRACKING_ENABLE) return;
 		if (!function_exists('WC') || !WC()->session) return;
-		$params = WC()->session->get(STORESDK_TRACKING_SESSION_KEY);
+		$params = WC()->session->get(TYPEWOO_TRACKING_SESSION_KEY);
 		if (empty($params) || !is_array($params)) return;
 
 		// Clean up expired data before saving to order
@@ -61,26 +61,26 @@ class Store_SDK_Tracking {
 
 		$order = wc_get_order($order_id);
 		if ($order) {
-			$order->update_meta_data(STORESDK_TRACKING_SESSION_KEY, $order_data);
+			$order->update_meta_data(TYPEWOO_TRACKING_SESSION_KEY, $order_data);
 			$order->save();
 			
 			// Clear tracking session if configured to do so
-			if (STORESDK_TRACKING_UNSET_ON_ORDER) {
-				WC()->session->set(STORESDK_TRACKING_SESSION_KEY, null);
+			if (TYPEWOO_TRACKING_UNSET_ON_ORDER) {
+				WC()->session->set(TYPEWOO_TRACKING_SESSION_KEY, null);
 			}
 		}
 	}
 
 	/** Capture whitelisted query params → WC session */
 	public function capture_to_session() {
-		if (!STORESDK_TRACKING_ENABLE) return;
+		if (!TYPEWOO_TRACKING_ENABLE) return;
 		// Skip admin pages and AJAX requests
 		if (is_admin() || wp_doing_ajax()) return;
 		if (!function_exists('WC') || !WC()->session) return;
 		if (empty($_GET)) return; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		// Check if current path is whitelisted (if whitelist is not empty)
-		$whitelisted_paths = STORESDK_TRACKING_WHITELISTED_PATHS;
+		$whitelisted_paths = TYPEWOO_TRACKING_WHITELISTED_PATHS;
 		if (!empty($whitelisted_paths)) {
 			$current_path = trim(wp_parse_url(esc_url_raw($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
 			$path_allowed = false;
@@ -98,7 +98,7 @@ class Store_SDK_Tracking {
 		}
 
 		$captured = [];
-		$whitelisted = STORESDK_TRACKING_WHITELISTED_PARAMS;
+		$whitelisted = TYPEWOO_TRACKING_WHITELISTED_PARAMS;
 		
 		foreach ($_GET as $key => $value) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$k = sanitize_key((string) $key);
@@ -112,7 +112,7 @@ class Store_SDK_Tracking {
 
 		if (!$captured) return;
 
-		$existing = WC()->session->get(STORESDK_TRACKING_SESSION_KEY, []);
+		$existing = WC()->session->get(TYPEWOO_TRACKING_SESSION_KEY, []);
 		
 		// Clean up expired data
 		$existing = $this->cleanup_expired_tracking_data($existing);
@@ -130,7 +130,7 @@ class Store_SDK_Tracking {
 		// Merge with existing data (new data overwrites old for same keys)
 		$merged = array_merge((array) $existing, $timestamped_captured);
 
-		WC()->session->set(STORESDK_TRACKING_SESSION_KEY, $merged);
+		WC()->session->set(TYPEWOO_TRACKING_SESSION_KEY, $merged);
 	}
 
 	/**
@@ -140,7 +140,7 @@ class Store_SDK_Tracking {
 		if (!is_array($data) || empty($data)) return [];
 		
 		$current_time = time();
-		$expiry_time = STORESDK_TRACKING_EXPIRY_TIME;
+		$expiry_time = TYPEWOO_TRACKING_EXPIRY_TIME;
 		$cleaned_data = [];
 		
 		foreach ($data as $key => $item) {
@@ -162,7 +162,7 @@ class Store_SDK_Tracking {
 	 * Add tracking parameter columns to the admin orders table
 	 */
 	public function add_admin_order_columns($columns) {
-		$visible_columns = STORESDK_TRACKING_ADMIN_COLUMNS;
+		$visible_columns = TYPEWOO_TRACKING_ADMIN_COLUMNS;
 		if (empty($visible_columns) || !is_array($visible_columns)) return $columns;
 
 		$new_columns = [];
@@ -222,7 +222,7 @@ class Store_SDK_Tracking {
 	 * Populate tracking parameter columns in the admin orders table
 	 */
 	public function populate_admin_order_columns($column, $post_id) {
-		$visible_columns = STORESDK_TRACKING_ADMIN_COLUMNS;
+		$visible_columns = TYPEWOO_TRACKING_ADMIN_COLUMNS;
 		if (empty($visible_columns) || !is_array($visible_columns)) return;
 
 		// Check if this is a tracking column
@@ -253,7 +253,7 @@ class Store_SDK_Tracking {
 		if (!$order) return;
 
 		// Get tracking data from order meta
-		$tracking_data = $order->get_meta(STORESDK_TRACKING_SESSION_KEY);
+		$tracking_data = $order->get_meta(TYPEWOO_TRACKING_SESSION_KEY);
 		
 		if (!empty($tracking_data) && is_array($tracking_data) && isset($tracking_data[$param_key])) {
 			echo esc_html($tracking_data[$param_key]);
@@ -271,7 +271,7 @@ class Store_SDK_Tracking {
 	 * Populate tracking parameter columns in the HPOS admin orders table
 	 */
 	public function populate_admin_order_columns_hpos($column, $order) {
-		$visible_columns = STORESDK_TRACKING_ADMIN_COLUMNS;
+		$visible_columns = TYPEWOO_TRACKING_ADMIN_COLUMNS;
 		if (empty($visible_columns) || !is_array($visible_columns)) return;
 
 		// Check if this is a tracking column
@@ -302,7 +302,7 @@ class Store_SDK_Tracking {
 		if (!$order instanceof WC_Order) return;
 
 		// Get tracking data from order meta
-		$tracking_data = $order->get_meta(STORESDK_TRACKING_SESSION_KEY);
+		$tracking_data = $order->get_meta(TYPEWOO_TRACKING_SESSION_KEY);
 		
 		if (!empty($tracking_data) && is_array($tracking_data) && isset($tracking_data[$param_key])) {
 			echo esc_html($tracking_data[$param_key]);

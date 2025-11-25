@@ -1,4 +1,4 @@
-import { AdminProductAttributeSchema } from '@store-sdk/core';
+import { AdminProductAttributeSchema } from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 import {
   AdminProductAttributeRequestSchema,

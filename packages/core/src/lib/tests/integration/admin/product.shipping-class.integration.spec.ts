@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -10,7 +10,7 @@ import { resolve } from 'path';
 import {
   AdminShippingClassQueryParams,
   AdminShippingClassRequest,
-} from '@store-sdk/types';
+} from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -20,7 +20,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Shipping Classes', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -32,13 +32,13 @@ describe('Integration: Admin Product Shipping Classes', () => {
 
   it('lists shipping classes with pagination and search', async () => {
     const params: AdminShippingClassQueryParams = { per_page: 5, page: 1 };
-    const list = await StoreSdk.admin.shippingClasses.list(params);
+    const list = await Typewoo.admin.shippingClasses.list(params);
     if (list.error) {
       expect(list.error.code).toMatch(/not_found|invalid|forbidden/i);
       return;
     }
     expect(Array.isArray(list.data)).toBe(true);
-    const searchRes = await StoreSdk.admin.shippingClasses.list({
+    const searchRes = await Typewoo.admin.shippingClasses.list({
       search: 'test',
       per_page: 5,
     });
@@ -58,7 +58,7 @@ describe('Integration: Admin Product Shipping Classes', () => {
     };
 
     // Create
-    const createRes = await StoreSdk.admin.shippingClasses.create(req);
+    const createRes = await Typewoo.admin.shippingClasses.create(req);
     if (createRes.error) {
       expect(createRes.error.code).toMatch(/invalid|forbidden|not_found/i);
       return;
@@ -69,26 +69,26 @@ describe('Integration: Admin Product Shipping Classes', () => {
 
     try {
       // Get
-      const getRes = await StoreSdk.admin.shippingClasses.get(id);
+      const getRes = await Typewoo.admin.shippingClasses.get(id);
       expect(getRes.error).toBeFalsy();
       expect(getRes.data?.id).toBe(id);
 
       // Update
-      const upd = await StoreSdk.admin.shippingClasses.update(id, {
+      const upd = await Typewoo.admin.shippingClasses.update(id, {
         description: 'Updated description',
       });
       expect(upd.error).toBeFalsy();
       expect(upd.data?.description).toBe('Updated description');
     } finally {
       // Delete (force not applicable on shipping classes; standard delete)
-      const del = await StoreSdk.admin.shippingClasses.delete(id, true);
+      const del = await Typewoo.admin.shippingClasses.delete(id, true);
       expect(del.error).toBeFalsy();
     }
   });
 
   it('handles batch create and delete', async () => {
     const ts = Date.now();
-    const batch = await StoreSdk.admin.shippingClasses.batch({
+    const batch = await Typewoo.admin.shippingClasses.batch({
       create: [
         {
           name: `ship-batch-1-${ts}`,
@@ -111,27 +111,27 @@ describe('Integration: Admin Product Shipping Classes', () => {
     const ids = batch.data.create.map((c) => c.id);
     expect(ids.length).toBe(2);
 
-    const batchDel = await StoreSdk.admin.shippingClasses.batch({
+    const batchDel = await Typewoo.admin.shippingClasses.batch({
       delete: ids,
     });
     expect(batchDel.error).toBeFalsy();
   });
 
   it('retrieves shipping class in different contexts', async () => {
-    const list = await StoreSdk.admin.shippingClasses.list({ per_page: 1 });
+    const list = await Typewoo.admin.shippingClasses.list({ per_page: 1 });
     if (list.error || !list.data || list.data.length === 0) {
       // If none exist, we accept as environment-dependent
       return;
     }
     const id = list.data[0].id;
 
-    const view = await StoreSdk.admin.shippingClasses.get(id, {
+    const view = await Typewoo.admin.shippingClasses.get(id, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(id);
 
-    const edit = await StoreSdk.admin.shippingClasses.get(id, {
+    const edit = await Typewoo.admin.shippingClasses.get(id, {
       context: 'edit',
     });
     if (edit.error) {
@@ -142,16 +142,16 @@ describe('Integration: Admin Product Shipping Classes', () => {
   });
 
   it('handles error cases gracefully', async () => {
-    const getBad = await StoreSdk.admin.shippingClasses.get(999999);
+    const getBad = await Typewoo.admin.shippingClasses.get(999999);
     expect(getBad.error).toBeTruthy();
     expect(getBad.error?.code).toMatch(/not_found|invalid/i);
 
-    const updBad = await StoreSdk.admin.shippingClasses.update(999999, {
+    const updBad = await Typewoo.admin.shippingClasses.update(999999, {
       description: 'x',
     });
     expect(updBad.error).toBeTruthy();
 
-    const delBad = await StoreSdk.admin.shippingClasses.delete(999999);
+    const delBad = await Typewoo.admin.shippingClasses.delete(999999);
     expect(delBad.error).toBeTruthy();
   });
 });

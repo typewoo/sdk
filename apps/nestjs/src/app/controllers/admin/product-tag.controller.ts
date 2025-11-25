@@ -17,7 +17,7 @@ import type { Response, Request } from 'express';
 import {
   AdminTaxonomyTagQueryParams,
   AdminTaxonomyTagRequest,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { ApiAdminTaxonomyTag } from '../../types/admin';
 import { ApiErrorResponse } from '../../types/api';
 

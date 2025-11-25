@@ -1,5 +1,5 @@
 {
-  "name": "@store-sdk/nestjs",
+  "name": "@typewoo/nestjs",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/nestjs/src",
   "projectType": "application",
@@ -52,15 +52,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "@store-sdk/nestjs:build",
+        "buildTarget": "@typewoo/nestjs:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "@store-sdk/nestjs:build:development"
+          "buildTarget": "@typewoo/nestjs:build:development"
         },
         "production": {
-          "buildTarget": "@store-sdk/nestjs:build:production"
+          "buildTarget": "@typewoo/nestjs:build:production"
         }
       }
     }

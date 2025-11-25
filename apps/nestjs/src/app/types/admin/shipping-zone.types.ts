@@ -7,7 +7,7 @@ import {
   AdminShippingZoneMethodSchema,
   AdminShippingZoneMethodRequestSchema,
   AdminShippingZoneMethodQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminShippingZone extends createZodDto(
   AdminShippingZoneSchema

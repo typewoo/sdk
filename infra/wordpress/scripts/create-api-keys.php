@@ -16,7 +16,7 @@ if ( ! class_exists( 'WooCommerce' ) ) {
 global $wpdb;
 
 // Define test API key details
-$key_description = 'Store SDK Test Keys';
+$key_description = 'TypeWoo Test Keys';
 $user_id = 1; // Admin user
 $permissions = 'read_write'; // Full access for testing
 

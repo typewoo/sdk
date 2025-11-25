@@ -1,4 +1,4 @@
-import { ProductAttributeTermResponseSchema } from '@store-sdk/core';
+import { ProductAttributeTermResponseSchema } from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiProductAttributeTermResponse extends createZodDto(
   ProductAttributeTermResponseSchema

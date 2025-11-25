@@ -40,13 +40,13 @@ jobs:
         env:
           SVN_USERNAME: ${{ secrets.WP_ORG_USERNAME }}
           SVN_PASSWORD: ${{ secrets.WP_ORG_PASSWORD }}
-          SLUG: store-sdk
-          BUILD_DIR: plugins/store-sdk
+          SLUG: typewoo
+          BUILD_DIR: plugins/typewoo
           ASSETS_DIR: assets/wordpress-org
 
       - name: Upload plugin package as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: store-sdk-plugin
-          path: dist/wp-plugin/store-sdk.zip
+          name: typewoo-plugin
+          path: dist/wp-plugin/typewoo.zip
           retention-days: 30

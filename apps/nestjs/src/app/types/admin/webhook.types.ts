@@ -2,7 +2,7 @@ import {
   AdminWebhookSchema,
   AdminWebhookRequestSchema,
   AdminWebhookQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
 export type AdminWebhook = z.infer<typeof AdminWebhookSchema>;

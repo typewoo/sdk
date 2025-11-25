@@ -1,6 +1,6 @@
 <?php
 /**
- * Store SDK REST API
+ * TypeWoo REST API
  *
  * Handles all REST API endpoint registration and management.
  *
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Store SDK API Class.
+ * TypeWoo API Class.
  *
  * @class Store_SDK_API
  */
@@ -63,7 +63,7 @@ class Store_SDK_API {
 	 */
 	private function register_auth_routes() {
 		// Token endpoint
-		register_rest_route('store-sdk/v1/auth', '/token', array(
+		register_rest_route('typewoo/v1/auth', '/token', array(
 			'methods'  => 'POST',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'issue_token'),
@@ -76,7 +76,7 @@ class Store_SDK_API {
 		));
 
 		// Refresh endpoint
-		register_rest_route('store-sdk/v1/auth', '/refresh', array(
+		register_rest_route('typewoo/v1/auth', '/refresh', array(
 			'methods' => 'POST',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'refresh_token'),
@@ -86,7 +86,7 @@ class Store_SDK_API {
 		));
 
 		// One-time token endpoint
-		register_rest_route('store-sdk/v1/auth', '/one-time-token', array(
+		register_rest_route('typewoo/v1/auth', '/one-time-token', array(
 			'methods' => 'POST',
 			'permission_callback' => array($this, 'check_user_logged_in'),
 			'callback' => array($this, 'issue_one_time_token'),
@@ -96,7 +96,7 @@ class Store_SDK_API {
 		));
 
 		// Autologin endpoint
-		register_rest_route('store-sdk/v1/auth', '/autologin', array(
+		register_rest_route('typewoo/v1/auth', '/autologin', array(
 			'methods' => 'POST,GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'autologin'),
@@ -107,14 +107,14 @@ class Store_SDK_API {
 		));
 
 		// Validate endpoint
-		register_rest_route('store-sdk/v1/auth', '/validate', array(
+		register_rest_route('typewoo/v1/auth', '/validate', array(
 			'methods' => 'GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'validate_token'),
 		));
 
 		// Revoke endpoint
-		register_rest_route('store-sdk/v1/auth', '/revoke', array(
+		register_rest_route('typewoo/v1/auth', '/revoke', array(
 			'methods' => 'POST',
 			'permission_callback' => array($this, 'check_authenticated'),
 			'callback' => array($this, 'revoke_tokens'),
@@ -128,7 +128,7 @@ class Store_SDK_API {
 	 * Register status routes.
 	 */
 	private function register_status_routes() {
-		register_rest_route('store-sdk/v1/auth', '/status', array(
+		register_rest_route('typewoo/v1/auth', '/status', array(
 			'methods' => 'GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'get_status'),
@@ -139,19 +139,19 @@ class Store_SDK_API {
 	 * Register debug routes.
 	 */
 	private function register_debug_routes() {
-		register_rest_route('store-sdk/v1/auth', '/debug-route', array(
+		register_rest_route('typewoo/v1/auth', '/debug-route', array(
 			'methods' => 'GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'debug_route'),
 		));
 
-		register_rest_route('store-sdk/v1/debug', '/status', array(
+		register_rest_route('typewoo/v1/debug', '/status', array(
 			'methods' => 'GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'debug_status'),
 		));
 
-		register_rest_route('store-sdk/v1/test', '/cart-protected', array(
+		register_rest_route('typewoo/v1/test', '/cart-protected', array(
 			'methods' => 'GET',
 			'permission_callback' => '__return_true',
 			'callback' => array($this, 'test_cart_protected'),
@@ -164,8 +164,8 @@ class Store_SDK_API {
 	 * @return bool|WP_Error
 	 */
 	private function check_plugin_active() {
-		if (!defined('STORESDK_JWT_PLUGIN_ACTIVE') || !STORESDK_JWT_PLUGIN_ACTIVE) {
-			return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), array('status' => 400));
+		if (!defined('TYPEWOO_JWT_PLUGIN_ACTIVE') || !TYPEWOO_JWT_PLUGIN_ACTIVE) {
+			return new WP_Error('typewoo_jwt.inactive', __('TypeWoo JWT authentication inactive', 'typewoo'), array('status' => 400));
 		}
 		return true;
 	}
@@ -204,7 +204,7 @@ class Store_SDK_API {
 		$password = (string) $request->get_param('password');
 
 		if (empty($login) || empty($password)) {
-			return new WP_Error('storesdk_jwt.missing_credentials', __('Missing login or password', 'store-sdk'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.missing_credentials', __('Missing login or password', 'typewoo'), array('status' => 400));
 		}
 
 		// Find user by email or login
@@ -220,11 +220,11 @@ class Store_SDK_API {
 		}
 
 		if (!$user) {
-			return new WP_Error('storesdk_jwt.invalid_credentials', __('Invalid credentials', 'store-sdk'), array('status' => 403));
+			return new WP_Error('typewoo_jwt.invalid_credentials', __('Invalid credentials', 'typewoo'), array('status' => 403));
 		}
 
 		if (!wp_check_password($password, $user->user_pass, $user->ID)) {
-			return new WP_Error('storesdk_jwt.invalid_credentials', __('Invalid credentials', 'store-sdk'), array('status' => 403));
+			return new WP_Error('typewoo_jwt.invalid_credentials', __('Invalid credentials', 'typewoo'), array('status' => 403));
 		}
 
 		// Create access token
@@ -255,11 +255,11 @@ class Store_SDK_API {
 		// Create refresh token
 		$refresh_ttl = (int) $request->get_param('refresh_ttl');
 		if ($refresh_ttl <= 0) {
-			$refresh_ttl = defined('STORESDK_JWT_REFRESH_TTL') ? (int) STORESDK_JWT_REFRESH_TTL : 60 * 60 * 24 * 14;
+			$refresh_ttl = defined('TYPEWOO_JWT_REFRESH_TTL') ? (int) TYPEWOO_JWT_REFRESH_TTL : 60 * 60 * 24 * 14;
 		}
 		
-		$min_ttl = defined('STORESDK_JWT_REFRESH_MIN_TTL') ? (int) STORESDK_JWT_REFRESH_MIN_TTL : 60 * 60 * 24;
-		$max_ttl = defined('STORESDK_JWT_REFRESH_MAX_TTL') ? (int) STORESDK_JWT_REFRESH_MAX_TTL : 60 * 60 * 24 * 30;
+		$min_ttl = defined('TYPEWOO_JWT_REFRESH_MIN_TTL') ? (int) TYPEWOO_JWT_REFRESH_MIN_TTL : 60 * 60 * 24;
+		$max_ttl = defined('TYPEWOO_JWT_REFRESH_MAX_TTL') ? (int) TYPEWOO_JWT_REFRESH_MAX_TTL : 60 * 60 * 24 * 30;
 		$refresh_ttl = max($min_ttl, min($max_ttl, $refresh_ttl));
 
 		$refresh = $this->jwt->issue_refresh_token($user->ID, $refresh_ttl);
@@ -303,7 +303,7 @@ class Store_SDK_API {
 
 		$refresh_token = trim((string) $request->get_param('refresh_token'));
 		if (empty($refresh_token)) {
-			return new WP_Error('storesdk_jwt.refresh_missing', __('Missing refresh token', 'store-sdk'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.refresh_missing', __('Missing refresh token', 'typewoo'), array('status' => 400));
 		}
 
 		// Resolve user context
@@ -323,7 +323,7 @@ class Store_SDK_API {
 		}
 		
 		if (!$user) {
-			return new WP_Error('storesdk_jwt.refresh_context', __('Cannot resolve user for refresh. Provide Authorization header with previous access token.', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.refresh_context', __('Cannot resolve user for refresh. Provide Authorization header with previous access token.', 'typewoo'), array('status' => 401));
 		}
 
 		// Consume refresh token
@@ -350,7 +350,7 @@ class Store_SDK_API {
 		);
 
 		$access_token = $this->jwt->encode($payload);
-		$refresh_ttl = defined('STORESDK_JWT_REFRESH_TTL') ? (int) STORESDK_JWT_REFRESH_TTL : 60 * 60 * 24 * 14;
+		$refresh_ttl = defined('TYPEWOO_JWT_REFRESH_TTL') ? (int) TYPEWOO_JWT_REFRESH_TTL : 60 * 60 * 24 * 14;
 		$new_refresh = $this->jwt->issue_refresh_token($user->ID, $refresh_ttl);
 
 		return new WP_REST_Response(array(
@@ -383,21 +383,21 @@ class Store_SDK_API {
 		}
 
 		if (!is_user_logged_in()) {
-			return new WP_Error('storesdk_jwt.not_authenticated', __('Authentication required', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.not_authenticated', __('Authentication required', 'typewoo'), array('status' => 401));
 		}
 
 		$user = wp_get_current_user();
 		if (!$user || !$user->ID) {
-			return new WP_Error('storesdk_jwt.user_not_found', __('User context unavailable', 'store-sdk'), array('status' => 500));
+			return new WP_Error('typewoo_jwt.user_not_found', __('User context unavailable', 'typewoo'), array('status' => 500));
 		}
 
 		$ttl = (int) $request->get_param('ttl');
 		if ($ttl <= 0) {
-			$ttl = defined('STORESDK_JWT_ONE_TIME_TTL') ? (int) STORESDK_JWT_ONE_TIME_TTL : 300;
+			$ttl = defined('TYPEWOO_JWT_ONE_TIME_TTL') ? (int) TYPEWOO_JWT_ONE_TIME_TTL : 300;
 		}
 
-		$min_ttl = defined('STORESDK_JWT_ONE_TIME_MIN_TTL') ? (int) STORESDK_JWT_ONE_TIME_MIN_TTL : 30;
-		$max_ttl = defined('STORESDK_JWT_ONE_TIME_MAX_TTL') ? (int) STORESDK_JWT_ONE_TIME_MAX_TTL : 900;
+		$min_ttl = defined('TYPEWOO_JWT_ONE_TIME_MIN_TTL') ? (int) TYPEWOO_JWT_ONE_TIME_MIN_TTL : 30;
+		$max_ttl = defined('TYPEWOO_JWT_ONE_TIME_MAX_TTL') ? (int) TYPEWOO_JWT_ONE_TIME_MAX_TTL : 900;
 		$ttl = max($min_ttl, min($max_ttl, $ttl));
 
 		$issued_at = time();
@@ -418,7 +418,7 @@ class Store_SDK_API {
 		);
 
 		$token = $this->jwt->encode($payload);
-		set_transient('storesdk_jti_' . $jti, 'valid', $ttl);
+		set_transient('typewoo_jti_' . $jti, 'valid', $ttl);
 
 		return new WP_REST_Response(array(
 			'one_time_token' => $token,
@@ -442,7 +442,7 @@ class Store_SDK_API {
 		$redirect = $request->get_param('redirect');
 
 		if (empty($token)) {
-			return new WP_Error('storesdk_jwt.missing_token', __('Missing token', 'store-sdk'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.missing_token', __('Missing token', 'typewoo'), array('status' => 400));
 		}
 
 		$payload = $this->jwt->decode($token);
@@ -451,29 +451,29 @@ class Store_SDK_API {
 		}
 
 		if (empty($payload['sub'])) {
-			return new WP_Error('storesdk_jwt.missing_sub', __('Token missing subject', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.missing_sub', __('Token missing subject', 'typewoo'), array('status' => 401));
 		}
 
-		$requires_one_time = defined('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN') && STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN;
+		$requires_one_time = defined('TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN') && TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN;
 		if ($requires_one_time && empty($payload['one_time'])) {
-			return new WP_Error('storesdk_jwt.not_one_time', __('Autologin requires a one-time token', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.not_one_time', __('Autologin requires a one-time token', 'typewoo'), array('status' => 401));
 		}
 
 		if (empty($payload['jti'])) {
-			return new WP_Error('storesdk_jwt.jti_missing', __('One-time token missing jti', 'store-sdk'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.jti_missing', __('One-time token missing jti', 'typewoo'), array('status' => 400));
 		}
 
 		// Validate and consume JTI
-		$jti_key = 'storesdk_jti_' . sanitize_key($payload['jti']);
+		$jti_key = 'typewoo_jti_' . sanitize_key($payload['jti']);
 		$marker = get_transient($jti_key);
 		if ($marker !== 'valid') {
-			return new WP_Error('storesdk_jwt.one_time_invalid', __('One-time token already used or expired', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.one_time_invalid', __('One-time token already used or expired', 'typewoo'), array('status' => 401));
 		}
 		delete_transient($jti_key);
 
 		$user = get_user_by('id', (int) $payload['sub']);
 		if (!$user) {
-			return new WP_Error('storesdk_jwt.user_not_found', __('User not found', 'store-sdk'), array('status' => 404));
+			return new WP_Error('typewoo_jwt.user_not_found', __('User not found', 'typewoo'), array('status' => 404));
 		}
 
 		// Log in user
@@ -512,7 +512,7 @@ class Store_SDK_API {
 	public function validate_token(WP_REST_Request $request) {
 		$header = $this->auth->get_authorization_header();
 		if (!$header || !preg_match('/^Bearer\s+(.*)$/i', $header, $matches)) {
-			return new WP_Error('storesdk_jwt.missing_token', __('Missing bearer token', 'store-sdk'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.missing_token', __('Missing bearer token', 'typewoo'), array('status' => 400));
 		}
 
 		$payload = $this->jwt->decode($matches[1]);
@@ -526,7 +526,7 @@ class Store_SDK_API {
 			if ($user) {
 				$current_version = $this->jwt->get_user_token_version($user->ID);
 				if ($current_version > 1 && (empty($payload['ver']) || (int) $payload['ver'] !== $current_version)) {
-					return new WP_Error('storesdk_jwt.version_mismatch', __('Token revoked', 'store-sdk'), array('status' => 400));
+					return new WP_Error('typewoo_jwt.version_mismatch', __('Token revoked', 'typewoo'), array('status' => 400));
 				}
 			}
 		}
@@ -563,11 +563,11 @@ class Store_SDK_API {
 		}
 
 		if (!$user || !$user->ID) {
-			return new WP_Error('storesdk_jwt.revoke_auth', __('Authentication required', 'store-sdk'), array('status' => 401));
+			return new WP_Error('typewoo_jwt.revoke_auth', __('Authentication required', 'typewoo'), array('status' => 401));
 		}
 
 		// Clear refresh tokens
-		update_user_meta($user->ID, 'storesdk_refresh_tokens', array());
+		update_user_meta($user->ID, 'typewoo_refresh_tokens', array());
 
 		$new_version = $this->jwt->get_user_token_version($user->ID);
 		if ($scope !== 'refresh') {
@@ -588,9 +588,9 @@ class Store_SDK_API {
 	 * @return WP_REST_Response
 	 */
 	public function get_status(WP_REST_Request $request) {
-		$flag_defined = defined('STORESDK_JWT_ENABLED');
-		$flag_enabled = $flag_defined && (bool) (STORESDK_JWT_ENABLED);
-		$secret_defined = defined('STORESDK_JWT_SECRET') && !empty(constant('STORESDK_JWT_SECRET')) && strtolower(constant('STORESDK_JWT_SECRET')) !== 'change_me';
+		$flag_defined = defined('TYPEWOO_JWT_ENABLED');
+		$flag_enabled = $flag_defined && (bool) (TYPEWOO_JWT_ENABLED);
+		$secret_defined = defined('TYPEWOO_JWT_SECRET') && !empty(constant('TYPEWOO_JWT_SECRET')) && strtolower(constant('TYPEWOO_JWT_SECRET')) !== 'change_me';
 
 		$inactive_reason = '';
 		if (!$flag_defined) {
@@ -608,9 +608,9 @@ class Store_SDK_API {
 			$endpoints[$endpoint] = $active;
 		}
 
-		$secret_length = $secret_defined ? strlen(constant('STORESDK_JWT_SECRET')) : 0;
-		$force_auth_defined = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS');
-		$force_auth_value = $force_auth_defined ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : '';
+		$secret_length = $secret_defined ? strlen(constant('TYPEWOO_JWT_SECRET')) : 0;
+		$force_auth_defined = defined('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS');
+		$force_auth_value = $force_auth_defined ? (string) constant('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS') : '';
 
 		return new WP_REST_Response(array(
 			'active'             => $active,
@@ -620,7 +620,7 @@ class Store_SDK_API {
 			'secret_length'      => $secret_length,
 			'inactive_reason'    => $active ? null : $inactive_reason,
 			'endpoints'          => $endpoints,
-			'version'            => defined('STORESDK_JWT_AUTH_VERSION') ? STORESDK_JWT_AUTH_VERSION : '1.0.0',
+			'version'            => defined('TYPEWOO_JWT_AUTH_VERSION') ? TYPEWOO_JWT_AUTH_VERSION : '1.0.0',
 			'timestamp'          => time(),
 			'force_auth_defined' => $force_auth_defined,
 			'force_auth_value'   => $force_auth_value,
@@ -636,7 +636,7 @@ class Store_SDK_API {
 	public function debug_route(WP_REST_Request $request) {
 		$route_path = $this->auth->get_current_route_path();
 		$requires_auth = $this->auth->endpoint_requires_auth($route_path);
-		$force_auth_constant = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : 'NOT_DEFINED';
+		$force_auth_constant = defined('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS') ? (string) constant('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS') : 'NOT_DEFINED';
 
 		return new WP_REST_Response(array(
 			'current_route' => $route_path,
@@ -654,13 +654,13 @@ class Store_SDK_API {
 	 * @return WP_REST_Response
 	 */
 	public function debug_status(WP_REST_Request $request) {
-		$force_auth_defined = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS');
-		$force_auth_value = $force_auth_defined ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : '';
+		$force_auth_defined = defined('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS');
+		$force_auth_value = $force_auth_defined ? (string) constant('TYPEWOO_JWT_FORCE_AUTH_ENDPOINTS') : '';
 
 		return new WP_REST_Response(array(
 			'force_auth_defined' => $force_auth_defined,
 			'force_auth_value' => $force_auth_value,
-			'plugin_version' => defined('STORESDK_JWT_AUTH_VERSION') ? STORESDK_JWT_AUTH_VERSION : '1.0.0',
+			'plugin_version' => defined('TYPEWOO_JWT_AUTH_VERSION') ? TYPEWOO_JWT_AUTH_VERSION : '1.0.0',
 			'timestamp' => time(),
 		));
 	}

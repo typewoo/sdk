@@ -14,7 +14,7 @@ import { WordPressHttpService } from '../../services/wordpress.http.service';
 import * as qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
-import { AdminOrderQueryParams, AdminOrderRequest } from '@store-sdk/core';
+import { AdminOrderQueryParams, AdminOrderRequest } from '@typewoo/core';
 import { ApiAdminOrder } from '../../types/admin';
 import { ApiErrorResponse } from '../../types/api';
 

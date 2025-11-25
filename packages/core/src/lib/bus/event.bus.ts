@@ -1,6 +1,6 @@
-import { StoreSdkEvent } from '../sdk.events.js';
+import { SdkEvent } from '../sdk.events.js';
 
-type EventMap = StoreSdkEvent;
+type EventMap = SdkEvent;
 
 type Handler<P> = (payload: P) => void | Promise<void>;
 type AnyHandler<E extends EventMap> = <K extends keyof E>(

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -7,7 +7,7 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { AdminCustomerRequest } from '@store-sdk/types';
+import { AdminCustomerRequest } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -18,7 +18,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
 describe('Integration: Admin Customer Service', () => {
   beforeAll(async () => {
     // Initialize SDK with admin authentication for admin operations
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         // Admin operations require consumer key/secret authentication
@@ -31,7 +31,7 @@ describe('Integration: Admin Customer Service', () => {
 
   it('lists customers with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.customers.list({
+      await Typewoo.admin.customers.list({
         per_page: 5,
         page: 1,
       });
@@ -46,7 +46,7 @@ describe('Integration: Admin Customer Service', () => {
   it('searches customers by email or name', async () => {
     // Try a generic query that should be safe (e.g., 'test' or domain fragment)
     const query = 'customer';
-    const { data, error } = await StoreSdk.admin.customers.list({
+    const { data, error } = await Typewoo.admin.customers.list({
       search: query,
       per_page: 10,
     });
@@ -77,9 +77,7 @@ describe('Integration: Admin Customer Service', () => {
     };
 
     // Create customer
-    const createResult = await StoreSdk.admin.customers.create(
-      testCustomerData
-    );
+    const createResult = await Typewoo.admin.customers.create(testCustomerData);
 
     expect(createResult.error).toBeFalsy();
     expect(createResult.data).toBeTruthy();
@@ -90,7 +88,7 @@ describe('Integration: Admin Customer Service', () => {
     expect(createResult.data.username).toBe(testCustomerData.username);
 
     // Retrieve the created customer
-    const getResult = await StoreSdk.admin.customers.get(createResult.data.id);
+    const getResult = await Typewoo.admin.customers.get(createResult.data.id);
     expect(getResult.error).toBeFalsy();
     expect(getResult.data).toBeTruthy();
     expect(getResult.data?.id).toBe(createResult.data.id);
@@ -102,7 +100,7 @@ describe('Integration: Admin Customer Service', () => {
       last_name: 'Customer',
     };
 
-    const updateResult = await StoreSdk.admin.customers.update(
+    const updateResult = await Typewoo.admin.customers.update(
       createResult.data.id,
       updateData
     );
@@ -112,7 +110,7 @@ describe('Integration: Admin Customer Service', () => {
     expect(updateResult.data?.last_name).toBe(updateData.last_name);
 
     // Delete the customer (force delete; reassign 0)
-    const deleteResult = await StoreSdk.admin.customers.delete(
+    const deleteResult = await Typewoo.admin.customers.delete(
       createResult.data.id,
       true,
       0
@@ -121,7 +119,7 @@ describe('Integration: Admin Customer Service', () => {
     expect(deleteResult.data).toBeTruthy();
 
     // Verify customer is deleted
-    const getDeletedResult = await StoreSdk.admin.customers.get(
+    const getDeletedResult = await Typewoo.admin.customers.get(
       createResult.data.id
     );
     expect(getDeletedResult.error).toBeTruthy();
@@ -149,7 +147,7 @@ describe('Integration: Admin Customer Service', () => {
       ] as AdminCustomerRequest[],
     };
 
-    const batchResult = await StoreSdk.admin.customers.batch(batchData);
+    const batchResult = await Typewoo.admin.customers.batch(batchData);
     expect(batchResult.error).toBeFalsy();
     expect(batchResult.data).toBeTruthy();
 
@@ -168,46 +166,46 @@ describe('Integration: Admin Customer Service', () => {
 
       // Clean up - delete the created customers
       await Promise.all([
-        StoreSdk.admin.customers.delete(created1.id, true, 0),
-        StoreSdk.admin.customers.delete(created2.id, true, 0),
+        Typewoo.admin.customers.delete(created1.id, true, 0),
+        Typewoo.admin.customers.delete(created2.id, true, 0),
       ]);
     }
   });
 
   it('handles error cases gracefully', async () => {
     // Get non-existent customer
-    const nonExistentResult = await StoreSdk.admin.customers.get(999999);
+    const nonExistentResult = await Typewoo.admin.customers.get(999999);
     expect(nonExistentResult.error).toBeTruthy();
     expect(nonExistentResult.error?.code).toMatch(/not_found|invalid/i);
 
     // Create with invalid data
-    const invalidCreateResult = await StoreSdk.admin.customers.create({
+    const invalidCreateResult = await Typewoo.admin.customers.create({
       email: 'not-an-email',
       username: '',
     });
     expect(invalidCreateResult.error).toBeTruthy();
 
     // Update non-existent customer
-    const invalidUpdateResult = await StoreSdk.admin.customers.update(999999, {
+    const invalidUpdateResult = await Typewoo.admin.customers.update(999999, {
       first_name: 'Nope',
     });
     expect(invalidUpdateResult.error).toBeTruthy();
 
     // Delete non-existent customer
-    const invalidDeleteResult = await StoreSdk.admin.customers.delete(999999);
+    const invalidDeleteResult = await Typewoo.admin.customers.delete(999999);
     expect(invalidDeleteResult.error).toBeTruthy();
   });
 
   it('retrieves customer in different contexts', async () => {
     // First get list to find an existing customer
-    const listResult = await StoreSdk.admin.customers.list({ per_page: 1 });
+    const listResult = await Typewoo.admin.customers.list({ per_page: 1 });
     expect(listResult.error).toBeFalsy();
 
     if (listResult.data && listResult.data.length > 0) {
       const customerId = listResult.data[0].id;
 
       // view context
-      const viewResult = await StoreSdk.admin.customers.get(customerId, {
+      const viewResult = await Typewoo.admin.customers.get(customerId, {
         context: 'view',
       });
       expect(viewResult.error).toBeFalsy();
@@ -215,7 +213,7 @@ describe('Integration: Admin Customer Service', () => {
       expect(viewResult.data?.id).toBe(customerId);
 
       // edit context
-      const editResult = await StoreSdk.admin.customers.get(customerId, {
+      const editResult = await Typewoo.admin.customers.get(customerId, {
         context: 'edit',
       });
       expect(editResult.error).toBeFalsy();

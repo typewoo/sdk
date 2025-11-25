@@ -14,7 +14,7 @@ import { WordPressHttpService } from '../../services/wordpress.http.service';
 import * as qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
-import { AdminCouponQueryParams, AdminCouponRequest } from '@store-sdk/core';
+import { AdminCouponQueryParams, AdminCouponRequest } from '@typewoo/core';
 import { ApiAdminCoupon } from '../../types/admin';
 import { ApiErrorResponse } from '../../types/api';
 

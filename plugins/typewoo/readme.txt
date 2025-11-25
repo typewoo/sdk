@@ -1,6 +1,6 @@
-=== Store SDK ===
-Contributors: storesdk, kmakris23
-Donate link: https://github.com/sponsors/kmakris23
+=== TypeWoo ===
+Contributors: typewoo, kmakris23
+Donate link: https://github.com/sponsors/typewoo
 Tags: woocommerce, jwt, authentication, headless, api
 Requires at least: 6.3
 Tested up to: 6.8
@@ -14,7 +14,7 @@ Comprehensive JWT authentication plugin for headless WooCommerce integrations wi
 
 == Description ==
 
-Store SDK is a robust WordPress plugin that provides secure JWT-based authentication endpoints specifically designed for headless WooCommerce applications. It seamlessly integrates with the `@store-sdk/core` package to deliver a complete authentication solution for modern e-commerce development.
+TypeWoo is a robust WordPress plugin that provides secure JWT-based authentication endpoints specifically designed for headless WooCommerce applications. It seamlessly integrates with the `@typewoo/core` package to deliver a complete authentication solution for modern e-commerce development.
 
 **Transform your WooCommerce store into a headless powerhouse** with enterprise-grade JWT authentication, automatic token management, and bulletproof security features.
 
@@ -37,31 +37,31 @@ Store SDK is a robust WordPress plugin that provides secure JWT-based authentica
 * Multi-platform integrations
 
 **API Endpoints Included:**
-* Token issuance (`/wp-json/storesdk/v1/token`)
-* Token refresh (`/wp-json/storesdk/v1/token/refresh`)
-* Token validation (`/wp-json/storesdk/v1/token/validate`)
-* One-time tokens (`/wp-json/storesdk/v1/token/one-time`)
-* Autologin (`/wp-json/storesdk/v1/autologin`)
-* Token revocation (`/wp-json/storesdk/v1/token/revoke`)
+* Token issuance (`/wp-json/typewoo/v1/token`)
+* Token refresh (`/wp-json/typewoo/v1/token/refresh`)
+* Token validation (`/wp-json/typewoo/v1/token/validate`)
+* One-time tokens (`/wp-json/typewoo/v1/token/one-time`)
+* Autologin (`/wp-json/typewoo/v1/autologin`)
+* Token revocation (`/wp-json/typewoo/v1/token/revoke`)
 
 == Installation ==
 
 = Automatic Installation =
 1. Log in to your WordPress dashboard
 2. Navigate to Plugins → Add New
-3. Search for "Store SDK"
+3. Search for "TypeWoo"
 4. Click "Install Now" and then "Activate"
 
 = Manual Installation =
 1. Download the plugin files
-2. Upload to `/wp-content/plugins/store-sdk/`
+2. Upload to `/wp-content/plugins/typewoo/`
 3. Activate the plugin through the 'Plugins' menu in WordPress
 
 = Required Configuration =
 After activation, add this to your `wp-config.php`:
 
 ```php
-define('STORESDK_JWT_SECRET', 'your-very-long-random-secret-key-here');
+define('TYPEWOO_JWT_SECRET', 'your-very-long-random-secret-key-here');
 ```
 
 **Important:** Use a strong, random secret key (minimum 32 characters) for security.
@@ -84,15 +84,15 @@ Yes! The plugin implements industry-standard security practices including:
 
 = Can I customize the token TTL? =
 Absolutely! You can configure token lifetimes using WordPress constants:
-- `STORESDK_JWT_ACCESS_TTL` - Access token TTL (default: 1 hour)
-- `STORESDK_JWT_REFRESH_TTL` - Refresh token TTL (default: 14 days)
-- `STORESDK_JWT_ONE_TIME_TTL` - One-time token TTL (default: 5 minutes)
+- `TYPEWOO_JWT_ACCESS_TTL` - Access token TTL (default: 1 hour)
+- `TYPEWOO_JWT_REFRESH_TTL` - Refresh token TTL (default: 14 days)
+- `TYPEWOO_JWT_ONE_TIME_TTL` - One-time token TTL (default: 5 minutes)
 
 = How do I configure CORS? =
 Use these constants in your `wp-config.php`:
 ```php
-define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', 'https://yourfrontend.com');
-define('STORESDK_JWT_CORS_ALLOW_CREDENTIALS', true);
+define('TYPEWOO_JWT_CORS_ALLOWED_ORIGINS', 'https://yourfrontend.com');
+define('TYPEWOO_JWT_CORS_ALLOW_CREDENTIALS', true);
 ```
 
 = Does this work with multisite? =
@@ -107,22 +107,22 @@ The plugin offers extensive configuration options via WordPress constants:
 
 **JWT Settings:**
 ```php
-define('STORESDK_JWT_ACCESS_TTL', 3600); // 1 hour
-define('STORESDK_JWT_REFRESH_TTL', 1209600); // 14 days
-define('STORESDK_JWT_REFRESH_MAX_TOKENS', 10);
+define('TYPEWOO_JWT_ACCESS_TTL', 3600); // 1 hour
+define('TYPEWOO_JWT_REFRESH_TTL', 1209600); // 14 days
+define('TYPEWOO_JWT_REFRESH_MAX_TOKENS', 10);
 ```
 
 **CORS Settings:**
 ```php
-define('STORESDK_JWT_CORS_ENABLE', true);
-define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', '*');
-define('STORESDK_JWT_CORS_ALLOW_CREDENTIALS', true);
+define('TYPEWOO_JWT_CORS_ENABLE', true);
+define('TYPEWOO_JWT_CORS_ALLOWED_ORIGINS', '*');
+define('TYPEWOO_JWT_CORS_ALLOW_CREDENTIALS', true);
 ```
 
 **Security Settings:**
 ```php
-define('STORESDK_JWT_LEEWAY', 1);
-define('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true);
+define('TYPEWOO_JWT_LEEWAY', 1);
+define('TYPEWOO_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true);
 ```
 
 See the full documentation in the plugin's README.md file.
@@ -130,15 +130,15 @@ See the full documentation in the plugin's README.md file.
 == Hooks and Filters ==
 
 **Actions:**
-* `storesdk_jwt_auth_loaded` - Plugin fully loaded
-* `storesdk_jwt_token_issued` - Token issued to user
-* `storesdk_jwt_token_refreshed` - Token refreshed
-* `storesdk_jwt_token_revoked` - Token revoked
+* `typewoo_jwt_auth_loaded` - Plugin fully loaded
+* `typewoo_jwt_token_issued` - Token issued to user
+* `typewoo_jwt_token_refreshed` - Token refreshed
+* `typewoo_jwt_token_revoked` - Token revoked
 
 **Filters:**
-* `storesdk_jwt_token_payload` - Modify token payload
-* `storesdk_jwt_access_ttl` - Customize token TTL
-* `storesdk_jwt_cors_allowed_origins` - Modify CORS origins
+* `typewoo_jwt_token_payload` - Modify token payload
+* `typewoo_jwt_access_ttl` - Customize token TTL
+* `typewoo_jwt_cors_allowed_origins` - Modify CORS origins
 
 == Changelog ==
 
@@ -160,22 +160,22 @@ See the full documentation in the plugin's README.md file.
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Store SDK. Configure your JWT secret key after activation for security.
+Initial release of TypeWoo. Configure your JWT secret key after activation for security.
 
 == Support ==
 
 **Need Help?**
-* 📖 [Documentation](https://github.com/kmakris23/store-sdk/wiki)
-* 🐛 [Report Issues](https://github.com/kmakris23/store-sdk/issues)
-* 💬 [Community Support](https://github.com/kmakris23/store-sdk/discussions)
-* 🚀 [Feature Requests](https://github.com/kmakris23/store-sdk/issues/new?template=feature_request.md)
+* 📖 [Documentation](https://github.com/typewoo/sdk/wiki)
+* 🐛 [Report Issues](https://github.com/typewoo/sdk/issues)
+* 💬 [Community Support](https://github.com/typewoo/sdk/discussions)
+* 🚀 [Feature Requests](https://github.com/typewoo/sdk/issues/new?template=feature_request.md)
 
 **Professional Support**
 For enterprise support, custom integrations, or consulting services, please contact us through our GitHub repository.
 
 == Privacy and Data ==
 
-Store SDK respects your privacy and follows WordPress best practices:
+TypeWoo respects your privacy and follows WordPress best practices:
 
 * **No Data Collection**: The plugin does not collect or transmit any personal data
 * **Local Storage Only**: All tokens and configurations are stored locally in your WordPress database
@@ -189,21 +189,21 @@ This plugin does not connect to any third-party services. All authentication pro
 == Developer Information ==
 
 **Hooks & Actions Available:**
-* `storesdk_jwt_auth_loaded` - Fired when plugin is fully loaded
-* `storesdk_jwt_token_issued` - Fired when a token is issued
-* `storesdk_jwt_token_refreshed` - Fired when a token is refreshed
-* `storesdk_jwt_token_revoked` - Fired when a token is revoked
+* `typewoo_jwt_auth_loaded` - Fired when plugin is fully loaded
+* `typewoo_jwt_token_issued` - Fired when a token is issued
+* `typewoo_jwt_token_refreshed` - Fired when a token is refreshed
+* `typewoo_jwt_token_revoked` - Fired when a token is revoked
 
 **Filters Available:**
-* `storesdk_jwt_token_payload` - Modify token payload before encoding
-* `storesdk_jwt_access_ttl` - Customize access token TTL
-* `storesdk_jwt_cors_allowed_origins` - Modify CORS allowed origins
+* `typewoo_jwt_token_payload` - Modify token payload before encoding
+* `typewoo_jwt_access_ttl` - Customize access token TTL
+* `typewoo_jwt_cors_allowed_origins` - Modify CORS allowed origins
 
-**GitHub Repository:** [https://github.com/kmakris23/store-sdk](https://github.com/kmakris23/store-sdk)
+**GitHub Repository:** [https://github.com/typewoo/sdk](https://github.com/typewoo/sdk)
 
 == Credits ==
 
-* **Lead Developer**: [Konstantinos Makris](https://github.com/kmakris23)
+* **Lead Developer**: [Konstantinos Makris](https://github.com/typewoo)
 * **Framework**: WordPress REST API
 * **License**: MIT License
 * **Contributing**: Pull requests welcome on GitHub

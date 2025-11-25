@@ -3,7 +3,7 @@ import { WordPressHttpService } from '../../services/wordpress.http.service';
 import * as qs from 'qs';
 import { ApiResponse } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
-import { AdminDataQueryParams } from '@store-sdk/core';
+import { AdminDataQueryParams } from '@typewoo/core';
 import {
   ApiAdminCountry,
   ApiAdminCurrency,

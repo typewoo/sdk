@@ -15,7 +15,7 @@ import type { Response, Request } from 'express';
 import {
   AdminPaymentGatewayQueryParams,
   AdminPaymentGatewayRequest,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { ApiAdminPaymentGateway } from '../../types/admin';
 import { ApiErrorResponse } from '../../types/api';
 

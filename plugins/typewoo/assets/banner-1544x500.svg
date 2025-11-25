@@ -53,6 +53,6 @@
         fill="url(#textGradient)"
         text-anchor="middle"
         filter="url(#textShadow)">
-        npm install @store-sdk/core
+        npm install @typewoo/core
     </text>
 </svg>

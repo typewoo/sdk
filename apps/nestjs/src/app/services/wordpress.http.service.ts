@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
-import { AxiosApiResult, doRequest } from '@store-sdk/core';
+import { AxiosApiResult, doRequest } from '@typewoo/core';
 import { from, map, Observable, tap } from 'rxjs';
 import type { Response, Request } from 'express';
 

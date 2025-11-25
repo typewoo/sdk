@@ -30,7 +30,7 @@ export {
   AdminProductAttributeTermSchema,
   AdminProductAttributeTermRequestSchema,
   AdminProductAttributeTermQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 
 // Export attribute DTOs from local file
 export {
@@ -49,4 +49,4 @@ export type {
   AdminProductAttributeTerm,
   AdminProductAttributeTermRequest,
   AdminProductAttributeTermQueryParams,
-} from '@store-sdk/core';
+} from '@typewoo/core';

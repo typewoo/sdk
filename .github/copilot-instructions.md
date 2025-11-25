@@ -1,4 +1,4 @@
-## Store SDK Monorepo – Coding Agent Onboarding
+## TypeWoo Monorepo – Coding Agent Onboarding
 
 Purpose: Fast, low-error contributions to a TypeScript / Nx monorepo that provides a headless WooCommerce Store API SDK plus authentication plugins and an Angular example app.
 
@@ -12,10 +12,10 @@ TypeScript-first SDK for WooCommerce Store API (products, cart, checkout, orders
 
 - Event-driven core (custom EventBus) and plugin-based auth (Simple JWT Login, JWT Auth, Hippoo)
 - Automatic nonce, cart token, JWT & refresh token interceptors (Axios)
-- Strongly typed service layer grouped under `StoreSdk.store.*`
+- Strongly typed service layer grouped under `Typewoo.store.*`
 - Angular example app demonstrating consumption
 
-Primary deliverable: Published packages under `@store-sdk/*` (core + auth plugins). Everything else supports development & testing.
+Primary deliverable: Published packages under `@typewoo/*` (core + auth plugins). Everything else supports development & testing.
 
 ---
 
@@ -80,7 +80,7 @@ CI will enforce (in order): install/cache, lint (affected), prettier check, test
 Adding a new Store service:
 
 1. Create file: `packages/core/src/lib/services/store/<domain>.service.ts`
-2. Constructor signature: `(state: StoreSdkState, config: StoreSdkConfig, events: EventBus<StoreSdkEvent>)`
+2. Constructor signature: `(state: SdkState, config: SdkConfig, events: EventBus<SdkEvent>)`
 3. Use shared Axios helpers (do NOT create new axios instances) – import from `services/api.js`
 4. Emit events with consistent naming: `'<entity>:<action>'` (e.g. `cart:updated`) only when state materially changes.
 5. Add private field + getter in `store.service.ts` (alphabetical order by property name group when practical)
@@ -91,12 +91,6 @@ Interceptors:
 
 - Keep idempotent; guard against duplicate installation.
 - Respect `config.auth?.useTokenInterceptor` & `useRefreshTokenInterceptor` flags.
-
-Plugins:
-
-- Implement `StoreSdkPlugin` interface.
-- Provide `init()`, `registerEventHandlers?`, `extend?` as needed.
-- NEVER directly mutate unrelated plugin state.
 
 Events:
 

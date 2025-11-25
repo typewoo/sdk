@@ -1,7 +1,7 @@
 import {
   AdminSystemStatusSchema,
   AdminSystemStatusQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminSystemStatus extends createZodDto(
   AdminSystemStatusSchema

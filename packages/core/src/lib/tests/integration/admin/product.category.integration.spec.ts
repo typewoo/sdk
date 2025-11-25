@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -16,7 +16,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Categories', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -28,7 +28,7 @@ describe('Integration: Admin Product Categories', () => {
 
   it('lists categories with pagination', async () => {
     const { data, error, total, totalPages } =
-      await StoreSdk.admin.productCategories.list({ per_page: 5, page: 1 });
+      await Typewoo.admin.productCategories.list({ per_page: 5, page: 1 });
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
     if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
@@ -37,7 +37,7 @@ describe('Integration: Admin Product Categories', () => {
 
   it('searches categories by name', async () => {
     const query = 'cat';
-    const { data, error } = await StoreSdk.admin.productCategories.list({
+    const { data, error } = await Typewoo.admin.productCategories.list({
       search: query,
       per_page: 10,
     });
@@ -60,41 +60,40 @@ describe('Integration: Admin Product Categories', () => {
     };
 
     // Create
-    const createRes = await StoreSdk.admin.productCategories.create(req);
+    const createRes = await Typewoo.admin.productCategories.create(req);
     expect(createRes.error).toBeFalsy();
     expect(createRes.data).toBeTruthy();
     if (!createRes.data) return;
     const categoryId = createRes.data.id;
 
     // Get
-    const getRes = await StoreSdk.admin.productCategories.get(categoryId);
+    const getRes = await Typewoo.admin.productCategories.get(categoryId);
     expect(getRes.error).toBeFalsy();
     expect(getRes.data?.id).toBe(categoryId);
 
     // Update
-    const updateRes = await StoreSdk.admin.productCategories.update(
-      categoryId,
-      { description: 'Updated description' }
-    );
+    const updateRes = await Typewoo.admin.productCategories.update(categoryId, {
+      description: 'Updated description',
+    });
     expect(updateRes.error).toBeFalsy();
     expect(updateRes.data?.description).toContain('Updated');
 
     // Delete (force)
-    const delRes = await StoreSdk.admin.productCategories.delete(
+    const delRes = await Typewoo.admin.productCategories.delete(
       categoryId,
       true
     );
     expect(delRes.error).toBeFalsy();
 
     // Verify deleted
-    const getDeleted = await StoreSdk.admin.productCategories.get(categoryId);
+    const getDeleted = await Typewoo.admin.productCategories.get(categoryId);
     expect(getDeleted.error).toBeTruthy();
     expect(getDeleted.error?.code).toMatch(/not_found|invalid/i);
   });
 
   it('handles batch create and delete', async () => {
     const ts = Date.now();
-    const batch = await StoreSdk.admin.productCategories.batch({
+    const batch = await Typewoo.admin.productCategories.batch({
       create: [
         { name: `Batch Cat A ${ts}`, description: 'A', display: 'default' },
         { name: `Batch Cat B ${ts}`, description: 'B', display: 'default' },
@@ -104,25 +103,25 @@ describe('Integration: Admin Product Categories', () => {
     if (!batch.data) return;
     const ids = batch.data.create.map((c) => c.id);
 
-    const batchDel = await StoreSdk.admin.productCategories.batch({
+    const batchDel = await Typewoo.admin.productCategories.batch({
       delete: ids,
     });
     expect(batchDel.error).toBeFalsy();
   });
 
   it('retrieves category in different contexts', async () => {
-    const list = await StoreSdk.admin.productCategories.list({ per_page: 1 });
+    const list = await Typewoo.admin.productCategories.list({ per_page: 1 });
     expect(list.error).toBeFalsy();
     if (!list.data || list.data.length === 0) return;
     const id = list.data[0].id;
 
-    const view = await StoreSdk.admin.productCategories.get(id, {
+    const view = await Typewoo.admin.productCategories.get(id, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(id);
 
-    const edit = await StoreSdk.admin.productCategories.get(id, {
+    const edit = await Typewoo.admin.productCategories.get(id, {
       context: 'edit',
     });
     expect(edit.error).toBeFalsy();
@@ -130,21 +129,21 @@ describe('Integration: Admin Product Categories', () => {
   });
 
   it('handles category error cases gracefully', async () => {
-    const notFound = await StoreSdk.admin.productCategories.get(999999);
+    const notFound = await Typewoo.admin.productCategories.get(999999);
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(/not_found|invalid/i);
 
-    const badCreate = await StoreSdk.admin.productCategories.create({
+    const badCreate = await Typewoo.admin.productCategories.create({
       name: '',
     });
     expect(badCreate.error).toBeTruthy();
 
-    const badUpdate = await StoreSdk.admin.productCategories.update(999999, {
+    const badUpdate = await Typewoo.admin.productCategories.update(999999, {
       description: 'Nope',
     });
     expect(badUpdate.error).toBeTruthy();
 
-    const badDelete = await StoreSdk.admin.productCategories.delete(999999);
+    const badDelete = await Typewoo.admin.productCategories.delete(999999);
     expect(badDelete.error).toBeTruthy();
   });
 });

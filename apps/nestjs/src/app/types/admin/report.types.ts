@@ -10,7 +10,7 @@ import {
   AdminTopSellersReportQueryParamsSchema,
   AdminCustomersReportQueryParamsSchema,
   AdminOrdersReportQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminReport extends createZodDto(AdminReportSchema) {}
 export class ApiAdminSalesReport extends createZodDto(AdminSalesReportSchema) {}

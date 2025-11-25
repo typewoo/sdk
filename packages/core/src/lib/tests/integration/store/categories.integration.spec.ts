@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -10,11 +10,11 @@ const WP_URL = GET_WP_URL();
 
 describe('Integration: Product Categories', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_URL });
+    await Typewoo.init({ baseUrl: WP_URL });
   });
 
   it('lists categories and fetches a single category', async () => {
-    const { data: categories } = await StoreSdk.store.categories.list({
+    const { data: categories } = await Typewoo.store.categories.list({
       per_page: 15,
       page: 1,
     });
@@ -22,17 +22,17 @@ describe('Integration: Product Categories', () => {
     expect((categories || []).length).toBeGreaterThan(0);
     const first = categories?.[0];
     if (first?.id) {
-      const single = await StoreSdk.store.categories.single(first.id);
+      const single = await Typewoo.store.categories.single(first.id);
       expect(single.data?.id).toBe(first.id);
     }
   });
 
   it('paginates categories (page=1 then page=2 may be empty)', async () => {
-    const page1 = await StoreSdk.store.categories.list({
+    const page1 = await Typewoo.store.categories.list({
       per_page: 5,
       page: 1,
     });
-    const page2 = await StoreSdk.store.categories.list({
+    const page2 = await Typewoo.store.categories.list({
       per_page: 5,
       page: 2,
     });
@@ -42,7 +42,7 @@ describe('Integration: Product Categories', () => {
 
   it('enforces per_page limit when possible', async () => {
     const perPage = 3;
-    const res = await StoreSdk.store.categories.list({
+    const res = await Typewoo.store.categories.list({
       per_page: perPage,
       page: 1,
     });
@@ -55,7 +55,7 @@ describe('Integration: Product Categories', () => {
   });
 
   it('category objects expose basic expected shape', async () => {
-    const res = await StoreSdk.store.categories.list({ per_page: 5, page: 1 });
+    const res = await Typewoo.store.categories.list({ per_page: 5, page: 1 });
     (res.data || []).forEach((c) => {
       expect(typeof c.id).toBe('number');
       expect(typeof c.name).toBe('string');
@@ -64,7 +64,7 @@ describe('Integration: Product Categories', () => {
   });
 
   it('search filters categories (best effort)', async () => {
-    const base = await StoreSdk.store.categories.list({
+    const base = await Typewoo.store.categories.list({
       per_page: 10,
       page: 1,
     });
@@ -79,7 +79,7 @@ describe('Integration: Product Categories', () => {
     const token = (
       first.name.match(/[A-Za-z0-9]{3,}/)?.[0] || first.name
     ).slice(0, 3);
-    const filtered = await StoreSdk.store.categories.list({
+    const filtered = await Typewoo.store.categories.list({
       search: token,
       per_page: 20,
       page: 1,
@@ -95,13 +95,13 @@ describe('Integration: Product Categories', () => {
   });
 
   it('filters by parent when parent parameter is used (best effort)', async () => {
-    const all = await StoreSdk.store.categories.list({ per_page: 25, page: 1 });
+    const all = await Typewoo.store.categories.list({ per_page: 25, page: 1 });
     const root = all.data?.find((c) => c.parent === 0);
     if (!root) {
       expect(Array.isArray(all.data)).toBe(true);
       return;
     }
-    const children = await StoreSdk.store.categories.list({
+    const children = await Typewoo.store.categories.list({
       per_page: 25,
       page: 1,
     });
@@ -123,7 +123,7 @@ describe('Integration: Product Categories', () => {
 
   it('handles non-existent category id gracefully', async () => {
     const impossibleId = 99999999;
-    const res = await StoreSdk.store.categories.single(impossibleId);
+    const res = await Typewoo.store.categories.single(impossibleId);
     // Expect either no data and an error or (edge) empty data with error
     expect(res.data).toBeFalsy();
     expect((res as unknown as { error?: unknown }).error).toBeTruthy();
@@ -131,18 +131,18 @@ describe('Integration: Product Categories', () => {
 
   it('supports concurrent list requests without state interference', async () => {
     const [a, b, c] = await Promise.all([
-      StoreSdk.store.categories.list({ per_page: 4, page: 1 }),
-      StoreSdk.store.categories.list({ per_page: 4, page: 2 }),
-      StoreSdk.store.categories.list({ per_page: 4, page: 3 }),
+      Typewoo.store.categories.list({ per_page: 4, page: 1 }),
+      Typewoo.store.categories.list({ per_page: 4, page: 2 }),
+      Typewoo.store.categories.list({ per_page: 4, page: 3 }),
     ]);
     [a, b, c].forEach((r) => expect(Array.isArray(r.data)).toBe(true));
   });
 
   it('fetches each first-page category individually (best effort subset)', async () => {
-    const list = await StoreSdk.store.categories.list({ per_page: 5, page: 1 });
+    const list = await Typewoo.store.categories.list({ per_page: 5, page: 1 });
     const subset = (list.data || []).slice(0, 3);
     for (const cat of subset) {
-      const single = await StoreSdk.store.categories.single(cat.id);
+      const single = await Typewoo.store.categories.single(cat.id);
       expect(single.data?.id).toBe(cat.id);
     }
   });

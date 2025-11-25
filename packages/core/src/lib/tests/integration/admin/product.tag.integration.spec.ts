@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -16,7 +16,7 @@ config({ path: resolve(__dirname, '../../../../../../../.env') });
  */
 describe('Integration: Admin Product Tags', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: GET_WP_URL(),
       admin: {
         consumer_key: GET_WP_ADMIN_USER(),
@@ -28,13 +28,13 @@ describe('Integration: Admin Product Tags', () => {
 
   it('lists tags with pagination and search', async () => {
     const params: AdminProductTagQueryParams = { per_page: 5, page: 1 };
-    const list = await StoreSdk.admin.productTags.list(params);
+    const list = await Typewoo.admin.productTags.list(params);
     if (list.error) {
       expect(list.error.code).toMatch(/not_found|invalid|forbidden/i);
       return;
     }
     expect(Array.isArray(list.data)).toBe(true);
-    const searchRes = await StoreSdk.admin.productTags.list({
+    const searchRes = await Typewoo.admin.productTags.list({
       search: 'test',
       per_page: 5,
     });
@@ -54,7 +54,7 @@ describe('Integration: Admin Product Tags', () => {
     };
 
     // Create
-    const createRes = await StoreSdk.admin.productTags.create(req);
+    const createRes = await Typewoo.admin.productTags.create(req);
     if (createRes.error) {
       expect(createRes.error.code).toMatch(/invalid|forbidden|not_found/i);
       return;
@@ -65,26 +65,26 @@ describe('Integration: Admin Product Tags', () => {
 
     try {
       // Get
-      const getRes = await StoreSdk.admin.productTags.get(id);
+      const getRes = await Typewoo.admin.productTags.get(id);
       expect(getRes.error).toBeFalsy();
       expect(getRes.data?.id).toBe(id);
 
       // Update
-      const upd = await StoreSdk.admin.productTags.update(id, {
+      const upd = await Typewoo.admin.productTags.update(id, {
         description: 'Updated description',
       });
       expect(upd.error).toBeFalsy();
       expect(upd.data?.description).toBe('Updated description');
     } finally {
       // Delete (force not applicable; standard delete)
-      const del = await StoreSdk.admin.productTags.delete(id, true);
+      const del = await Typewoo.admin.productTags.delete(id, true);
       expect(del.error).toBeFalsy();
     }
   });
 
   it('handles batch create and delete', async () => {
     const ts = Date.now();
-    const batch = await StoreSdk.admin.productTags.batch({
+    const batch = await Typewoo.admin.productTags.batch({
       create: [
         {
           name: `tag-batch-1-${ts}`,
@@ -107,22 +107,22 @@ describe('Integration: Admin Product Tags', () => {
     const ids = batch.data.create.map((c) => c.id);
     expect(ids.length).toBe(2);
 
-    const batchDel = await StoreSdk.admin.productTags.batch({ delete: ids });
+    const batchDel = await Typewoo.admin.productTags.batch({ delete: ids });
     expect(batchDel.error).toBeFalsy();
   });
 
   it('retrieves tag in different contexts', async () => {
-    const list = await StoreSdk.admin.productTags.list({ per_page: 1 });
+    const list = await Typewoo.admin.productTags.list({ per_page: 1 });
     if (list.error || !list.data || list.data.length === 0) {
       return;
     }
     const id = list.data[0].id;
 
-    const view = await StoreSdk.admin.productTags.get(id, { context: 'view' });
+    const view = await Typewoo.admin.productTags.get(id, { context: 'view' });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(id);
 
-    const edit = await StoreSdk.admin.productTags.get(id, { context: 'edit' });
+    const edit = await Typewoo.admin.productTags.get(id, { context: 'edit' });
     if (edit.error) {
       expect(edit.error.code).toMatch(/forbidden|invalid|not_found/i);
     } else {
@@ -131,16 +131,16 @@ describe('Integration: Admin Product Tags', () => {
   });
 
   it('handles error cases gracefully', async () => {
-    const getBad = await StoreSdk.admin.productTags.get(999999);
+    const getBad = await Typewoo.admin.productTags.get(999999);
     expect(getBad.error).toBeTruthy();
     expect(getBad.error?.code).toMatch(/not_found|invalid/i);
 
-    const updBad = await StoreSdk.admin.productTags.update(999999, {
+    const updBad = await Typewoo.admin.productTags.update(999999, {
       description: 'x',
     });
     expect(updBad.error).toBeTruthy();
 
-    const delBad = await StoreSdk.admin.productTags.delete(999999);
+    const delBad = await Typewoo.admin.productTags.delete(999999);
     expect(delBad.error).toBeTruthy();
   });
 });

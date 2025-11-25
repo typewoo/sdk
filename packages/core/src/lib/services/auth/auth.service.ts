@@ -16,7 +16,7 @@ import {
 } from '../../types/index.js';
 
 export class AuthService extends BaseService {
-  private readonly endpoint = 'wp-json/store-sdk/v1/auth';
+  private readonly endpoint = 'wp-json/typewoo/v1/auth';
 
   async getAutoLoginUrl(
     ott: string,

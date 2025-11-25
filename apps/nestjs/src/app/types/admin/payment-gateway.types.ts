@@ -2,7 +2,7 @@ import {
   AdminPaymentGatewaySchema,
   AdminPaymentGatewayRequestSchema,
   AdminPaymentGatewayQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminPaymentGateway extends createZodDto(
   AdminPaymentGatewaySchema

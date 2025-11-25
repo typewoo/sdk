@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { StoreSdk } from '../../../../index.js';
+import { Typewoo } from '../../../../index.js';
 import {
   GET_WP_CUSTOMER_PASSWORD,
   GET_WP_CUSTOMER_USER,
@@ -22,7 +22,7 @@ let refreshToken = '';
 
 describe('Flow: Customer Checkout', () => {
   beforeAll(async () => {
-    await StoreSdk.init({
+    await Typewoo.init({
       baseUrl: WP_URL,
       auth: {
         getToken: async () => {
@@ -42,13 +42,13 @@ describe('Flow: Customer Checkout', () => {
         },
       },
     });
-    const status = await StoreSdk.auth.status();
+    const status = await Typewoo.auth.status();
     pluginActive = !!status.data?.active;
   });
 
   it('login -> categories -> products -> cart -> checkout', async () => {
     if (pluginActive) {
-      const login = await StoreSdk.auth.token({
+      const login = await Typewoo.auth.token({
         login: CUSTOMER_USER,
         password: CUSTOMER_PASS,
       });
@@ -56,7 +56,7 @@ describe('Flow: Customer Checkout', () => {
       expect(login.data?.token).toBeTruthy();
 
       // Validate endpoint should succeed using injected Authorization header
-      const validate = await StoreSdk.auth.validate();
+      const validate = await Typewoo.auth.validate();
       expect(validate.error).toBeFalsy();
       // Basic shape assertion if available
       if (validate.data) {
@@ -64,10 +64,10 @@ describe('Flow: Customer Checkout', () => {
       }
     }
 
-    const catRes = await StoreSdk.store.categories.list({ per_page: 5 });
+    const catRes = await Typewoo.store.categories.list({ per_page: 5 });
     expect(Array.isArray(catRes.data)).toBe(true);
 
-    const prodRes = await StoreSdk.store.products.list({ per_page: 5 });
+    const prodRes = await Typewoo.store.products.list({ per_page: 5 });
     expect(Array.isArray(prodRes.data)).toBe(true);
     const firstProduct = prodRes.data?.[0];
     expect(firstProduct).toBeTruthy();
@@ -76,7 +76,7 @@ describe('Flow: Customer Checkout', () => {
     let addedProductId: number | undefined;
     if (prodRes.data) {
       for (const p of prodRes.data) {
-        const attempt = await StoreSdk.store.cart.add({
+        const attempt = await Typewoo.store.cart.add({
           id: p.id,
           quantity: 1,
         });
@@ -91,9 +91,9 @@ describe('Flow: Customer Checkout', () => {
       return;
     }
 
-    await StoreSdk.store.cart.add({ id: addedProductId, quantity: 1 });
+    await Typewoo.store.cart.add({ id: addedProductId, quantity: 1 });
 
-    const cart = await StoreSdk.store.cart.get();
+    const cart = await Typewoo.store.cart.get();
     expect(cart.error).toBeFalsy();
 
     const billing = {
@@ -121,7 +121,7 @@ describe('Flow: Customer Checkout', () => {
       country: 'US',
     };
 
-    const checkout = await StoreSdk.store.checkout.processOrderAndPayment({
+    const checkout = await Typewoo.store.checkout.processOrderAndPayment({
       billing_address: billing,
       shipping_address: shipping,
       payment_method: 'cod',

@@ -2,7 +2,7 @@ import {
   AdminProductReviewSchema,
   AdminProductReviewRequestSchema,
   AdminProductReviewQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminProductReview extends createZodDto(
   AdminProductReviewSchema

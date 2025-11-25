@@ -2,7 +2,7 @@ import {
   AdminBrandSchema,
   AdminBrandRequestSchema,
   AdminBrandQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 export class ApiAdminBrand extends createZodDto(AdminBrandSchema) {}
 export class ApiAdminBrandRequest extends createZodDto(

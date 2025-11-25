@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { EventBus } from '../../../bus/event.bus.js';
-import type { StoreSdkEvent } from '../../../sdk.events.js';
+import type { SdkEvent } from '../../../sdk.events.js';
 
-type TestEvents = StoreSdkEvent & {
+type TestEvents = SdkEvent & {
   'test:no:payload': void;
   'test:with:payload': { value: number };
   'scoped:with:payload': { value: number };

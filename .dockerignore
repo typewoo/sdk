@@ -1,4 +1,4 @@
-# Root dockerignore for Store SDK monorepo
+# Root dockerignore for TypeWoo monorepo
 # Keep Docker build context small and avoid platform-specific caches
 
 # VCS and tooling

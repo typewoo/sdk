@@ -8,7 +8,7 @@ import {
   AdminShippingClassSchema,
   AdminShippingClassRequestSchema,
   AdminShippingClassQueryParamsSchema,
-} from '@store-sdk/core';
+} from '@typewoo/core';
 import { createZodDto } from 'nestjs-zod';
 import z from 'zod';
 export class ApiAdminTaxonomyCategory extends createZodDto(
