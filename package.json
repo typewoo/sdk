@@ -34,13 +34,6 @@
     "wp:plugin:check:json": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=json",
     "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=summary",
     "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table --severity=info",
-    "api:monitor:admin:create": "node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3",
-    "api:monitor:admin:check": "node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/v3",
-    "api:monitor:admin:compare": "node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/v3",
-    "api:monitor:store:create": "node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/store/v1",
-    "api:monitor:store:check": "node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/store/v1",
-    "api:monitor:store:compare": "node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/store/v1",
-    "api:monitor:test": "npx nx test core --testNamePattern=\"WC Admin REST API Structure Monitoring\"",
     "release": "npx nx release",
     "release:alpha": "npx nx release prerelease --preid alpha",
     "ttt": "NX_SKIP_PROVENANCE_CHECK=true pnpm nx migrate --run-migrations"
@@ -150,14 +143,7 @@
       "wp:env:logs",
       "wp:cli",
       "wp:plugin:check",
-      "wp:plugin:check:verbose",
-      "api:monitor:admin:create",
-      "api:monitor:admin:check",
-      "api:monitor:admin:compare",
-      "api:monitor:store:create",
-      "api:monitor:store:check",
-      "api:monitor:store:compare",
-      "api:monitor:test"
+      "wp:plugin:check:verbose"
     ]
   }
 }

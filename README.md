@@ -644,13 +644,6 @@ infra/
 
 - **`npm run dev:rebuild`** - Clean rebuild of all packages
 - **`npm run docs:tests`** - Generate test documentation
-- **`npm run api:monitor:admin:create`** - Create Admin API structure baseline
-- **`npm run api:monitor:admin:check`** - Check Admin API for structure changes
-- **`npm run api:monitor:admin:compare`** - Compare Admin API structure snapshots
-- **`npm run api:monitor:store:create`** - Create Store API structure baseline
-- **`npm run api:monitor:store:check`** - Check Store API for structure changes
-- **`npm run api:monitor:store:compare`** - Compare Store API structure snapshots
-- **`npm run api:monitor:test`** - Run API structure integration tests
 - **`npx nx run-many -t build`** - Build all packages
 - **`npx nx run-many -t test`** - Run all tests
 - **`npx nx run-many -t lint`** - Lint all packages
@@ -710,27 +703,6 @@ The API monitoring system:
 4. **Automated Notifications** - Creates GitHub issues for significant changes
 
 ### Manual Usage
-
-The monitoring system supports both WooCommerce Admin REST API and Store API:
-
-```bash
-# Admin REST API (WC v3) - for backend operations
-npm run api:monitor:admin:create     # Create baseline
-npm run api:monitor:admin:check      # Check for changes
-npm run api:monitor:admin:compare    # Compare snapshots
-
-# Store API (WC Store v1) - for frontend/headless operations
-npm run api:monitor:store:create     # Create baseline
-npm run api:monitor:store:check      # Check for changes
-npm run api:monitor:store:compare    # Compare snapshots
-
-# Run API structure integration tests
-npm run api:monitor:test
-
-# Direct script usage with custom paths
-node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3
-node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/store/v1
-```
 
 ### GitHub Actions Workflow
 

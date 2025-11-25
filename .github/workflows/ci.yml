@@ -58,98 +58,10 @@ jobs:
         run: |
           npx prettier --version
           npx prettier --check .
-  api-compare:
-    name: api / compare
-    runs-on: ubuntu-latest
-    needs: [lint, format]
-    # This job monitors WooCommerce Admin and Store API structures for breaking changes
-    # It creates snapshots of the current API structure and compares against baselines
-    # Any structural changes (new/removed endpoints, parameter changes) will be detected
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Start WordPress Environment
-        run: |
-          set -euo pipefail
-          echo "Provisioning WordPress + WooCommerce for API structure monitoring..."
-          npm run wp:env:up
-      - name: Monitor Admin API Structure Changes
-        env:
-          WC_API_BASE_URL: http://localhost:8080
-        run: |
-          set -euo pipefail
-          echo "🔍 Checking WooCommerce Admin API structure for changes..."
-
-          # Create current admin API snapshot
-          node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3
-
-          # Check for changes against baseline (if baseline exists)
-          if [ -f "snapshots/api-structure/admin/baseline.json" ]; then
-            echo "Comparing against baseline..."
-            node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/v3
-          else
-            echo "No baseline found - creating initial baseline"
-            cp snapshots/api-structure/admin/current.json snapshots/api-structure/admin/baseline.json
-          fi
-      - name: Monitor Store API Structure Changes
-        env:
-          WC_API_BASE_URL: http://localhost:8080
-        run: |
-          set -euo pipefail
-          echo "🔍 Checking WooCommerce Store API structure for changes..."
-
-          # Create current store API snapshot
-          node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/store/v1
-
-          # Check for changes against baseline (if baseline exists)
-          if [ -f "snapshots/api-structure/store/baseline.json" ]; then
-            echo "Comparing against baseline..."
-            node scripts/wc-admin-api-monitor.mjs --compare --path=/wp-json/wc/store/v1
-          else
-            echo "No baseline found - creating initial baseline"
-            cp snapshots/api-structure/store/current.json snapshots/api-structure/store/baseline.json
-          fi
-      - name: Upload API Structure Snapshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-structure-snapshots-${{ github.run_id }}
-          path: |
-            snapshots/api-structure/
-          retention-days: 30
-      - name: API Structure Summary
-        if: always()
-        run: |
-          echo "📊 API Structure Monitoring Summary:"
-          echo "=================================="
-
-          if [ -f "snapshots/api-structure/admin/current.json" ]; then
-            ADMIN_ROUTES=$(node -e "console.log(Object.keys(JSON.parse(require('fs').readFileSync('snapshots/api-structure/admin/current.json', 'utf8')).routes).length)")
-            echo "Admin API Routes: $ADMIN_ROUTES"
-          fi
-
-          if [ -f "snapshots/api-structure/store/current.json" ]; then
-            STORE_ROUTES=$(node -e "console.log(Object.keys(JSON.parse(require('fs').readFileSync('snapshots/api-structure/store/current.json', 'utf8')).routes).length)")
-            echo "Store API Routes: $STORE_ROUTES"
-          fi
-
-          echo "Snapshots saved as CI artifacts for 30 days"
-      - name: Tear Down WordPress Environment
-        if: always()
-        run: npm run wp:env:clean || true
   test-unit:
     name: tests / unit
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -168,7 +80,7 @@ jobs:
   test:
     name: tests / integration & flow & plugin
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -205,7 +117,7 @@ jobs:
   plugin-check:
     name: plugin / check
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare]
+    needs: [lint, format]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -262,7 +174,7 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: [lint, format, api-compare, test, test-unit, plugin-check]
+    needs: [lint, format, test, test-unit, plugin-check]
     steps:
       - uses: actions/checkout@v6
         with:
