@@ -4,7 +4,7 @@ import { SdkConfig } from '../configs/sdk.config.js';
 
 /**
  * Adds API key interceptor to include x-api-key header in all requests.
- * This is used when the backend API (e.g., NestJS) requires API key authentication.
+ * This is used when the backend API requires API key authentication.
  */
 export const addApiKeyInterceptor = (config: SdkConfig) => {
   httpClient.interceptors.request.use(

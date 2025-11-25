@@ -16,7 +16,7 @@ services:
       timeout: 2s
       retries: 5
 
-  # PostgreSQL service (for NestJS backend and other services)
+  # PostgreSQL service
   postgres:
     image: postgres:16
     restart: unless-stopped

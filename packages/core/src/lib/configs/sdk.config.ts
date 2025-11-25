@@ -1,7 +1,7 @@
 export interface SdkConfig {
   baseUrl: string;
   /**
-   * API key for authenticating requests to the backend API (e.g., NestJS proxy).
+   * API key for authenticating requests to the backend API
    * When provided, the SDK will automatically include this key in the `x-api-key` header.
    * This is optional and only needed when your backend requires API key authentication.
    */

@@ -21,7 +21,6 @@ apps/**/.angular
 
 # Build outputs and coverage
 **/dist
-!apps/nestjs/dist
 **/coverage
 
 # Editor/OS noise
