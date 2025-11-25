@@ -17,8 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       Typewoo.init({
         baseUrl: 'http://localhost:3000',
-        apiKey:
-          'JSMZCLCHPMWOSELEBZARCJWWQNJFQMDSOPYCFMEXFVGYAJSXTTKGBSKQYCWWYZIF',
       });
     }),
   ],
