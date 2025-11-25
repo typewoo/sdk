@@ -1,3 +1,19 @@
+## 3.0.0-alpha.0 (2025-11-25)
+
+### 🚀 Features
+
+- update types and add nestjs app ([0eee2dd](https://github.com/typewoo/sdk/commit/0eee2dd))
+- implement Batch and Cart Extensions APIs with integration tests ([57d20cb](https://github.com/typewoo/sdk/commit/57d20cb))
+- add dotenv configuration for environment variable management in customer checkout tests ([aa43408](https://github.com/typewoo/sdk/commit/aa43408))
+- add dotenv support for environment variable management in integration tests ([619f385](https://github.com/typewoo/sdk/commit/619f385))
+- admin rest api ([3c54247](https://github.com/typewoo/sdk/commit/3c54247))
+
+### 🩹 Fixes
+
+- update package names from @typewoo/core to @typewoo/sdk ([e5a5ecf](https://github.com/typewoo/sdk/commit/e5a5ecf))
+- tests ([5ff6dfd](https://github.com/typewoo/sdk/commit/5ff6dfd))
+- enhance validation for invalid namespace in Cart Extensions API tests ([b863699](https://github.com/typewoo/sdk/commit/b863699))
+
 ## 2.1.0 (2025-09-16)
 
 ### 🚀 Features
