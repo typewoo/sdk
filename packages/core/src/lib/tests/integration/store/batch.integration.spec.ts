@@ -30,7 +30,7 @@ describe('Integration: Batch API Operations', () => {
       ],
     };
 
-    const res = await StoreSdk.store.batch.batch(batchRequest);
+    const res = await StoreSdk.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Batch API might not be supported on all installations
@@ -66,7 +66,7 @@ describe('Integration: Batch API Operations', () => {
       ],
     };
 
-    const res = await StoreSdk.store.batch.batch(batchRequest);
+    const res = await StoreSdk.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Batch API or validation mode might not be supported
@@ -87,7 +87,7 @@ describe('Integration: Batch API Operations', () => {
       requests: [],
     };
 
-    const res = await StoreSdk.store.batch.batch(batchRequest);
+    const res = await StoreSdk.store.batch.execute(batchRequest);
 
     if (res.error) {
       // Should get validation error for empty requests

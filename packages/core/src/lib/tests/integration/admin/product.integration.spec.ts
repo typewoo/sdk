@@ -74,7 +74,7 @@ describe('Integration: Admin Product Service', () => {
     const productId = createRes.data.id;
 
     // Get
-    const getRes = await StoreSdk.admin.products.get(productId);
+    const getRes = await StoreSdk.admin.products.getById(productId);
     expect(getRes.error).toBeFalsy();
     expect(getRes.data?.id).toBe(productId);
 
@@ -90,7 +90,7 @@ describe('Integration: Admin Product Service', () => {
     expect(delRes.error).toBeFalsy();
 
     // Verify deleted
-    const getDeleted = await StoreSdk.admin.products.get(productId);
+    const getDeleted = await StoreSdk.admin.products.getById(productId);
     expect(getDeleted.error).toBeTruthy();
     expect(getDeleted.error?.code).toMatch(/not_found|invalid/i);
   });
@@ -292,13 +292,13 @@ describe('Integration: Admin Product Service', () => {
     if (!list.data || list.data.length === 0) return;
     const productId = list.data[0].id;
 
-    const view = await StoreSdk.admin.products.get(productId, {
+    const view = await StoreSdk.admin.products.getById(productId, {
       context: 'view',
     });
     expect(view.error).toBeFalsy();
     expect(view.data?.id).toBe(productId);
 
-    const edit = await StoreSdk.admin.products.get(productId, {
+    const edit = await StoreSdk.admin.products.getById(productId, {
       context: 'edit',
     });
     expect(edit.error).toBeFalsy();
@@ -307,7 +307,7 @@ describe('Integration: Admin Product Service', () => {
 
   it('handles error cases gracefully', async () => {
     // Get non-existent
-    const getBad = await StoreSdk.admin.products.get(999999);
+    const getBad = await StoreSdk.admin.products.getById(999999);
     expect(getBad.error).toBeTruthy();
     expect(getBad.error?.code).toMatch(/not_found|invalid/i);
 
