@@ -104,7 +104,7 @@ jobs:
         env:
           WP_URL: http://localhost:8080
         run: |
-          npx vitest run scripts/tests
+          npx vitest run --config scripts/tests/vitest.config.ts scripts/tests
       - name: Run Integration Tests
         run: |
           cd packages/core && npx vitest run --coverage src/lib/tests/integration
