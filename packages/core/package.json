@@ -1,5 +1,5 @@
 {
-  "name": "@typewoo/core",
+  "name": "@typewoo/sdk",
   "version": "2.1.0",
   "repository": {
     "url": "https://github.com/typewoo/sdk",

@@ -32,7 +32,7 @@
     "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check typewoo --format=summary",
     "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check typewoo --format=table --severity=info",
     "release": "npx nx release",
-    "release:alpha": "npx nx release prerelease --preid alpha"
+    "release:alpha": "npx nx release prerelease --preid alpha --dry-run"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.21.0",

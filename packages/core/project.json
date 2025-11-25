@@ -1,5 +1,5 @@
 {
-  "name": "@typewoo/core",
+  "name": "@typewoo/sdk",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/core/src",
   "projectType": "library",
