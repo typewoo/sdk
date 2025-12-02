@@ -2,7 +2,6 @@
 
 ### 🚀 Features
 
-- update types and add nestjs app ([0eee2dd](https://github.com/typewoo/sdk/commit/0eee2dd))
 - implement Batch and Cart Extensions APIs with integration tests ([57d20cb](https://github.com/typewoo/sdk/commit/57d20cb))
 - add dotenv configuration for environment variable management in customer checkout tests ([aa43408](https://github.com/typewoo/sdk/commit/aa43408))
 - add dotenv support for environment variable management in integration tests ([619f385](https://github.com/typewoo/sdk/commit/619f385))

@@ -9,7 +9,6 @@
 - implement Batch and Cart Extensions APIs with integration tests ([57d20cb](https://github.com/typewoo/sdk/commit/57d20cb))
 - api snapshots ([fa2e748](https://github.com/typewoo/sdk/commit/fa2e748))
 - enhance authentication endpoint handling with support for glob patterns ([ecbcc77](https://github.com/typewoo/sdk/commit/ecbcc77))
-- update types and add nestjs app ([0eee2dd](https://github.com/typewoo/sdk/commit/0eee2dd))
 
 ### 🩹 Fixes
 
