@@ -1,11 +1,5 @@
 export interface SdkConfig {
   baseUrl: string;
-  /**
-   * API key for authenticating requests to the backend API
-   * When provided, the SDK will automatically include this key in the `x-api-key` header.
-   * This is optional and only needed when your backend requires API key authentication.
-   */
-  apiKey?: string;
   admin?: {
     consumer_key?: string;
     consumer_secret?: string;
