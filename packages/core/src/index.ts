@@ -44,9 +44,6 @@ export { AdminShippingMethodService } from './lib/services/admin/shipping-method
 export { AdminSystemStatusService } from './lib/services/admin/system-status.service.js';
 export { AdminDataService } from './lib/services/admin/data.service.js';
 
-// Interceptors
-export { addApiKeyInterceptor } from './lib/interceptors/api-key.interceptor.js';
-
 // Plugin architecture support
 export { EventBus } from './lib/bus/event.bus.js';
 export * from './lib/sdk.events.js';
