@@ -4,6 +4,7 @@ import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { SdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
+import { StorageProvider } from '../utilities/storage.providers.js';
 
 // Interface for queued request item
 interface QueuedRequest {
@@ -76,13 +77,16 @@ export const addRefreshTokenInterceptor = (
         isRefreshing = true;
 
         try {
-          if (!config.auth?.getRefreshToken) {
+          const refreshTokenStorage = config.auth?.refreshToken?.storage as
+            | StorageProvider
+            | undefined;
+          if (!refreshTokenStorage) {
             const refreshError = await refreshTokenFailed(config);
             processQueue(refreshError, null);
             return refreshError;
           }
 
-          const refreshToken = await config.auth.getRefreshToken();
+          const refreshToken = await refreshTokenStorage.get();
           if (!refreshToken) {
             const refreshError = await refreshTokenFailed(config);
             processQueue(refreshError, null);
@@ -141,9 +145,21 @@ export const addRefreshTokenInterceptor = (
 };
 
 const refreshTokenFailed = async (config: SdkConfig, reason?: unknown) => {
-  if (config.auth?.clearToken) {
-    await config.auth.clearToken();
+  // Clear both access and refresh tokens
+  const accessTokenStorage = config.auth?.accessToken?.storage as
+    | StorageProvider
+    | undefined;
+  const refreshTokenStorage = config.auth?.refreshToken?.storage as
+    | StorageProvider
+    | undefined;
+
+  if (accessTokenStorage) {
+    await accessTokenStorage.clear();
   }
+  if (refreshTokenStorage) {
+    await refreshTokenStorage.clear();
+  }
+
   Typewoo.state.authenticated = false;
   Typewoo.events.emit('auth:changed', false);
 

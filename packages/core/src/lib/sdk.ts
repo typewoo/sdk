@@ -1,4 +1,4 @@
-import { SdkConfig } from './configs/sdk.config.js';
+import { resolveStorageProvider, SdkConfig } from './configs/sdk.config.js';
 import { SdkState } from './types/sdk.state.js';
 import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
@@ -11,6 +11,7 @@ import { AuthService } from './services/auth/auth.service.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
 import { AdminService } from './services/admin.service.js';
 import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.js';
+import { StorageProvider } from './utilities/storage.providers.js';
 
 export class Sdk {
   private _config!: SdkConfig;
@@ -29,6 +30,54 @@ export class Sdk {
 
     this._config = config;
 
+    // Resolve storage providers
+    if (!config.auth?.accessToken?.disabled) {
+      const accessTokenStorage = resolveStorageProvider(
+        config.auth?.accessToken?.storage,
+        config.auth?.accessToken?.key ?? 'typewoo_access_token'
+      );
+      config.auth = {
+        ...config.auth,
+        accessToken: {
+          ...config.auth?.accessToken,
+          storage: accessTokenStorage,
+        },
+      };
+    }
+
+    if (
+      !config.auth?.accessToken?.disabled &&
+      !config.auth?.refreshToken?.disabled
+    ) {
+      const refreshTokenStorage = resolveStorageProvider(
+        config.auth?.refreshToken?.storage,
+        config.auth?.refreshToken?.key ?? 'typewoo_refresh_token'
+      );
+      config.auth = {
+        ...config.auth,
+        refreshToken: {
+          ...config.auth?.refreshToken,
+          storage: refreshTokenStorage,
+        },
+      };
+    }
+
+    if (!config.cartToken?.disabled) {
+      const cartTokenStorage = resolveStorageProvider(
+        config.cartToken?.storage,
+        config.cartToken?.key ?? 'typewoo_cart_token'
+      );
+      config.cartToken = { ...config.cartToken, storage: cartTokenStorage };
+    }
+
+    if (!config.nonce?.disabled) {
+      const nonceStorage = resolveStorageProvider(
+        config.nonce?.storage,
+        config.nonce?.key ?? 'typewoo_nonce'
+      );
+      config.nonce = { ...config.nonce, storage: nonceStorage };
+    }
+
     this._auth = new AuthService(this.state, this._config, this.events);
     this._store = new StoreService(this.state, this._config, this.events);
     this._admin = new AdminService(this.state, this._config, this.events);
@@ -40,15 +89,23 @@ export class Sdk {
     addNonceInterceptors(config, this.state, this.events);
     addCartTokenInterceptors(config, this.state, this.events);
 
-    const useTokenInterceptor = config.auth?.useTokenInterceptor ?? true;
-    if (useTokenInterceptor) {
-      addTokenInterceptor(config);
+    if (!config.auth?.accessToken?.disabled) {
+      const useTokenInterceptor =
+        config.auth?.accessToken?.useInterceptor ?? true;
+      if (useTokenInterceptor) {
+        addTokenInterceptor(config);
+      }
     }
 
-    const useRefreshTokenInterceptor =
-      config.auth?.useRefreshTokenInterceptor ?? true;
-    if (useRefreshTokenInterceptor) {
-      addRefreshTokenInterceptor(config, this._auth);
+    if (
+      !config.auth?.accessToken?.disabled &&
+      !config.auth?.refreshToken?.disabled
+    ) {
+      const useRefreshTokenInterceptor =
+        config.auth?.refreshToken?.useInterceptor ?? true;
+      if (useRefreshTokenInterceptor) {
+        addRefreshTokenInterceptor(config, this._auth);
+      }
     }
 
     if (config.admin?.consumer_key && config.admin.consumer_secret) {
@@ -57,13 +114,14 @@ export class Sdk {
       }
     }
 
-    // Set initial authentication state based on config
-    // This is useful if the token is already set
-    if (config.auth?.getToken) {
-      config.auth.getToken().then((token) => {
-        Typewoo.state.authenticated = !!token;
-        Typewoo.events.emit('auth:changed', !!token);
-      });
+    // Set initial authentication state based on stored token
+    const accessTokenStorage = config.auth?.accessToken?.storage as
+      | StorageProvider
+      | undefined;
+    if (accessTokenStorage) {
+      const storedToken = await accessTokenStorage.get();
+      this.state.authenticated = !!storedToken;
+      this.events.emit('auth:changed', !!storedToken);
     }
 
     this._initialized = true;

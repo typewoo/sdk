@@ -1,3 +1,9 @@
+import {
+  StorageProvider,
+  storageProviders,
+  StorageType,
+} from '../utilities/storage.providers.js';
+
 export interface SdkConfig {
   baseUrl: string;
   admin?: {
@@ -20,24 +26,47 @@ export interface SdkConfig {
      * Defaults to `false`.
      */
     revokeTokenBeforeLogin?: boolean;
-    useTokenInterceptor?: boolean;
-    useRefreshTokenInterceptor?: boolean;
-    getToken?: () => Promise<string>;
-    setToken?: (token: string) => Promise<void>;
-    getRefreshToken?: () => Promise<string>;
-    setRefreshToken?: (refreshToken: string) => Promise<void>;
-    clearToken?: () => Promise<void>;
+
+    accessToken?: {
+      key?: string;
+      disabled?: boolean;
+      storage?: StorageType | StorageProvider;
+      useInterceptor?: boolean;
+    };
+    refreshToken?: {
+      key?: string;
+      disabled?: boolean;
+      storage?: StorageType | StorageProvider;
+      useInterceptor?: boolean;
+    };
   };
   nonce?: {
+    key?: string;
     disabled?: boolean;
-    getToken?: () => Promise<string>;
-    setToken?: (nonce: string) => Promise<void>;
-    clearToken?: () => Promise<void>;
+    storage?: StorageType | StorageProvider;
   };
   cartToken?: {
+    key?: string;
     disabled?: boolean;
-    getToken?: () => Promise<string>;
-    setToken?: (cartToken: string) => Promise<void>;
-    clearToken?: () => Promise<void>;
+    storage?: StorageType | StorageProvider;
   };
 }
+
+/**
+ * Resolves a storage configuration to a StorageProvider instance.
+ * If a string is provided, it creates the appropriate provider with the given key.
+ * If a StorageProvider is provided, it returns it as-is.
+ */
+export const resolveStorageProvider = (
+  storage: StorageType | StorageProvider | undefined,
+  key: string,
+  defaultType: StorageType = 'localstorage'
+): StorageProvider => {
+  if (!storage) {
+    return storageProviders[defaultType](key);
+  }
+  if (typeof storage === 'string') {
+    return storageProviders[storage](key);
+  }
+  return storage;
+};

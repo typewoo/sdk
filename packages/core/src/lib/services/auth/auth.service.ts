@@ -14,6 +14,7 @@ import {
   AuthValidateResponse,
   AuthStatusResponse,
 } from '../../types/index.js';
+import { StorageProvider } from '../../utilities/storage.providers.js';
 
 export class AuthService extends BaseService {
   private readonly endpoint = 'wp-json/typewoo/v1/auth';
@@ -54,14 +55,20 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:login:error', error);
 
     if (!error && data) {
-      if (this.config.auth?.setToken) {
+      const accessTokenStorage = this.config.auth?.accessToken?.storage as
+        | StorageProvider
+        | undefined;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
+        | StorageProvider
+        | undefined;
+
+      if (accessTokenStorage) {
         this.state.authenticated = true;
         this.events.emit('auth:changed', true);
-
-        await this.config.auth.setToken(data.token);
+        await accessTokenStorage.set(data.token);
       }
-      if (this.config.auth?.setRefreshToken) {
-        await this.config.auth.setRefreshToken(data.refresh_token);
+      if (refreshTokenStorage && data.refresh_token) {
+        await refreshTokenStorage.set(data.refresh_token);
       }
     }
 
@@ -86,12 +93,19 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:token:refresh:error', error);
 
     if (!error && data) {
-      if (this.config.auth?.setToken) {
-        await this.config.auth.setToken(data.token);
+      const accessTokenStorage = this.config.auth?.accessToken?.storage as
+        | StorageProvider
+        | undefined;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
+        | StorageProvider
+        | undefined;
+
+      if (accessTokenStorage) {
+        await accessTokenStorage.set(data.token);
       }
 
-      if (this.config.auth?.setRefreshToken) {
-        await this.config.auth.setRefreshToken(data.refresh_token);
+      if (refreshTokenStorage && data.refresh_token) {
+        await refreshTokenStorage.set(data.refresh_token);
       }
     }
 
@@ -116,8 +130,18 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:token:revoke:error', error);
 
     if (!error) {
-      if (this.config.auth?.clearToken) {
-        await this.config.auth?.clearToken();
+      const accessTokenStorage = this.config.auth?.accessToken?.storage as
+        | StorageProvider
+        | undefined;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
+        | StorageProvider
+        | undefined;
+
+      if (accessTokenStorage) {
+        await accessTokenStorage.clear();
+      }
+      if (refreshTokenStorage) {
+        await refreshTokenStorage.clear();
       }
 
       this.state.authenticated = false;
