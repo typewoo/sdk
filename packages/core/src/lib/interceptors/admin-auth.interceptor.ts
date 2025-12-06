@@ -1,8 +1,8 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { httpClient } from '../services/api.js';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 
-export const addAdminAuthInterceptor = (config: SdkConfig) => {
+export const addAdminAuthInterceptor = (config: ResolvedSdkConfig) => {
   httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (!axiosConfig.url?.startsWith('/wp-json/wc/v3/')) return axiosConfig;

@@ -2,9 +2,8 @@ import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { Typewoo } from '../sdk.js';
 import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
-import { StorageProvider } from '../utilities/storage.providers.js';
 
 // Interface for queued request item
 interface QueuedRequest {
@@ -44,7 +43,7 @@ const processQueue = (error: ApiError | null, token: string | null = null) => {
 };
 
 export const addRefreshTokenInterceptor = (
-  config: SdkConfig,
+  config: ResolvedSdkConfig,
   auth: AuthService
 ) => {
   httpClient.interceptors.response.use(
@@ -77,9 +76,7 @@ export const addRefreshTokenInterceptor = (
         isRefreshing = true;
 
         try {
-          const refreshTokenStorage = config.auth?.refreshToken?.storage as
-            | StorageProvider
-            | undefined;
+          const refreshTokenStorage = config.auth?.refreshToken?.storage;
           if (!refreshTokenStorage) {
             const refreshError = await refreshTokenFailed(config);
             processQueue(refreshError, null);
@@ -144,14 +141,13 @@ export const addRefreshTokenInterceptor = (
   );
 };
 
-const refreshTokenFailed = async (config: SdkConfig, reason?: unknown) => {
+const refreshTokenFailed = async (
+  config: ResolvedSdkConfig,
+  reason?: unknown
+) => {
   // Clear both access and refresh tokens
-  const accessTokenStorage = config.auth?.accessToken?.storage as
-    | StorageProvider
-    | undefined;
-  const refreshTokenStorage = config.auth?.refreshToken?.storage as
-    | StorageProvider
-    | undefined;
+  const accessTokenStorage = config.auth?.accessToken?.storage;
+  const refreshTokenStorage = config.auth?.refreshToken?.storage;
 
   if (accessTokenStorage) {
     await accessTokenStorage.clear();

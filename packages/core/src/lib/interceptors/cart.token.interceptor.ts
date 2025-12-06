@@ -1,19 +1,16 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';
-import { StorageProvider } from '../utilities/storage.providers.js';
 
 export const addCartTokenInterceptors = (
-  config: SdkConfig,
+  config: ResolvedSdkConfig,
   state: SdkState,
   events: EventBus<SdkEvent>
 ) => {
-  const cartTokenStorage = config.cartToken?.storage as
-    | StorageProvider
-    | undefined;
+  const cartTokenStorage = config.cartToken?.storage;
 
   // Add interceptor for cart token
   httpClient.interceptors.request.use(

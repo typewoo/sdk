@@ -1,17 +1,16 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';
-import { StorageProvider } from '../utilities/storage.providers.js';
 
 export const addNonceInterceptors = (
-  config: SdkConfig,
+  config: ResolvedSdkConfig,
   state: SdkState,
   events: EventBus<SdkEvent>
 ) => {
-  const nonceStorage = config.nonce?.storage as StorageProvider | undefined;
+  const nonceStorage = config.nonce?.storage;
 
   httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {

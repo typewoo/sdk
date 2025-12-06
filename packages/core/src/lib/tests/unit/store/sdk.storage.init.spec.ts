@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Sdk } from '../../../sdk.js';
 import { SdkConfig } from '../../../configs/sdk.config.js';
-import {
-  StorageProvider,
-  memoryStorageProvider,
-} from '../../../utilities/storage.providers.js';
+import { memoryStorageProvider } from '../../../utilities/storage.providers.js';
 
 // Mock the HTTP client and interceptors to isolate SDK init tests
 vi.mock('../../../services/api.js', () => ({
@@ -58,9 +55,7 @@ describe('SDK Storage Provider Resolution', () => {
       await sdk.init(config);
 
       // Storage should be resolved (falls back to memory in Node.js)
-      const resolvedStorage = config.auth?.accessToken?.storage as
-        | StorageProvider
-        | undefined;
+      const resolvedStorage = sdk.config.auth?.accessToken?.storage;
       expect(resolvedStorage).toBeDefined();
       expect(typeof resolvedStorage?.get).toBe('function');
       expect(typeof resolvedStorage?.set).toBe('function');
@@ -80,9 +75,8 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.accessToken
-        ?.storage as StorageProvider;
-      expect(resolvedStorage.type).toBe('memory');
+      const resolvedStorage = sdk.config.auth?.accessToken?.storage;
+      expect(resolvedStorage?.type).toBe('memory');
     });
 
     it('should use custom key when specified', async () => {
@@ -99,8 +93,7 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.accessToken
-        ?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.auth?.accessToken?.storage;
       expect(resolvedStorage).toBeDefined();
     });
 
@@ -120,10 +113,9 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.accessToken
-        ?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.auth?.accessToken?.storage;
       expect(resolvedStorage).toBe(customProvider);
-      expect(await resolvedStorage.get()).toBe('pre-existing-token');
+      expect(await resolvedStorage?.get()).toBe('pre-existing-token');
     });
 
     it('should not resolve storage when disabled', async () => {
@@ -140,7 +132,7 @@ describe('SDK Storage Provider Resolution', () => {
       await sdk.init(config);
 
       // Storage should not be resolved when disabled
-      const resolvedStorage = config.auth?.accessToken?.storage;
+      const resolvedStorage = sdk.config.auth?.accessToken?.storage;
       expect(resolvedStorage).toBeUndefined();
     });
   });
@@ -154,10 +146,9 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.refreshToken
-        ?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.auth?.refreshToken?.storage;
       expect(resolvedStorage).toBeDefined();
-      expect(typeof resolvedStorage.get).toBe('function');
+      expect(typeof resolvedStorage?.get).toBe('function');
     });
 
     it('should not resolve storage when accessToken is disabled', async () => {
@@ -174,7 +165,7 @@ describe('SDK Storage Provider Resolution', () => {
       await sdk.init(config);
 
       // refreshToken storage should not be resolved if accessToken is disabled
-      const resolvedStorage = config.auth?.refreshToken?.storage;
+      const resolvedStorage = sdk.config.auth?.refreshToken?.storage;
       expect(resolvedStorage).toBeUndefined();
     });
 
@@ -191,7 +182,7 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.refreshToken?.storage;
+      const resolvedStorage = sdk.config.auth?.refreshToken?.storage;
       expect(resolvedStorage).toBeUndefined();
     });
 
@@ -209,10 +200,9 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.auth?.refreshToken
-        ?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.auth?.refreshToken?.storage;
       expect(resolvedStorage).toBeDefined();
-      expect(resolvedStorage.type).toBe('memory');
+      expect(resolvedStorage?.type).toBe('memory');
     });
   });
 
@@ -225,9 +215,9 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.cartToken?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.cartToken?.storage;
       expect(resolvedStorage).toBeDefined();
-      expect(typeof resolvedStorage.get).toBe('function');
+      expect(typeof resolvedStorage?.get).toBe('function');
     });
 
     it('should not resolve storage when disabled', async () => {
@@ -241,7 +231,7 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.cartToken?.storage;
+      const resolvedStorage = sdk.config.cartToken?.storage;
       expect(resolvedStorage).toBeUndefined();
     });
 
@@ -257,7 +247,7 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.cartToken?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.cartToken?.storage;
       expect(resolvedStorage).toBeDefined();
     });
   });
@@ -271,9 +261,9 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.nonce?.storage as StorageProvider;
+      const resolvedStorage = sdk.config.nonce?.storage;
       expect(resolvedStorage).toBeDefined();
-      expect(typeof resolvedStorage.get).toBe('function');
+      expect(typeof resolvedStorage?.get).toBe('function');
     });
 
     it('should not resolve storage when disabled', async () => {
@@ -287,7 +277,7 @@ describe('SDK Storage Provider Resolution', () => {
 
       await sdk.init(config);
 
-      const resolvedStorage = config.nonce?.storage;
+      const resolvedStorage = sdk.config.nonce?.storage;
       expect(resolvedStorage).toBeUndefined();
     });
   });
@@ -380,19 +370,22 @@ describe('SDK Storage Provider Resolution', () => {
       };
 
       await sdk.init(config);
-      const firstStorage = config.auth?.accessToken?.storage;
+      const firstStorage = sdk.config.auth?.accessToken?.storage;
 
       // Modify config and try to init again
-      config.auth = {
-        accessToken: {
-          storage: memoryStorageProvider(),
+      const newConfig: SdkConfig = {
+        baseUrl: 'https://example.com',
+        auth: {
+          accessToken: {
+            storage: memoryStorageProvider(),
+          },
         },
       };
 
-      await sdk.init(config);
+      await sdk.init(newConfig);
 
       // Storage should remain the same (not re-initialized)
-      expect(config.auth?.accessToken?.storage).not.toBe(firstStorage);
+      expect(sdk.config.auth?.accessToken?.storage).toBe(firstStorage);
     });
   });
 });

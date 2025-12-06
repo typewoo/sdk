@@ -14,7 +14,6 @@ import {
   AuthValidateResponse,
   AuthStatusResponse,
 } from '../../types/index.js';
-import { StorageProvider } from '../../utilities/storage.providers.js';
 
 export class AuthService extends BaseService {
   private readonly endpoint = 'wp-json/typewoo/v1/auth';
@@ -55,12 +54,8 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:login:error', error);
 
     if (!error && data) {
-      const accessTokenStorage = this.config.auth?.accessToken?.storage as
-        | StorageProvider
-        | undefined;
-      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
-        | StorageProvider
-        | undefined;
+      const accessTokenStorage = this.config.auth?.accessToken?.storage;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
 
       if (accessTokenStorage) {
         this.state.authenticated = true;
@@ -93,12 +88,8 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:token:refresh:error', error);
 
     if (!error && data) {
-      const accessTokenStorage = this.config.auth?.accessToken?.storage as
-        | StorageProvider
-        | undefined;
-      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
-        | StorageProvider
-        | undefined;
+      const accessTokenStorage = this.config.auth?.accessToken?.storage;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
 
       if (accessTokenStorage) {
         await accessTokenStorage.set(data.token);
@@ -130,12 +121,8 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!error, 'auth:token:revoke:error', error);
 
     if (!error) {
-      const accessTokenStorage = this.config.auth?.accessToken?.storage as
-        | StorageProvider
-        | undefined;
-      const refreshTokenStorage = this.config.auth?.refreshToken?.storage as
-        | StorageProvider
-        | undefined;
+      const accessTokenStorage = this.config.auth?.accessToken?.storage;
+      const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
 
       if (accessTokenStorage) {
         await accessTokenStorage.clear();
