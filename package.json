@@ -31,6 +31,8 @@
     "wp:plugin:check:json": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check typewoo --format=json",
     "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check typewoo --format=summary",
     "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check typewoo --format=table --severity=info",
+    "format": "npx prettier --write .",
+    "format:check": "npx prettier --check .",
     "release": "npx nx release",
     "release:alpha": "npx nx release prerelease --preid alpha --dry-run"
   },
