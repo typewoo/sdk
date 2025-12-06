@@ -1,3 +1,15 @@
+## 3.1.0 (2025-12-06)
+
+### 🚀 Features
+
+- update README to reflect new SDK structure and installation instructions ([334f8bd](https://github.com/typewoo/sdk/commit/334f8bd))
+- add storage providers ([#111](https://github.com/typewoo/sdk/pull/111))
+
+### ❤️ Thank You
+
+- kmakris23
+- Kostas Makris @kmakris23
+
 # 3.0.0 (2025-12-02)
 
 ### 🚀 Features
