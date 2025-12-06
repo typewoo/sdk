@@ -1,22 +1,22 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';
 
 export const addNonceInterceptors = (
-  config: SdkConfig,
+  config: ResolvedSdkConfig,
   state: SdkState,
   events: EventBus<SdkEvent>
 ) => {
+  const nonceStorage = config.nonce?.storage;
+
   httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.nonce?.disabled) return axiosConfig;
 
-      const nonce = config.nonce?.getToken
-        ? await config.nonce?.getToken()
-        : state.nonce;
+      const nonce = nonceStorage ? await nonceStorage.get() : state.nonce;
 
       if (!nonce) return axiosConfig;
 
@@ -36,8 +36,8 @@ export const addNonceInterceptors = (
     if (!nonce) return response;
 
     state.nonce = nonce;
-    if (config.nonce?.setToken) {
-      await config.nonce?.setToken(nonce);
+    if (nonceStorage) {
+      await nonceStorage.set(nonce);
     }
     events.emit('nonce:changed', nonce);
     return response;

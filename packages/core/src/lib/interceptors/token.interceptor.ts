@@ -1,8 +1,8 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { httpClient } from '../services/api.js';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 
-export const addTokenInterceptor = (config: SdkConfig) => {
+export const addTokenInterceptor = (config: ResolvedSdkConfig) => {
   httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (
@@ -12,8 +12,9 @@ export const addTokenInterceptor = (config: SdkConfig) => {
         return axiosConfig;
       }
 
-      if (config.auth?.getToken) {
-        const bearerToken = await config.auth.getToken();
+      const accessTokenStorage = config.auth?.accessToken?.storage;
+      if (accessTokenStorage) {
+        const bearerToken = await accessTokenStorage.get();
         if (bearerToken) {
           axiosConfig.headers['Authorization'] = `Bearer ${bearerToken}`;
         }

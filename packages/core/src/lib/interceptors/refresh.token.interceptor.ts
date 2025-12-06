@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { Typewoo } from '../sdk.js';
 import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
 
 // Interface for queued request item
@@ -43,7 +43,7 @@ const processQueue = (error: ApiError | null, token: string | null = null) => {
 };
 
 export const addRefreshTokenInterceptor = (
-  config: SdkConfig,
+  config: ResolvedSdkConfig,
   auth: AuthService
 ) => {
   httpClient.interceptors.response.use(
@@ -76,13 +76,14 @@ export const addRefreshTokenInterceptor = (
         isRefreshing = true;
 
         try {
-          if (!config.auth?.getRefreshToken) {
+          const refreshTokenStorage = config.auth?.refreshToken?.storage;
+          if (!refreshTokenStorage) {
             const refreshError = await refreshTokenFailed(config);
             processQueue(refreshError, null);
             return refreshError;
           }
 
-          const refreshToken = await config.auth.getRefreshToken();
+          const refreshToken = await refreshTokenStorage.get();
           if (!refreshToken) {
             const refreshError = await refreshTokenFailed(config);
             processQueue(refreshError, null);
@@ -140,10 +141,21 @@ export const addRefreshTokenInterceptor = (
   );
 };
 
-const refreshTokenFailed = async (config: SdkConfig, reason?: unknown) => {
-  if (config.auth?.clearToken) {
-    await config.auth.clearToken();
+const refreshTokenFailed = async (
+  config: ResolvedSdkConfig,
+  reason?: unknown
+) => {
+  // Clear both access and refresh tokens
+  const accessTokenStorage = config.auth?.accessToken?.storage;
+  const refreshTokenStorage = config.auth?.refreshToken?.storage;
+
+  if (accessTokenStorage) {
+    await accessTokenStorage.clear();
   }
+  if (refreshTokenStorage) {
+    await refreshTokenStorage.clear();
+  }
+
   Typewoo.state.authenticated = false;
   Typewoo.events.emit('auth:changed', false);
 

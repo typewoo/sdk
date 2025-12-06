@@ -1,5 +1,5 @@
 import { EventBus } from '../bus/event.bus.js';
-import { SdkConfig } from '../configs/sdk.config.js';
+import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { SdkEvent } from '../sdk.events.js';
 import { SdkState } from '../types/sdk.state.js';
 import { CartCouponService } from './store/cart.coupon.service.js';
@@ -39,7 +39,11 @@ export class StoreService {
 
   private _batch!: BatchService;
 
-  constructor(state: SdkState, config: SdkConfig, events: EventBus<SdkEvent>) {
+  constructor(
+    state: SdkState,
+    config: ResolvedSdkConfig,
+    events: EventBus<SdkEvent>
+  ) {
     this._tags = new ProductTagService(state, config, events);
     this._orders = new OrderService(state, config, events);
     this._brands = new ProductBrandService(state, config, events);
