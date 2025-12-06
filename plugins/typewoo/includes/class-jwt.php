@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 /**
  * TypeWoo JWT Class.
  *
- * @class Store_SDK_JWT
+ * @class TypeWoo_JWT
  */
-class Store_SDK_JWT {
+class TypeWoo_JWT {
 
 	/**
 	 * Constructor.

@@ -29,7 +29,7 @@ if (function_exists('apply_filters')) {
 /**
  * TypeWoo Uninstaller Class
  */
-class Store_SDK_Uninstaller {
+class TypeWoo_Uninstaller {
 
 	/**
 	 * Run the uninstall process.
@@ -103,4 +103,4 @@ class Store_SDK_Uninstaller {
 }
 
 // Run the uninstaller
-Store_SDK_Uninstaller::uninstall();
+TypeWoo_Uninstaller::uninstall();

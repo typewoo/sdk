@@ -15,21 +15,21 @@ if (!defined('ABSPATH')) {
 /**
  * TypeWoo API Class.
  *
- * @class Store_SDK_API
+ * @class TypeWoo_API
  */
-class Store_SDK_API {
+class TypeWoo_API {
 
 	/**
 	 * JWT instance.
 	 *
-	 * @var Store_SDK_JWT
+	 * @var TypeWoo_JWT
 	 */
 	private $jwt;
 
 	/**
 	 * Auth instance.
 	 *
-	 * @var Store_SDK_Auth
+	 * @var TypeWoo_Auth
 	 */
 	private $auth;
 
@@ -37,8 +37,8 @@ class Store_SDK_API {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->jwt = new Store_SDK_JWT();
-		$this->auth = new Store_SDK_Auth();
+		$this->jwt = new TypeWoo_JWT();
+		$this->auth = new TypeWoo_Auth();
 		$this->init();
 	}
 

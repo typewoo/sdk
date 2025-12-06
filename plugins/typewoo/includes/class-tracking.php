@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 /**
  * TypeWoo Tracking Class.
  *
- * @class Store_SDK_Tracking
+ * @class TypeWoo_Tracking
  */
-class Store_SDK_Tracking {
+class TypeWoo_Tracking {
 
 	/**
 	 * Constructor.

@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 /**
  * TypeWoo Admin Class.
  *
- * @class Store_SDK_Admin
+ * @class TypeWoo_Admin
  */
-class Store_SDK_Admin {
+class TypeWoo_Admin {
 
 	/**
 	 * Constructor.

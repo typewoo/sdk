@@ -15,9 +15,9 @@ if (!defined('ABSPATH')) {
 /**
  * TypeWoo CORS Class.
  *
- * @class Store_SDK_CORS
+ * @class TypeWoo_CORS
  */
-class Store_SDK_CORS {
+class TypeWoo_CORS {
 
 	/**
 	 * Constructor.

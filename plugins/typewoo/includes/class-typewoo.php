@@ -13,14 +13,14 @@ if (!defined('ABSPATH')) {
 /**
  * Main TypeWoo Class.
  *
- * @class Store_SDK
+ * @class TypeWoo
  */
-final class Store_SDK {
+final class TypeWoo {
 
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var Store_SDK
+	 * @var TypeWoo
 	 * @since 1.0.0
 	 */
 	protected static $_instance = null;
@@ -28,42 +28,42 @@ final class Store_SDK {
 	/**
 	 * CORS handler instance.
 	 *
-	 * @var Store_SDK_CORS
+	 * @var TypeWoo_CORS
 	 */
 	public $cors;
 
 	/**
 	 * JWT handler instance.
 	 *
-	 * @var Store_SDK_JWT
+	 * @var TypeWoo_JWT
 	 */
 	public $jwt;
 
 	/**
 	 * Auth handler instance.
 	 *
-	 * @var Store_SDK_Auth
+	 * @var TypeWoo_Auth
 	 */
 	public $auth;
 
 	/**
 	 * API handler instance.
 	 *
-	 * @var Store_SDK_API
+	 * @var TypeWoo_API
 	 */
 	public $api;
 
 	/**
 	 * Tracking handler instance.
 	 *
-	 * @var Store_SDK_Tracking
+	 * @var TypeWoo_Tracking
 	 */
 	public $tracking;
 
 	/**
 	 * Admin handler instance.
 	 *
-	 * @var Store_SDK_Admin
+	 * @var TypeWoo_Admin
 	 */
 	public $admin;
 
@@ -81,7 +81,7 @@ final class Store_SDK {
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @return Store_SDK - Main instance.
+	 * @return TypeWoo - Main instance.
 	 */
 	public static function instance() {
 		if (is_null(self::$_instance)) {
@@ -186,14 +186,14 @@ final class Store_SDK {
 		$this->load_plugin_textdomain();
 
 		// Initialize core components.
-		$this->cors = new Store_SDK_CORS();
-		$this->jwt = new Store_SDK_JWT();
-		$this->auth = new Store_SDK_Auth();
-		$this->api = new Store_SDK_API();
-		$this->tracking = new Store_SDK_Tracking();
+		$this->cors = new TypeWoo_CORS();
+		$this->jwt = new TypeWoo_JWT();
+		$this->auth = new TypeWoo_Auth();
+		$this->api = new TypeWoo_API();
+		$this->tracking = new TypeWoo_Tracking();
 
 		if ($this->is_request('admin')) {
-			$this->admin = new Store_SDK_Admin();
+			$this->admin = new TypeWoo_Admin();
 		}
 
 		// Init action.

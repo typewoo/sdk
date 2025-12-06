@@ -61,12 +61,12 @@ $typewoo_defaults = array(
 	 * 
 	 * 'TYPEWOO_TRACKING_ADMIN_COLUMNS' => [
 	 * 		[{key}, '{column name}', '{position after column}', {default value}]
-	 * 		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
+	 * 		['_typewoo_source', 'SDK Source', 'order_status', 'Web']
 	 * ],
 	 * 
 	 */
 	'TYPEWOO_TRACKING_ADMIN_COLUMNS' => [
-		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
+		['_typewoo_source', 'SDK Source', 'order_status', 'Web']
 	],
 	'TYPEWOO_TRACKING_ADMIN_COLUMNS_AFTER' => 'order_status',
 );
@@ -97,19 +97,19 @@ unset($typewoo_flag_defined, $typewoo_flag_enabled, $typewoo_secret_defined);
  * Returns the main instance of TypeWoo.
  *
  * @since 1.0.0
- * @return Store_SDK
+ * @return TypeWoo
  */
-function Store_SDK() {
-	return Store_SDK::instance();
+function TypeWoo() {
+	return TypeWoo::instance();
 }
 
 // Include the main TypeWoo class.
-if (!class_exists('Store_SDK', false)) {
+if (!class_exists('TypeWoo', false)) {
 	include_once dirname(TYPEWOO_PLUGIN_FILE) . '/includes/class-typewoo.php';
 }
 
 // Global for backwards compatibility.
-$GLOBALS['store_sdk'] = Store_SDK();
+$GLOBALS['typewoo'] = TypeWoo();
 
 // Hook for final action after plugin is fully loaded.
 do_action('typewoo_jwt_auth_loaded');
