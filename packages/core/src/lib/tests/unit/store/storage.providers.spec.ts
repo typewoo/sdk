@@ -89,6 +89,76 @@ describe('Storage Providers', () => {
     });
   });
 
+  describe('localStorageProvider (browser environment simulation)', () => {
+    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+    let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
+    let mockLocalStorage: Storage;
+    const originalWindow = globalThis.window;
+    const originalLocalStorage = globalThis.localStorage;
+
+    beforeEach(() => {
+      consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+      consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+      mockLocalStorage = {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+        key: vi.fn(),
+        length: 0,
+      };
+      // Simulate browser environment - need to set both window.localStorage and global localStorage
+      (globalThis as unknown as { window: { localStorage: Storage } }).window =
+        {
+          localStorage: mockLocalStorage,
+        };
+      (globalThis as unknown as { localStorage: Storage }).localStorage =
+        mockLocalStorage;
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+      consoleWarnSpy.mockRestore();
+      (globalThis as unknown as { window: typeof originalWindow }).window =
+        originalWindow;
+      (
+        globalThis as unknown as { localStorage: typeof originalLocalStorage }
+      ).localStorage = originalLocalStorage;
+    });
+
+    it('should log error and rethrow when setItem throws QuotaExceededError', async () => {
+      const quotaError = new Error('QuotaExceededError');
+      quotaError.name = 'QuotaExceededError';
+      vi.mocked(mockLocalStorage.setItem).mockImplementation(() => {
+        throw quotaError;
+      });
+
+      const provider = localStorageProvider('test-key');
+      await expect(provider.set('large-value')).rejects.toThrow(
+        'QuotaExceededError'
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[Typewoo] Failed to save to localStorage:',
+        quotaError
+      );
+    });
+
+    it('should log error and rethrow when removeItem throws', async () => {
+      const securityError = new Error('SecurityError');
+      securityError.name = 'SecurityError';
+      vi.mocked(mockLocalStorage.removeItem).mockImplementation(() => {
+        throw securityError;
+      });
+
+      const provider = localStorageProvider('test-key');
+      await expect(provider.clear()).rejects.toThrow('SecurityError');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[Typewoo] Failed to clear localStorage:',
+        securityError
+      );
+    });
+  });
+
   describe('sessionStorageProvider (Node.js/SSR environment)', () => {
     let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
 
@@ -121,6 +191,79 @@ describe('Storage Providers', () => {
       expect(await provider.get()).toBe('session-value');
       await provider.clear();
       expect(await provider.get()).toBeNull();
+    });
+  });
+
+  describe('sessionStorageProvider (browser environment simulation)', () => {
+    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+    let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
+    let mockSessionStorage: Storage;
+    const originalWindow = globalThis.window;
+    const originalSessionStorage = globalThis.sessionStorage;
+
+    beforeEach(() => {
+      consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+      consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+      mockSessionStorage = {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+        key: vi.fn(),
+        length: 0,
+      };
+      // Simulate browser environment - need to set both window.sessionStorage and global sessionStorage
+      (
+        globalThis as unknown as { window: { sessionStorage: Storage } }
+      ).window = {
+        sessionStorage: mockSessionStorage,
+      };
+      (globalThis as unknown as { sessionStorage: Storage }).sessionStorage =
+        mockSessionStorage;
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+      consoleWarnSpy.mockRestore();
+      (globalThis as unknown as { window: typeof originalWindow }).window =
+        originalWindow;
+      (
+        globalThis as unknown as {
+          sessionStorage: typeof originalSessionStorage;
+        }
+      ).sessionStorage = originalSessionStorage;
+    });
+
+    it('should log error and rethrow when setItem throws QuotaExceededError', async () => {
+      const quotaError = new Error('QuotaExceededError');
+      quotaError.name = 'QuotaExceededError';
+      vi.mocked(mockSessionStorage.setItem).mockImplementation(() => {
+        throw quotaError;
+      });
+
+      const provider = sessionStorageProvider('test-key');
+      await expect(provider.set('large-value')).rejects.toThrow(
+        'QuotaExceededError'
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[Typewoo] Failed to save to sessionStorage:',
+        quotaError
+      );
+    });
+
+    it('should log error and rethrow when removeItem throws', async () => {
+      const securityError = new Error('SecurityError');
+      securityError.name = 'SecurityError';
+      vi.mocked(mockSessionStorage.removeItem).mockImplementation(() => {
+        throw securityError;
+      });
+
+      const provider = sessionStorageProvider('test-key');
+      await expect(provider.clear()).rejects.toThrow('SecurityError');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[Typewoo] Failed to clear sessionStorage:',
+        securityError
+      );
     });
   });
 

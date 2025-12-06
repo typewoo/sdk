@@ -68,9 +68,22 @@ export const localStorageProvider = (key: string): StorageProvider => {
   return {
     type: 'localstorage',
     get: () => Promise.resolve(localStorage.getItem(key)),
-    set: (value: string) =>
-      Promise.resolve(void localStorage.setItem(key, value)),
-    clear: () => Promise.resolve(void localStorage.removeItem(key)),
+    set: async (value: string) => {
+      try {
+        localStorage.setItem(key, value);
+      } catch (error) {
+        console.error(`[Typewoo] Failed to save to localStorage:`, error);
+        throw error;
+      }
+    },
+    clear: async () => {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {
+        console.error(`[Typewoo] Failed to clear localStorage:`, error);
+        throw error;
+      }
+    },
   };
 };
 
@@ -87,9 +100,22 @@ export const sessionStorageProvider = (key: string): StorageProvider => {
   return {
     type: 'sessionstorage',
     get: () => Promise.resolve(sessionStorage.getItem(key)),
-    set: (value: string) =>
-      Promise.resolve(void sessionStorage.setItem(key, value)),
-    clear: () => Promise.resolve(void sessionStorage.removeItem(key)),
+    set: async (value: string) => {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch (error) {
+        console.error(`[Typewoo] Failed to save to sessionStorage:`, error);
+        throw error;
+      }
+    },
+    clear: async () => {
+      try {
+        sessionStorage.removeItem(key);
+      } catch (error) {
+        console.error(`[Typewoo] Failed to clear sessionStorage:`, error);
+        throw error;
+      }
+    },
   };
 };
 
