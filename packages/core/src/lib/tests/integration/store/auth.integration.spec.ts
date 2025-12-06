@@ -9,6 +9,10 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+import {
+  memoryStorageProvider,
+  StorageProvider,
+} from '../../../utilities/storage.providers.js';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -16,9 +20,9 @@ const WP_URL = GET_WP_URL();
 const CUSTOMER_USER = GET_WP_CUSTOMER_USER();
 const CUSTOMER_PASS = GET_WP_CUSTOMER_PASSWORD();
 
-// Simple holder for tokens captured through config callbacks
-let accessToken = '';
-let refreshToken = '';
+// Storage providers for tokens
+let accessTokenStorage: StorageProvider;
+let refreshTokenStorage: StorageProvider;
 
 // Initialize SDK once and use exposed auth facade
 const sdk = Typewoo;
@@ -26,38 +30,24 @@ const sdk = Typewoo;
 let pluginActive: boolean | undefined;
 
 describe('Integration: Auth', () => {
-  const tokenStore = { token: '', refresh: '' };
-
   beforeEach(() => {
     // Reset the global refresh token state before each test
     resetRefreshTokenState();
   });
 
   beforeAll(async () => {
-    // Probe status first; if unreachable or inactive, later tests will soft-pass
+    // Create memory storage providers for testing
+    accessTokenStorage = memoryStorageProvider();
+    refreshTokenStorage = memoryStorageProvider();
 
     const config: SdkConfig = {
       baseUrl: WP_URL,
       auth: {
-        getToken: async () => {
-          return accessToken;
+        accessToken: {
+          storage: accessTokenStorage,
         },
-        setToken: async (t: string) => {
-          accessToken = t;
-          tokenStore.token = t;
-        },
-        getRefreshToken: async () => {
-          return refreshToken;
-        },
-        setRefreshToken: async (t: string) => {
-          refreshToken = t;
-          tokenStore.refresh = t;
-        },
-        clearToken: async () => {
-          accessToken = '';
-
-          tokenStore.token = '';
-          tokenStore.refresh = '';
+        refreshToken: {
+          storage: refreshTokenStorage,
         },
       },
     };
@@ -89,9 +79,13 @@ describe('Integration: Auth', () => {
     });
     expect(error).toBeFalsy();
     expect(data?.token).toBeTruthy();
-    expect(accessToken).toBe(data?.token);
+
+    // Verify token was stored via storage provider
+    const storedToken = await accessTokenStorage.get();
+    expect(storedToken).toBe(data?.token);
+
     if (data?.refresh_token) {
-      refreshToken = data.refresh_token;
+      await refreshTokenStorage.set(data.refresh_token);
     }
   });
 
@@ -111,23 +105,25 @@ describe('Integration: Auth', () => {
   });
 
   it('refreshes token (if refresh token available)', async () => {
-    if (!pluginActive || !refreshToken) {
+    const storedRefreshToken = await refreshTokenStorage.get();
+    if (!pluginActive || !storedRefreshToken) {
       expect(true).toBe(true);
       return;
     }
-    const oldToken = accessToken;
+    const oldToken = await accessTokenStorage.get();
     const { data, error } = await sdk.auth.refreshToken({
-      refresh_token: refreshToken,
+      refresh_token: storedRefreshToken,
     });
     expect(error).toBeFalsy();
     if (data?.token) {
       expect(data.token).not.toBe(oldToken); // rotation expected (best-effort)
-      refreshToken = data.refresh_token;
+      await refreshTokenStorage.set(data.refresh_token);
     }
   });
 
   it('issues one-time token after login', async () => {
-    if (!pluginActive || !accessToken) {
+    const storedToken = await accessTokenStorage.get();
+    if (!pluginActive || !storedToken) {
       expect(true).toBe(true);
       return;
     }
@@ -149,9 +145,12 @@ describe('Integration: Auth', () => {
 
     expect(error).toBeUndefined();
     expect(data?.token).toBeTruthy();
-    expect(tokenStore.token).toBeTruthy();
-    expect(tokenStore.refresh).toBeTruthy();
-    const oldToken = tokenStore.token;
+
+    const storedToken = await accessTokenStorage.get();
+    const storedRefresh = await refreshTokenStorage.get();
+    expect(storedToken).toBeTruthy();
+    expect(storedRefresh).toBeTruthy();
+    const oldToken = storedToken;
 
     // 2) Wait for the access token to expire
     await new Promise((r) => setTimeout(r, 3000));
@@ -161,12 +160,15 @@ describe('Integration: Auth', () => {
 
     // If the refresh interceptor worked, we should have a 200 and cart data
     expect(cartData).toBeTruthy();
-    expect(tokenStore.token).toBeTruthy();
-    expect(tokenStore.token).not.toBe(oldToken); // token must rotate after refresh
+
+    const newToken = await accessTokenStorage.get();
+    expect(newToken).toBeTruthy();
+    expect(newToken).not.toBe(oldToken); // token must rotate after refresh
   }, 8000);
 
   it('revokes token and subsequent validate may fail', async () => {
-    if (!pluginActive || !accessToken) {
+    const storedToken = await accessTokenStorage.get();
+    if (!pluginActive || !storedToken) {
       expect(true).toBe(true);
       return;
     }
