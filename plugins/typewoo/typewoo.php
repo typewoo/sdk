@@ -116,15 +116,13 @@ do_action('typewoo_jwt_auth_loaded');
 
 /**
  * Initialize Plugin Update Checker for GitHub releases.
- * 
+ *
  * @since 1.0.0
  */
 if (file_exists(dirname(TYPEWOO_PLUGIN_FILE) . '/plugin-update-checker/plugin-update-checker.php')) {
 	require_once dirname(TYPEWOO_PLUGIN_FILE) . '/plugin-update-checker/plugin-update-checker.php';
 
-	use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-	$typewoo_update_checker = PucFactory::buildUpdateChecker(
+	$typewoo_update_checker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
 		'https://github.com/typewoo/sdk/',
 		TYPEWOO_PLUGIN_FILE,
 		'typewoo'
