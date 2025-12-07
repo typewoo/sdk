@@ -79,26 +79,27 @@ class TypeWoo_Tracking {
 		if (!function_exists('WC') || !WC()->session) return;
 		if (empty($_GET)) return; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		// Check if current path is whitelisted (if whitelist is not empty)
+		// Skip if no params or paths are whitelisted
+		$whitelisted = TYPEWOO_TRACKING_WHITELISTED_PARAMS;
 		$whitelisted_paths = TYPEWOO_TRACKING_WHITELISTED_PATHS;
-		if (!empty($whitelisted_paths)) {
-			$current_path = trim(wp_parse_url(esc_url_raw($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
-			$path_allowed = false;
-			
-			foreach ($whitelisted_paths as $allowed_path) {
-				$allowed_path = trim($allowed_path, '/');
-				// Check for exact match or if current path starts with allowed path
-				if ($current_path === $allowed_path || strpos($current_path, $allowed_path . '/') === 0) {
-					$path_allowed = true;
-					break;
-				}
+		if (empty($whitelisted) || empty($whitelisted_paths)) return;
+
+		// Check if current path is whitelisted
+		$current_path = trim(wp_parse_url(esc_url_raw($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
+		$path_allowed = false;
+		
+		foreach ($whitelisted_paths as $allowed_path) {
+			$allowed_path = trim($allowed_path, '/');
+			// Check for exact match or if current path starts with allowed path
+			if ($current_path === $allowed_path || strpos($current_path, $allowed_path . '/') === 0) {
+				$path_allowed = true;
+				break;
 			}
-			
-			if (!$path_allowed) return;
 		}
+		
+		if (!$path_allowed) return;
 
 		$captured = [];
-		$whitelisted = TYPEWOO_TRACKING_WHITELISTED_PARAMS;
 		
 		foreach ($_GET as $key => $value) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$k = sanitize_key((string) $key);
