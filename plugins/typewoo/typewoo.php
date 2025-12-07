@@ -21,8 +21,8 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants.
-if (!defined('TYPEWOO_JWT_AUTH_VERSION')) {
-	define('TYPEWOO_JWT_AUTH_VERSION', '1.0.0');
+if (!defined('TYPEWOO_VERSION')) {
+	define('TYPEWOO_VERSION', '1.0.0');
 }
 
 if (!defined('TYPEWOO_PLUGIN_FILE')) {
@@ -113,3 +113,21 @@ $GLOBALS['typewoo'] = TypeWoo();
 
 // Hook for final action after plugin is fully loaded.
 do_action('typewoo_jwt_auth_loaded');
+
+/**
+ * Initialize Plugin Update Checker for GitHub releases.
+ *
+ * @since 1.0.0
+ */
+if (file_exists(dirname(TYPEWOO_PLUGIN_FILE) . '/plugin-update-checker/plugin-update-checker.php')) {
+	require_once dirname(TYPEWOO_PLUGIN_FILE) . '/plugin-update-checker/plugin-update-checker.php';
+
+	$typewoo_update_checker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+		'https://github.com/typewoo/sdk/',
+		TYPEWOO_PLUGIN_FILE,
+		'typewoo'
+	);
+
+	// Use GitHub releases for updates.
+	$typewoo_update_checker->getVcsApi()->enableReleaseAssets();
+}

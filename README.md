@@ -28,6 +28,6 @@ Typewoo.init({
 });
 
 // Access store services
-const products = await sdk.store.products.getProducts();
+const products = await sdk.store.products.get();
 const cart = await sdk.store.cart.get();
 ```

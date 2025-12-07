@@ -620,7 +620,7 @@ class TypeWoo_API {
 			'secret_length'      => $secret_length,
 			'inactive_reason'    => $active ? null : $inactive_reason,
 			'endpoints'          => $endpoints,
-			'version'            => defined('TYPEWOO_JWT_AUTH_VERSION') ? TYPEWOO_JWT_AUTH_VERSION : '1.0.0',
+			'version'            => defined('TYPEWOO_VERSION') ? TYPEWOO_VERSION : '1.0.0',
 			'timestamp'          => time(),
 			'force_auth_defined' => $force_auth_defined,
 			'force_auth_value'   => $force_auth_value,
@@ -660,7 +660,7 @@ class TypeWoo_API {
 		return new WP_REST_Response(array(
 			'force_auth_defined' => $force_auth_defined,
 			'force_auth_value' => $force_auth_value,
-			'plugin_version' => defined('TYPEWOO_JWT_AUTH_VERSION') ? TYPEWOO_JWT_AUTH_VERSION : '1.0.0',
+			'plugin_version' => defined('TYPEWOO_VERSION') ? TYPEWOO_VERSION : '1.0.0',
 			'timestamp' => time(),
 		));
 	}
