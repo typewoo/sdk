@@ -35,9 +35,9 @@ export class AdminProductService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminProduct[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -151,9 +151,9 @@ export class AdminProductService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminProductVariation[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

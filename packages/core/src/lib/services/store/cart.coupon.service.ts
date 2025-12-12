@@ -18,9 +18,9 @@ export class CartCouponService extends BaseService {
     const url = `/${this.endpoint}`;
     const { data, error, headers } = await doGet<CartCouponResponse[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total: total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

@@ -20,8 +20,8 @@ export class ProductAttributeService extends BaseService {
       url
     );
 
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**

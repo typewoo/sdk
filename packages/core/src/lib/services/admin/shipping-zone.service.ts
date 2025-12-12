@@ -38,9 +38,9 @@ export class AdminShippingZoneService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminShippingZone[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -141,9 +141,9 @@ export class AdminShippingZoneService extends BaseService {
       url
     );
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

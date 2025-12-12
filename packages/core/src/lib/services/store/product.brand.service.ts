@@ -22,8 +22,8 @@ export class ProductBrandService extends BaseService {
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductBrandResponse[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**
