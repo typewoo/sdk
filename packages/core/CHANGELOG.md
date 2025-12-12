@@ -1,3 +1,13 @@
+## 3.2.0 (2025-12-12)
+
+### 🚀 Features
+
+- allow custom axios configuration in SDK ([57f6fc4](https://github.com/typewoo/sdk/commit/57f6fc4))
+
+### 🩹 Fixes
+
+- update pagination handling ([b13ec6e](https://github.com/typewoo/sdk/commit/b13ec6e))
+
 ## 3.1.0 (2025-12-06)
 
 ### 🚀 Features
