@@ -12,7 +12,7 @@ import { Typewoo } from '@typewoo/core';
 export class App implements OnInit {
   async ngOnInit(): Promise<void> {
     // const data = await Typewoo.store.products.list();
-    const data = await Typewoo['store'].products.list();
+    const data = await Typewoo.store.products.list();
     console.log(data);
   }
 }

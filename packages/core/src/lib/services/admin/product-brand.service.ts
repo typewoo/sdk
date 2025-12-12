@@ -33,9 +33,9 @@ export class AdminProductBrandService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminBrand[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

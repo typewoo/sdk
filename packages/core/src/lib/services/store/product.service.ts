@@ -51,8 +51,8 @@ export class ProductService extends BaseService {
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductResponse[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link, headers };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination, headers };
   }
 
   /**

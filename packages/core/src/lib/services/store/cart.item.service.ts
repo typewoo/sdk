@@ -31,9 +31,9 @@ export class CartItemService extends BaseService {
       options
     );
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

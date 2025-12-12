@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideAppInitializer(() => {
       Typewoo.init({
-        baseUrl: 'http://localhost:3000',
+        baseUrl: 'http://localhost:8080',
       });
     }),
   ],

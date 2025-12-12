@@ -33,9 +33,9 @@ export class AdminProductTagService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

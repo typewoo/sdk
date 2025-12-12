@@ -29,9 +29,9 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCountry[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -61,9 +61,9 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCurrency[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -93,9 +93,9 @@ export class AdminDataService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminContinent[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**

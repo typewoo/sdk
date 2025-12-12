@@ -1,3 +1,5 @@
+import { Pagination } from '../types';
+
 export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
   Exclude<keyof T, Keys>
@@ -24,16 +26,32 @@ export const parseLinkHeader = (linkHeader?: string) => {
   return links;
 };
 
-export const extractPagination = (headers?: Record<string, string>) => {
-  if (!headers) return {};
+export const parseLinkHeaderPage = (link: string) => {
+  const url = new URL(link);
+  const page = url.searchParams.get('page');
+  return Number(page);
+};
+
+export const extractPagination = (
+  headers?: Record<string, string>
+): Pagination => {
+  const pagination: Pagination = {};
+  if (!headers) return pagination;
 
   const link = parseLinkHeader(headers['link']);
-  const total = headers['x-wp-total']
+  if (link && link['next']) {
+    pagination.next = parseLinkHeaderPage(link['next']);
+  }
+  if (link && link['prev']) {
+    pagination.previous = parseLinkHeaderPage(link['prev']);
+  }
+
+  pagination.total = headers['x-wp-total']
     ? parseInt(headers['x-wp-total'], 10)
     : undefined;
-  const totalPages = headers['x-wp-totalpages']
+  pagination.totalPages = headers['x-wp-totalpages']
     ? parseInt(headers['x-wp-totalpages'], 10)
     : undefined;
 
-  return { total, totalPages, link };
+  return pagination;
 };

@@ -36,9 +36,9 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminReport[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -65,9 +65,9 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminTopSellersReport[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -81,9 +81,9 @@ export class AdminReportService extends BaseService {
 
     const { data, error, headers } = await doGet<AdminCustomersReport[]>(url);
 
-    const { total, totalPages, link } = extractPagination(headers);
+    const pagination = extractPagination(headers);
 
-    return { data, error, total, totalPages, link };
+    return { data, error, pagination };
   }
 
   /**
@@ -108,8 +108,8 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**
@@ -121,8 +121,8 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/products/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**
@@ -134,8 +134,8 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**
@@ -147,8 +147,8 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/coupons/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 
   /**
@@ -160,7 +160,7 @@ export class AdminReportService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/reviews/totals${query ? `?${query}` : ''}`;
     const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
-    const { total, totalPages, link } = extractPagination(headers);
-    return { data, error, total, totalPages, link };
+    const pagination = extractPagination(headers);
+    return { data, error, pagination };
   }
 }

@@ -25,11 +25,14 @@ export interface ApiResult<T> {
 }
 export class ApiResultResponse<T> implements ApiResult<T> {}
 
-export interface ApiPaginationResult<T> extends ApiResult<T> {
+export interface Pagination {
+  next?: number;
+  previous?: number;
   /**
    * The total number of items in the collection.
    */
   total?: number;
+
   /**
    * The total number of pages in the collection.
    */
@@ -43,6 +46,10 @@ export interface ApiPaginationResult<T> extends ApiResult<T> {
     prev?: string;
     next?: string;
   };
+}
+
+export interface ApiPaginationResult<T> extends ApiResult<T> {
+  pagination: Pagination;
 }
 
 export interface AxiosApiResult<T> extends ApiResult<T> {
