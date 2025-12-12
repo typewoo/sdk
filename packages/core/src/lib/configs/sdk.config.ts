@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import {
   StorageProvider,
   storageProviders,
@@ -54,6 +55,7 @@ export interface SdkConfig {
     disabled?: boolean;
     storage?: StorageType | StorageProvider;
   };
+  axiosConfig?: AxiosRequestConfig;
 }
 
 /**
@@ -96,6 +98,7 @@ export interface ResolvedSdkConfig {
     disabled?: boolean;
     storage: StorageProvider;
   };
+  axiosConfig?: AxiosRequestConfig;
 }
 
 /**
@@ -125,6 +128,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
   const resolved: ResolvedSdkConfig = {
     baseUrl: config.baseUrl,
     admin: config.admin,
+    axiosConfig: config.axiosConfig,
   };
 
   // Resolve auth storage providers
