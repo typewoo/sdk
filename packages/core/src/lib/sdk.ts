@@ -40,6 +40,7 @@ export class Sdk {
 
     createHttpClient({
       baseURL: this._config.baseUrl,
+      ...this._config.axiosConfig,
     });
 
     addNonceInterceptors(this._config, this.state, this.events);
