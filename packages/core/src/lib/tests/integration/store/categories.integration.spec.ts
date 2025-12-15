@@ -82,6 +82,7 @@ describe('Integration: Product Categories', () => {
     const filtered = await Typewoo.store.categories.list({
       per_page: 20,
       page: 1,
+      search: token,
     });
     expect(Array.isArray(filtered.data)).toBe(true);
     if ((filtered.data || []).length > 0) {
