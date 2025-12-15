@@ -215,16 +215,16 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
 
   if (config.request?.retry) {
     resolved.request.retry = {
-      delay: config.request?.retry.delay ?? DEFAULT_RETRY_CONFIG.delay,
-      enabled: config.request?.retry.enabled ?? false,
+      enabled: config.request.retry.enabled ?? false,
+      delay: config.request.retry.delay ?? DEFAULT_RETRY_CONFIG.delay,
       retryOnMethods:
-        config.request?.retry.retryOnMethods ??
+        config.request.retry.retryOnMethods ??
         DEFAULT_RETRY_CONFIG.retryOnMethods,
       retryOnStatus:
-        config.request?.retry.retryOnStatus ??
+        config.request.retry.retryOnStatus ??
         DEFAULT_RETRY_CONFIG.retryOnStatus,
       maxRetries:
-        config.request?.retry.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries,
+        config.request.retry.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries,
       onRetry: config.request?.retry.onRetry,
       retryCondition: config.request?.retry.retryCondition,
     };

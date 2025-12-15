@@ -133,10 +133,13 @@ const doRequestWithRetry = async <T>(
   const config = getSdkConfig();
   const retryConfig = config?.request?.retry;
   const method = requestOptions.axiosConfig?.method ?? 'get';
-
+  const maxRetries =
+    typeof retryConfig?.maxRetries === 'number'
+      ? retryConfig.maxRetries
+      : retryConfig.maxRetries();
   let attempt = 0;
 
-  while (true) {
+  while (attempt <= maxRetries) {
     try {
       const response = await createRequest<T>(instance, url, requestOptions);
       return { response };
