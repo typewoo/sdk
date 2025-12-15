@@ -1,3 +1,18 @@
+## 3.3.0 (2025-12-15)
+
+### 🚀 Features
+
+- Enhance API services with RequestOptions for better request han… ([#116](https://github.com/typewoo/sdk/pull/116))
+- add retry logic ([#118](https://github.com/typewoo/sdk/pull/118))
+
+### ♻️ Code Refactoring
+
+- allow unknown keys by switching to `z.looseObject()` ([8eeb214](https://github.com/typewoo/sdk/commit/8eeb214))
+
+### 🧹 Chores
+
+- enhance conventional commits configuration with chore and refactor types ([089e523](https://github.com/typewoo/sdk/commit/089e523))
+
 ## 3.2.0 (2025-12-12)
 
 ### 🚀 Features
