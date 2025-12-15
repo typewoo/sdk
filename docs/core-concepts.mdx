@@ -1,0 +1,441 @@
+---
+title: Core Concepts
+description: Architecture, services, and the event system
+---
+
+# Core Concepts
+
+This page covers the fundamental concepts of the TypeWoo SDK architecture.
+
+## SDK Structure
+
+The SDK is organized as a singleton with three main service groups:
+
+```
+Typewoo
+├── store    (Store API - public endpoints)
+│   ├── products
+│   ├── cart
+│   ├── cartItems
+│   ├── cartCoupons
+│   ├── cartExtensions
+│   ├── checkout
+│   ├── checkoutOrder
+│   ├── orders
+│   ├── categories
+│   ├── tags
+│   ├── brands
+│   ├── attributes
+│   ├── attributesTerms
+│   ├── reviews
+│   ├── collectionData
+│   └── batch
+├── auth     (Authentication API)
+│   ├── token()
+│   ├── refreshToken()
+│   ├── revokeToken()
+│   ├── validate()
+│   ├── status()
+│   └── oneTimeToken()
+├── admin    (REST API v3 - admin endpoints)
+│   ├── products
+│   ├── orders
+│   ├── customers
+│   ├── coupons
+│   └── ... (many more)
+├── events   (EventBus instance)
+├── state    (SDK state)
+└── config   (Resolved configuration)
+```
+
+## Singleton Pattern
+
+The SDK uses a singleton pattern. The `Typewoo` export is a pre-instantiated SDK instance:
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Initialize once
+await Typewoo.init({ baseUrl: 'https://your-store.com' });
+
+// Use anywhere in your application
+const { data } = await Typewoo.store.products.list();
+```
+
+### Initialization Guard
+
+Accessing services before initialization throws an error:
+
+```typescript
+// This throws: "SDK not initialized. Call `await Typewoo.init()` first."
+const products = await Typewoo.store.products.list();
+```
+
+Subsequent `init()` calls are ignored:
+
+```typescript
+await Typewoo.init({ baseUrl: 'https://store-a.com' });
+await Typewoo.init({ baseUrl: 'https://store-b.com' }); // Ignored
+
+// Still uses store-a.com
+console.log(Typewoo.config.baseUrl); // 'https://store-a.com'
+```
+
+## Services
+
+Services encapsulate API operations for specific domains.
+
+### Base Service
+
+All services extend `BaseService`, which provides:
+
+- Access to SDK state
+- Access to resolved configuration
+- Access to the EventBus
+
+```typescript
+class BaseService {
+  protected readonly state: SdkState;
+  protected readonly config: ResolvedSdkConfig;
+  protected readonly events: EventBus<SdkEvent>;
+}
+```
+
+### Service Constructor Pattern
+
+Services follow a consistent constructor pattern:
+
+```typescript
+class ProductService extends BaseService {
+  constructor(
+    state: SdkState,
+    config: ResolvedSdkConfig,
+    events: EventBus<SdkEvent>
+  ) {
+    super(state, config, events);
+  }
+}
+```
+
+### Store Services
+
+Store services interact with WooCommerce Store API endpoints:
+
+| Service | Property | Endpoint Base |
+|---------|----------|---------------|
+| `ProductService` | `store.products` | `/wp-json/wc/store/v1/products` |
+| `CartService` | `store.cart` | `/wp-json/wc/store/v1/cart` |
+| `CartItemService` | `store.cartItems` | `/wp-json/wc/store/v1/cart/items` |
+| `CartCouponService` | `store.cartCoupons` | `/wp-json/wc/store/v1/cart/coupons` |
+| `CartExtensionsService` | `store.cartExtensions` | `/wp-json/wc/store/v1/cart/extensions` |
+| `CheckoutService` | `store.checkout` | `/wp-json/wc/store/v1/checkout` |
+| `CheckoutOrderService` | `store.checkoutOrder` | `/wp-json/wc/store/v1/checkout` |
+| `OrderService` | `store.orders` | `/wp-json/wc/store/v1/order` |
+| `ProductCategoryService` | `store.categories` | `/wp-json/wc/store/v1/products/categories` |
+| `ProductTagService` | `store.tags` | `/wp-json/wc/store/v1/products/tags` |
+| `ProductBrandService` | `store.brands` | `/wp-json/wc/store/v1/products/brands` |
+| `ProductAttributeService` | `store.attributes` | `/wp-json/wc/store/v1/products/attributes` |
+| `ProductAttributeTermService` | `store.attributesTerms` | `/wp-json/wc/store/v1/products/attributes/{id}/terms` |
+| `ProductReviewService` | `store.reviews` | `/wp-json/wc/store/v1/products/reviews` |
+| `ProductCollectionDataService` | `store.collectionData` | `/wp-json/wc/store/v1/products/collection-data` |
+| `BatchService` | `store.batch` | `/wp-json/wc/store/v1/batch` |
+
+### Admin Services
+
+Admin services interact with WooCommerce REST API v3:
+
+| Service | Property | Endpoint Base |
+|---------|----------|---------------|
+| `AdminProductService` | `admin.products` | `/wp-json/wc/v3/products` |
+| `AdminOrderService` | `admin.orders` | `/wp-json/wc/v3/orders` |
+| `AdminCustomerService` | `admin.customers` | `/wp-json/wc/v3/customers` |
+| `AdminCouponService` | `admin.coupons` | `/wp-json/wc/v3/coupons` |
+| `AdminProductCategoryService` | `admin.productCategories` | `/wp-json/wc/v3/products/categories` |
+| `AdminProductTagService` | `admin.productTags` | `/wp-json/wc/v3/products/tags` |
+| `AdminProductAttributeService` | `admin.productAttributes` | `/wp-json/wc/v3/products/attributes` |
+| `AdminProductBrandService` | `admin.productBrands` | `/wp-json/wc/v3/products/brands` |
+| `AdminProductReviewService` | `admin.productReviews` | `/wp-json/wc/v3/products/reviews` |
+| `AdminShippingClassService` | `admin.shippingClasses` | `/wp-json/wc/v3/products/shipping_classes` |
+| `AdminRefundService` | `admin.refunds` | `/wp-json/wc/v3/orders/{id}/refunds` |
+| `AdminTaxService` | `admin.taxes` | `/wp-json/wc/v3/taxes` |
+| `AdminTaxClassService` | `admin.taxClasses` | `/wp-json/wc/v3/taxes/classes` |
+| `AdminWebhookService` | `admin.webhooks` | `/wp-json/wc/v3/webhooks` |
+| `AdminSettingService` | `admin.settings` | `/wp-json/wc/v3/settings` |
+| `AdminReportService` | `admin.reports` | `/wp-json/wc/v3/reports` |
+| `AdminShippingZoneService` | `admin.shippingZones` | `/wp-json/wc/v3/shipping/zones` |
+| `AdminShippingMethodService` | `admin.shippingMethods` | `/wp-json/wc/v3/shipping_methods` |
+| `AdminPaymentGatewayService` | `admin.paymentGateways` | `/wp-json/wc/v3/payment_gateways` |
+| `AdminSystemStatusService` | `admin.systemStatus` | `/wp-json/wc/v3/system_status` |
+| `AdminDataService` | `admin.data` | `/wp-json/wc/v3/data` |
+
+## SDK State
+
+The SDK maintains runtime state accessible via `Typewoo.state`:
+
+```typescript
+interface SdkState {
+  cart?: CartResponse;       // Current cart data (if cached)
+  nonce?: string;            // Current WooCommerce nonce
+  cartHash?: string;         // Cart content hash
+  cartToken?: string;        // Guest cart token
+  authenticated?: boolean;   // User authentication status
+}
+```
+
+State is updated automatically by interceptors and service methods:
+
+```typescript
+// After cart operations
+console.log(Typewoo.state.cartToken);
+
+// After authentication
+console.log(Typewoo.state.authenticated);
+```
+
+## EventBus
+
+The SDK includes a lightweight, typed EventBus for event-driven architecture.
+
+### Basic Usage
+
+```typescript
+// Subscribe to events
+const unsubscribe = Typewoo.events.on('cart:updated', (cart) => {
+  console.log('Cart items:', cart?.items_count);
+});
+
+// Emit events (internal use)
+// Typewoo.events.emit('cart:updated', cartData);
+
+// Unsubscribe
+unsubscribe();
+```
+
+### Event Methods
+
+| Method | Description |
+|--------|-------------|
+| `on(event, handler)` | Subscribe to an event; returns unsubscribe function |
+| `once(event, handler)` | Subscribe for a single emission |
+| `off(event, handler)` | Unsubscribe a specific handler |
+| `onAny(handler)` | Subscribe to all events |
+| `waitFor(event, predicate?, timeout?)` | Promise that resolves on event |
+| `emit(event, payload)` | Emit an event (internal) |
+| `emitIf(condition, event, payload)` | Conditionally emit (internal) |
+| `use(middleware)` | Add middleware (internal) |
+| `clear()` | Remove all listeners |
+| `scope(prefix)` | Create a scoped EventBus |
+
+### Available Events
+
+```typescript
+type SdkEvent = {
+  // Authentication events
+  'auth:changed': boolean;
+  'auth:login:start': void;
+  'auth:login:success': void;
+  'auth:login:error': unknown;
+  'auth:token:refresh:start': void;
+  'auth:token:refresh:success': void;
+  'auth:token:refresh:error': unknown;
+  'auth:token:revoke:start': void;
+  'auth:token:revoke:success': void;
+  'auth:token:revoke:error': unknown;
+
+  // Cart events
+  'cart:request:start': void;
+  'cart:request:success': void;
+  'cart:request:error'?: unknown;
+  'cart:updated'?: CartResponse;
+  'cart:loading': boolean;
+
+  // Batch events
+  'batch:request:start': void;
+  'batch:request:success': void;
+  'batch:request:error'?: unknown;
+  'batch:loading': boolean;
+
+  // Cart extensions events
+  'cart:extensions:request:start': void;
+  'cart:extensions:request:success': void;
+  'cart:extensions:request:error'?: unknown;
+  'cart:extensions:loading': boolean;
+
+  // Token events
+  'nonce:changed': string;
+  'cart:hash:changed': string;
+  'cart:token:changed': string;
+};
+```
+
+### Promise-Based Waiting
+
+Wait for specific events with optional predicate:
+
+```typescript
+// Wait for cart update
+const cart = await Typewoo.events.waitFor('cart:updated');
+
+// Wait with timeout (5 seconds)
+try {
+  const cart = await Typewoo.events.waitFor('cart:updated', undefined, 5000);
+} catch (error) {
+  console.error('Timeout waiting for cart update');
+}
+
+// Wait with predicate
+const cart = await Typewoo.events.waitFor(
+  'cart:updated',
+  (cart) => cart?.items_count > 0
+);
+```
+
+### Event Middleware
+
+Add middleware to intercept all events:
+
+```typescript
+const removeMiddleware = Typewoo.events.use((ctx, next) => {
+  console.log('Event:', ctx.event, ctx.payload);
+  next(); // Call to continue the chain
+});
+```
+
+## HTTP Client
+
+The SDK uses Axios for HTTP requests with a singleton pattern:
+
+```typescript
+import { httpClient, createHttpClient } from '@typewoo/sdk';
+
+// httpClient is a proxy to the underlying Axios instance
+// It throws if accessed before SDK initialization
+```
+
+### Request Helpers
+
+Internal request helpers:
+
+```typescript
+// GET request
+const { data, error, headers } = await doGet<ProductResponse[]>(url, options);
+
+// POST request
+const { data, error } = await doPost<CartResponse, CartItemAddRequest>(
+  url,
+  requestBody,
+  options
+);
+
+// PUT request
+const { data, error } = await doPut<CheckoutResponse, CheckoutUpdateRequest>(
+  url,
+  requestBody,
+  options
+);
+
+// DELETE request
+const { data, error } = await doDelete<void>(url, options);
+```
+
+## Interceptors
+
+The SDK uses Axios interceptors for cross-cutting concerns:
+
+### Nonce Interceptor
+
+- **Request**: Attaches `nonce` header from storage/state
+- **Response**: Captures and stores new nonce
+
+### Cart Token Interceptor
+
+- **Request**: Attaches `cart-token` header
+- **Response**: Captures and stores cart token
+
+### Token Interceptor
+
+- **Request**: Attaches `Authorization: Bearer <token>` header
+- Only applies to Store API and TypeWoo endpoints
+
+### Refresh Token Interceptor
+
+- **Response**: Intercepts 401 errors
+- Attempts token refresh
+- Retries original request with new token
+- Queues concurrent requests during refresh
+
+### Admin Auth Interceptor
+
+- **Request**: Attaches Basic Auth header
+- Only applies to REST API v3 endpoints (`/wp-json/wc/v3/*`)
+
+## Type System
+
+The SDK uses Zod for runtime type validation and TypeScript type generation.
+
+### Response Types
+
+All API responses have corresponding TypeScript types:
+
+```typescript
+import {
+  ProductResponse,
+  CartResponse,
+  CheckoutResponse,
+  OrderResponse,
+} from '@typewoo/sdk';
+```
+
+### Request Types
+
+Request parameters are also typed:
+
+```typescript
+import {
+  ProductRequest,
+  CartItemAddRequest,
+  CheckoutCreateRequest,
+} from '@typewoo/sdk';
+```
+
+### API Result Types
+
+All service methods return consistent result types:
+
+```typescript
+interface ApiResult<T> {
+  data?: T;
+  error?: ApiError;
+  headers?: Record<string, string>;
+}
+
+interface ApiPaginationResult<T> extends ApiResult<T> {
+  pagination: Pagination;
+}
+
+interface ApiError {
+  code: string;
+  message: string;
+  data: {
+    status: number;
+    params?: Record<string, string>;
+  };
+  details: Record<string, Record<string, string>>;
+}
+```
+
+### Pagination Type
+
+```typescript
+interface Pagination {
+  next?: number;         // Next page number
+  previous?: number;     // Previous page number
+  total?: number;        // Total items
+  totalPages?: number;   // Total pages
+  link?: {
+    up?: string;
+    prev?: string;
+    next?: string;
+  };
+}
+```

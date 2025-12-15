@@ -1,0 +1,377 @@
+---
+title: Configuration
+description: SDK configuration options and storage providers
+---
+
+# Configuration
+
+The TypeWoo SDK accepts a configuration object during initialization. This page documents all available options.
+
+## Basic Configuration
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+});
+```
+
+## Configuration Interface
+
+The full configuration interface (`SdkConfig`) supports the following options:
+
+```typescript
+interface SdkConfig {
+  baseUrl: string;
+  admin?: AdminConfig;
+  auth?: AuthConfig;
+  nonce?: NonceConfig;
+  cartToken?: CartTokenConfig;
+  axiosConfig?: AxiosRequestConfig;
+  request?: RequestConfig;
+}
+```
+
+## Base URL
+
+The `baseUrl` is required and should be your WooCommerce store's base URL without a trailing slash.
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+});
+```
+
+## Authentication Configuration
+
+Configure JWT token handling and storage:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    // URL for auto-login redirects (optional)
+    autoLoginUrl: 'https://your-store.com/autologin',
+
+    // Fetch cart after successful login
+    fetchCartOnLogin: true,
+
+    // Revoke existing token before new login
+    revokeTokenBeforeLogin: false,
+
+    // Access token configuration
+    accessToken: {
+      key: 'typewoo_access_token', // Storage key
+      disabled: false, // Disable token handling
+      storage: 'localstorage', // Storage type or provider
+      useInterceptor: true, // Auto-add token to requests
+    },
+
+    // Refresh token configuration
+    refreshToken: {
+      key: 'typewoo_refresh_token',
+      disabled: false,
+      storage: 'localstorage',
+      useInterceptor: true, // Auto-refresh on 401
+    },
+  },
+});
+```
+
+### Access Token Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `key` | `string` | `'typewoo_access_token'` | Storage key for the token |
+| `disabled` | `boolean` | `false` | Disable access token handling entirely |
+| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
+| `useInterceptor` | `boolean` | `true` | Auto-attach token to requests |
+
+### Refresh Token Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `key` | `string` | `'typewoo_refresh_token'` | Storage key for the refresh token |
+| `disabled` | `boolean` | `false` | Disable refresh token handling |
+| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
+| `useInterceptor` | `boolean` | `true` | Auto-refresh on 401 responses |
+
+## Nonce Configuration
+
+WooCommerce Store API uses nonces for CSRF protection. The SDK handles nonces automatically:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  nonce: {
+    key: 'typewoo_nonce',
+    disabled: false,
+    storage: 'localstorage',
+  },
+});
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `key` | `string` | `'typewoo_nonce'` | Storage key for the nonce |
+| `disabled` | `boolean` | `false` | Disable nonce handling |
+| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the nonce |
+
+## Cart Token Configuration
+
+Cart tokens identify guest carts across sessions:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  cartToken: {
+    key: 'typewoo_cart_token',
+    disabled: false,
+    storage: 'localstorage',
+  },
+});
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `key` | `string` | `'typewoo_cart_token'` | Storage key for the cart token |
+| `disabled` | `boolean` | `false` | Disable cart token handling |
+| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
+
+## Admin API Configuration
+
+For accessing the WooCommerce REST API v3 (admin endpoints):
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  admin: {
+    consumer_key: 'ck_xxxxxxxxxxxxx',
+    consumer_secret: 'cs_xxxxxxxxxxxxx',
+    useAuthInterceptor: true,
+  },
+});
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `consumer_key` | `string` | - | WooCommerce REST API consumer key |
+| `consumer_secret` | `string` | - | WooCommerce REST API consumer secret |
+| `useAuthInterceptor` | `boolean` | `true` | Auto-add Basic Auth header |
+
+## Request Configuration
+
+Configure request retry behavior:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  request: {
+    retry: {
+      enabled: true,
+      maxRetries: 3,
+      delay: 1000, // 1 second
+      retryOnStatus: [408, 429, 500, 502, 503, 504],
+      retryOnMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'],
+      retryCondition: (error, attempt) => {
+        // Custom retry logic
+        return true;
+      },
+      onRetry: (attempt, error, config) => {
+        console.log(`Retry attempt ${attempt}:`, error.message);
+      },
+    },
+  },
+});
+```
+
+### Retry Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | `boolean` | `false` | Enable retry logic |
+| `maxRetries` | `number \| () => number` | `3` | Maximum retry attempts |
+| `delay` | `number \| (attempt) => number` | `1000` | Delay between retries (ms) |
+| `retryOnStatus` | `number[]` | `[408, 429, 500, 502, 503, 504]` | HTTP status codes that trigger retry |
+| `retryOnMethods` | `Method[]` | `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']` | HTTP methods safe to retry |
+| `retryCondition` | `(error, attempt) => boolean` | - | Custom retry condition |
+| `onRetry` | `(attempt, error, config) => void` | - | Callback before each retry |
+
+### Exponential Backoff
+
+Use a function for `delay` to implement exponential backoff:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  request: {
+    retry: {
+      enabled: true,
+      delay: (attempt) => Math.min(1000 * 2 ** attempt, 30000),
+    },
+  },
+});
+```
+
+## Axios Configuration
+
+Pass custom Axios configuration for all requests:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  axiosConfig: {
+    timeout: 30000,
+    headers: {
+      'X-Custom-Header': 'value',
+    },
+  },
+});
+```
+
+## Storage Providers
+
+The SDK supports three built-in storage types:
+
+### localStorage (Default)
+
+Persists data across browser sessions:
+
+```typescript
+auth: {
+  accessToken: {
+    storage: 'localstorage',
+  },
+}
+```
+
+### sessionStorage
+
+Data persists only for the current browser session:
+
+```typescript
+auth: {
+  accessToken: {
+    storage: 'sessionstorage',
+  },
+}
+```
+
+### Memory Storage
+
+Data stored in memory only (useful for SSR/Node.js):
+
+```typescript
+auth: {
+  accessToken: {
+    storage: 'memory',
+  },
+}
+```
+
+### Custom Storage Provider
+
+Implement the `StorageProvider` interface for custom storage:
+
+```typescript
+import { StorageProvider } from '@typewoo/sdk';
+
+const customStorage: StorageProvider = {
+  type: 'memory', // optional
+  get: async () => {
+    // Return stored value or null
+    return myStore.getValue('token');
+  },
+  set: async (value: string) => {
+    // Store the value
+    myStore.setValue('token', value);
+  },
+  clear: async () => {
+    // Remove the value
+    myStore.removeValue('token');
+  },
+};
+
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      storage: customStorage,
+    },
+  },
+});
+```
+
+### SSR/Node.js Environments
+
+In server-side environments where `localStorage` and `sessionStorage` are unavailable, the SDK automatically falls back to memory storage with a warning. For explicit SSR support:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      storage: 'memory',
+    },
+  },
+  nonce: {
+    storage: 'memory',
+  },
+  cartToken: {
+    storage: 'memory',
+  },
+});
+```
+
+## Accessing Configuration
+
+After initialization, access the resolved configuration:
+
+```typescript
+const config = Typewoo.config;
+console.log(config.baseUrl);
+```
+
+Note: Accessing `Typewoo.config` before initialization throws an error.
+
+## Complete Example
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  admin: {
+    consumer_key: process.env.WC_CONSUMER_KEY,
+    consumer_secret: process.env.WC_CONSUMER_SECRET,
+  },
+  auth: {
+    fetchCartOnLogin: true,
+    accessToken: {
+      storage: 'localstorage',
+      useInterceptor: true,
+    },
+    refreshToken: {
+      storage: 'localstorage',
+      useInterceptor: true,
+    },
+  },
+  nonce: {
+    storage: 'localstorage',
+  },
+  cartToken: {
+    storage: 'localstorage',
+  },
+  request: {
+    retry: {
+      enabled: true,
+      maxRetries: 3,
+      delay: (attempt) => Math.min(1000 * 2 ** attempt, 30000),
+    },
+  },
+  axiosConfig: {
+    timeout: 30000,
+  },
+});
+```

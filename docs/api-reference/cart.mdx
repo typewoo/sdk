@@ -1,0 +1,580 @@
+---
+title: Cart API
+description: Cart management and operations
+---
+
+# Cart API
+
+The Cart API provides comprehensive cart management through the WooCommerce Store API.
+
+## Access
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Main cart operations
+const cartService = Typewoo.store.cart;
+
+// Individual cart item operations
+const cartItemsService = Typewoo.store.cartItems;
+
+// Coupon operations
+const cartCouponsService = Typewoo.store.cartCoupons;
+```
+
+## Cart Service
+
+### `get(options?)`
+
+Retrieve the current cart.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.get();
+
+console.log('Items:', cart?.items_count);
+console.log('Total:', cart?.totals.total_price);
+```
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+**Events Emitted:**
+- `cart:loading` - `true` then `false`
+- `cart:request:start`
+- `cart:request:success` (on success)
+- `cart:request:error` (on error)
+- `cart:updated` (on success)
+
+### `add(params, options?)`
+
+Add an item to the cart.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.add({
+  id: 123,          // Product or variation ID
+  quantity: 2,      // Optional, defaults to 1
+});
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `params.id` | `number` | Yes | Product or variation ID |
+| `params.quantity` | `number` | No | Quantity to add (default: 1) |
+| `params.variation` | `array` | No | Variation attributes |
+
+**Adding Variations:**
+
+```typescript
+const { data } = await Typewoo.store.cart.add({
+  id: 456,
+  quantity: 1,
+  variation: [
+    { attribute: 'pa_color', value: 'blue' },
+    { attribute: 'pa_size', value: 'large' },
+  ],
+});
+```
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `update(key, quantity, options?)`
+
+Update the quantity of a cart item.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.update(
+  'abc123def456',  // Cart item key
+  5                // New quantity
+);
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `key` | `string` | Yes | Cart item key |
+| `quantity` | `number` | Yes | New quantity |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `remove(key, options?)`
+
+Remove an item from the cart.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.remove('abc123def456');
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `key` | `string` | Yes | Cart item key |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `applyCoupon(code, options?)`
+
+Apply a coupon to the cart.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.applyCoupon('SAVE10');
+
+if (error) {
+  console.error('Coupon error:', error.message);
+  // e.g., "Coupon code already applied"
+}
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `code` | `string` | Yes | Coupon code |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `removeCoupon(code, options?)`
+
+Remove a coupon from the cart.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.removeCoupon('SAVE10');
+```
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `updateCustomer(body, options?)`
+
+Update customer billing and shipping addresses.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.updateCustomer({
+  billing_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    phone: '+1234567890',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    postcode: '94102',
+  },
+  shipping_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    postcode: '94102',
+  },
+});
+```
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+### `selectShippingRate(packageId, rateId, options?)`
+
+Select a shipping rate for a package.
+
+```typescript
+const { data: cart, error } = await Typewoo.store.cart.selectShippingRate(
+  0,                    // Package ID
+  'flat_rate:1'         // Rate ID
+);
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `packageId` | `number` | Yes | Shipping package ID |
+| `rateId` | `string` | Yes | Shipping rate ID |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<CartResponse>>`
+
+## Cart Items Service
+
+For granular cart item operations:
+
+### `list(options?)`
+
+List all cart items.
+
+```typescript
+const { data: items, pagination } = await Typewoo.store.cartItems.list();
+```
+
+**Returns:** `Promise<ApiPaginationResult<CartItemResponse[]>>`
+
+### `single(key, options?)`
+
+Get a single cart item by key.
+
+```typescript
+const { data: item, error } = await Typewoo.store.cartItems.single('abc123def456');
+```
+
+**Returns:** `Promise<ApiResult<CartItemResponse>>`
+
+### `add(params, options?)`
+
+Add a cart item (returns item, not full cart).
+
+```typescript
+const { data: item, error } = await Typewoo.store.cartItems.add({
+  id: 123,
+  quantity: 2,
+});
+```
+
+**Returns:** `Promise<ApiResult<CartItemResponse>>`
+
+### `update(key, quantity, options?)`
+
+Update a cart item quantity (returns item).
+
+```typescript
+const { data: item, error } = await Typewoo.store.cartItems.update('abc123def456', 3);
+```
+
+**Returns:** `Promise<ApiResult<CartItemResponse>>`
+
+### `remove(key, options?)`
+
+Remove a single cart item.
+
+```typescript
+const { data, error } = await Typewoo.store.cartItems.remove('abc123def456');
+```
+
+**Returns:** `Promise<ApiResult<unknown>>`
+
+### `clear(options?)`
+
+Remove all items from the cart.
+
+```typescript
+const { data: items, error } = await Typewoo.store.cartItems.clear();
+```
+
+**Returns:** `Promise<ApiResult<CartItemResponse[]>>`
+
+## Cart Coupons Service
+
+### `list(options?)`
+
+List applied coupons.
+
+```typescript
+const { data: coupons } = await Typewoo.store.cartCoupons.list();
+```
+
+### `single(code, options?)`
+
+Get details of an applied coupon.
+
+```typescript
+const { data: coupon } = await Typewoo.store.cartCoupons.single('SAVE10');
+```
+
+### `add(code, options?)`
+
+Apply a coupon.
+
+```typescript
+const { data: coupon, error } = await Typewoo.store.cartCoupons.add('SAVE10');
+```
+
+### `remove(code, options?)`
+
+Remove a coupon.
+
+```typescript
+const { data, error } = await Typewoo.store.cartCoupons.remove('SAVE10');
+```
+
+## Response Types
+
+### CartResponse
+
+```typescript
+interface CartResponse {
+  items: CartItemResponse[];
+  coupons: CartCouponResponse[];
+  fees: unknown[];
+  totals: CartTotalResponse;
+  shipping_address: CartShippingResponse;
+  billing_address: CartBillingResponse;
+  needs_payment: boolean;
+  needs_shipping: boolean;
+  payment_requirements: string[];
+  has_calculated_shipping: boolean;
+  shipping_rates: CartShippingRateResponse[];
+  items_count: number;
+  items_weight: number;
+  cross_sells: unknown[];
+  errors: unknown[];
+  payment_methods: string[];
+  extensions: unknown;
+}
+```
+
+### CartItemResponse
+
+```typescript
+interface CartItemResponse {
+  key: string;
+  id: number;
+  quantity: number;
+  type: string;
+  quantity_limits: {
+    minimum: number;
+    maximum: number;
+    multiple_of: number;
+    editable: boolean;
+  };
+  name: string;
+  short_description: string;
+  description: string;
+  sku: string;
+  low_stock_remaining: number | null;
+  backorders_allowed: boolean;
+  show_backorder_badge: boolean;
+  sold_individually: boolean;
+  permalink: string;
+  images: ImageResponse[];
+  variation: CartItemVariationResponse[];
+  item_data: unknown[];
+  prices: CartItemPriceResponse;
+  totals: CartItemTotalResponse;
+  catalog_visibility: string;
+  extensions: unknown;
+}
+```
+
+### CartTotalResponse
+
+```typescript
+interface CartTotalResponse {
+  total_items: string;
+  total_items_tax: string;
+  total_fees: string;
+  total_fees_tax: string;
+  total_discount: string;
+  total_discount_tax: string;
+  total_shipping: string;
+  total_shipping_tax: string;
+  total_price: string;
+  total_tax: string;
+  tax_lines: TaxLine[];
+  currency_code: string;
+  currency_symbol: string;
+  currency_minor_unit: number;
+  currency_decimal_separator: string;
+  currency_thousand_separator: string;
+  currency_prefix: string;
+  currency_suffix: string;
+}
+```
+
+### CartCouponResponse
+
+```typescript
+interface CartCouponResponse {
+  code: string;
+  discount_type: string;
+  totals: {
+    total_discount: string;
+    total_discount_tax: string;
+    currency_code: string;
+    currency_symbol: string;
+    currency_minor_unit: number;
+    currency_decimal_separator: string;
+    currency_thousand_separator: string;
+    currency_prefix: string;
+    currency_suffix: string;
+  };
+}
+```
+
+## Cart Events
+
+Subscribe to cart-related events:
+
+```typescript
+// Cart data updated
+Typewoo.events.on('cart:updated', (cart) => {
+  updateCartBadge(cart?.items_count);
+  updateCartTotal(cart?.totals.total_price);
+});
+
+// Loading state
+Typewoo.events.on('cart:loading', (isLoading) => {
+  if (isLoading) {
+    showSpinner();
+  } else {
+    hideSpinner();
+  }
+});
+
+// Request lifecycle
+Typewoo.events.on('cart:request:start', () => {
+  console.log('Cart request started');
+});
+
+Typewoo.events.on('cart:request:success', () => {
+  console.log('Cart request succeeded');
+});
+
+Typewoo.events.on('cart:request:error', (errorData) => {
+  console.error('Cart request failed:', errorData?.error);
+});
+
+// Cart token changes
+Typewoo.events.on('cart:token:changed', (token) => {
+  console.log('New cart token:', token);
+});
+```
+
+## Examples
+
+### Complete Cart Flow
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// 1. Initialize SDK
+await Typewoo.init({ baseUrl: 'https://your-store.com' });
+
+// 2. Subscribe to updates
+Typewoo.events.on('cart:updated', (cart) => {
+  console.log(`Cart: ${cart?.items_count} items, ${formatPrice(cart?.totals.total_price)}`);
+});
+
+// 3. Add product to cart
+const { data: cart, error } = await Typewoo.store.cart.add({
+  id: 123,
+  quantity: 2,
+});
+
+// 4. Apply coupon
+await Typewoo.store.cart.applyCoupon('WELCOME10');
+
+// 5. Update shipping address
+await Typewoo.store.cart.updateCustomer({
+  shipping_address: {
+    country: 'US',
+    state: 'CA',
+    postcode: '94102',
+  },
+});
+
+// 6. Select shipping method
+const rates = cart?.shipping_rates[0]?.shipping_rates;
+if (rates?.length) {
+  await Typewoo.store.cart.selectShippingRate(0, rates[0].rate_id);
+}
+
+// 7. Get final cart state
+const { data: finalCart } = await Typewoo.store.cart.get();
+console.log('Ready for checkout:', finalCart);
+```
+
+### Cart Quantity Stepper
+
+```typescript
+async function updateQuantity(itemKey: string, delta: number) {
+  // Get current item
+  const { data: item } = await Typewoo.store.cartItems.single(itemKey);
+  if (!item) return;
+
+  const newQuantity = item.quantity + delta;
+  
+  // Respect quantity limits
+  const { minimum, maximum } = item.quantity_limits;
+  if (newQuantity < minimum || newQuantity > maximum) {
+    console.warn('Quantity out of bounds');
+    return;
+  }
+
+  if (newQuantity <= 0) {
+    // Remove item
+    return Typewoo.store.cart.remove(itemKey);
+  }
+
+  // Update quantity
+  return Typewoo.store.cart.update(itemKey, newQuantity);
+}
+```
+
+### Mini Cart Component
+
+```typescript
+import { Typewoo, CartResponse } from '@typewoo/sdk';
+
+class MiniCart {
+  private cart: CartResponse | undefined;
+
+  constructor() {
+    // Subscribe to updates
+    Typewoo.events.on('cart:updated', (cart) => {
+      this.cart = cart;
+      this.render();
+    });
+
+    // Initial load
+    this.loadCart();
+  }
+
+  async loadCart() {
+    const { data } = await Typewoo.store.cart.get();
+    // cart:updated event will trigger render
+  }
+
+  render() {
+    if (!this.cart) return;
+
+    const { items_count, totals } = this.cart;
+    console.log(`${items_count} items - ${totals.currency_symbol}${totals.total_price}`);
+  }
+}
+```
+
+### Error Handling
+
+```typescript
+async function addToCart(productId: number) {
+  const { data, error } = await Typewoo.store.cart.add({
+    id: productId,
+    quantity: 1,
+  });
+
+  if (error) {
+    switch (error.code) {
+      case 'woocommerce_rest_product_no_longer_purchasable':
+        showError('This product is no longer available');
+        break;
+      case 'woocommerce_rest_product_out_of_stock':
+        showError('This product is out of stock');
+        break;
+      case 'woocommerce_rest_invalid_product':
+        showError('Product not found');
+        break;
+      default:
+        showError(error.message);
+    }
+    return null;
+  }
+
+  showSuccess('Added to cart!');
+  return data;
+}
+```

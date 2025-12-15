@@ -1,0 +1,518 @@
+---
+title: Orders & Checkout API
+description: Checkout process and order management
+---
+
+# Orders & Checkout API
+
+The Checkout and Orders APIs handle the checkout process, order creation, and order retrieval.
+
+## Access
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+const checkoutService = Typewoo.store.checkout;
+const checkoutOrderService = Typewoo.store.checkoutOrder;
+const orderService = Typewoo.store.orders;
+```
+
+## Checkout Service
+
+### `get(options?)`
+
+Get checkout data including cart contents and customer information.
+
+```typescript
+const { data: checkout, error } = await Typewoo.store.checkout.get();
+
+console.log('Billing:', checkout?.billing_address);
+console.log('Shipping:', checkout?.shipping_address);
+console.log('Payment methods:', checkout?.payment_methods);
+```
+
+**Returns:** `Promise<ApiResult<CheckoutResponse>>`
+
+### `update(params?, experimental_calc_totals?, options?)`
+
+Update checkout data (addresses, customer note, etc.).
+
+```typescript
+const { data: checkout, error } = await Typewoo.store.checkout.update({
+  billing_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    phone: '+1234567890',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    postcode: '94102',
+  },
+  shipping_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    postcode: '94102',
+  },
+}, true); // true = recalculate totals
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `params` | `CheckoutUpdateRequest` | No | Checkout data to update |
+| `experimental_calc_totals` | `boolean` | No | Recalculate totals (default: false) |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<CheckoutResponse>>`
+
+### `processOrderAndPayment(params, options?)`
+
+Create an order and process payment.
+
+```typescript
+const { data: result, error } = await Typewoo.store.checkout.processOrderAndPayment({
+  billing_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    phone: '+1234567890',
+    company: '',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    address_2: '',
+    postcode: '94102',
+  },
+  shipping_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    company: '',
+    country: 'US',
+    state: 'CA',
+    city: 'San Francisco',
+    address_1: '123 Main St',
+    address_2: '',
+    postcode: '94102',
+  },
+  customer_note: 'Please deliver after 5 PM',
+  payment_method: 'stripe',
+  payment_data: [
+    { key: 'stripe_source', value: 'src_xxx' },
+    { key: 'stripe_payment_type', value: 'card' },
+  ],
+});
+
+if (error) {
+  console.error('Checkout failed:', error.message);
+} else {
+  console.log('Order ID:', result?.order_id);
+  console.log('Order status:', result?.status);
+  console.log('Redirect URL:', result?.payment_result.redirect_url);
+}
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `params.billing_address` | `CheckoutBillingAddress` | Yes | Billing address |
+| `params.shipping_address` | `CheckoutShippingAddress` | Yes | Shipping address |
+| `params.customer_note` | `string` | No | Order note |
+| `params.payment_method` | `string` | No | Payment method ID |
+| `params.payment_data` | `{ key: string; value: string }[]` | No | Payment gateway data |
+| `params.customer_password` | `string` | No | Password for new account |
+| `params.extensions` | `unknown` | No | Extension data |
+
+**Returns:** `Promise<ApiResult<CheckoutResponse>>`
+
+## Checkout Order Service
+
+For processing existing orders (pay-for-order flow):
+
+### `order(orderId, params, options?)`
+
+Process payment for an existing order.
+
+```typescript
+const { data: result, error } = await Typewoo.store.checkoutOrder.order(
+  12345, // Order ID
+  {
+    key: 'wc_order_xxx', // Order key
+    payment_method: 'stripe',
+    payment_data: [
+      { key: 'stripe_source', value: 'src_xxx' },
+    ],
+  }
+);
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `orderId` | `number` | Yes | Order ID |
+| `params.key` | `string` | Yes | Order key |
+| `params.payment_method` | `string` | No | Payment method ID |
+| `params.payment_data` | `array` | No | Payment gateway data |
+| `params.billing_email` | `string` | No | Billing email for guest orders |
+
+**Returns:** `Promise<ApiResult<CheckoutResponse>>`
+
+## Order Service
+
+### `get(key, orderId, billingEmail?, options?)`
+
+Get order details for pay-for-order pages.
+
+```typescript
+const { data: order, error } = await Typewoo.store.orders.get(
+  'wc_order_xxx',  // Order key
+  '12345',         // Order ID
+  'john@example.com' // Optional billing email for guest orders
+);
+
+console.log('Order status:', order?.status);
+console.log('Order total:', order?.totals.total_price);
+```
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `key` | `string` | Yes | Order key |
+| `orderId` | `string` | Yes | Order ID |
+| `billingEmail` | `string` | No | Billing email (guest orders) |
+| `options` | `RequestOptions` | No | Request options |
+
+**Returns:** `Promise<ApiResult<OrderResponse>>`
+
+## Response Types
+
+### CheckoutResponse
+
+```typescript
+interface CheckoutResponse {
+  order_id: number;
+  status: string;
+  order_key: string;
+  customer_note: string;
+  customer_id: number;
+  billing_address: CheckoutBillingAddress;
+  shipping_address: CheckoutShippingAddress;
+  payment_method: string;
+  payment_result: {
+    payment_status: string;
+    payment_details: unknown[];
+    redirect_url: string;
+  };
+  additional_fields: Record<string, string>[];
+  __experimentalCart: unknown;
+  extensions: unknown;
+}
+```
+
+### CheckoutBillingAddress
+
+```typescript
+interface CheckoutBillingAddress {
+  first_name: string;
+  last_name: string;
+  company: string;
+  address_1: string;
+  address_2: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  email: string;
+  phone: string;
+}
+```
+
+### CheckoutShippingAddress
+
+```typescript
+interface CheckoutShippingAddress {
+  first_name: string;
+  last_name: string;
+  company: string;
+  address_1: string;
+  address_2: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+}
+```
+
+### OrderResponse
+
+```typescript
+interface OrderResponse {
+  id: number;
+  status: string;
+  coupons: OrderCouponResponse[];
+  shipping_address: OrderShippingAddress;
+  billing_address: OrderBillingAddress;
+  items: CartItemResponse[];
+  needs_payment: boolean;
+  needs_shipping: boolean;
+  totals: OrderTotalResponse;
+  errors: ErrorResponse[];
+  payment_requirements: string[];
+}
+```
+
+### OrderTotalResponse
+
+```typescript
+interface OrderTotalResponse {
+  total_items: string;
+  total_items_tax: string;
+  total_fees: string;
+  total_fees_tax: string;
+  total_discount: string;
+  total_discount_tax: string;
+  total_shipping: string;
+  total_shipping_tax: string;
+  total_price: string;
+  total_tax: string;
+  tax_lines: TaxLine[];
+  currency_code: string;
+  currency_symbol: string;
+  currency_minor_unit: number;
+  currency_decimal_separator: string;
+  currency_thousand_separator: string;
+  currency_prefix: string;
+  currency_suffix: string;
+}
+```
+
+## Complete Checkout Example
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+async function processCheckout(customerData: CustomerData, paymentData: PaymentData) {
+  // 1. Get current checkout state
+  const { data: checkout } = await Typewoo.store.checkout.get();
+  
+  // 2. Update customer addresses
+  const { data: updatedCheckout, error: updateError } = await Typewoo.store.checkout.update({
+    billing_address: customerData.billing,
+    shipping_address: customerData.shipping,
+  }, true);
+
+  if (updateError) {
+    throw new Error(`Address update failed: ${updateError.message}`);
+  }
+
+  // 3. Process order and payment
+  const { data: result, error } = await Typewoo.store.checkout.processOrderAndPayment({
+    billing_address: customerData.billing,
+    shipping_address: customerData.shipping,
+    customer_note: customerData.notes,
+    payment_method: paymentData.method,
+    payment_data: paymentData.data,
+  });
+
+  if (error) {
+    // Handle specific errors
+    if (error.code === 'woocommerce_rest_checkout_invalid_payment_method') {
+      throw new Error('Invalid payment method');
+    }
+    if (error.code === 'woocommerce_rest_checkout_payment_error') {
+      throw new Error('Payment failed: ' + error.message);
+    }
+    throw new Error(error.message);
+  }
+
+  // 4. Handle payment result
+  if (result?.payment_result.payment_status === 'success') {
+    // Payment complete, redirect to thank you page
+    window.location.href = result.payment_result.redirect_url;
+  } else if (result?.payment_result.payment_status === 'pending') {
+    // Redirect for additional authentication (3DS, etc.)
+    window.location.href = result.payment_result.redirect_url;
+  } else {
+    // Payment failed
+    throw new Error('Payment was not successful');
+  }
+
+  return result;
+}
+```
+
+## Pay-for-Order Flow
+
+For existing orders that need payment:
+
+```typescript
+async function payForOrder(orderId: number, orderKey: string, billingEmail: string) {
+  // 1. Get order details
+  const { data: order, error } = await Typewoo.store.orders.get(
+    orderKey,
+    orderId.toString(),
+    billingEmail
+  );
+
+  if (error) {
+    throw new Error(`Order not found: ${error.message}`);
+  }
+
+  if (!order?.needs_payment) {
+    throw new Error('Order does not require payment');
+  }
+
+  // 2. Process payment
+  const { data: result, error: paymentError } = await Typewoo.store.checkoutOrder.order(
+    orderId,
+    {
+      key: orderKey,
+      payment_method: 'stripe',
+      payment_data: [
+        { key: 'stripe_source', value: stripeToken },
+      ],
+      billing_email: billingEmail,
+    }
+  );
+
+  if (paymentError) {
+    throw new Error(`Payment failed: ${paymentError.message}`);
+  }
+
+  return result;
+}
+```
+
+## Admin Orders API
+
+For full order management, use the Admin API:
+
+```typescript
+// List orders
+const { data: orders, pagination } = await Typewoo.admin.orders.list({
+  status: 'processing',
+  per_page: 20,
+});
+
+// Get single order
+const { data: order } = await Typewoo.admin.orders.getById(12345);
+
+// Update order status
+const { data: updated } = await Typewoo.admin.orders.update(12345, {
+  status: 'completed',
+});
+
+// Create order
+const { data: newOrder } = await Typewoo.admin.orders.create({
+  payment_method: 'bacs',
+  payment_method_title: 'Direct Bank Transfer',
+  status: 'pending',
+  billing: {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    // ...
+  },
+  line_items: [
+    { product_id: 123, quantity: 2 },
+  ],
+});
+
+// Delete order
+await Typewoo.admin.orders.delete(12345, true);
+
+// Create refund
+const { data: refund } = await Typewoo.admin.refunds.create(12345, {
+  amount: '10.00',
+  reason: 'Customer request',
+});
+```
+
+## Error Handling
+
+Common checkout errors:
+
+```typescript
+const { data, error } = await Typewoo.store.checkout.processOrderAndPayment(params);
+
+if (error) {
+  switch (error.code) {
+    case 'woocommerce_rest_cart_empty':
+      showError('Your cart is empty');
+      break;
+    
+    case 'woocommerce_rest_checkout_missing_required_field':
+      // error.data.params contains the missing field
+      showError(`Missing field: ${Object.keys(error.data.params || {}).join(', ')}`);
+      break;
+    
+    case 'woocommerce_rest_checkout_invalid_payment_method':
+      showError('Please select a valid payment method');
+      break;
+    
+    case 'woocommerce_rest_checkout_payment_error':
+      showError(`Payment failed: ${error.message}`);
+      break;
+    
+    case 'woocommerce_rest_invalid_coupon':
+      showError('Invalid coupon code');
+      break;
+    
+    case 'woocommerce_rest_product_out_of_stock':
+      showError('One or more products are out of stock');
+      break;
+    
+    default:
+      showError(error.message);
+  }
+}
+```
+
+## Payment Gateways
+
+Different payment gateways require different `payment_data`:
+
+### Stripe
+
+```typescript
+payment_method: 'stripe',
+payment_data: [
+  { key: 'stripe_source', value: 'src_xxx' },
+  { key: 'stripe_payment_type', value: 'card' },
+]
+```
+
+### PayPal
+
+```typescript
+payment_method: 'ppcp-gateway',
+payment_data: [
+  { key: 'ppcp_order_id', value: 'ORDER_xxx' },
+]
+```
+
+### Cash on Delivery
+
+```typescript
+payment_method: 'cod',
+payment_data: []
+```
+
+### Bank Transfer
+
+```typescript
+payment_method: 'bacs',
+payment_data: []
+```
+
+Consult your payment gateway documentation for required `payment_data` fields.

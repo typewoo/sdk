@@ -1,0 +1,382 @@
+---
+title: SDK Client
+description: SDK initialization and main client reference
+---
+
+# SDK Client
+
+The TypeWoo SDK is exported as a singleton instance. This page documents the main client interface.
+
+## Import
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+```
+
+## Initialization
+
+### `init(config: SdkConfig): Promise<void>`
+
+Initialize the SDK with configuration options. Must be called before accessing any services.
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+});
+```
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `config` | `SdkConfig` | Yes | SDK configuration object |
+
+**SdkConfig Interface:**
+
+```typescript
+interface SdkConfig {
+  baseUrl: string;
+  admin?: {
+    consumer_key?: string;
+    consumer_secret?: string;
+    useAuthInterceptor?: boolean;
+  };
+  auth?: {
+    autoLoginUrl?: string;
+    fetchCartOnLogin?: boolean;
+    revokeTokenBeforeLogin?: boolean;
+    accessToken?: {
+      key?: string;
+      disabled?: boolean;
+      storage?: StorageType | StorageProvider;
+      useInterceptor?: boolean;
+    };
+    refreshToken?: {
+      key?: string;
+      disabled?: boolean;
+      storage?: StorageType | StorageProvider;
+      useInterceptor?: boolean;
+    };
+  };
+  nonce?: {
+    key?: string;
+    disabled?: boolean;
+    storage?: StorageType | StorageProvider;
+  };
+  cartToken?: {
+    key?: string;
+    disabled?: boolean;
+    storage?: StorageType | StorageProvider;
+  };
+  axiosConfig?: AxiosRequestConfig;
+  request?: {
+    retry?: RetryConfig;
+  };
+}
+```
+
+**Returns:** `Promise<void>`
+
+**Notes:**
+
+- Initialization is idempotent; subsequent calls are ignored
+- Must complete before accessing services, state, or config
+
+## Properties
+
+### `store`
+
+Access Store API services (WooCommerce Store API endpoints).
+
+```typescript
+const products = await Typewoo.store.products.list();
+const cart = await Typewoo.store.cart.get();
+```
+
+**Available Services:**
+
+| Property | Service | Description |
+|----------|---------|-------------|
+| `products` | `ProductService` | Product listing and details |
+| `cart` | `CartService` | Cart operations |
+| `cartItems` | `CartItemService` | Cart item CRUD |
+| `cartCoupons` | `CartCouponService` | Coupon management |
+| `cartExtensions` | `CartExtensionsService` | Cart extensions |
+| `checkout` | `CheckoutService` | Checkout flow |
+| `checkoutOrder` | `CheckoutOrderService` | Pay-for-order checkout |
+| `orders` | `OrderService` | Order retrieval |
+| `categories` | `ProductCategoryService` | Product categories |
+| `tags` | `ProductTagService` | Product tags |
+| `brands` | `ProductBrandService` | Product brands |
+| `attributes` | `ProductAttributeService` | Product attributes |
+| `attributesTerms` | `ProductAttributeTermService` | Attribute terms |
+| `reviews` | `ProductReviewService` | Product reviews |
+| `collectionData` | `ProductCollectionDataService` | Collection metadata |
+| `batch` | `BatchService` | Batch requests |
+
+### `auth`
+
+Access Authentication API services.
+
+```typescript
+await Typewoo.auth.token({ login: 'user', password: 'pass' });
+await Typewoo.auth.validate();
+```
+
+**Available Methods:**
+
+| Method | Description |
+|--------|-------------|
+| `token(body)` | Obtain access and refresh tokens |
+| `refreshToken(body)` | Refresh an access token |
+| `revokeToken(body?)` | Revoke/logout |
+| `validate()` | Validate current token |
+| `status()` | Get authentication status |
+| `oneTimeToken(body)` | Generate one-time login token |
+| `getAutoLoginUrl(ott, redirect, params?)` | Build auto-login URL |
+
+### `admin`
+
+Access Admin REST API services (WooCommerce REST API v3).
+
+```typescript
+const products = await Typewoo.admin.products.list();
+const order = await Typewoo.admin.orders.getById(123);
+```
+
+**Available Services:**
+
+| Property | Service | Description |
+|----------|---------|-------------|
+| `products` | `AdminProductService` | Product CRUD |
+| `orders` | `AdminOrderService` | Order management |
+| `customers` | `AdminCustomerService` | Customer management |
+| `coupons` | `AdminCouponService` | Coupon management |
+| `productCategories` | `AdminProductCategoryService` | Categories CRUD |
+| `productTags` | `AdminProductTagService` | Tags CRUD |
+| `productAttributes` | `AdminProductAttributeService` | Attributes CRUD |
+| `attributeTerms` | `AdminProductAttributeTermService` | Attribute terms |
+| `productBrands` | `AdminProductBrandService` | Brands CRUD |
+| `productReviews` | `AdminProductReviewService` | Reviews CRUD |
+| `shippingClasses` | `AdminShippingClassService` | Shipping classes |
+| `refunds` | `AdminRefundService` | Refund management |
+| `taxes` | `AdminTaxService` | Tax rates |
+| `taxClasses` | `AdminTaxClassService` | Tax classes |
+| `webhooks` | `AdminWebhookService` | Webhooks |
+| `settings` | `AdminSettingService` | Store settings |
+| `reports` | `AdminReportService` | Sales reports |
+| `shippingZones` | `AdminShippingZoneService` | Shipping zones |
+| `shippingMethods` | `AdminShippingMethodService` | Shipping methods |
+| `paymentGateways` | `AdminPaymentGatewayService` | Payment gateways |
+| `systemStatus` | `AdminSystemStatusService` | System status |
+| `data` | `AdminDataService` | Countries, currencies |
+
+### `events`
+
+Access the EventBus for subscribing to SDK events.
+
+```typescript
+Typewoo.events.on('cart:updated', (cart) => {
+  console.log('Cart updated:', cart);
+});
+```
+
+**Type:** `EventBus<SdkEvent>`
+
+See [Hooks and Events](/hooks-and-events) for full documentation.
+
+### `state`
+
+Access the SDK's runtime state.
+
+```typescript
+console.log('Authenticated:', Typewoo.state.authenticated);
+console.log('Cart token:', Typewoo.state.cartToken);
+```
+
+**Type:** `SdkState`
+
+```typescript
+interface SdkState {
+  cart?: CartResponse;
+  nonce?: string;
+  cartHash?: string;
+  cartToken?: string;
+  authenticated?: boolean;
+}
+```
+
+### `config`
+
+Access the resolved SDK configuration.
+
+```typescript
+console.log('Base URL:', Typewoo.config.baseUrl);
+```
+
+**Type:** `ResolvedSdkConfig`
+
+**Note:** Throws an error if accessed before initialization.
+
+## HTTP Client
+
+The SDK exports HTTP client utilities for advanced use cases:
+
+```typescript
+import { httpClient, createHttpClient } from '@typewoo/sdk';
+```
+
+### `httpClient`
+
+A proxy to the underlying Axios instance. Throws if accessed before SDK initialization.
+
+### `createHttpClient(config)`
+
+Creates the Axios instance. Called internally during `init()`. Idempotent.
+
+## Exported Utilities
+
+### JWT Utilities
+
+```typescript
+import { isJwtExpired, getJwtExpiration } from '@typewoo/sdk';
+
+// Check if a JWT is expired
+const expired = isJwtExpired(token);
+
+// Get expiration date
+const expDate = getJwtExpiration(token);
+```
+
+### Common Utilities
+
+```typescript
+import { extractPagination, parseLinkHeader, RequireAtLeastOne } from '@typewoo/sdk';
+
+// Extract pagination from response headers
+const pagination = extractPagination(headers);
+
+// Parse Link header
+const links = parseLinkHeader(linkHeader);
+```
+
+## Type Exports
+
+The SDK exports all TypeScript types for use in your application:
+
+```typescript
+import {
+  // Configuration types
+  SdkConfig,
+  ResolvedSdkConfig,
+  StorageProvider,
+  StorageType,
+  
+  // State types
+  SdkState,
+  SdkEvent,
+  
+  // API result types
+  ApiResult,
+  ApiPaginationResult,
+  ApiError,
+  Pagination,
+  
+  // Request options
+  RequestOptions,
+  RequestContext,
+  
+  // Store API types
+  ProductRequest,
+  ProductResponse,
+  CartResponse,
+  CartItemAddRequest,
+  CartItemResponse,
+  CheckoutResponse,
+  CheckoutCreateRequest,
+  OrderResponse,
+  BatchRequest,
+  BatchResponse,
+  
+  // Admin API types
+  AdminProduct,
+  AdminProductRequest,
+  AdminOrder,
+  AdminCustomer,
+  // ... many more
+  
+  // Service classes (for extension)
+  EventBus,
+  
+} from '@typewoo/sdk';
+```
+
+## Error Handling
+
+All SDK methods return an `ApiResult` object with `data` or `error`:
+
+```typescript
+const { data, error } = await Typewoo.store.products.list();
+
+if (error) {
+  console.error('Error code:', error.code);
+  console.error('Message:', error.message);
+  console.error('HTTP status:', error.data.status);
+  return;
+}
+
+// data is defined here
+console.log('Products:', data);
+```
+
+See [Error Handling](/error-handling) for detailed information.
+
+## Complete Example
+
+```typescript
+import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+
+// Initialize
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      storage: 'localstorage',
+    },
+  },
+});
+
+// Subscribe to events
+Typewoo.events.on('auth:changed', (isAuth) => {
+  console.log('Auth changed:', isAuth);
+});
+
+Typewoo.events.on('cart:updated', (cart) => {
+  updateCartUI(cart);
+});
+
+// Authenticate
+const { error: authError } = await Typewoo.auth.token({
+  login: 'user@example.com',
+  password: 'password',
+});
+
+if (authError) {
+  console.error('Login failed');
+} else {
+  console.log('Logged in, authenticated:', Typewoo.state.authenticated);
+}
+
+// Use Store API
+const { data: products } = await Typewoo.store.products.list({
+  per_page: 10,
+  orderby: 'popularity',
+});
+
+const { data: cart } = await Typewoo.store.cart.add({
+  id: products![0].id,
+  quantity: 1,
+});
+
+console.log('Cart items:', cart?.items_count);
+```

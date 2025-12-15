@@ -1,0 +1,223 @@
+---
+title: Getting Started
+description: Install and configure the TypeWoo SDK
+---
+
+# Getting Started
+
+This guide walks you through installing the TypeWoo SDK and making your first API calls.
+
+## Installation
+
+Install the SDK and its peer dependencies using npm, yarn, or pnpm:
+
+```bash
+# npm
+npm install @typewoo/sdk axios qs zod
+
+# yarn
+yarn add @typewoo/sdk axios qs zod
+
+# pnpm
+pnpm add @typewoo/sdk axios qs zod
+```
+
+## Basic Setup
+
+### Initialize the SDK
+
+The SDK must be initialized before use. Call `Typewoo.init()` with your store's base URL:
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+});
+```
+
+The SDK is a singleton instance. Calling `init()` multiple times is safe; subsequent calls are ignored.
+
+### Access Store Services
+
+After initialization, access the Store API through `Typewoo.store`:
+
+```typescript
+// Get products
+const { data: products, error } = await Typewoo.store.products.list();
+
+if (error) {
+  console.error('Failed to fetch products:', error.message);
+} else {
+  console.log('Products:', products);
+}
+```
+
+## Quick Examples
+
+### Fetch Products
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// List products with filters
+const { data: products, pagination } = await Typewoo.store.products.list({
+  per_page: 12,
+  orderby: 'popularity',
+  category: 'clothing',
+});
+
+// Get a single product by ID
+const { data: product } = await Typewoo.store.products.single({ id: 123 });
+
+// Get a single product by slug
+const { data: productBySlug } = await Typewoo.store.products.single({
+  slug: 'blue-t-shirt',
+});
+```
+
+### Cart Operations
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Get the current cart
+const { data: cart } = await Typewoo.store.cart.get();
+
+// Add an item to the cart
+const { data: updatedCart } = await Typewoo.store.cart.add({
+  id: 123, // Product or variation ID
+  quantity: 2,
+});
+
+// Update item quantity
+const { data: cart } = await Typewoo.store.cart.update(
+  'item_key_here', // Cart item key
+  3 // New quantity
+);
+
+// Remove an item
+const { data: cart } = await Typewoo.store.cart.remove('item_key_here');
+
+// Apply a coupon
+const { data: cart } = await Typewoo.store.cart.applyCoupon('SAVE10');
+
+// Remove a coupon
+const { data: cart } = await Typewoo.store.cart.removeCoupon('SAVE10');
+```
+
+### User Authentication
+
+Authentication requires the TypeWoo WordPress plugin to be installed on your WooCommerce store.
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Login with username and password
+const { data: authResponse, error } = await Typewoo.auth.token({
+  login: 'username',
+  password: 'password',
+});
+
+if (error) {
+  console.error('Login failed:', error.message);
+} else {
+  console.log('User:', authResponse.user.display_name);
+  // Token is automatically stored and used for subsequent requests
+}
+
+// Check authentication status
+const { data: status } = await Typewoo.auth.status();
+console.log('Authenticated:', status?.authenticated);
+
+// Logout (revoke token)
+await Typewoo.auth.revokeToken();
+```
+
+### Checkout Flow
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Get checkout data (cart + customer info)
+const { data: checkout } = await Typewoo.store.checkout.get();
+
+// Update customer addresses
+const { data: updatedCheckout } = await Typewoo.store.checkout.update({
+  billing_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    // ... other fields
+  },
+  shipping_address: {
+    first_name: 'John',
+    last_name: 'Doe',
+    // ... other fields
+  },
+});
+
+// Process order and payment
+const { data: orderResult, error } = await Typewoo.store.checkout.processOrderAndPayment({
+  billing_address: { /* ... */ },
+  shipping_address: { /* ... */ },
+  payment_method: 'stripe',
+  payment_data: [
+    { key: 'stripe_token', value: 'tok_xxx' },
+  ],
+});
+
+if (orderResult) {
+  console.log('Order ID:', orderResult.order_id);
+  console.log('Redirect URL:', orderResult.payment_result.redirect_url);
+}
+```
+
+## Listening to Events
+
+The SDK emits events for key operations. Subscribe to them for reactive UI updates:
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Listen for cart updates
+Typewoo.events.on('cart:updated', (cart) => {
+  console.log('Cart updated:', cart?.items_count);
+});
+
+// Listen for authentication changes
+Typewoo.events.on('auth:changed', (isAuthenticated) => {
+  console.log('Auth state:', isAuthenticated ? 'logged in' : 'logged out');
+});
+
+// Listen for loading states
+Typewoo.events.on('cart:loading', (isLoading) => {
+  if (isLoading) {
+    showSpinner();
+  } else {
+    hideSpinner();
+  }
+});
+```
+
+## TypeScript Support
+
+All API responses are strongly typed. Use TypeScript for full IntelliSense support:
+
+```typescript
+import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+
+const { data } = await Typewoo.store.products.list();
+
+// `data` is typed as ProductResponse[] | undefined
+data?.forEach((product: ProductResponse) => {
+  console.log(product.name, product.prices.price);
+});
+```
+
+## Next Steps
+
+- [Configuration](/configuration) - Learn about all configuration options
+- [Authentication](/authentication) - Deep dive into authentication mechanisms
+- [API Reference](/api-reference/client) - Complete API documentation
+- [Events and Hooks](/hooks-and-events) - Event system documentation

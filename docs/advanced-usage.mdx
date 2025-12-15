@@ -1,0 +1,578 @@
+---
+title: Advanced Usage
+description: Batch API, request options, and advanced patterns
+---
+
+# Advanced Usage
+
+This page covers advanced SDK features including batch operations, custom request handling, and integration patterns.
+
+## Batch API
+
+The Batch API allows multiple Store API operations in a single HTTP request, reducing network overhead.
+
+### Basic Batch Request
+
+```typescript
+const { data, error } = await Typewoo.store.batch.execute({
+  requests: [
+    {
+      method: 'POST',
+      path: '/wc/store/v1/cart/add-item',
+      body: { id: 123, quantity: 1 },
+    },
+    {
+      method: 'POST',
+      path: '/wc/store/v1/cart/add-item',
+      body: { id: 456, quantity: 2 },
+    },
+  ],
+});
+
+// Process responses
+data?.responses.forEach((response, index) => {
+  console.log(`Request ${index}: ${response.status}`);
+  console.log('Body:', response.body);
+});
+```
+
+### Validation Modes
+
+```typescript
+// All requests must validate before any are processed
+const { data } = await Typewoo.store.batch.execute({
+  validation: 'require-all-validate',
+  requests: [/* ... */],
+});
+
+// Process requests individually (default)
+const { data } = await Typewoo.store.batch.execute({
+  validation: 'normal',
+  requests: [/* ... */],
+});
+```
+
+### BatchRequest Interface
+
+```typescript
+interface BatchRequest {
+  validation?: 'require-all-validate' | 'normal';
+  requests: BatchRequestItem[]; // Maximum 25 requests
+}
+
+interface BatchRequestItem {
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  path: string;
+  body?: Record<string, unknown>;
+  headers?: Record<string, string | string[]>;
+}
+```
+
+### BatchResponse Interface
+
+```typescript
+interface BatchResponse {
+  responses: BatchResponseItem[];
+}
+
+interface BatchResponseItem {
+  status: number;
+  headers: Record<string, string>;
+  body: unknown;
+}
+```
+
+### Batch Use Cases
+
+**Add Multiple Items to Cart:**
+
+```typescript
+const productIds = [123, 456, 789];
+
+const { data } = await Typewoo.store.batch.execute({
+  requests: productIds.map(id => ({
+    method: 'POST',
+    path: '/wc/store/v1/cart/add-item',
+    body: { id, quantity: 1 },
+  })),
+});
+```
+
+**Update Multiple Cart Items:**
+
+```typescript
+const updates = [
+  { key: 'item1', quantity: 3 },
+  { key: 'item2', quantity: 5 },
+];
+
+const { data } = await Typewoo.store.batch.execute({
+  requests: updates.map(({ key, quantity }) => ({
+    method: 'POST',
+    path: '/wc/store/v1/cart/update-item',
+    body: { key, quantity },
+  })),
+});
+```
+
+## Cart Extensions API
+
+The Cart Extensions API allows interaction with registered WooCommerce cart extensions:
+
+```typescript
+const { data, error } = await Typewoo.store.cartExtensions.update({
+  namespace: 'my-extension',
+  data: {
+    custom_field: 'value',
+  },
+});
+```
+
+## Request Options
+
+All API methods accept `RequestOptions` for fine-grained control:
+
+```typescript
+interface RequestOptions<T = unknown> {
+  axiosConfig?: AxiosRequestConfig;
+  onRequest?: (context: RequestContext<T>) => void | Promise<void>;
+  onResponse?: (response: T, context: RequestContext<T>) => void | Promise<void>;
+  onError?: (error: ApiError, context: RequestContext<T>) => void | Promise<void>;
+  onLoading?: (isLoading: boolean) => void | Promise<void>;
+  onFinally?: (
+    response: T | undefined,
+    error: ApiError | undefined,
+    context: RequestContext<T>
+  ) => void | Promise<void>;
+}
+```
+
+### Custom Headers
+
+```typescript
+const { data } = await Typewoo.store.products.list(
+  { per_page: 10 },
+  {
+    axiosConfig: {
+      headers: {
+        'X-Custom-Header': 'value',
+        'Accept-Language': 'en-US',
+      },
+    },
+  }
+);
+```
+
+### Request Timeout
+
+```typescript
+const { data } = await Typewoo.store.products.list(
+  { per_page: 100 },
+  {
+    axiosConfig: {
+      timeout: 30000, // 30 seconds
+    },
+  }
+);
+```
+
+### Lifecycle Callbacks
+
+```typescript
+const { data } = await Typewoo.store.cart.add(
+  { id: 123 },
+  {
+    onRequest: (context) => {
+      console.log('Starting request:', context.url);
+      analytics.track('add_to_cart_start');
+    },
+    onResponse: (cart, context) => {
+      console.log('Success:', cart.items_count);
+      analytics.track('add_to_cart_success', { items: cart.items_count });
+    },
+    onError: (error, context) => {
+      console.error('Failed:', error.message);
+      analytics.track('add_to_cart_error', { code: error.code });
+    },
+    onLoading: (isLoading) => {
+      setButtonLoading(isLoading);
+    },
+    onFinally: (data, error, context) => {
+      hideSpinner();
+    },
+  }
+);
+```
+
+## Retry Logic
+
+### Configuration
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  request: {
+    retry: {
+      enabled: true,
+      maxRetries: 3,
+      delay: 1000,
+      retryOnStatus: [408, 429, 500, 502, 503, 504],
+      retryOnMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'],
+    },
+  },
+});
+```
+
+### Exponential Backoff
+
+```typescript
+request: {
+  retry: {
+    enabled: true,
+    maxRetries: 5,
+    delay: (attempt) => Math.min(1000 * 2 ** attempt, 30000),
+    // Delays: 1s, 2s, 4s, 8s, 16s (capped at 30s)
+  },
+}
+```
+
+### Conditional Retry
+
+```typescript
+request: {
+  retry: {
+    enabled: true,
+    retryCondition: (error, attempt) => {
+      // Don't retry client errors (4xx except 429)
+      const status = error.response?.status;
+      if (status && status >= 400 && status < 500 && status !== 429) {
+        return false;
+      }
+      return true;
+    },
+  },
+}
+```
+
+### Retry Callback
+
+```typescript
+request: {
+  retry: {
+    enabled: true,
+    onRetry: (attempt, error, config) => {
+      console.log(`Retry attempt ${attempt} for ${config?.url}`);
+      showRetryNotification(`Retrying... (${attempt}/3)`);
+    },
+  },
+}
+```
+
+## Custom HTTP Client Usage
+
+### Direct Axios Access
+
+```typescript
+import { httpClient } from '@typewoo/sdk';
+
+// Add custom interceptor
+httpClient.interceptors.request.use((config) => {
+  config.headers['X-Request-ID'] = generateRequestId();
+  return config;
+});
+
+// Add response interceptor
+httpClient.interceptors.response.use(
+  (response) => {
+    console.log('Response time:', Date.now() - response.config.startTime);
+    return response;
+  },
+  (error) => Promise.reject(error)
+);
+```
+
+### Custom Request Timing
+
+```typescript
+import { httpClient } from '@typewoo/sdk';
+
+httpClient.interceptors.request.use((config) => {
+  config.metadata = { startTime: Date.now() };
+  return config;
+});
+
+httpClient.interceptors.response.use((response) => {
+  const duration = Date.now() - response.config.metadata.startTime;
+  console.log(`${response.config.url}: ${duration}ms`);
+  return response;
+});
+```
+
+## SSR / Server-Side Usage
+
+### Memory Storage
+
+For server-side rendering, use memory storage:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      storage: 'memory',
+    },
+    refreshToken: {
+      storage: 'memory',
+    },
+  },
+  nonce: {
+    storage: 'memory',
+  },
+  cartToken: {
+    storage: 'memory',
+  },
+});
+```
+
+### Request-Scoped State
+
+For SSR, you may need request-scoped SDK instances:
+
+```typescript
+// Not recommended for SSR without modifications
+// The SDK is a singleton by design
+
+// For SSR, consider:
+// 1. Making stateless API calls
+// 2. Passing tokens explicitly per-request
+// 3. Using a request-scoped storage provider
+```
+
+### Custom Storage Provider
+
+```typescript
+// Example: Cookie-based storage for SSR
+const cookieStorage = (key: string, req: Request, res: Response): StorageProvider => ({
+  get: async () => {
+    return req.cookies[key] || null;
+  },
+  set: async (value: string) => {
+    res.cookie(key, value, { httpOnly: true, secure: true });
+  },
+  clear: async () => {
+    res.clearCookie(key);
+  },
+});
+```
+
+## Framework Integration
+
+### React Query Integration
+
+```typescript
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Typewoo, ProductRequest } from '@typewoo/sdk';
+
+// Products query
+function useProducts(params?: ProductRequest) {
+  return useQuery({
+    queryKey: ['products', params],
+    queryFn: async () => {
+      const { data, error } = await Typewoo.store.products.list(params);
+      if (error) throw new Error(error.message);
+      return data!;
+    },
+  });
+}
+
+// Add to cart mutation
+function useAddToCart() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (productId: number) => {
+      const { data, error } = await Typewoo.store.cart.add({ id: productId });
+      if (error) throw new Error(error.message);
+      return data!;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+    },
+  });
+}
+```
+
+### Angular Service
+
+```typescript
+import { Injectable, inject } from '@angular/core';
+import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class StoreService {
+  private cart$ = new BehaviorSubject<CartResponse | undefined>(undefined);
+
+  constructor() {
+    // Listen to SDK events
+    Typewoo.events.on('cart:updated', (cart) => {
+      this.cart$.next(cart);
+    });
+  }
+
+  getCart(): Observable<CartResponse | undefined> {
+    return this.cart$.asObservable();
+  }
+
+  getProducts(params?: ProductRequest): Observable<ProductResponse[]> {
+    return from(
+      Typewoo.store.products.list(params).then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data!;
+      })
+    );
+  }
+
+  addToCart(productId: number): Observable<CartResponse> {
+    return from(
+      Typewoo.store.cart.add({ id: productId }).then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data!;
+      })
+    );
+  }
+}
+```
+
+### Vue Composable
+
+```typescript
+import { ref, onMounted, onUnmounted } from 'vue';
+import { Typewoo, CartResponse } from '@typewoo/sdk';
+
+export function useCart() {
+  const cart = ref<CartResponse | undefined>();
+  const loading = ref(false);
+
+  let unsubscribe: (() => void) | undefined;
+
+  onMounted(() => {
+    unsubscribe = Typewoo.events.on('cart:updated', (newCart) => {
+      cart.value = newCart;
+    });
+
+    Typewoo.events.on('cart:loading', (isLoading) => {
+      loading.value = isLoading;
+    });
+
+    // Initial load
+    Typewoo.store.cart.get();
+  });
+
+  onUnmounted(() => {
+    unsubscribe?.();
+  });
+
+  const addToCart = async (productId: number) => {
+    const { error } = await Typewoo.store.cart.add({ id: productId });
+    if (error) throw new Error(error.message);
+  };
+
+  return {
+    cart,
+    loading,
+    addToCart,
+  };
+}
+```
+
+## Performance Optimization
+
+### Preloading
+
+```typescript
+// Preload products on page load
+async function preloadProducts() {
+  await Typewoo.store.products.list({ per_page: 12 });
+}
+
+// Preload cart
+async function preloadCart() {
+  await Typewoo.store.cart.get();
+}
+```
+
+### Parallel Requests
+
+```typescript
+// Load multiple resources in parallel
+const [productsResult, cartResult, categoriesResult] = await Promise.all([
+  Typewoo.store.products.list({ per_page: 12 }),
+  Typewoo.store.cart.get(),
+  Typewoo.store.categories.list(),
+]);
+```
+
+### Request Deduplication
+
+```typescript
+class RequestCache {
+  private pending = new Map<string, Promise<unknown>>();
+
+  async dedupe<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.pending.has(key)) {
+      return this.pending.get(key) as Promise<T>;
+    }
+
+    const promise = fn().finally(() => {
+      this.pending.delete(key);
+    });
+
+    this.pending.set(key, promise);
+    return promise;
+  }
+}
+
+const cache = new RequestCache();
+
+// Deduplicated cart fetch
+async function getCart() {
+  return cache.dedupe('cart', () => Typewoo.store.cart.get());
+}
+```
+
+## Debugging
+
+### Event Logging
+
+```typescript
+// Log all events
+Typewoo.events.onAny((event, payload) => {
+  console.log(`[SDK Event] ${String(event)}:`, payload);
+});
+```
+
+### Request Logging
+
+```typescript
+// Log all requests
+const { data } = await Typewoo.store.products.list(
+  {},
+  {
+    onRequest: (ctx) => console.log('Request:', ctx.method, ctx.url),
+    onResponse: (data) => console.log('Response:', data),
+    onError: (err) => console.error('Error:', err),
+  }
+);
+```
+
+### State Inspection
+
+```typescript
+// Inspect SDK state
+console.log('SDK State:', {
+  authenticated: Typewoo.state.authenticated,
+  cartToken: Typewoo.state.cartToken,
+  nonce: Typewoo.state.nonce,
+});
+```

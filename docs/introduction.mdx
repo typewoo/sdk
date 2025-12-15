@@ -1,0 +1,83 @@
+---
+title: Introduction
+description: TypeScript-first SDK for the WooCommerce Store API
+---
+
+# TypeWoo SDK
+
+TypeWoo SDK is a modern, TypeScript-first SDK for integrating with the WooCommerce Store API. It enables developers to build headless or decoupled WooCommerce storefronts with full type safety.
+
+## Overview
+
+The SDK provides a comprehensive interface to interact with WooCommerce's Store API and REST API endpoints. It handles authentication, session management, cart tokens, nonces, and provides strongly-typed responses for all API operations.
+
+## Key Features
+
+- **Type Safety**: Full TypeScript support with strongly-typed request parameters and responses powered by Zod schemas
+- **Store API Support**: Complete coverage of WooCommerce Store API endpoints (products, cart, checkout, orders)
+- **Admin REST API**: Full access to WooCommerce REST API v3 for administrative operations
+- **Authentication**: Built-in support for JWT authentication with automatic token refresh
+- **Session Management**: Automatic handling of nonces and cart tokens via Axios interceptors
+- **Event-Driven Architecture**: Custom EventBus for reactive state management
+- **Request Lifecycle Hooks**: Callbacks for request, response, error, and loading states
+- **Retry Logic**: Configurable automatic retry for failed requests
+- **Storage Flexibility**: Pluggable storage providers (localStorage, sessionStorage, memory)
+
+## Architecture
+
+TypeWoo SDK is organized into three main service layers:
+
+### Store API (`Typewoo.store`)
+
+The Store API provides public-facing endpoints optimized for storefront use:
+
+- **Products**: Browse and search products
+- **Cart**: Full cart management (add, update, remove items, apply coupons)
+- **Checkout**: Process orders and payments
+- **Orders**: Retrieve order details for pay-for-order flows
+
+### Auth API (`Typewoo.auth`)
+
+The Auth API handles user authentication:
+
+- **Token Management**: Obtain and refresh JWT tokens
+- **Session Validation**: Validate token status
+- **Auto-Login**: Generate one-time tokens for seamless authentication
+
+### Admin API (`Typewoo.admin`)
+
+The Admin API provides access to WooCommerce REST API v3 endpoints:
+
+- **Products**: Full CRUD operations on products and variations
+- **Orders**: Order management and processing
+- **Customers**: Customer data management
+- **Settings**: Store configuration
+- **Reports**: Sales and analytics data
+
+## Requirements
+
+- Node.js 20 or higher
+- WooCommerce 8.0 or higher with Store API enabled
+- TypeWoo WordPress plugin (for authentication features)
+
+## Package Information
+
+| Package | Version | Description |
+|---------|---------|-------------|
+| `@typewoo/sdk` | 3.3.0 | Core SDK package |
+
+## Peer Dependencies
+
+The SDK requires the following peer dependencies:
+
+```json
+{
+  "axios": "^1.11.0",
+  "qs": "^6.14.0",
+  "zod": "^4.0.0"
+}
+```
+
+## License
+
+MIT License - see the repository for full license text.

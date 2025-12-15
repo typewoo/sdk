@@ -1,0 +1,408 @@
+---
+title: Authentication
+description: JWT authentication, tokens, and session management
+---
+
+# Authentication
+
+TypeWoo SDK provides comprehensive authentication support through JWT tokens, with automatic token refresh and session management. Authentication requires the TypeWoo WordPress plugin installed on your WooCommerce store.
+
+## Overview
+
+The SDK supports two authentication models:
+
+1. **JWT Authentication** (Store API): For customer-facing operations
+2. **Basic Authentication** (Admin REST API): For administrative operations
+
+## JWT Authentication
+
+### Obtaining Tokens
+
+Use the `Typewoo.auth.token()` method to authenticate users:
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+const { data, error } = await Typewoo.auth.token({
+  login: 'username_or_email',
+  password: 'user_password',
+});
+
+if (error) {
+  console.error('Login failed:', error.message);
+  return;
+}
+
+// Tokens are automatically stored
+console.log('Logged in as:', data.user.display_name);
+console.log('Token expires in:', data.expires_in, 'seconds');
+```
+
+### Token Response
+
+The authentication response includes:
+
+```typescript
+interface AuthTokenResponse {
+  token: string;          // JWT access token
+  token_type: string;     // Always 'Bearer'
+  expires_in: number;     // Access token TTL (seconds)
+  refresh_token: string;  // Refresh token
+  refresh_expires_in: number; // Refresh token TTL (seconds)
+  user: {
+    id: number;
+    login: string;
+    email: string;
+    display_name: string;
+  };
+}
+```
+
+### Token TTL Configuration
+
+Control token expiration at login time:
+
+```typescript
+const { data } = await Typewoo.auth.token({
+  login: 'user@example.com',
+  password: 'password',
+  access_ttl: 3600,     // 1 hour (in seconds)
+  refresh_ttl: 604800,  // 7 days (in seconds)
+});
+```
+
+### Automatic Token Storage
+
+By default, tokens are stored in `localStorage`:
+
+- Access token: `typewoo_access_token`
+- Refresh token: `typewoo_refresh_token`
+
+Configure storage in the SDK initialization:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      key: 'my_access_token_key',
+      storage: 'sessionstorage', // or 'localstorage', 'memory'
+    },
+    refreshToken: {
+      key: 'my_refresh_token_key',
+      storage: 'sessionstorage',
+    },
+  },
+});
+```
+
+### Automatic Token Injection
+
+When `useInterceptor` is enabled (default), the SDK automatically adds the `Authorization` header to requests:
+
+```
+Authorization: Bearer <access_token>
+```
+
+This applies to:
+- Store API endpoints (`/wp-json/wc/store/v1/*`)
+- TypeWoo endpoints (`/wp-json/typewoo/*`)
+
+## Token Refresh
+
+### Automatic Refresh
+
+When enabled, the SDK automatically refreshes tokens on 401 responses:
+
+1. Intercepts 401 errors from Store API requests
+2. Attempts to refresh using the stored refresh token
+3. Retries the original request with the new token
+4. Queues concurrent requests during refresh to prevent duplicate refresh calls
+
+Enable automatic refresh (default behavior):
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      useInterceptor: true, // Attach token to requests
+    },
+    refreshToken: {
+      useInterceptor: true, // Auto-refresh on 401
+    },
+  },
+});
+```
+
+### Manual Refresh
+
+Refresh tokens manually when needed:
+
+```typescript
+const { data, error } = await Typewoo.auth.refreshToken({
+  refresh_token: 'stored_refresh_token',
+});
+
+if (error) {
+  // Refresh failed, redirect to login
+  console.error('Token refresh failed:', error.message);
+} else {
+  // New tokens are automatically stored
+  console.log('New access token obtained');
+}
+```
+
+### Refresh Failure Handling
+
+When token refresh fails:
+
+1. Both access and refresh tokens are cleared from storage
+2. `Typewoo.state.authenticated` is set to `false`
+3. `auth:changed` event is emitted with `false`
+
+Listen for authentication changes:
+
+```typescript
+Typewoo.events.on('auth:changed', (isAuthenticated) => {
+  if (!isAuthenticated) {
+    // Redirect to login page
+    router.navigate('/login');
+  }
+});
+```
+
+## Token Revocation (Logout)
+
+Revoke the current token to log out:
+
+```typescript
+const { data, error } = await Typewoo.auth.revokeToken();
+
+if (!error) {
+  console.log('Logged out successfully');
+  // Tokens are automatically cleared
+  // auth:changed event is emitted
+}
+```
+
+You can also revoke a specific token:
+
+```typescript
+await Typewoo.auth.revokeToken({
+  token: 'specific_token_to_revoke',
+});
+```
+
+## Token Validation
+
+Check if the current token is valid:
+
+```typescript
+const { data, error } = await Typewoo.auth.validate();
+
+if (data) {
+  console.log('Token is valid');
+  console.log('User ID:', data.user_id);
+} else {
+  console.log('Token is invalid or expired');
+}
+```
+
+## Authentication Status
+
+Check the current authentication status:
+
+```typescript
+const { data } = await Typewoo.auth.status();
+
+console.log('Authenticated:', data.authenticated);
+console.log('User ID:', data.user_id);
+```
+
+Access the in-memory authentication state:
+
+```typescript
+console.log('Is authenticated:', Typewoo.state.authenticated);
+```
+
+## One-Time Tokens
+
+Generate one-time tokens for auto-login URLs:
+
+```typescript
+// Generate a one-time token
+const { data } = await Typewoo.auth.oneTimeToken({
+  redirect: '/my-account',
+});
+
+// Build the auto-login URL
+const autoLoginUrl = await Typewoo.auth.getAutoLoginUrl(
+  data.token,
+  '/my-account',
+  { utm_source: 'email' } // Optional tracking params
+);
+
+// Example result:
+// https://your-store.com/wp-json/typewoo/v1/auth/autologin?token=xxx&redirect=/my-account&utm_source=email
+```
+
+## JWT Utilities
+
+The SDK exports utilities for working with JWTs:
+
+```typescript
+import { isJwtExpired, getJwtExpiration } from '@typewoo/sdk';
+
+const token = await storage.get();
+
+// Check if token is expired
+if (isJwtExpired(token)) {
+  console.log('Token has expired');
+}
+
+// Get expiration date
+const expirationDate = getJwtExpiration(token);
+console.log('Token expires:', expirationDate?.toISOString());
+```
+
+## Session Headers
+
+### Nonces
+
+WooCommerce uses nonces for CSRF protection. The SDK handles nonces automatically:
+
+1. **Request**: Attaches stored nonce via the `nonce` header
+2. **Response**: Captures and stores new nonce from response header
+3. **Events**: Emits `nonce:changed` when nonce updates
+
+### Cart Tokens
+
+Cart tokens identify guest shopping sessions:
+
+1. **Request**: Attaches stored cart token via the `cart-token` header
+2. **Response**: Captures and stores cart token from response header
+3. **Events**: Emits `cart:token:changed` when token updates
+
+## Admin API Authentication
+
+For WooCommerce REST API v3 (administrative endpoints), use Basic Authentication:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  admin: {
+    consumer_key: 'ck_your_consumer_key',
+    consumer_secret: 'cs_your_consumer_secret',
+    useAuthInterceptor: true, // Default
+  },
+});
+
+// Admin API calls automatically include Basic Auth
+const { data: products } = await Typewoo.admin.products.list();
+```
+
+Generate API credentials in WooCommerce:
+1. Go to WooCommerce > Settings > Advanced > REST API
+2. Create new key with Read/Write permissions
+3. Copy the consumer key and secret
+
+## Authentication Events
+
+Subscribe to authentication-related events:
+
+```typescript
+// Login process events
+Typewoo.events.on('auth:login:start', () => {
+  console.log('Login started');
+});
+
+Typewoo.events.on('auth:login:success', () => {
+  console.log('Login successful');
+});
+
+Typewoo.events.on('auth:login:error', (error) => {
+  console.error('Login failed:', error);
+});
+
+// Token refresh events
+Typewoo.events.on('auth:token:refresh:start', () => {
+  console.log('Token refresh started');
+});
+
+Typewoo.events.on('auth:token:refresh:success', () => {
+  console.log('Token refreshed');
+});
+
+Typewoo.events.on('auth:token:refresh:error', (error) => {
+  console.error('Token refresh failed:', error);
+});
+
+// Token revocation events
+Typewoo.events.on('auth:token:revoke:start', () => {
+  console.log('Logout started');
+});
+
+Typewoo.events.on('auth:token:revoke:success', () => {
+  console.log('Logout successful');
+});
+
+// General auth state changes
+Typewoo.events.on('auth:changed', (isAuthenticated) => {
+  console.log('Auth state changed:', isAuthenticated);
+});
+```
+
+## Configuration Reference
+
+### Disable Token Handling
+
+Completely disable JWT token handling:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    accessToken: {
+      disabled: true, // No token storage or interception
+    },
+    refreshToken: {
+      disabled: true, // No refresh handling
+    },
+  },
+});
+```
+
+### Revoke Before Login
+
+Automatically revoke existing tokens before new login:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    revokeTokenBeforeLogin: true,
+  },
+});
+```
+
+### Fetch Cart After Login
+
+Automatically fetch the cart after successful login:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  auth: {
+    fetchCartOnLogin: true,
+  },
+});
+```
+
+## Security Best Practices
+
+1. **Use HTTPS**: Always use HTTPS in production
+2. **Secure Storage**: Consider `sessionStorage` for sensitive environments
+3. **Token Rotation**: Configure reasonable TTLs for tokens
+4. **Error Handling**: Always handle authentication errors gracefully
+5. **Event Listeners**: Use auth events to update UI state
