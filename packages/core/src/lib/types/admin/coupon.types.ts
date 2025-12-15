@@ -12,7 +12,7 @@ export type AdminCouponDiscountType =
 /**
  * WooCommerce REST API Coupon Response
  */
-export const AdminCouponSchema = z.object({
+export const AdminCouponSchema = z.looseObject({
   /**
    * Unique identifier for the object.
    */
@@ -131,7 +131,7 @@ export type AdminCoupon = z.infer<typeof AdminCouponSchema>;
 /**
  * Coupon request parameters for creating/updating
  */
-export const AdminCouponRequestSchema = z.object({
+export const AdminCouponRequestSchema = z.looseObject({
   code: z.string().optional(),
   amount: z.string().optional(),
   discount_type: z.enum(['percent', 'fixed_cart', 'fixed_product']).optional(),
@@ -159,7 +159,7 @@ export type AdminCouponRequest = z.infer<typeof AdminCouponRequestSchema>;
 /**
  * Coupon query parameters for listing
  */
-export const AdminCouponQueryParamsSchema = z.object({
+export const AdminCouponQueryParamsSchema = z.looseObject({
   /**
    * Scope under which the request is made; determines fields present in response. Options: `view` and `edit`. Default is `view`.
    */

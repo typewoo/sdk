@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminShippingMethodSchema = z.object({
+export const AdminShippingMethodSchema = z.looseObject({
   id: z.string(),
   title: z.string(),
   description: z.string(),
@@ -12,7 +12,7 @@ export const AdminShippingMethodSchema = z.object({
 
 export type AdminShippingMethod = z.infer<typeof AdminShippingMethodSchema>;
 
-export const AdminShippingMethodQueryParamsSchema = z.object({
+export const AdminShippingMethodQueryParamsSchema = z.looseObject({
   context: z.enum(['view']).optional(),
 });
 

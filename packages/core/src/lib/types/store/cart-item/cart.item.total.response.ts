@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartItemTotalResponseSchema = z.object({
+export const CartItemTotalResponseSchema = z.looseObject({
   line_subtotal: z.string(),
   line_subtotal_tax: z.string(),
   line_total: z.string(),

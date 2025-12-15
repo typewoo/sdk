@@ -16,7 +16,7 @@ export type AdminCategoryDisplay = z.infer<typeof AdminCategoryDisplaySchema>;
 /**
  * WooCommerce REST API Product Category Response
  */
-export const AdminTaxonomyCategorySchema = z.object({
+export const AdminTaxonomyCategorySchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -40,7 +40,7 @@ export type AdminTaxonomyCategory = z.infer<typeof AdminTaxonomyCategorySchema>;
 /**
  * Product category request parameters for creating/updating
  */
-export const AdminTaxonomyCategoryRequestSchema = z.object({
+export const AdminTaxonomyCategoryRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   parent: z.number().optional(),
@@ -57,7 +57,7 @@ export type AdminTaxonomyCategoryRequest = z.infer<
 /**
  * Product category query parameters for listing
  */
-export const AdminTaxonomyCategoryQueryParamsSchema = z.object({
+export const AdminTaxonomyCategoryQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -90,7 +90,7 @@ export type AdminTaxonomyCategoryQueryParams = z.infer<
 /**
  * WooCommerce REST API Product Tag Response
  */
-export const AdminTaxonomyTagSchema = z.object({
+export const AdminTaxonomyTagSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -109,7 +109,7 @@ export type AdminTaxonomyTag = z.infer<typeof AdminTaxonomyTagSchema>;
 /**
  * Product tag request parameters for creating/updating
  */
-export const AdminTaxonomyTagRequestSchema = z.object({
+export const AdminTaxonomyTagRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
@@ -122,7 +122,7 @@ export type AdminTaxonomyTagRequest = z.infer<
 /**
  * Product tag query parameters for listing
  */
-export const AdminTaxonomyTagQueryParamsSchema = z.object({
+export const AdminTaxonomyTagQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -154,7 +154,7 @@ export type AdminTaxonomyTagQueryParams = z.infer<
 /**
  * WooCommerce REST API Shipping Class Response
  */
-export const AdminShippingClassSchema = z.object({
+export const AdminShippingClassSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -173,7 +173,7 @@ export type AdminShippingClass = z.infer<typeof AdminShippingClassSchema>;
 /**
  * Shipping class request parameters for creating/updating
  */
-export const AdminShippingClassRequestSchema = z.object({
+export const AdminShippingClassRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
@@ -186,7 +186,7 @@ export type AdminShippingClassRequest = z.infer<
 /**
  * Shipping class query parameters for listing
  */
-export const AdminShippingClassQueryParamsSchema = z.object({
+export const AdminShippingClassQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),

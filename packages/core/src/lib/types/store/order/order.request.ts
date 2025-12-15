@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { OrderBillingResponseSchema } from './order.billing.response.js';
 import { OrderShippingResponseSchema } from './order.shipping.response.js';
 
-export const OrderRequestSchema = z.object({
+export const OrderRequestSchema = z.looseObject({
   /**
    * The key for the order verification.
    */
@@ -28,7 +28,7 @@ export const OrderRequestSchema = z.object({
    */
   payment_data: z
     .array(
-      z.object({
+      z.looseObject({
         key: z.string(),
         value: z.string(),
       })

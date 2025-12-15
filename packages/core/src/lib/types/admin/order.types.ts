@@ -4,7 +4,7 @@ import { AdminMetaData, AdminAddress } from './common.types.js';
 /**
  * Line item in an order
  */
-export const AdminOrderLineItemSchema = z.object({
+export const AdminOrderLineItemSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   product_id: z.number(),
@@ -37,7 +37,7 @@ export type AdminOrderLineItem = z.infer<typeof AdminOrderLineItemSchema>;
 /**
  * Tax line in an order
  */
-export const AdminOrderTaxLineSchema = z.object({
+export const AdminOrderTaxLineSchema = z.looseObject({
   id: z.number(),
   rate_code: z.string(),
   rate_id: z.number(),
@@ -54,7 +54,7 @@ export type AdminOrderTaxLine = z.infer<typeof AdminOrderTaxLineSchema>;
 /**
  * Shipping line in an order
  */
-export const AdminOrderShippingLineSchema = z.object({
+export const AdminOrderShippingLineSchema = z.looseObject({
   id: z.number(),
   method_title: z.string(),
   method_id: z.string(),
@@ -77,7 +77,7 @@ export type AdminOrderShippingLine = z.infer<
 /**
  * Fee line in an order
  */
-export const AdminOrderFeeLineSchema = z.object({
+export const AdminOrderFeeLineSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   tax_class: z.string(),
@@ -99,7 +99,7 @@ export type AdminOrderFeeLine = z.infer<typeof AdminOrderFeeLineSchema>;
 /**
  * Coupon line in an order
  */
-export const AdminOrderCouponLineSchema = z.object({
+export const AdminOrderCouponLineSchema = z.looseObject({
   id: z.number(),
   code: z.string(),
   discount: z.string(),
@@ -112,7 +112,7 @@ export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
 /**
  * Order refund
  */
-export const AdminOrderRefundSchema = z.object({
+export const AdminOrderRefundSchema = z.looseObject({
   id: z.number(),
   date_created: z.string(),
   date_created_gmt: z.string(),
@@ -131,7 +131,7 @@ export type AdminOrderRefund = z.infer<typeof AdminOrderRefundSchema>;
 /**
  * WooCommerce REST API Order Response
  */
-export const AdminOrderSchema = z.object({
+export const AdminOrderSchema = z.looseObject({
   id: z.number(),
   parent_id: z.number(),
   status: z.enum([
@@ -204,7 +204,7 @@ export type AdminOrder = z.infer<typeof AdminOrderSchema>;
 /**
  * Order request parameters for creating/updating
  */
-export const AdminOrderRequestSchema = z.object({
+export const AdminOrderRequestSchema = z.looseObject({
   parent_id: z.number().optional(),
   status: z
     .enum([
@@ -239,7 +239,7 @@ export type AdminOrderRequest = z.infer<typeof AdminOrderRequestSchema>;
 /**
  * Order query parameters for listing
  */
-export const AdminOrderQueryParamsSchema = z.object({
+export const AdminOrderQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -284,7 +284,7 @@ export type AdminOrderQueryParams = z.infer<typeof AdminOrderQueryParamsSchema>;
 /**
  * Order note
  */
-export const AdminOrderNoteSchema = z.object({
+export const AdminOrderNoteSchema = z.looseObject({
   id: z.number(),
   author: z.string(),
   date_created: z.string(),
@@ -306,7 +306,7 @@ export type AdminOrderNote = z.infer<typeof AdminOrderNoteSchema>;
 /**
  * Order note request parameters
  */
-export const AdminOrderNoteRequestSchema = z.object({
+export const AdminOrderNoteRequestSchema = z.looseObject({
   note: z.string(),
   customer_note: z.boolean().optional(),
   added_by_user: z.boolean().optional(),
@@ -317,7 +317,7 @@ export type AdminOrderNoteRequest = z.infer<typeof AdminOrderNoteRequestSchema>;
 /**
  * Order receipt generation request
  */
-export const AdminOrderReceiptRequestSchema = z.object({
+export const AdminOrderReceiptRequestSchema = z.looseObject({
   expiration_date: z.string().optional(),
   expiration_days: z.number().optional(),
   force_new: z.boolean().optional(),
@@ -330,7 +330,7 @@ export type AdminOrderReceiptRequest = z.infer<
 /**
  * Order receipt response
  */
-export const AdminOrderReceiptSchema = z.object({
+export const AdminOrderReceiptSchema = z.looseObject({
   id: z.string(),
   order_id: z.number(),
   receipt_url: z.string(),
@@ -343,7 +343,7 @@ export type AdminOrderReceipt = z.infer<typeof AdminOrderReceiptSchema>;
 /**
  * Email template for orders
  */
-export const AdminOrderEmailTemplateSchema = z.object({
+export const AdminOrderEmailTemplateSchema = z.looseObject({
   id: z.string(),
   title: z.string(),
   description: z.string(),
@@ -359,7 +359,7 @@ export type AdminOrderEmailTemplate = z.infer<
 /**
  * Send order email request
  */
-export const AdminOrderSendEmailRequestSchema = z.object({
+export const AdminOrderSendEmailRequestSchema = z.looseObject({
   email: z.string().optional(),
   force_email_update: z.boolean().optional(),
   template_id: z.enum([
@@ -389,7 +389,7 @@ export type AdminOrderSendEmailRequest = z.infer<
 /**
  * Send order details request
  */
-export const AdminOrderSendDetailsRequestSchema = z.object({
+export const AdminOrderSendDetailsRequestSchema = z.looseObject({
   email: z.string().optional(),
   force_email_update: z.boolean().optional(),
 });
@@ -427,7 +427,7 @@ export type AdminOrderEmailTemplateId = z.infer<
 /**
  * Order status information
  */
-export const AdminOrderStatusInfoSchema = z.object({
+export const AdminOrderStatusInfoSchema = z.looseObject({
   slug: z.string(),
   name: z.string(),
   total: z.number(),

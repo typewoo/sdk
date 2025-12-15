@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductAttributeTermRequestSchema = z.object({
+export const ProductAttributeTermRequestSchema = z.looseObject({
   /**
    * The ID of the attribute to retrieve terms for.
    */
@@ -11,7 +11,7 @@ export const ProductAttributeTermRequestSchema = z.object({
    */
   order: z.enum(['asc', 'desc']),
   /**
-   * Sort collection by object attribute.
+   * Sort collection by looseObject attribute.
    * Allowed values: `id`, `name`, `name_num`, `slug`, `count`, `menu_order`.
    */
   orderby: z.enum(['id', 'name', 'name_num', 'slug', 'count', 'menu_order']),

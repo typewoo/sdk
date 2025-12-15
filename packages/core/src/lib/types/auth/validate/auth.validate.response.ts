@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export const AuthValidateResponseSchema = z.object({
+export const AuthValidateResponseSchema = z.looseObject({
   valid: z.boolean(),
-  payload: z.object({
+  payload: z.looseObject({
     iss: z.string(),
     iat: z.number(),
     nbf: z.number(),

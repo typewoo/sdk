@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-export const CartShippingRateResponseSchema = z.object({
+export const CartShippingRateResponseSchema = z.looseObject({
   package_id: z.number(),
   name: z.string(),
-  destination: z.object({
+  destination: z.looseObject({
     address_1: z.string(),
     address_2: z.string(),
     city: z.string(),
@@ -12,14 +12,14 @@ export const CartShippingRateResponseSchema = z.object({
     country: z.string(),
   }),
   items: z.array(
-    z.object({
+    z.looseObject({
       key: z.string(),
       name: z.string(),
       quantity: z.number(),
     })
   ),
   shipping_rates: z.array(
-    z.object({
+    z.looseObject({
       rate_id: z.string(),
       name: z.string(),
       description: z.string(),
@@ -29,7 +29,7 @@ export const CartShippingRateResponseSchema = z.object({
       instance_id: z.number(),
       method_id: z.string(),
       meta_data: z.array(
-        z.object({
+        z.looseObject({
           key: z.string(),
           value: z.string(),
         })

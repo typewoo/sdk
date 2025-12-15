@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const CartCustomerRequestSchema = z.object({
-  billing_address: z.object({
+export const CartCustomerRequestSchema = z.looseObject({
+  billing_address: z.looseObject({
     first_name: z.string(),
     last_name: z.string(),
     company: z.string(),
@@ -14,7 +14,7 @@ export const CartCustomerRequestSchema = z.object({
     email: z.string(),
     phone: z.string(),
   }),
-  shipping_address: z.object({
+  shipping_address: z.looseObject({
     first_name: z.string(),
     last_name: z.string(),
     company: z.string(),

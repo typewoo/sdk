@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartItemAddRequestSchema = z.object({
+export const CartItemAddRequestSchema = z.looseObject({
   /**
    * The cart item product or variation ID.
    */

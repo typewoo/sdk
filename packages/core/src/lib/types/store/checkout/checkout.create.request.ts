@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { CheckoutBillingResponseSchema } from './checkout.billing.response.js';
 import { CheckoutShippingResponseSchema } from './checkout.shipping.js';
 
-export const CheckoutCreateRequestSchema = z.object({
+export const CheckoutCreateRequestSchema = z.looseObject({
   /**
    * Object of updated billing address data for the customer.
    */
@@ -24,7 +24,7 @@ export const CheckoutCreateRequestSchema = z.object({
    */
   payment_data: z
     .array(
-      z.object({
+      z.looseObject({
         key: z.string(),
         value: z.string(),
       })

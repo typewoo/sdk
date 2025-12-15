@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartBillingResponseSchema = z.object({
+export const CartBillingResponseSchema = z.looseObject({
   first_name: z.string(),
   last_name: z.string(),
   company: z.string(),

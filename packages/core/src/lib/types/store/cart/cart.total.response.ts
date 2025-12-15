@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartTotalResponseSchema = z.object({
+export const CartTotalResponseSchema = z.looseObject({
   total_items: z.string(),
   total_items_tax: z.string(),
   total_fees: z.string(),
@@ -12,7 +12,7 @@ export const CartTotalResponseSchema = z.object({
   total_price: z.string(),
   total_tax: z.string(),
   tax_lines: z.array(
-    z.object({
+    z.looseObject({
       name: z.string(),
       price: z.string(),
       rate: z.string(),

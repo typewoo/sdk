@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductCollectionDataRatingCountsResponseSchema = z.object({
+export const ProductCollectionDataRatingCountsResponseSchema = z.looseObject({
   rating: z.number(),
   count: z.number(),
 });

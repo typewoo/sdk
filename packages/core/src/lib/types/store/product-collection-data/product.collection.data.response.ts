@@ -4,7 +4,7 @@ import { ProductCollectionDataPriceRangeResponseSchema } from './product.collect
 import { ProductCollectionDataRatingCountsResponseSchema } from './product.collection.data.rating.counts.response.js';
 import { ProductCollectionDataTaxonomyCountsResponseSchema } from './product.collection.data.taxonomy.counts.response.js';
 
-export const ProductCollectionDataResponseSchema = z.object({
+export const ProductCollectionDataResponseSchema = z.looseObject({
   price_range: ProductCollectionDataPriceRangeResponseSchema,
   attribute_counts: z.array(ProductCollectionDataAttributeCountsResponseSchema),
   rating_counts: z.array(ProductCollectionDataRatingCountsResponseSchema),

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductAttributeResponseSchema = z.object({
+export const ProductAttributeResponseSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   taxonomy: z.string(),

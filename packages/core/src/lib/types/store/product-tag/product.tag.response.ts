@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductTagResponseSchema = z.object({
+export const ProductTagResponseSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),

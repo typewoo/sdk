@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Cart extensions request for third-party plugin data
  */
-export const CartExtensionsRequestSchema = z.object({
+export const CartExtensionsRequestSchema = z.looseObject({
   /**
    * Extension namespace - used to ensure data is passed to the correct extension
    */

@@ -43,7 +43,7 @@ export const ProductRequestSchema = PaginatedSchema.extend({
    */
   order: z.enum(['asc', 'desc']).optional(),
   /**
-   * Sort collection by object attribute.
+   * Sort collection by looseObject attribute.
    * Allowed values : `date`, `modified`, `id`, `include`, `title`, `slug`, `price`, `popularity`, `rating`, `menu_order`, `comment_count`
    */
   orderby: z

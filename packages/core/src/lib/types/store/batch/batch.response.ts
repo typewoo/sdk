@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const BatchResponseItemSchema = z.object({
+export const BatchResponseItemSchema = z.looseObject({
   /**
    * HTTP status code of the response
    */
@@ -18,7 +18,7 @@ export const BatchResponseItemSchema = z.object({
 });
 export type BatchResponseItem = z.infer<typeof BatchResponseItemSchema>;
 
-export const BatchResponseSchema = z.object({
+export const BatchResponseSchema = z.looseObject({
   /**
    * Array of individual response results
    */

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-export const AuthTokenResponseSchema = z.object({
+export const AuthTokenResponseSchema = z.looseObject({
   token: z.string(),
   token_type: z.string(),
   expires_in: z.number(),
   refresh_token: z.string(),
   refresh_expires_in: z.number(),
-  user: z.object({
+  user: z.looseObject({
     id: z.number(),
     login: z.string(),
     email: z.string(),

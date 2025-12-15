@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminPaymentGatewaySchema = z.object({
+export const AdminPaymentGatewaySchema = z.looseObject({
   id: z.string(),
   title: z.string(),
   description: z.string(),
@@ -30,7 +30,7 @@ export const AdminPaymentGatewaySchema = z.object({
 
 export type AdminPaymentGateway = z.infer<typeof AdminPaymentGatewaySchema>;
 
-export const AdminPaymentGatewayRequestSchema = z.object({
+export const AdminPaymentGatewayRequestSchema = z.looseObject({
   order: z.number().optional(),
   enabled: z.boolean().optional(),
   settings: z.record(z.string(), z.string()).optional(),
@@ -40,7 +40,7 @@ export type AdminPaymentGatewayRequest = z.infer<
   typeof AdminPaymentGatewayRequestSchema
 >;
 
-export const AdminPaymentGatewayQueryParamsSchema = z.object({
+export const AdminPaymentGatewayQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
 });
 

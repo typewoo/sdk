@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminCountrySchema = z.object({
+export const AdminCountrySchema = z.looseObject({
   code: z.string(),
   name: z.string(),
   states: z.array(
@@ -17,7 +17,7 @@ export const AdminCountrySchema = z.object({
 
 export type AdminCountry = z.infer<typeof AdminCountrySchema>;
 
-export const AdminCurrencySchema = z.object({
+export const AdminCurrencySchema = z.looseObject({
   code: z.string(),
   name: z.string(),
   symbol: z.string(),
@@ -29,7 +29,7 @@ export const AdminCurrencySchema = z.object({
 
 export type AdminCurrency = z.infer<typeof AdminCurrencySchema>;
 
-export const AdminContinentSchema = z.object({
+export const AdminContinentSchema = z.looseObject({
   code: z.string(),
   name: z.string(),
   countries: z.array(
@@ -59,7 +59,7 @@ export const AdminContinentSchema = z.object({
 
 export type AdminContinent = z.infer<typeof AdminContinentSchema>;
 
-export const AdminDataQueryParamsSchema = z.object({
+export const AdminDataQueryParamsSchema = z.looseObject({
   context: z.literal('view').optional(),
 });
 

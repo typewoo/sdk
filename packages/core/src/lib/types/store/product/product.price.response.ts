@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductPriceResponseSchema = z.object({
+export const ProductPriceResponseSchema = z.looseObject({
   currency_code: z.string(),
   currency_symbol: z.string(),
   currency_minor_unit: z.number(),

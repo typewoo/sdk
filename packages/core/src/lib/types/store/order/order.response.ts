@@ -6,7 +6,7 @@ import { OrderCouponResponseSchema } from './order.coupon.response.js';
 import { OrderShippingResponseSchema } from './order.shipping.response.js';
 import { OrderTotalResponseSchema } from './order.total.response.js';
 
-export const OrderResponseSchema = z.object({
+export const OrderResponseSchema = z.looseObject({
   id: z.number(),
   status: z.string(),
   coupons: z.array(OrderCouponResponseSchema),

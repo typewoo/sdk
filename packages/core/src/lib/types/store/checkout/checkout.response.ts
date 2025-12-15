@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { CheckoutBillingResponseSchema } from './checkout.billing.response.js';
 import { CheckoutShippingResponseSchema } from './checkout.shipping.js';
 
-export const CheckoutResponseSchema = z.object({
+export const CheckoutResponseSchema = z.looseObject({
   order_id: z.number(),
   status: z.string(),
   order_key: z.string(),
@@ -11,7 +11,7 @@ export const CheckoutResponseSchema = z.object({
   billing_address: CheckoutBillingResponseSchema,
   shipping_address: CheckoutShippingResponseSchema,
   payment_method: z.string(),
-  payment_result: z.object({
+  payment_result: z.looseObject({
     payment_status: z.string(),
     payment_details: z.array(z.unknown()),
     redirect_url: z.string(),

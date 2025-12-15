@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export const OrderCouponResponseSchema = z.object({
+export const OrderCouponResponseSchema = z.looseObject({
   code: z.string(),
-  totals: z.object({
+  totals: z.looseObject({
     currency_code: z.string(),
     currency_symbol: z.string(),
     currency_minor_unit: z.number(),

@@ -6,7 +6,7 @@ import { CartShippingRateResponseSchema } from './cart.shipping.rate.response.js
 import { CartShippingResponseSchema } from './cart.shipping.response.js';
 import { CartTotalResponseSchema } from './cart.total.response.js';
 
-export const CartResponseSchema = z.object({
+export const CartResponseSchema = z.looseObject({
   items: z.array(CartItemResponseSchema),
   coupons: z.array(CartCouponResponseSchema),
   fees: z.array(z.unknown()),

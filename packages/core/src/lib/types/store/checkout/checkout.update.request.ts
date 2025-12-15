@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CheckoutUpdateRequestSchema = z.object({
+export const CheckoutUpdateRequestSchema = z.looseObject({
   /**
    * Name => value pairs of additional fields to update.
    */

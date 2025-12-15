@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductCollectionDataTaxonomyCountsResponseSchema = z.object({
+export const ProductCollectionDataTaxonomyCountsResponseSchema = z.looseObject({
   term: z.number(),
   count: z.number(),
 });

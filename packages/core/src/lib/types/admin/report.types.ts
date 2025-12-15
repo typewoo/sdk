@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminReportSchema = z.object({
+export const AdminReportSchema = z.looseObject({
   slug: z.string(),
   description: z.string(),
   _links: z.object({
@@ -11,7 +11,7 @@ export const AdminReportSchema = z.object({
 
 export type AdminReport = z.infer<typeof AdminReportSchema>;
 
-export const AdminSalesReportSchema = z.object({
+export const AdminSalesReportSchema = z.looseObject({
   total_sales: z.string(),
   net_sales: z.string(),
   average_sales: z.string(),
@@ -41,7 +41,7 @@ export const AdminSalesReportSchema = z.object({
 
 export type AdminSalesReport = z.infer<typeof AdminSalesReportSchema>;
 
-export const AdminTopSellersReportSchema = z.object({
+export const AdminTopSellersReportSchema = z.looseObject({
   title: z.string(),
   product_id: z.number(),
   quantity: z.number(),
@@ -53,7 +53,7 @@ export const AdminTopSellersReportSchema = z.object({
 
 export type AdminTopSellersReport = z.infer<typeof AdminTopSellersReportSchema>;
 
-export const AdminCustomersReportSchema = z.object({
+export const AdminCustomersReportSchema = z.looseObject({
   slug: z.string(),
   name: z.string(),
   total: z.number(),
@@ -61,7 +61,7 @@ export const AdminCustomersReportSchema = z.object({
 
 export type AdminCustomersReport = z.infer<typeof AdminCustomersReportSchema>;
 
-export const AdminOrdersReportSchema = z.object({
+export const AdminOrdersReportSchema = z.looseObject({
   slug: z.string(),
   name: z.string(),
   total: z.number(),
@@ -70,7 +70,7 @@ export const AdminOrdersReportSchema = z.object({
 export type AdminOrdersReport = z.infer<typeof AdminOrdersReportSchema>;
 
 // Generic totals report entry used by several totals endpoints
-export const AdminTotalsReportEntrySchema = z.object({
+export const AdminTotalsReportEntrySchema = z.looseObject({
   slug: z.string(),
   name: z.string().optional(),
   total: z.union([z.number(), z.string()]),
@@ -80,7 +80,7 @@ export type AdminTotalsReportEntry = z.infer<
   typeof AdminTotalsReportEntrySchema
 >;
 
-export const AdminReportsQueryParamsSchema = z.object({
+export const AdminReportsQueryParamsSchema = z.looseObject({
   context: z.enum(['view']).optional(),
   period: z.enum(['week', 'month', 'last_month', 'year']).optional(),
   date_min: z.string().optional(),

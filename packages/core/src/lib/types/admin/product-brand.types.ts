@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AdminImage } from './common.types.js';
 
-export const AdminBrandSchema = z.object({
+export const AdminBrandSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -20,7 +20,7 @@ export const AdminBrandSchema = z.object({
 
 export type AdminBrand = z.infer<typeof AdminBrandSchema>;
 
-export const AdminBrandRequestSchema = z.object({
+export const AdminBrandRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   parent: z.number().optional(),
@@ -32,7 +32,7 @@ export const AdminBrandRequestSchema = z.object({
 
 export type AdminBrandRequest = z.infer<typeof AdminBrandRequestSchema>;
 
-export const AdminBrandQueryParamsSchema = z.object({
+export const AdminBrandQueryParamsSchema = z.looseObject({
   /**
    * Scope under which the request is made; determines fields present in response.
    */
