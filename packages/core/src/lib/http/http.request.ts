@@ -181,4 +181,7 @@ const doRequestWithRetry = async <T>(
       attempt++;
     }
   }
+
+  // Should never reach here, but satisfy TypeScript
+  return { error: new AxiosError('Max retries exceeded') };
 };
