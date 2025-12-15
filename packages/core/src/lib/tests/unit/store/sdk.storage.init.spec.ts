@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Sdk } from '../../../sdk.js';
 import { SdkConfig } from '../../../configs/sdk.config.js';
-import { memoryStorageProvider } from '../../../utilities/storage.providers.js';
+import { memoryStorageProvider } from '../../../storage/auth.storage.js';
 
 // Mock the HTTP client and interceptors to isolate SDK init tests
 vi.mock('../../../services/api.js', () => ({

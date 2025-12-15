@@ -10,9 +10,9 @@ import {
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import {
-  memoryStorageProvider,
   StorageProvider,
-} from '../../../utilities/storage.providers.js';
+  memoryStorageProvider,
+} from '../../../storage/auth.storage.js';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
