@@ -9,13 +9,14 @@ describe('axios.utility error path', () => {
         response: {
           data: { message: 'failed' },
           headers: { 'x-test': 'y' },
+          status: 400,
         },
       }),
     };
     const result = await doRequest<{ ok: boolean }>(
       instance as AxiosInstance,
       '/x',
-      { method: 'get' }
+      { axiosConfig: { method: 'get' } }
     );
     expect(result.error?.message).toBe('failed');
     expect(result.headers?.['x-test']).toBe('y');
