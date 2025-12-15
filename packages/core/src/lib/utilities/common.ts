@@ -33,7 +33,7 @@ export const parseLinkHeaderPage = (link: string) => {
 };
 
 export const extractPagination = (
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ): Pagination => {
   const pagination: Pagination = {};
   if (!headers) return pagination;

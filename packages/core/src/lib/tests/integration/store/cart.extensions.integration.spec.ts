@@ -45,7 +45,7 @@ describe('Integration: Cart Extensions API Operations', () => {
       // Cart extensions API might not be supported on all installations
       // or may require specific plugins to be installed
       expect(res.error.code).toMatch(
-        /extensions?|not.*found|not.*supported|method.*not.*allowed|forbidden/i
+        /extensions?|not.*found|not.*supported|method.*not.*allowed|forbidden/i,
       );
       expect(res.data).toBeFalsy();
     } else {
@@ -78,7 +78,7 @@ describe('Integration: Cart Extensions API Operations', () => {
     if (res.error) {
       // Should get validation error for invalid namespace
       expect(res.error.code).toMatch(
-        /namespace|invalid|validation|required|empty|woocommerce_rest_missing_nonce|woocommerce_rest_cart_extensions_error/i
+        /namespace|invalid|validation|required|empty|woocommerce_rest_missing_nonce|woocommerce_rest_cart_extensions_error/i,
       );
     } else {
       // If successful, it should indicate failure in the response

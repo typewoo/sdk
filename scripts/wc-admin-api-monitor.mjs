@@ -87,14 +87,14 @@ function getSnapshotsDir(apiConfig) {
 async function fetchApiStructure(apiConfig) {
   try {
     console.log(
-      `Fetching ${apiConfig.name} API structure from ${API_BASE_URL}${apiConfig.endpoint}...`
+      `Fetching ${apiConfig.name} API structure from ${API_BASE_URL}${apiConfig.endpoint}...`,
     );
 
     // First, get the root API information
     const rootResponse = await fetch(`${API_BASE_URL}${apiConfig.endpoint}`);
     if (!rootResponse.ok) {
       throw new Error(
-        `Failed to fetch root API: ${rootResponse.status} ${rootResponse.statusText}`
+        `Failed to fetch root API: ${rootResponse.status} ${rootResponse.statusText}`,
       );
     }
 
@@ -161,7 +161,7 @@ function extractParametersFromEndpoints(endpoints) {
   // Convert Sets to arrays for JSON serialization
   Object.keys(allParams).forEach((paramName) => {
     allParams[paramName].methods = Array.from(
-      allParams[paramName].methods
+      allParams[paramName].methods,
     ).sort();
   });
 
@@ -181,21 +181,21 @@ async function createSnapshot(apiConfig) {
     // Save current snapshot
     writeFileSync(currentSnapshot, JSON.stringify(apiStructure, null, 2));
     console.log(
-      `✅ ${apiConfig.name} API structure snapshot created: ${currentSnapshot}`
+      `✅ ${apiConfig.name} API structure snapshot created: ${currentSnapshot}`,
     );
 
     // Create baseline if it doesn't exist
     if (!existsSync(baselineSnapshot)) {
       writeFileSync(baselineSnapshot, JSON.stringify(apiStructure, null, 2));
       console.log(
-        `✅ ${apiConfig.name} API baseline snapshot created: ${baselineSnapshot}`
+        `✅ ${apiConfig.name} API baseline snapshot created: ${baselineSnapshot}`,
       );
     }
 
     return apiStructure;
   } catch (error) {
     console.error(
-      `❌ Failed to create ${apiConfig.name} API snapshot: ${error.message}`
+      `❌ Failed to create ${apiConfig.name} API snapshot: ${error.message}`,
     );
     process.exit(1);
   }
@@ -217,17 +217,17 @@ function compareStructures(baseline, current) {
 
   // Find added routes
   differences.addedRoutes = Array.from(currentRoutes).filter(
-    (route) => !baselineRoutes.has(route)
+    (route) => !baselineRoutes.has(route),
   );
 
   // Find removed routes
   differences.removedRoutes = Array.from(baselineRoutes).filter(
-    (route) => !currentRoutes.has(route)
+    (route) => !currentRoutes.has(route),
   );
 
   // Find modified routes
   const commonRoutes = Array.from(currentRoutes).filter((route) =>
-    baselineRoutes.has(route)
+    baselineRoutes.has(route),
   );
 
   commonRoutes.forEach((route) => {
@@ -244,10 +244,10 @@ function compareStructures(baseline, current) {
     const currentMethods = new Set(currentRoute.methods);
 
     const addedMethods = Array.from(currentMethods).filter(
-      (method) => !baselineMethods.has(method)
+      (method) => !baselineMethods.has(method),
     );
     const removedMethods = Array.from(baselineMethods).filter(
-      (method) => !currentMethods.has(method)
+      (method) => !currentMethods.has(method),
     );
 
     if (addedMethods.length || removedMethods.length) {
@@ -262,10 +262,10 @@ function compareStructures(baseline, current) {
     const currentParams = Object.keys(currentRoute.parameters || {});
 
     const addedParams = currentParams.filter(
-      (param) => !baselineParams.includes(param)
+      (param) => !baselineParams.includes(param),
     );
     const removedParams = baselineParams.filter(
-      (param) => !currentParams.includes(param)
+      (param) => !currentParams.includes(param),
     );
 
     if (addedParams.length || removedParams.length) {
@@ -277,7 +277,7 @@ function compareStructures(baseline, current) {
 
     // Check for parameter definition changes
     const commonParams = currentParams.filter((param) =>
-      baselineParams.includes(param)
+      baselineParams.includes(param),
     );
     commonParams.forEach((param) => {
       const baselineParam = baselineRoute.parameters[param];
@@ -327,20 +327,20 @@ async function checkForChanges(apiConfig) {
     // Load baseline
     if (!existsSync(baselineSnapshot)) {
       console.log(
-        `⚠️  No ${apiConfig.name} API baseline snapshot found. Creating one...`
+        `⚠️  No ${apiConfig.name} API baseline snapshot found. Creating one...`,
       );
       writeFileSync(
         baselineSnapshot,
-        JSON.stringify(currentStructure, null, 2)
+        JSON.stringify(currentStructure, null, 2),
       );
       console.log(
-        `✅ ${apiConfig.name} API baseline snapshot created. Run the check again to compare.`
+        `✅ ${apiConfig.name} API baseline snapshot created. Run the check again to compare.`,
       );
       return;
     }
 
     const baselineStructure = JSON.parse(
-      readFileSync(baselineSnapshot, 'utf8')
+      readFileSync(baselineSnapshot, 'utf8'),
     );
 
     // Compare structures
@@ -359,7 +359,7 @@ async function checkForChanges(apiConfig) {
 
     // Report changes
     console.log(
-      `🚨 ${apiConfig.name.toUpperCase()} API STRUCTURE CHANGES DETECTED:`
+      `🚨 ${apiConfig.name.toUpperCase()} API STRUCTURE CHANGES DETECTED:`,
     );
     console.log(`   Baseline: ${baselineStructure.timestamp}`);
     console.log(`   Current:  ${currentStructure.timestamp}\n`);
@@ -373,7 +373,7 @@ async function checkForChanges(apiConfig) {
     if (differences.removedRoutes.length) {
       console.log(`➖ Removed Routes (${differences.removedRoutes.length}):`);
       differences.removedRoutes.forEach((route) =>
-        console.log(`   - ${route}`)
+        console.log(`   - ${route}`),
       );
       console.log();
     }
@@ -385,29 +385,29 @@ async function checkForChanges(apiConfig) {
 
         if (changes.methodChanges.added?.length) {
           console.log(
-            `     + Methods: ${changes.methodChanges.added.join(', ')}`
+            `     + Methods: ${changes.methodChanges.added.join(', ')}`,
           );
         }
         if (changes.methodChanges.removed?.length) {
           console.log(
-            `     - Methods: ${changes.methodChanges.removed.join(', ')}`
+            `     - Methods: ${changes.methodChanges.removed.join(', ')}`,
           );
         }
         if (changes.parameterChanges.added?.length) {
           console.log(
-            `     + Parameters: ${changes.parameterChanges.added.join(', ')}`
+            `     + Parameters: ${changes.parameterChanges.added.join(', ')}`,
           );
         }
         if (changes.parameterChanges.removed?.length) {
           console.log(
-            `     - Parameters: ${changes.parameterChanges.removed.join(', ')}`
+            `     - Parameters: ${changes.parameterChanges.removed.join(', ')}`,
           );
         }
         if (changes.parameterChanges.modified?.length) {
           console.log(
             `     ~ Modified Parameters: ${changes.parameterChanges.modified
               .map((p) => p.parameter)
-              .join(', ')}`
+              .join(', ')}`,
           );
         }
       });
@@ -417,7 +417,7 @@ async function checkForChanges(apiConfig) {
     // Save the differences report
     const reportPath = join(
       snapshotsDir,
-      `changes-${new Date().toISOString().split('T')[0]}.json`
+      `changes-${new Date().toISOString().split('T')[0]}.json`,
     );
     writeFileSync(reportPath, JSON.stringify(differences, null, 2));
     console.log(`📊 Detailed changes report saved to: ${reportPath}`);
@@ -425,7 +425,7 @@ async function checkForChanges(apiConfig) {
     return true;
   } catch (error) {
     console.error(
-      `❌ Failed to check for ${apiConfig.name} API changes: ${error.message}`
+      `❌ Failed to check for ${apiConfig.name} API changes: ${error.message}`,
     );
     process.exit(1);
   }
@@ -442,7 +442,7 @@ function compareWithBaseline(apiConfig) {
 
     if (!existsSync(currentSnapshot) || !existsSync(baselineSnapshot)) {
       console.log(
-        `❌ Missing ${apiConfig.name} API snapshots. Run with --create first.`
+        `❌ Missing ${apiConfig.name} API snapshots. Run with --create first.`,
       );
       return;
     }
@@ -458,11 +458,11 @@ function compareWithBaseline(apiConfig) {
 
     if (!hasChanges) {
       console.log(
-        `✅ No differences between ${apiConfig.name} API baseline and current snapshots.`
+        `✅ No differences between ${apiConfig.name} API baseline and current snapshots.`,
       );
     } else {
       console.log(
-        `🔍 Differences found between ${apiConfig.name} API snapshots:`
+        `🔍 Differences found between ${apiConfig.name} API snapshots:`,
       );
       console.log(JSON.stringify(differences, null, 2));
     }
@@ -470,7 +470,7 @@ function compareWithBaseline(apiConfig) {
     return hasChanges;
   } catch (error) {
     console.error(
-      `❌ Failed to compare ${apiConfig.name} API snapshots: ${error.message}`
+      `❌ Failed to compare ${apiConfig.name} API snapshots: ${error.message}`,
     );
     process.exit(1);
   }
@@ -481,26 +481,26 @@ const args = parseArguments();
 
 if (!args.command) {
   console.log(
-    `Usage: node scripts/wc-admin-api-monitor.mjs [--create|--check|--compare] --path=<api-path>`
+    `Usage: node scripts/wc-admin-api-monitor.mjs [--create|--check|--compare] --path=<api-path>`,
   );
   console.log(`  --create   Create a new API structure snapshot`);
   console.log(
-    `  --check    Check for changes against baseline (creates current snapshot)`
+    `  --check    Check for changes against baseline (creates current snapshot)`,
   );
   console.log(`  --compare  Compare existing current and baseline snapshots`);
   console.log(``);
   console.log(`API Paths:`);
   console.log(
-    `  --path=/wp-json/wc/v3        WooCommerce Admin REST API (default)`
+    `  --path=/wp-json/wc/v3        WooCommerce Admin REST API (default)`,
   );
   console.log(`  --path=/wp-json/wc/store/v1  WooCommerce Store API`);
   console.log(``);
   console.log(`Examples:`);
   console.log(
-    `  node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3`
+    `  node scripts/wc-admin-api-monitor.mjs --create --path=/wp-json/wc/v3`,
   );
   console.log(
-    `  node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/store/v1`
+    `  node scripts/wc-admin-api-monitor.mjs --check --path=/wp-json/wc/store/v1`,
   );
   process.exit(1);
 }
@@ -508,7 +508,7 @@ if (!args.command) {
 try {
   const apiConfig = getApiConfig(args.path);
   console.log(
-    `📡 Monitoring ${apiConfig.name} API (${apiConfig.version}) at ${args.path}`
+    `📡 Monitoring ${apiConfig.name} API (${apiConfig.version}) at ${args.path}`,
   );
 
   switch (args.command) {

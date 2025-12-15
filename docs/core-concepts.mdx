@@ -110,7 +110,7 @@ class ProductService extends BaseService {
   constructor(
     state: SdkState,
     config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>
+    events: EventBus<SdkEvent>,
   ) {
     super(state, config, events);
   }
@@ -121,52 +121,52 @@ class ProductService extends BaseService {
 
 Store services interact with WooCommerce Store API endpoints:
 
-| Service | Property | Endpoint Base |
-|---------|----------|---------------|
-| `ProductService` | `store.products` | `/wp-json/wc/store/v1/products` |
-| `CartService` | `store.cart` | `/wp-json/wc/store/v1/cart` |
-| `CartItemService` | `store.cartItems` | `/wp-json/wc/store/v1/cart/items` |
-| `CartCouponService` | `store.cartCoupons` | `/wp-json/wc/store/v1/cart/coupons` |
-| `CartExtensionsService` | `store.cartExtensions` | `/wp-json/wc/store/v1/cart/extensions` |
-| `CheckoutService` | `store.checkout` | `/wp-json/wc/store/v1/checkout` |
-| `CheckoutOrderService` | `store.checkoutOrder` | `/wp-json/wc/store/v1/checkout` |
-| `OrderService` | `store.orders` | `/wp-json/wc/store/v1/order` |
-| `ProductCategoryService` | `store.categories` | `/wp-json/wc/store/v1/products/categories` |
-| `ProductTagService` | `store.tags` | `/wp-json/wc/store/v1/products/tags` |
-| `ProductBrandService` | `store.brands` | `/wp-json/wc/store/v1/products/brands` |
-| `ProductAttributeService` | `store.attributes` | `/wp-json/wc/store/v1/products/attributes` |
-| `ProductAttributeTermService` | `store.attributesTerms` | `/wp-json/wc/store/v1/products/attributes/{id}/terms` |
-| `ProductReviewService` | `store.reviews` | `/wp-json/wc/store/v1/products/reviews` |
-| `ProductCollectionDataService` | `store.collectionData` | `/wp-json/wc/store/v1/products/collection-data` |
-| `BatchService` | `store.batch` | `/wp-json/wc/store/v1/batch` |
+| Service                        | Property                | Endpoint Base                                         |
+| ------------------------------ | ----------------------- | ----------------------------------------------------- |
+| `ProductService`               | `store.products`        | `/wp-json/wc/store/v1/products`                       |
+| `CartService`                  | `store.cart`            | `/wp-json/wc/store/v1/cart`                           |
+| `CartItemService`              | `store.cartItems`       | `/wp-json/wc/store/v1/cart/items`                     |
+| `CartCouponService`            | `store.cartCoupons`     | `/wp-json/wc/store/v1/cart/coupons`                   |
+| `CartExtensionsService`        | `store.cartExtensions`  | `/wp-json/wc/store/v1/cart/extensions`                |
+| `CheckoutService`              | `store.checkout`        | `/wp-json/wc/store/v1/checkout`                       |
+| `CheckoutOrderService`         | `store.checkoutOrder`   | `/wp-json/wc/store/v1/checkout`                       |
+| `OrderService`                 | `store.orders`          | `/wp-json/wc/store/v1/order`                          |
+| `ProductCategoryService`       | `store.categories`      | `/wp-json/wc/store/v1/products/categories`            |
+| `ProductTagService`            | `store.tags`            | `/wp-json/wc/store/v1/products/tags`                  |
+| `ProductBrandService`          | `store.brands`          | `/wp-json/wc/store/v1/products/brands`                |
+| `ProductAttributeService`      | `store.attributes`      | `/wp-json/wc/store/v1/products/attributes`            |
+| `ProductAttributeTermService`  | `store.attributesTerms` | `/wp-json/wc/store/v1/products/attributes/{id}/terms` |
+| `ProductReviewService`         | `store.reviews`         | `/wp-json/wc/store/v1/products/reviews`               |
+| `ProductCollectionDataService` | `store.collectionData`  | `/wp-json/wc/store/v1/products/collection-data`       |
+| `BatchService`                 | `store.batch`           | `/wp-json/wc/store/v1/batch`                          |
 
 ### Admin Services
 
 Admin services interact with WooCommerce REST API v3:
 
-| Service | Property | Endpoint Base |
-|---------|----------|---------------|
-| `AdminProductService` | `admin.products` | `/wp-json/wc/v3/products` |
-| `AdminOrderService` | `admin.orders` | `/wp-json/wc/v3/orders` |
-| `AdminCustomerService` | `admin.customers` | `/wp-json/wc/v3/customers` |
-| `AdminCouponService` | `admin.coupons` | `/wp-json/wc/v3/coupons` |
-| `AdminProductCategoryService` | `admin.productCategories` | `/wp-json/wc/v3/products/categories` |
-| `AdminProductTagService` | `admin.productTags` | `/wp-json/wc/v3/products/tags` |
-| `AdminProductAttributeService` | `admin.productAttributes` | `/wp-json/wc/v3/products/attributes` |
-| `AdminProductBrandService` | `admin.productBrands` | `/wp-json/wc/v3/products/brands` |
-| `AdminProductReviewService` | `admin.productReviews` | `/wp-json/wc/v3/products/reviews` |
-| `AdminShippingClassService` | `admin.shippingClasses` | `/wp-json/wc/v3/products/shipping_classes` |
-| `AdminRefundService` | `admin.refunds` | `/wp-json/wc/v3/orders/{id}/refunds` |
-| `AdminTaxService` | `admin.taxes` | `/wp-json/wc/v3/taxes` |
-| `AdminTaxClassService` | `admin.taxClasses` | `/wp-json/wc/v3/taxes/classes` |
-| `AdminWebhookService` | `admin.webhooks` | `/wp-json/wc/v3/webhooks` |
-| `AdminSettingService` | `admin.settings` | `/wp-json/wc/v3/settings` |
-| `AdminReportService` | `admin.reports` | `/wp-json/wc/v3/reports` |
-| `AdminShippingZoneService` | `admin.shippingZones` | `/wp-json/wc/v3/shipping/zones` |
-| `AdminShippingMethodService` | `admin.shippingMethods` | `/wp-json/wc/v3/shipping_methods` |
-| `AdminPaymentGatewayService` | `admin.paymentGateways` | `/wp-json/wc/v3/payment_gateways` |
-| `AdminSystemStatusService` | `admin.systemStatus` | `/wp-json/wc/v3/system_status` |
-| `AdminDataService` | `admin.data` | `/wp-json/wc/v3/data` |
+| Service                        | Property                  | Endpoint Base                              |
+| ------------------------------ | ------------------------- | ------------------------------------------ |
+| `AdminProductService`          | `admin.products`          | `/wp-json/wc/v3/products`                  |
+| `AdminOrderService`            | `admin.orders`            | `/wp-json/wc/v3/orders`                    |
+| `AdminCustomerService`         | `admin.customers`         | `/wp-json/wc/v3/customers`                 |
+| `AdminCouponService`           | `admin.coupons`           | `/wp-json/wc/v3/coupons`                   |
+| `AdminProductCategoryService`  | `admin.productCategories` | `/wp-json/wc/v3/products/categories`       |
+| `AdminProductTagService`       | `admin.productTags`       | `/wp-json/wc/v3/products/tags`             |
+| `AdminProductAttributeService` | `admin.productAttributes` | `/wp-json/wc/v3/products/attributes`       |
+| `AdminProductBrandService`     | `admin.productBrands`     | `/wp-json/wc/v3/products/brands`           |
+| `AdminProductReviewService`    | `admin.productReviews`    | `/wp-json/wc/v3/products/reviews`          |
+| `AdminShippingClassService`    | `admin.shippingClasses`   | `/wp-json/wc/v3/products/shipping_classes` |
+| `AdminRefundService`           | `admin.refunds`           | `/wp-json/wc/v3/orders/{id}/refunds`       |
+| `AdminTaxService`              | `admin.taxes`             | `/wp-json/wc/v3/taxes`                     |
+| `AdminTaxClassService`         | `admin.taxClasses`        | `/wp-json/wc/v3/taxes/classes`             |
+| `AdminWebhookService`          | `admin.webhooks`          | `/wp-json/wc/v3/webhooks`                  |
+| `AdminSettingService`          | `admin.settings`          | `/wp-json/wc/v3/settings`                  |
+| `AdminReportService`           | `admin.reports`           | `/wp-json/wc/v3/reports`                   |
+| `AdminShippingZoneService`     | `admin.shippingZones`     | `/wp-json/wc/v3/shipping/zones`            |
+| `AdminShippingMethodService`   | `admin.shippingMethods`   | `/wp-json/wc/v3/shipping_methods`          |
+| `AdminPaymentGatewayService`   | `admin.paymentGateways`   | `/wp-json/wc/v3/payment_gateways`          |
+| `AdminSystemStatusService`     | `admin.systemStatus`      | `/wp-json/wc/v3/system_status`             |
+| `AdminDataService`             | `admin.data`              | `/wp-json/wc/v3/data`                      |
 
 ## SDK State
 
@@ -174,11 +174,11 @@ The SDK maintains runtime state accessible via `Typewoo.state`:
 
 ```typescript
 interface SdkState {
-  cart?: CartResponse;       // Current cart data (if cached)
-  nonce?: string;            // Current WooCommerce nonce
-  cartHash?: string;         // Cart content hash
-  cartToken?: string;        // Guest cart token
-  authenticated?: boolean;   // User authentication status
+  cart?: CartResponse; // Current cart data (if cached)
+  nonce?: string; // Current WooCommerce nonce
+  cartHash?: string; // Cart content hash
+  cartToken?: string; // Guest cart token
+  authenticated?: boolean; // User authentication status
 }
 ```
 
@@ -213,18 +213,18 @@ unsubscribe();
 
 ### Event Methods
 
-| Method | Description |
-|--------|-------------|
-| `on(event, handler)` | Subscribe to an event; returns unsubscribe function |
-| `once(event, handler)` | Subscribe for a single emission |
-| `off(event, handler)` | Unsubscribe a specific handler |
-| `onAny(handler)` | Subscribe to all events |
-| `waitFor(event, predicate?, timeout?)` | Promise that resolves on event |
-| `emit(event, payload)` | Emit an event (internal) |
-| `emitIf(condition, event, payload)` | Conditionally emit (internal) |
-| `use(middleware)` | Add middleware (internal) |
-| `clear()` | Remove all listeners |
-| `scope(prefix)` | Create a scoped EventBus |
+| Method                                 | Description                                         |
+| -------------------------------------- | --------------------------------------------------- |
+| `on(event, handler)`                   | Subscribe to an event; returns unsubscribe function |
+| `once(event, handler)`                 | Subscribe for a single emission                     |
+| `off(event, handler)`                  | Unsubscribe a specific handler                      |
+| `onAny(handler)`                       | Subscribe to all events                             |
+| `waitFor(event, predicate?, timeout?)` | Promise that resolves on event                      |
+| `emit(event, payload)`                 | Emit an event (internal)                            |
+| `emitIf(condition, event, payload)`    | Conditionally emit (internal)                       |
+| `use(middleware)`                      | Add middleware (internal)                           |
+| `clear()`                              | Remove all listeners                                |
+| `scope(prefix)`                        | Create a scoped EventBus                            |
 
 ### Available Events
 
@@ -286,7 +286,7 @@ try {
 // Wait with predicate
 const cart = await Typewoo.events.waitFor(
   'cart:updated',
-  (cart) => cart?.items_count > 0
+  (cart) => cart?.items_count > 0,
 );
 ```
 
@@ -324,14 +324,14 @@ const { data, error, headers } = await doGet<ProductResponse[]>(url, options);
 const { data, error } = await doPost<CartResponse, CartItemAddRequest>(
   url,
   requestBody,
-  options
+  options,
 );
 
 // PUT request
 const { data, error } = await doPut<CheckoutResponse, CheckoutUpdateRequest>(
   url,
   requestBody,
-  options
+  options,
 );
 
 // DELETE request
@@ -428,10 +428,10 @@ interface ApiError {
 
 ```typescript
 interface Pagination {
-  next?: number;         // Next page number
-  previous?: number;     // Previous page number
-  total?: number;        // Total items
-  totalPages?: number;   // Total pages
+  next?: number; // Next page number
+  previous?: number; // Previous page number
+  total?: number; // Total items
+  totalPages?: number; // Total pages
   link?: {
     up?: string;
     prev?: string;

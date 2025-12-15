@@ -19,13 +19,13 @@ export class ProductTagService extends BaseService {
    */
   async list(
     params?: ProductTagRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<ProductTagResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductTagResponse[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);

@@ -13,7 +13,7 @@ import { getRetryDelay, shouldRetry, sleep } from './http.helper';
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
-  requestOptions: RequestOptions
+  requestOptions: RequestOptions,
 ): Promise<AxiosApiResult<T>> => {
   const options = requestOptions.axiosConfig;
   const { method = 'get', data } = options ?? {};
@@ -37,7 +37,7 @@ export const doRequest = async <T>(
       instance,
       url,
       requestOptions,
-      context
+      context,
     );
 
     if (error) {
@@ -54,7 +54,7 @@ export const doRequest = async <T>(
             Object.entries(response.headers).map(([key, value]) => [
               key.toLowerCase(),
               value,
-            ])
+            ]),
           )
         : undefined,
       status: response?.status,
@@ -74,7 +74,7 @@ export const doRequest = async <T>(
           Object.entries(axiosError.response.headers).map(([key, value]) => [
             key.toLowerCase(),
             value,
-          ])
+          ]),
         ),
         status: axiosError.response.status,
       } as AxiosApiResult<T>;
@@ -130,7 +130,7 @@ const doRequestWithRetry = async <T>(
   instance: AxiosInstance,
   url: string,
   requestOptions: RequestOptions,
-  context: RequestContext<T>
+  context: RequestContext<T>,
 ): Promise<{
   response?: AxiosResponse<T>;
   error?: AxiosError;
@@ -153,8 +153,8 @@ const doRequestWithRetry = async <T>(
     typeof retryConfig.maxRetries === 'number'
       ? retryConfig.maxRetries
       : typeof retryConfig.maxRetries === 'function'
-      ? retryConfig.maxRetries()
-      : 3;
+        ? retryConfig.maxRetries()
+        : 3;
 
   let attempt = 0;
 

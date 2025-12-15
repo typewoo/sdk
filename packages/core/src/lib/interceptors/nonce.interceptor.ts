@@ -8,7 +8,7 @@ import { SdkEvent } from '../sdk.events.js';
 export const addNonceInterceptors = (
   config: ResolvedSdkConfig,
   state: SdkState,
-  events: EventBus<SdkEvent>
+  events: EventBus<SdkEvent>,
 ) => {
   const nonceStorage = config.nonce?.storage;
 
@@ -25,7 +25,7 @@ export const addNonceInterceptors = (
     },
     (error: AxiosError | Error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   httpClient.interceptors.response.use(async (response) => {

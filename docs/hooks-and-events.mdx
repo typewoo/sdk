@@ -88,7 +88,7 @@ try {
 // Wait for specific condition
 const cart = await Typewoo.events.waitFor(
   'cart:updated',
-  (cart) => cart !== undefined && cart.items_count > 0
+  (cart) => cart !== undefined && cart.items_count > 0,
 );
 ```
 
@@ -104,54 +104,54 @@ Typewoo.events.clear();
 
 ### Authentication Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `auth:changed` | `boolean` | Authentication state changed |
-| `auth:login:start` | `void` | Login process started |
-| `auth:login:success` | `void` | Login successful |
-| `auth:login:error` | `unknown` | Login failed |
-| `auth:token:refresh:start` | `void` | Token refresh started |
-| `auth:token:refresh:success` | `void` | Token refresh successful |
-| `auth:token:refresh:error` | `unknown` | Token refresh failed |
-| `auth:token:revoke:start` | `void` | Logout started |
-| `auth:token:revoke:success` | `void` | Logout successful |
-| `auth:token:revoke:error` | `unknown` | Logout failed |
+| Event                        | Payload   | Description                  |
+| ---------------------------- | --------- | ---------------------------- |
+| `auth:changed`               | `boolean` | Authentication state changed |
+| `auth:login:start`           | `void`    | Login process started        |
+| `auth:login:success`         | `void`    | Login successful             |
+| `auth:login:error`           | `unknown` | Login failed                 |
+| `auth:token:refresh:start`   | `void`    | Token refresh started        |
+| `auth:token:refresh:success` | `void`    | Token refresh successful     |
+| `auth:token:refresh:error`   | `unknown` | Token refresh failed         |
+| `auth:token:revoke:start`    | `void`    | Logout started               |
+| `auth:token:revoke:success`  | `void`    | Logout successful            |
+| `auth:token:revoke:error`    | `unknown` | Logout failed                |
 
 ### Cart Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `cart:updated` | `CartResponse \| undefined` | Cart data updated |
-| `cart:loading` | `boolean` | Cart loading state |
-| `cart:request:start` | `void` | Cart request started |
-| `cart:request:success` | `void` | Cart request successful |
-| `cart:request:error` | `{ error: unknown }` | Cart request failed |
+| Event                  | Payload                     | Description             |
+| ---------------------- | --------------------------- | ----------------------- |
+| `cart:updated`         | `CartResponse \| undefined` | Cart data updated       |
+| `cart:loading`         | `boolean`                   | Cart loading state      |
+| `cart:request:start`   | `void`                      | Cart request started    |
+| `cart:request:success` | `void`                      | Cart request successful |
+| `cart:request:error`   | `{ error: unknown }`        | Cart request failed     |
 
 ### Batch Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `batch:loading` | `boolean` | Batch loading state |
-| `batch:request:start` | `void` | Batch request started |
-| `batch:request:success` | `void` | Batch request successful |
-| `batch:request:error` | `{ error: unknown }` | Batch request failed |
+| Event                   | Payload              | Description              |
+| ----------------------- | -------------------- | ------------------------ |
+| `batch:loading`         | `boolean`            | Batch loading state      |
+| `batch:request:start`   | `void`               | Batch request started    |
+| `batch:request:success` | `void`               | Batch request successful |
+| `batch:request:error`   | `{ error: unknown }` | Batch request failed     |
 
 ### Cart Extensions Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `cart:extensions:loading` | `boolean` | Extensions loading state |
-| `cart:extensions:request:start` | `void` | Extensions request started |
-| `cart:extensions:request:success` | `void` | Extensions request successful |
-| `cart:extensions:request:error` | `{ error: unknown }` | Extensions request failed |
+| Event                             | Payload              | Description                   |
+| --------------------------------- | -------------------- | ----------------------------- |
+| `cart:extensions:loading`         | `boolean`            | Extensions loading state      |
+| `cart:extensions:request:start`   | `void`               | Extensions request started    |
+| `cart:extensions:request:success` | `void`               | Extensions request successful |
+| `cart:extensions:request:error`   | `{ error: unknown }` | Extensions request failed     |
 
 ### Token Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `nonce:changed` | `string` | WooCommerce nonce updated |
-| `cart:hash:changed` | `string` | Cart hash updated |
-| `cart:token:changed` | `string` | Cart token updated |
+| Event                | Payload  | Description               |
+| -------------------- | -------- | ------------------------- |
+| `nonce:changed`      | `string` | WooCommerce nonce updated |
+| `cart:hash:changed`  | `string` | Cart hash updated         |
+| `cart:token:changed` | `string` | Cart token updated        |
 
 ## Request Options Hooks
 
@@ -180,7 +180,7 @@ const { data, error } = await Typewoo.store.products.list(
     onFinally: (data, error, context) => {
       console.log('Request complete');
     },
-  }
+  },
 );
 ```
 
@@ -190,13 +190,19 @@ const { data, error } = await Typewoo.store.products.list(
 interface RequestOptions<T = unknown> {
   axiosConfig?: AxiosRequestConfig;
   onRequest?: (context: RequestContext<T>) => void | Promise<void>;
-  onResponse?: (response: T, context: RequestContext<T>) => void | Promise<void>;
-  onError?: (error: ApiError, context: RequestContext<T>) => void | Promise<void>;
+  onResponse?: (
+    response: T,
+    context: RequestContext<T>,
+  ) => void | Promise<void>;
+  onError?: (
+    error: ApiError,
+    context: RequestContext<T>,
+  ) => void | Promise<void>;
   onLoading?: (isLoading: boolean) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
-    context: RequestContext<T>
+    context: RequestContext<T>,
   ) => void | Promise<void>;
 }
 ```
@@ -205,11 +211,11 @@ interface RequestOptions<T = unknown> {
 
 ```typescript
 interface RequestContext<T = unknown> {
-  url?: string;           // Full URL
-  path?: string;          // Endpoint path
+  url?: string; // Full URL
+  path?: string; // Endpoint path
   config?: AxiosRequestConfig;
   method?: Method | string;
-  payload?: T;            // Request body
+  payload?: T; // Request body
 }
 ```
 
@@ -221,7 +227,7 @@ Add middleware to intercept all events:
 const removeMiddleware = Typewoo.events.use((ctx, next) => {
   // Log all events
   console.log(`[Event] ${String(ctx.event)}:`, ctx.payload);
-  
+
   // Continue to handlers
   next();
 });
@@ -339,7 +345,7 @@ class CartStore {
   }
 
   private notifyListeners() {
-    this.listeners.forEach(fn => fn(this.cart));
+    this.listeners.forEach((fn) => fn(this.cart));
   }
 }
 
@@ -409,7 +415,11 @@ async function addToCartAndWait(productId: number) {
   const addPromise = Typewoo.store.cart.add({ id: productId });
 
   // Wait for the cart update event
-  const updatedCart = await Typewoo.events.waitFor('cart:updated', undefined, 5000);
+  const updatedCart = await Typewoo.events.waitFor(
+    'cart:updated',
+    undefined,
+    5000,
+  );
 
   // Also get the API result
   const { error } = await addPromise;

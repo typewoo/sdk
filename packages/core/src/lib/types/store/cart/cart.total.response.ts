@@ -16,7 +16,7 @@ export const CartTotalResponseSchema = z.looseObject({
       name: z.string(),
       price: z.string(),
       rate: z.string(),
-    })
+    }),
   ),
   currency_code: z.string(),
   currency_symbol: z.string(),

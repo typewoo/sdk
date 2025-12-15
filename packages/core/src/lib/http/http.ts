@@ -5,7 +5,7 @@ import { httpClient } from './http.client';
 
 export const doGet = async <T>(
   url: string,
-  requestOptions?: RequestOptions
+  requestOptions?: RequestOptions,
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...requestOptions,
@@ -19,7 +19,7 @@ export const doGet = async <T>(
 export const doPost = async <T, TData>(
   url: string,
   data?: TData,
-  requestOptions?: RequestOptions
+  requestOptions?: RequestOptions,
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...requestOptions,
@@ -34,7 +34,7 @@ export const doPost = async <T, TData>(
 export const doPut = async <T, TData>(
   url: string,
   data?: TData,
-  requestOptions?: RequestOptions
+  requestOptions?: RequestOptions,
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...requestOptions,
@@ -48,7 +48,7 @@ export const doPut = async <T, TData>(
 
 export const doDelete = async <T>(
   url: string,
-  requestOptions?: RequestOptions
+  requestOptions?: RequestOptions,
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...requestOptions,
@@ -61,7 +61,7 @@ export const doDelete = async <T>(
 
 export const doHead = async <T>(
   url: string,
-  requestOptions?: RequestOptions
+  requestOptions?: RequestOptions,
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...requestOptions,
@@ -76,7 +76,7 @@ export const doHead = async <T>(
 export const createRequest = <T>(
   instance: AxiosInstance,
   url: string,
-  requestOptions: RequestOptions
+  requestOptions: RequestOptions,
 ) => {
   const options = requestOptions.axiosConfig;
   const { method = 'get', data, params, headers } = options ?? {};

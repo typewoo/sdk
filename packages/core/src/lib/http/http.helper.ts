@@ -22,7 +22,7 @@ export const sleep = (ms: number): Promise<void> =>
  */
 export const getRetryDelay = (
   delay: number | ((attempt: number) => number) | undefined,
-  attempt: number
+  attempt: number,
 ): number => {
   if (typeof delay === 'function') {
     return delay(attempt);
@@ -34,7 +34,7 @@ export const getRetryDelay = (
  * Get the max retries value
  */
 export const getMaxRetries = (
-  maxRetries: number | (() => number) | undefined
+  maxRetries: number | (() => number) | undefined,
 ): number => {
   if (typeof maxRetries === 'function') {
     return maxRetries();
@@ -48,7 +48,7 @@ export const getMaxRetries = (
 export const shouldRetry = (
   error: AxiosError,
   attempt: number,
-  method: string
+  method: string,
 ): boolean => {
   const config = getSdkConfig();
   const retryConfig = config?.request?.retry;

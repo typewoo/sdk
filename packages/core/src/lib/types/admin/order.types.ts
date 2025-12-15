@@ -20,7 +20,7 @@ export const AdminOrderLineItemSchema = z.looseObject({
       id: z.number(),
       total: z.string(),
       subtotal: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
   sku: z.string(),
@@ -65,7 +65,7 @@ export const AdminOrderShippingLineSchema = z.looseObject({
     z.object({
       id: z.number(),
       total: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
 });
@@ -89,7 +89,7 @@ export const AdminOrderFeeLineSchema = z.looseObject({
       id: z.number(),
       total: z.string(),
       subtotal: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
 });

@@ -24,13 +24,13 @@ export class ProductReviewService extends BaseService {
    */
   async list(
     params?: ProductReviewRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductReviewResponse[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);

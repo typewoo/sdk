@@ -26,12 +26,12 @@ describe('Integration: Product Attributes & Terms', () => {
           id: size.id,
           order: 'asc',
           orderby: 'name',
-        }
+        },
       );
       expect(Array.isArray(terms)).toBe(true);
       type TermLike = { name?: string };
       const names = (terms || []).map(
-        (t) => (t as TermLike).name?.toLowerCase() || ''
+        (t) => (t as TermLike).name?.toLowerCase() || '',
       );
       expect(names.some((n) => n.startsWith('small'))).toBe(true);
     }

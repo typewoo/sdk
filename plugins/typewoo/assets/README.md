@@ -33,7 +33,6 @@ This directory contains all the assets required for the WordPress Plugin Directo
 ### Method 1: Using Online Tools
 
 1. **SVG to PNG/JPG**: Use tools like:
-
    - https://svgtopng.com/
    - https://cloudconvert.com/svg-to-png
    - https://convertio.co/svg-png/

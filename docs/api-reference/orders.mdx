@@ -38,37 +38,40 @@ console.log('Payment methods:', checkout?.payment_methods);
 Update checkout data (addresses, customer note, etc.).
 
 ```typescript
-const { data: checkout, error } = await Typewoo.store.checkout.update({
-  billing_address: {
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john@example.com',
-    phone: '+1234567890',
-    country: 'US',
-    state: 'CA',
-    city: 'San Francisco',
-    address_1: '123 Main St',
-    postcode: '94102',
+const { data: checkout, error } = await Typewoo.store.checkout.update(
+  {
+    billing_address: {
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john@example.com',
+      phone: '+1234567890',
+      country: 'US',
+      state: 'CA',
+      city: 'San Francisco',
+      address_1: '123 Main St',
+      postcode: '94102',
+    },
+    shipping_address: {
+      first_name: 'John',
+      last_name: 'Doe',
+      country: 'US',
+      state: 'CA',
+      city: 'San Francisco',
+      address_1: '123 Main St',
+      postcode: '94102',
+    },
   },
-  shipping_address: {
-    first_name: 'John',
-    last_name: 'Doe',
-    country: 'US',
-    state: 'CA',
-    city: 'San Francisco',
-    address_1: '123 Main St',
-    postcode: '94102',
-  },
-}, true); // true = recalculate totals
+  true,
+); // true = recalculate totals
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `params` | `CheckoutUpdateRequest` | No | Checkout data to update |
-| `experimental_calc_totals` | `boolean` | No | Recalculate totals (default: false) |
-| `options` | `RequestOptions` | No | Request options |
+| Name                       | Type                    | Required | Description                         |
+| -------------------------- | ----------------------- | -------- | ----------------------------------- |
+| `params`                   | `CheckoutUpdateRequest` | No       | Checkout data to update             |
+| `experimental_calc_totals` | `boolean`               | No       | Recalculate totals (default: false) |
+| `options`                  | `RequestOptions`        | No       | Request options                     |
 
 **Returns:** `Promise<ApiResult<CheckoutResponse>>`
 
@@ -77,38 +80,39 @@ const { data: checkout, error } = await Typewoo.store.checkout.update({
 Create an order and process payment.
 
 ```typescript
-const { data: result, error } = await Typewoo.store.checkout.processOrderAndPayment({
-  billing_address: {
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john@example.com',
-    phone: '+1234567890',
-    company: '',
-    country: 'US',
-    state: 'CA',
-    city: 'San Francisco',
-    address_1: '123 Main St',
-    address_2: '',
-    postcode: '94102',
-  },
-  shipping_address: {
-    first_name: 'John',
-    last_name: 'Doe',
-    company: '',
-    country: 'US',
-    state: 'CA',
-    city: 'San Francisco',
-    address_1: '123 Main St',
-    address_2: '',
-    postcode: '94102',
-  },
-  customer_note: 'Please deliver after 5 PM',
-  payment_method: 'stripe',
-  payment_data: [
-    { key: 'stripe_source', value: 'src_xxx' },
-    { key: 'stripe_payment_type', value: 'card' },
-  ],
-});
+const { data: result, error } =
+  await Typewoo.store.checkout.processOrderAndPayment({
+    billing_address: {
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john@example.com',
+      phone: '+1234567890',
+      company: '',
+      country: 'US',
+      state: 'CA',
+      city: 'San Francisco',
+      address_1: '123 Main St',
+      address_2: '',
+      postcode: '94102',
+    },
+    shipping_address: {
+      first_name: 'John',
+      last_name: 'Doe',
+      company: '',
+      country: 'US',
+      state: 'CA',
+      city: 'San Francisco',
+      address_1: '123 Main St',
+      address_2: '',
+      postcode: '94102',
+    },
+    customer_note: 'Please deliver after 5 PM',
+    payment_method: 'stripe',
+    payment_data: [
+      { key: 'stripe_source', value: 'src_xxx' },
+      { key: 'stripe_payment_type', value: 'card' },
+    ],
+  });
 
 if (error) {
   console.error('Checkout failed:', error.message);
@@ -121,15 +125,15 @@ if (error) {
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `params.billing_address` | `CheckoutBillingAddress` | Yes | Billing address |
-| `params.shipping_address` | `CheckoutShippingAddress` | Yes | Shipping address |
-| `params.customer_note` | `string` | No | Order note |
-| `params.payment_method` | `string` | No | Payment method ID |
-| `params.payment_data` | `{ key: string; value: string }[]` | No | Payment gateway data |
-| `params.customer_password` | `string` | No | Password for new account |
-| `params.extensions` | `unknown` | No | Extension data |
+| Name                       | Type                               | Required | Description              |
+| -------------------------- | ---------------------------------- | -------- | ------------------------ |
+| `params.billing_address`   | `CheckoutBillingAddress`           | Yes      | Billing address          |
+| `params.shipping_address`  | `CheckoutShippingAddress`          | Yes      | Shipping address         |
+| `params.customer_note`     | `string`                           | No       | Order note               |
+| `params.payment_method`    | `string`                           | No       | Payment method ID        |
+| `params.payment_data`      | `{ key: string; value: string }[]` | No       | Payment gateway data     |
+| `params.customer_password` | `string`                           | No       | Password for new account |
+| `params.extensions`        | `unknown`                          | No       | Extension data           |
 
 **Returns:** `Promise<ApiResult<CheckoutResponse>>`
 
@@ -147,22 +151,20 @@ const { data: result, error } = await Typewoo.store.checkoutOrder.order(
   {
     key: 'wc_order_xxx', // Order key
     payment_method: 'stripe',
-    payment_data: [
-      { key: 'stripe_source', value: 'src_xxx' },
-    ],
-  }
+    payment_data: [{ key: 'stripe_source', value: 'src_xxx' }],
+  },
 );
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `orderId` | `number` | Yes | Order ID |
-| `params.key` | `string` | Yes | Order key |
-| `params.payment_method` | `string` | No | Payment method ID |
-| `params.payment_data` | `array` | No | Payment gateway data |
-| `params.billing_email` | `string` | No | Billing email for guest orders |
+| Name                    | Type     | Required | Description                    |
+| ----------------------- | -------- | -------- | ------------------------------ |
+| `orderId`               | `number` | Yes      | Order ID                       |
+| `params.key`            | `string` | Yes      | Order key                      |
+| `params.payment_method` | `string` | No       | Payment method ID              |
+| `params.payment_data`   | `array`  | No       | Payment gateway data           |
+| `params.billing_email`  | `string` | No       | Billing email for guest orders |
 
 **Returns:** `Promise<ApiResult<CheckoutResponse>>`
 
@@ -174,9 +176,9 @@ Get order details for pay-for-order pages.
 
 ```typescript
 const { data: order, error } = await Typewoo.store.orders.get(
-  'wc_order_xxx',  // Order key
-  '12345',         // Order ID
-  'john@example.com' // Optional billing email for guest orders
+  'wc_order_xxx', // Order key
+  '12345', // Order ID
+  'john@example.com', // Optional billing email for guest orders
 );
 
 console.log('Order status:', order?.status);
@@ -185,12 +187,12 @@ console.log('Order total:', order?.totals.total_price);
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `key` | `string` | Yes | Order key |
-| `orderId` | `string` | Yes | Order ID |
-| `billingEmail` | `string` | No | Billing email (guest orders) |
-| `options` | `RequestOptions` | No | Request options |
+| Name           | Type             | Required | Description                  |
+| -------------- | ---------------- | -------- | ---------------------------- |
+| `key`          | `string`         | Yes      | Order key                    |
+| `orderId`      | `string`         | Yes      | Order ID                     |
+| `billingEmail` | `string`         | No       | Billing email (guest orders) |
+| `options`      | `RequestOptions` | No       | Request options              |
 
 **Returns:** `Promise<ApiResult<OrderResponse>>`
 
@@ -301,28 +303,36 @@ interface OrderTotalResponse {
 ```typescript
 import { Typewoo } from '@typewoo/sdk';
 
-async function processCheckout(customerData: CustomerData, paymentData: PaymentData) {
+async function processCheckout(
+  customerData: CustomerData,
+  paymentData: PaymentData,
+) {
   // 1. Get current checkout state
   const { data: checkout } = await Typewoo.store.checkout.get();
-  
+
   // 2. Update customer addresses
-  const { data: updatedCheckout, error: updateError } = await Typewoo.store.checkout.update({
-    billing_address: customerData.billing,
-    shipping_address: customerData.shipping,
-  }, true);
+  const { data: updatedCheckout, error: updateError } =
+    await Typewoo.store.checkout.update(
+      {
+        billing_address: customerData.billing,
+        shipping_address: customerData.shipping,
+      },
+      true,
+    );
 
   if (updateError) {
     throw new Error(`Address update failed: ${updateError.message}`);
   }
 
   // 3. Process order and payment
-  const { data: result, error } = await Typewoo.store.checkout.processOrderAndPayment({
-    billing_address: customerData.billing,
-    shipping_address: customerData.shipping,
-    customer_note: customerData.notes,
-    payment_method: paymentData.method,
-    payment_data: paymentData.data,
-  });
+  const { data: result, error } =
+    await Typewoo.store.checkout.processOrderAndPayment({
+      billing_address: customerData.billing,
+      shipping_address: customerData.shipping,
+      customer_note: customerData.notes,
+      payment_method: paymentData.method,
+      payment_data: paymentData.data,
+    });
 
   if (error) {
     // Handle specific errors
@@ -356,12 +366,16 @@ async function processCheckout(customerData: CustomerData, paymentData: PaymentD
 For existing orders that need payment:
 
 ```typescript
-async function payForOrder(orderId: number, orderKey: string, billingEmail: string) {
+async function payForOrder(
+  orderId: number,
+  orderKey: string,
+  billingEmail: string,
+) {
   // 1. Get order details
   const { data: order, error } = await Typewoo.store.orders.get(
     orderKey,
     orderId.toString(),
-    billingEmail
+    billingEmail,
   );
 
   if (error) {
@@ -373,17 +387,13 @@ async function payForOrder(orderId: number, orderKey: string, billingEmail: stri
   }
 
   // 2. Process payment
-  const { data: result, error: paymentError } = await Typewoo.store.checkoutOrder.order(
-    orderId,
-    {
+  const { data: result, error: paymentError } =
+    await Typewoo.store.checkoutOrder.order(orderId, {
       key: orderKey,
       payment_method: 'stripe',
-      payment_data: [
-        { key: 'stripe_source', value: stripeToken },
-      ],
+      payment_data: [{ key: 'stripe_source', value: stripeToken }],
       billing_email: billingEmail,
-    }
-  );
+    });
 
   if (paymentError) {
     throw new Error(`Payment failed: ${paymentError.message}`);
@@ -423,9 +433,7 @@ const { data: newOrder } = await Typewoo.admin.orders.create({
     email: 'john@example.com',
     // ...
   },
-  line_items: [
-    { product_id: 123, quantity: 2 },
-  ],
+  line_items: [{ product_id: 123, quantity: 2 }],
 });
 
 // Delete order
@@ -443,35 +451,38 @@ const { data: refund } = await Typewoo.admin.refunds.create(12345, {
 Common checkout errors:
 
 ```typescript
-const { data, error } = await Typewoo.store.checkout.processOrderAndPayment(params);
+const { data, error } =
+  await Typewoo.store.checkout.processOrderAndPayment(params);
 
 if (error) {
   switch (error.code) {
     case 'woocommerce_rest_cart_empty':
       showError('Your cart is empty');
       break;
-    
+
     case 'woocommerce_rest_checkout_missing_required_field':
       // error.data.params contains the missing field
-      showError(`Missing field: ${Object.keys(error.data.params || {}).join(', ')}`);
+      showError(
+        `Missing field: ${Object.keys(error.data.params || {}).join(', ')}`,
+      );
       break;
-    
+
     case 'woocommerce_rest_checkout_invalid_payment_method':
       showError('Please select a valid payment method');
       break;
-    
+
     case 'woocommerce_rest_checkout_payment_error':
       showError(`Payment failed: ${error.message}`);
       break;
-    
+
     case 'woocommerce_rest_invalid_coupon':
       showError('Invalid coupon code');
       break;
-    
+
     case 'woocommerce_rest_product_out_of_stock':
       showError('One or more products are out of stock');
       break;
-    
+
     default:
       showError(error.message);
   }

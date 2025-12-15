@@ -81,21 +81,21 @@ await Typewoo.init({
 
 ### Access Token Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `key` | `string` | `'typewoo_access_token'` | Storage key for the token |
-| `disabled` | `boolean` | `false` | Disable access token handling entirely |
-| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
-| `useInterceptor` | `boolean` | `true` | Auto-attach token to requests |
+| Option           | Type                             | Default                  | Description                            |
+| ---------------- | -------------------------------- | ------------------------ | -------------------------------------- |
+| `key`            | `string`                         | `'typewoo_access_token'` | Storage key for the token              |
+| `disabled`       | `boolean`                        | `false`                  | Disable access token handling entirely |
+| `storage`        | `StorageType \| StorageProvider` | `'localstorage'`         | Where to store the token               |
+| `useInterceptor` | `boolean`                        | `true`                   | Auto-attach token to requests          |
 
 ### Refresh Token Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `key` | `string` | `'typewoo_refresh_token'` | Storage key for the refresh token |
-| `disabled` | `boolean` | `false` | Disable refresh token handling |
-| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
-| `useInterceptor` | `boolean` | `true` | Auto-refresh on 401 responses |
+| Option           | Type                             | Default                   | Description                       |
+| ---------------- | -------------------------------- | ------------------------- | --------------------------------- |
+| `key`            | `string`                         | `'typewoo_refresh_token'` | Storage key for the refresh token |
+| `disabled`       | `boolean`                        | `false`                   | Disable refresh token handling    |
+| `storage`        | `StorageType \| StorageProvider` | `'localstorage'`          | Where to store the token          |
+| `useInterceptor` | `boolean`                        | `true`                    | Auto-refresh on 401 responses     |
 
 ## Nonce Configuration
 
@@ -112,11 +112,11 @@ await Typewoo.init({
 });
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `key` | `string` | `'typewoo_nonce'` | Storage key for the nonce |
-| `disabled` | `boolean` | `false` | Disable nonce handling |
-| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the nonce |
+| Option     | Type                             | Default           | Description               |
+| ---------- | -------------------------------- | ----------------- | ------------------------- |
+| `key`      | `string`                         | `'typewoo_nonce'` | Storage key for the nonce |
+| `disabled` | `boolean`                        | `false`           | Disable nonce handling    |
+| `storage`  | `StorageType \| StorageProvider` | `'localstorage'`  | Where to store the nonce  |
 
 ## Cart Token Configuration
 
@@ -133,11 +133,11 @@ await Typewoo.init({
 });
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `key` | `string` | `'typewoo_cart_token'` | Storage key for the cart token |
-| `disabled` | `boolean` | `false` | Disable cart token handling |
-| `storage` | `StorageType \| StorageProvider` | `'localstorage'` | Where to store the token |
+| Option     | Type                             | Default                | Description                    |
+| ---------- | -------------------------------- | ---------------------- | ------------------------------ |
+| `key`      | `string`                         | `'typewoo_cart_token'` | Storage key for the cart token |
+| `disabled` | `boolean`                        | `false`                | Disable cart token handling    |
+| `storage`  | `StorageType \| StorageProvider` | `'localstorage'`       | Where to store the token       |
 
 ## Admin API Configuration
 
@@ -154,11 +154,11 @@ await Typewoo.init({
 });
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `consumer_key` | `string` | - | WooCommerce REST API consumer key |
-| `consumer_secret` | `string` | - | WooCommerce REST API consumer secret |
-| `useAuthInterceptor` | `boolean` | `true` | Auto-add Basic Auth header |
+| Option               | Type      | Default | Description                          |
+| -------------------- | --------- | ------- | ------------------------------------ |
+| `consumer_key`       | `string`  | -       | WooCommerce REST API consumer key    |
+| `consumer_secret`    | `string`  | -       | WooCommerce REST API consumer secret |
+| `useAuthInterceptor` | `boolean` | `true`  | Auto-add Basic Auth header           |
 
 ## Request Configuration
 
@@ -188,15 +188,15 @@ await Typewoo.init({
 
 ### Retry Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | `boolean` | `false` | Enable retry logic |
-| `maxRetries` | `number \| () => number` | `3` | Maximum retry attempts |
-| `delay` | `number \| (attempt) => number` | `1000` | Delay between retries (ms) |
-| `retryOnStatus` | `number[]` | `[408, 429, 500, 502, 503, 504]` | HTTP status codes that trigger retry |
-| `retryOnMethods` | `Method[]` | `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']` | HTTP methods safe to retry |
-| `retryCondition` | `(error, attempt) => boolean` | - | Custom retry condition |
-| `onRetry` | `(attempt, error, config) => void` | - | Callback before each retry |
+| Option           | Type                               | Default                                       | Description                          |
+| ---------------- | ---------------------------------- | --------------------------------------------- | ------------------------------------ |
+| `enabled`        | `boolean`                          | `false`                                       | Enable retry logic                   |
+| `maxRetries`     | `number \| () => number`           | `3`                                           | Maximum retry attempts               |
+| `delay`          | `number \| (attempt) => number`    | `1000`                                        | Delay between retries (ms)           |
+| `retryOnStatus`  | `number[]`                         | `[408, 429, 500, 502, 503, 504]`              | HTTP status codes that trigger retry |
+| `retryOnMethods` | `Method[]`                         | `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']` | HTTP methods safe to retry           |
+| `retryCondition` | `(error, attempt) => boolean`      | -                                             | Custom retry condition               |
+| `onRetry`        | `(attempt, error, config) => void` | -                                             | Callback before each retry           |
 
 ### Exponential Backoff
 

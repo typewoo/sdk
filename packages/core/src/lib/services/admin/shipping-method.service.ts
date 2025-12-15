@@ -22,14 +22,14 @@ export class AdminShippingMethodService extends BaseService {
    */
   async list(
     params?: AdminShippingMethodQueryParams,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<AdminShippingMethod[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error, headers } = await doGet<AdminShippingMethod[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);
@@ -43,7 +43,7 @@ export class AdminShippingMethodService extends BaseService {
   async get(
     id: string,
     params?: AdminShippingMethodQueryParams,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminShippingMethod>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;

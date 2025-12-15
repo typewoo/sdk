@@ -156,7 +156,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       };
       const created = await Typewoo.admin.attributeTerms.create(
         attributeId,
-        termReq
+        termReq,
       );
       expect(created.error).toBeFalsy();
       if (!created.data) return;
@@ -171,7 +171,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       const updated = await Typewoo.admin.attributeTerms.update(
         attributeId,
         termId,
-        { description: 'Updated red' }
+        { description: 'Updated red' },
       );
       expect(updated.error).toBeFalsy();
       expect(updated.data?.description).toContain('Updated');
@@ -190,7 +190,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       const del = await Typewoo.admin.attributeTerms.delete(
         attributeId,
         termId,
-        true
+        true,
       );
       expect(del.error).toBeFalsy();
     } finally {
@@ -231,7 +231,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       // Error paths
       const notFound = await Typewoo.admin.attributeTerms.get(
         attributeId,
-        999999
+        999999,
       );
       expect(notFound.error).toBeTruthy();
       expect(notFound.error?.code).toMatch(/not_found|invalid/i);
@@ -244,13 +244,13 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       const badUpdate = await Typewoo.admin.attributeTerms.update(
         attributeId,
         999999,
-        { description: 'Nope' }
+        { description: 'Nope' },
       );
       expect(badUpdate.error).toBeTruthy();
 
       const badDelete = await Typewoo.admin.attributeTerms.delete(
         attributeId,
-        999999
+        999999,
       );
       expect(badDelete.error).toBeTruthy();
     } finally {

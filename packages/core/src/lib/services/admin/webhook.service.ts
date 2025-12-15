@@ -23,7 +23,7 @@ export class AdminWebhookService extends BaseService {
    */
   async list(
     params?: AdminWebhookQueryParams,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<AdminWebhook[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -41,7 +41,7 @@ export class AdminWebhookService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminWebhook>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -55,13 +55,13 @@ export class AdminWebhookService extends BaseService {
    */
   async create(
     webhook: AdminWebhookRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminWebhook, AdminWebhookRequest>(
       url,
       webhook,
-      options
+      options,
     );
 
     return { data, error };
@@ -73,13 +73,13 @@ export class AdminWebhookService extends BaseService {
   async update(
     id: number,
     webhook: AdminWebhookRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminWebhook, AdminWebhookRequest>(
       url,
       webhook,
-      options
+      options,
     );
 
     return { data, error };
@@ -91,7 +91,7 @@ export class AdminWebhookService extends BaseService {
   async delete(
     id: number,
     force = true,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminWebhook>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -109,7 +109,7 @@ export class AdminWebhookService extends BaseService {
       update?: Array<AdminWebhookRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<
     ApiResult<{
       create: AdminWebhook[];

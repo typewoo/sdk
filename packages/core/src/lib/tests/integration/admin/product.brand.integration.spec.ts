@@ -45,7 +45,7 @@ describe('Integration: Admin Product Brands', () => {
     expect(Array.isArray(data)).toBe(true);
     if (data && data.length > 0) {
       const has = data.some((c) =>
-        (c.name || '').toLowerCase().includes(query)
+        (c.name || '').toLowerCase().includes(query),
       );
       expect(has).toBe(true);
     }
@@ -127,7 +127,7 @@ describe('Integration: Admin Product Brands', () => {
     const notFound = await Typewoo.admin.productBrands.get(999999);
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(
-      /not_found|invalid|forbidden|unsupported/i
+      /not_found|invalid|forbidden|unsupported/i,
     );
 
     const badCreate = await Typewoo.admin.productBrands.create({ name: '' });

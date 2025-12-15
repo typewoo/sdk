@@ -24,13 +24,13 @@ export class ProductAttributeTermService extends BaseService {
   async list(
     attributeId: number,
     params?: ProductAttributeTermRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
     const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);

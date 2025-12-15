@@ -21,7 +21,7 @@ export class BatchService extends BaseService {
    */
   async execute(
     params: BatchRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<BatchResponse>> {
     const url = `/${this.endpoint}`;
 
@@ -31,7 +31,7 @@ export class BatchService extends BaseService {
     const { data, error } = await doPost<BatchResponse, BatchRequest>(
       url,
       params,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'batch:request:success');

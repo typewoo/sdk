@@ -17,7 +17,7 @@ jQuery(function ($) {
         //phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
         responseBox.html(data);
       },
-      'html'
+      'html',
     );
   }
 
@@ -26,7 +26,7 @@ jQuery(function ($) {
     function () {
       runAjaxAction(this, 'puc_v5_debug_check_now');
       return false;
-    }
+    },
   );
 
   $('.puc-debug-bar-panel-v5 input[name="puc-request-info-button"]').on(
@@ -34,7 +34,7 @@ jQuery(function ($) {
     function () {
       runAjaxAction(this, 'puc_v5_debug_request_info');
       return false;
-    }
+    },
   );
 
   // Debug Bar uses the panel class name as part of its link and container IDs. This means we can

@@ -11,7 +11,7 @@ export function createHttpClient(config: AxiosRequestConfig): AxiosInstance {
 export function getHttpClient(): AxiosInstance {
   if (!_http) {
     throw new Error(
-      'httpClient not initialized. Call createHttpClient(config) first.'
+      'httpClient not initialized. Call createHttpClient(config) first.',
     );
   }
   return _http;

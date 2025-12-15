@@ -93,7 +93,7 @@ const { data: updatedCart } = await Typewoo.store.cart.add({
 // Update item quantity
 const { data: cart } = await Typewoo.store.cart.update(
   'item_key_here', // Cart item key
-  3 // New quantity
+  3, // New quantity
 );
 
 // Remove an item
@@ -158,14 +158,17 @@ const { data: updatedCheckout } = await Typewoo.store.checkout.update({
 });
 
 // Process order and payment
-const { data: orderResult, error } = await Typewoo.store.checkout.processOrderAndPayment({
-  billing_address: { /* ... */ },
-  shipping_address: { /* ... */ },
-  payment_method: 'stripe',
-  payment_data: [
-    { key: 'stripe_token', value: 'tok_xxx' },
-  ],
-});
+const { data: orderResult, error } =
+  await Typewoo.store.checkout.processOrderAndPayment({
+    billing_address: {
+      /* ... */
+    },
+    shipping_address: {
+      /* ... */
+    },
+    payment_method: 'stripe',
+    payment_data: [{ key: 'stripe_token', value: 'tok_xxx' }],
+  });
 
 if (orderResult) {
   console.log('Order ID:', orderResult.order_id);

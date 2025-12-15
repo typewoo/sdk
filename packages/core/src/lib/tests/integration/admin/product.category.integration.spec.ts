@@ -45,7 +45,7 @@ describe('Integration: Admin Product Categories', () => {
     expect(Array.isArray(data)).toBe(true);
     if (data && data.length > 0) {
       const has = data.some((c) =>
-        (c.name || '').toLowerCase().includes(query)
+        (c.name || '').toLowerCase().includes(query),
       );
       expect(has).toBe(true);
     }
@@ -81,7 +81,7 @@ describe('Integration: Admin Product Categories', () => {
     // Delete (force)
     const delRes = await Typewoo.admin.productCategories.delete(
       categoryId,
-      true
+      true,
     );
     expect(delRes.error).toBeFalsy();
 

@@ -31,32 +31,38 @@ const customerService = Typewoo.admin.customers;
 List customers with optional filters.
 
 ```typescript
-const { data: customers, pagination, error } = await Typewoo.admin.customers.list({
+const {
+  data: customers,
+  pagination,
+  error,
+} = await Typewoo.admin.customers.list({
   per_page: 20,
   page: 1,
   orderby: 'registered_date',
   order: 'desc',
 });
 
-customers?.forEach(customer => {
-  console.log(`${customer.first_name} ${customer.last_name} - ${customer.email}`);
+customers?.forEach((customer) => {
+  console.log(
+    `${customer.first_name} ${customer.last_name} - ${customer.email}`,
+  );
 });
 ```
 
 **Query Parameters:**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `page` | `number` | Page number |
-| `per_page` | `number` | Items per page (max 100) |
-| `search` | `string` | Search by email, name |
-| `exclude` | `number[]` | Exclude specific IDs |
-| `include` | `number[]` | Include specific IDs |
-| `offset` | `number` | Offset for pagination |
-| `order` | `'asc' \| 'desc'` | Sort direction |
-| `orderby` | `string` | Sort field |
-| `email` | `string` | Filter by email |
-| `role` | `string` | Filter by role |
+| Parameter  | Type              | Description              |
+| ---------- | ----------------- | ------------------------ |
+| `page`     | `number`          | Page number              |
+| `per_page` | `number`          | Items per page (max 100) |
+| `search`   | `string`          | Search by email, name    |
+| `exclude`  | `number[]`        | Exclude specific IDs     |
+| `include`  | `number[]`        | Include specific IDs     |
+| `offset`   | `number`          | Offset for pagination    |
+| `order`    | `'asc' \| 'desc'` | Sort direction           |
+| `orderby`  | `string`          | Sort field               |
+| `email`    | `string`          | Filter by email          |
+| `role`     | `string`          | Filter by role           |
 
 **Returns:** `Promise<ApiPaginationResult<AdminCustomer[]>>`
 
@@ -76,10 +82,10 @@ if (customer) {
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `id` | `number` | Yes | Customer ID |
-| `params.context` | `'view' \| 'edit'` | No | Scope of response |
+| Name             | Type               | Required | Description       |
+| ---------------- | ------------------ | -------- | ----------------- |
+| `id`             | `number`           | Yes      | Customer ID       |
+| `params.context` | `'view' \| 'edit'` | No       | Scope of response |
 
 **Returns:** `Promise<ApiResult<AdminCustomer>>`
 
@@ -145,10 +151,10 @@ const { data: customer, error } = await Typewoo.admin.customers.update(123, {
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `id` | `number` | Yes | Customer ID |
-| `customer` | `AdminCustomerRequest` | Yes | Customer data |
+| Name       | Type                   | Required | Description   |
+| ---------- | ---------------------- | -------- | ------------- |
+| `id`       | `number`               | Yes      | Customer ID   |
+| `customer` | `AdminCustomerRequest` | Yes      | Customer data |
 
 **Returns:** `Promise<ApiResult<AdminCustomer>>`
 
@@ -169,11 +175,11 @@ const { data, error } = await Typewoo.admin.customers.delete(123, true, 456);
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `id` | `number` | Yes | Customer ID |
-| `force` | `boolean` | No | Permanently delete (default: false) |
-| `reassign` | `number` | No | Reassign orders to this customer ID |
+| Name       | Type      | Required | Description                         |
+| ---------- | --------- | -------- | ----------------------------------- |
+| `id`       | `number`  | Yes      | Customer ID                         |
+| `force`    | `boolean` | No       | Permanently delete (default: false) |
+| `reassign` | `number`  | No       | Reassign orders to this customer ID |
 
 **Returns:** `Promise<ApiResult<AdminCustomer>>`
 
@@ -187,9 +193,7 @@ const { data, error } = await Typewoo.admin.customers.batch({
     { email: 'user1@example.com', first_name: 'User', last_name: 'One' },
     { email: 'user2@example.com', first_name: 'User', last_name: 'Two' },
   ],
-  update: [
-    { id: 123, first_name: 'Updated' },
-  ],
+  update: [{ id: 123, first_name: 'Updated' }],
   delete: [456, 789],
 });
 
@@ -207,8 +211,10 @@ Get customer's available downloads.
 ```typescript
 const { data: downloads, error } = await Typewoo.admin.customers.downloads(123);
 
-downloads?.forEach(download => {
-  console.log(`${download.product_name}: ${download.downloads_remaining} remaining`);
+downloads?.forEach((download) => {
+  console.log(
+    `${download.product_name}: ${download.downloads_remaining} remaining`,
+  );
 });
 ```
 
@@ -253,8 +259,8 @@ interface CustomerAddress {
   state: string;
   postcode: string;
   country: string;
-  email?: string;  // Billing only
-  phone?: string;  // Billing only
+  email?: string; // Billing only
+  phone?: string; // Billing only
 }
 ```
 
@@ -360,7 +366,7 @@ async function createCustomer(data: CustomerFormData) {
 async function* exportAllCustomers() {
   let page = 1;
   const perPage = 100;
-  
+
   while (true) {
     const { data, pagination } = await Typewoo.admin.customers.list({
       page,
@@ -388,7 +394,7 @@ for await (const customer of exportAllCustomers()) {
 async function updateCustomerAddress(
   customerId: number,
   type: 'billing' | 'shipping',
-  address: CustomerAddress
+  address: CustomerAddress,
 ) {
   const { data, error } = await Typewoo.admin.customers.update(customerId, {
     [type]: address,
@@ -412,19 +418,19 @@ if (error) {
     case 'registration-error-email-exists':
       showError('A customer with this email already exists');
       break;
-    
+
     case 'registration-error-invalid-email':
       showError('Invalid email address');
       break;
-    
+
     case 'registration-error-username-exists':
       showError('Username already taken');
       break;
-    
+
     case 'woocommerce_rest_cannot_create':
       showError('Permission denied');
       break;
-    
+
     default:
       showError(error.message);
   }
@@ -479,7 +485,7 @@ const { data } = await Typewoo.admin.settings.getGroup('general');
 const { data } = await Typewoo.admin.settings.updateOption(
   'general',
   'woocommerce_store_address',
-  { value: '123 Main St' }
+  { value: '123 Main St' },
 );
 ```
 

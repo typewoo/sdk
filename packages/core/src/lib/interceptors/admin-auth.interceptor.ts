@@ -12,7 +12,7 @@ export const addAdminAuthInterceptor = (config: ResolvedSdkConfig) => {
         }
 
         const b64 = btoa(
-          `${config.admin.consumer_key}:${config.admin.consumer_secret}`
+          `${config.admin.consumer_key}:${config.admin.consumer_secret}`,
         );
         axiosConfig.headers['Authorization'] = `Basic ${b64}`;
       }
@@ -21,6 +21,6 @@ export const addAdminAuthInterceptor = (config: ResolvedSdkConfig) => {
     },
     (error: AxiosError | Error) => {
       return Promise.reject(error);
-    }
+    },
   );
 };

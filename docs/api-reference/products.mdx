@@ -32,10 +32,10 @@ const { data, error, pagination } = await Typewoo.store.products.list({
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `params` | `ProductRequest` | No | Query parameters |
-| `options` | `RequestOptions` | No | Request options |
+| Name      | Type             | Required | Description      |
+| --------- | ---------------- | -------- | ---------------- |
+| `params`  | `ProductRequest` | No       | Query parameters |
+| `options` | `RequestOptions` | No       | Request options  |
 
 **Returns:** `Promise<ApiPaginationResult<ProductResponse[]>>`
 
@@ -48,15 +48,17 @@ Retrieve a single product by ID or slug.
 const { data, error } = await Typewoo.store.products.single({ id: 123 });
 
 // By slug
-const { data, error } = await Typewoo.store.products.single({ slug: 'blue-t-shirt' });
+const { data, error } = await Typewoo.store.products.single({
+  slug: 'blue-t-shirt',
+});
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `params` | `{ id?: number; slug?: string }` | Yes | Product identifier (at least one required) |
-| `options` | `RequestOptions` | No | Request options |
+| Name      | Type                             | Required | Description                                |
+| --------- | -------------------------------- | -------- | ------------------------------------------ |
+| `params`  | `{ id?: number; slug?: string }` | Yes      | Product identifier (at least one required) |
+| `options` | `RequestOptions`                 | No       | Request options                            |
 
 **Returns:** `Promise<ApiResult<ProductResponse>>`
 
@@ -66,20 +68,21 @@ The `ProductRequest` type supports extensive filtering:
 
 ### Pagination
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `page` | `number` | `1` | Page number |
-| `per_page` | `number` | `10` | Items per page |
-| `offset` | `number` | - | Offset for pagination |
+| Parameter  | Type     | Default | Description           |
+| ---------- | -------- | ------- | --------------------- |
+| `page`     | `number` | `1`     | Page number           |
+| `per_page` | `number` | `10`    | Items per page        |
+| `offset`   | `number` | -       | Offset for pagination |
 
 ### Sorting
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `order` | `'asc' \| 'desc'` | `'desc'` | Sort direction |
-| `orderby` | `string` | `'date'` | Sort field |
+| Parameter | Type              | Default  | Description    |
+| --------- | ----------------- | -------- | -------------- |
+| `order`   | `'asc' \| 'desc'` | `'desc'` | Sort direction |
+| `orderby` | `string`          | `'date'` | Sort field     |
 
 Valid `orderby` values:
+
 - `date` - Date created
 - `modified` - Date modified
 - `id` - Product ID
@@ -94,43 +97,43 @@ Valid `orderby` values:
 
 ### Filtering
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `search` | `string` | Search term |
-| `slug` | `string` | Filter by slug(s), comma-separated |
-| `include` | `number[]` | Include specific IDs |
-| `exclude` | `number[]` | Exclude specific IDs |
-| `parent` | `number[]` | Filter by parent IDs |
-| `parent_exclude` | `number[]` | Exclude parent IDs |
+| Parameter        | Type       | Description                        |
+| ---------------- | ---------- | ---------------------------------- |
+| `search`         | `string`   | Search term                        |
+| `slug`           | `string`   | Filter by slug(s), comma-separated |
+| `include`        | `number[]` | Include specific IDs               |
+| `exclude`        | `number[]` | Exclude specific IDs               |
+| `parent`         | `number[]` | Filter by parent IDs               |
+| `parent_exclude` | `number[]` | Exclude parent IDs                 |
 
 ### Date Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `after` | `string` | Products created after (ISO8601) |
-| `before` | `string` | Products created before (ISO8601) |
-| `date_column` | `string` | Column for date filtering |
+| Parameter     | Type     | Description                       |
+| ------------- | -------- | --------------------------------- |
+| `after`       | `string` | Products created after (ISO8601)  |
+| `before`      | `string` | Products created before (ISO8601) |
+| `date_column` | `string` | Column for date filtering         |
 
 Valid `date_column` values: `date`, `date_gmt`, `modified`, `modified_gmt`
 
 ### Product Properties
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `type` | `string` | Product type |
-| `sku` | `string` | Filter by SKU(s), comma-separated |
-| `featured` | `boolean` | Filter by featured status |
-| `on_sale` | `boolean` | Filter by on-sale status |
-| `rating` | `number` | Filter by minimum rating |
+| Parameter  | Type      | Description                       |
+| ---------- | --------- | --------------------------------- |
+| `type`     | `string`  | Product type                      |
+| `sku`      | `string`  | Filter by SKU(s), comma-separated |
+| `featured` | `boolean` | Filter by featured status         |
+| `on_sale`  | `boolean` | Filter by on-sale status          |
+| `rating`   | `number`  | Filter by minimum rating          |
 
 Valid `type` values: `simple`, `grouped`, `external`, `variable`, `variation`
 
 ### Category Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `category` | `string` | Category IDs or slugs, comma-separated |
-| `category_operator` | `string` | Logical operator |
+| Parameter           | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| `category`          | `string` | Category IDs or slugs, comma-separated |
+| `category_operator` | `string` | Logical operator                       |
 
 Valid operators: `in`, `not_in`, `and`
 
@@ -150,22 +153,22 @@ const { data } = await Typewoo.store.products.list({
 
 ### Tag Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `tag` | `string` | Tag IDs or slugs, comma-separated |
-| `tag_operator` | `string` | Logical operator |
+| Parameter      | Type     | Description                       |
+| -------------- | -------- | --------------------------------- |
+| `tag`          | `string` | Tag IDs or slugs, comma-separated |
+| `tag_operator` | `string` | Logical operator                  |
 
 ### Brand Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `brand` | `string` | Brand IDs or slugs, comma-separated |
-| `brand_operator` | `string` | Logical operator |
+| Parameter        | Type     | Description                         |
+| ---------------- | -------- | ----------------------------------- |
+| `brand`          | `string` | Brand IDs or slugs, comma-separated |
+| `brand_operator` | `string` | Logical operator                    |
 
 ### Price Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter   | Type     | Description                            |
+| ----------- | -------- | -------------------------------------- |
 | `min_price` | `string` | Minimum price (smallest currency unit) |
 | `max_price` | `string` | Maximum price (smallest currency unit) |
 
@@ -181,8 +184,8 @@ const { data } = await Typewoo.store.products.list({
 
 ### Stock Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter      | Type       | Description            |
+| -------------- | ---------- | ---------------------- |
 | `stock_status` | `string[]` | Filter by stock status |
 
 Valid values: `instock`, `outofstock`, `onbackorder`
@@ -195,15 +198,15 @@ const { data } = await Typewoo.store.products.list({
 
 ### Attribute Filters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `attributes` | `array` | Attribute filter objects |
+| Parameter            | Type     | Description                 |
+| -------------------- | -------- | --------------------------- |
+| `attributes`         | `array`  | Attribute filter objects    |
 | `attribute_relation` | `string` | Relation between attributes |
 
 ### Visibility
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter            | Type     | Description               |
+| -------------------- | -------- | ------------------------- |
 | `catalog_visibility` | `string` | Catalog visibility filter |
 
 Valid values: `any`, `visible`, `catalog`, `search`, `hidden`
@@ -390,7 +393,7 @@ async function loadProducts(page: number) {
     page,
     per_page: 12,
   });
-  
+
   return {
     products: data,
     hasNext: pagination.next !== undefined,

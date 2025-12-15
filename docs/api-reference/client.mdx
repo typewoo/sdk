@@ -27,9 +27,9 @@ await Typewoo.init({
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `config` | `SdkConfig` | Yes | SDK configuration object |
+| Parameter | Type        | Required | Description              |
+| --------- | ----------- | -------- | ------------------------ |
+| `config`  | `SdkConfig` | Yes      | SDK configuration object |
 
 **SdkConfig Interface:**
 
@@ -95,24 +95,24 @@ const cart = await Typewoo.store.cart.get();
 
 **Available Services:**
 
-| Property | Service | Description |
-|----------|---------|-------------|
-| `products` | `ProductService` | Product listing and details |
-| `cart` | `CartService` | Cart operations |
-| `cartItems` | `CartItemService` | Cart item CRUD |
-| `cartCoupons` | `CartCouponService` | Coupon management |
-| `cartExtensions` | `CartExtensionsService` | Cart extensions |
-| `checkout` | `CheckoutService` | Checkout flow |
-| `checkoutOrder` | `CheckoutOrderService` | Pay-for-order checkout |
-| `orders` | `OrderService` | Order retrieval |
-| `categories` | `ProductCategoryService` | Product categories |
-| `tags` | `ProductTagService` | Product tags |
-| `brands` | `ProductBrandService` | Product brands |
-| `attributes` | `ProductAttributeService` | Product attributes |
-| `attributesTerms` | `ProductAttributeTermService` | Attribute terms |
-| `reviews` | `ProductReviewService` | Product reviews |
-| `collectionData` | `ProductCollectionDataService` | Collection metadata |
-| `batch` | `BatchService` | Batch requests |
+| Property          | Service                        | Description                 |
+| ----------------- | ------------------------------ | --------------------------- |
+| `products`        | `ProductService`               | Product listing and details |
+| `cart`            | `CartService`                  | Cart operations             |
+| `cartItems`       | `CartItemService`              | Cart item CRUD              |
+| `cartCoupons`     | `CartCouponService`            | Coupon management           |
+| `cartExtensions`  | `CartExtensionsService`        | Cart extensions             |
+| `checkout`        | `CheckoutService`              | Checkout flow               |
+| `checkoutOrder`   | `CheckoutOrderService`         | Pay-for-order checkout      |
+| `orders`          | `OrderService`                 | Order retrieval             |
+| `categories`      | `ProductCategoryService`       | Product categories          |
+| `tags`            | `ProductTagService`            | Product tags                |
+| `brands`          | `ProductBrandService`          | Product brands              |
+| `attributes`      | `ProductAttributeService`      | Product attributes          |
+| `attributesTerms` | `ProductAttributeTermService`  | Attribute terms             |
+| `reviews`         | `ProductReviewService`         | Product reviews             |
+| `collectionData`  | `ProductCollectionDataService` | Collection metadata         |
+| `batch`           | `BatchService`                 | Batch requests              |
 
 ### `auth`
 
@@ -125,15 +125,15 @@ await Typewoo.auth.validate();
 
 **Available Methods:**
 
-| Method | Description |
-|--------|-------------|
-| `token(body)` | Obtain access and refresh tokens |
-| `refreshToken(body)` | Refresh an access token |
-| `revokeToken(body?)` | Revoke/logout |
-| `validate()` | Validate current token |
-| `status()` | Get authentication status |
-| `oneTimeToken(body)` | Generate one-time login token |
-| `getAutoLoginUrl(ott, redirect, params?)` | Build auto-login URL |
+| Method                                    | Description                      |
+| ----------------------------------------- | -------------------------------- |
+| `token(body)`                             | Obtain access and refresh tokens |
+| `refreshToken(body)`                      | Refresh an access token          |
+| `revokeToken(body?)`                      | Revoke/logout                    |
+| `validate()`                              | Validate current token           |
+| `status()`                                | Get authentication status        |
+| `oneTimeToken(body)`                      | Generate one-time login token    |
+| `getAutoLoginUrl(ott, redirect, params?)` | Build auto-login URL             |
 
 ### `admin`
 
@@ -146,30 +146,30 @@ const order = await Typewoo.admin.orders.getById(123);
 
 **Available Services:**
 
-| Property | Service | Description |
-|----------|---------|-------------|
-| `products` | `AdminProductService` | Product CRUD |
-| `orders` | `AdminOrderService` | Order management |
-| `customers` | `AdminCustomerService` | Customer management |
-| `coupons` | `AdminCouponService` | Coupon management |
-| `productCategories` | `AdminProductCategoryService` | Categories CRUD |
-| `productTags` | `AdminProductTagService` | Tags CRUD |
-| `productAttributes` | `AdminProductAttributeService` | Attributes CRUD |
-| `attributeTerms` | `AdminProductAttributeTermService` | Attribute terms |
-| `productBrands` | `AdminProductBrandService` | Brands CRUD |
-| `productReviews` | `AdminProductReviewService` | Reviews CRUD |
-| `shippingClasses` | `AdminShippingClassService` | Shipping classes |
-| `refunds` | `AdminRefundService` | Refund management |
-| `taxes` | `AdminTaxService` | Tax rates |
-| `taxClasses` | `AdminTaxClassService` | Tax classes |
-| `webhooks` | `AdminWebhookService` | Webhooks |
-| `settings` | `AdminSettingService` | Store settings |
-| `reports` | `AdminReportService` | Sales reports |
-| `shippingZones` | `AdminShippingZoneService` | Shipping zones |
-| `shippingMethods` | `AdminShippingMethodService` | Shipping methods |
-| `paymentGateways` | `AdminPaymentGatewayService` | Payment gateways |
-| `systemStatus` | `AdminSystemStatusService` | System status |
-| `data` | `AdminDataService` | Countries, currencies |
+| Property            | Service                            | Description           |
+| ------------------- | ---------------------------------- | --------------------- |
+| `products`          | `AdminProductService`              | Product CRUD          |
+| `orders`            | `AdminOrderService`                | Order management      |
+| `customers`         | `AdminCustomerService`             | Customer management   |
+| `coupons`           | `AdminCouponService`               | Coupon management     |
+| `productCategories` | `AdminProductCategoryService`      | Categories CRUD       |
+| `productTags`       | `AdminProductTagService`           | Tags CRUD             |
+| `productAttributes` | `AdminProductAttributeService`     | Attributes CRUD       |
+| `attributeTerms`    | `AdminProductAttributeTermService` | Attribute terms       |
+| `productBrands`     | `AdminProductBrandService`         | Brands CRUD           |
+| `productReviews`    | `AdminProductReviewService`        | Reviews CRUD          |
+| `shippingClasses`   | `AdminShippingClassService`        | Shipping classes      |
+| `refunds`           | `AdminRefundService`               | Refund management     |
+| `taxes`             | `AdminTaxService`                  | Tax rates             |
+| `taxClasses`        | `AdminTaxClassService`             | Tax classes           |
+| `webhooks`          | `AdminWebhookService`              | Webhooks              |
+| `settings`          | `AdminSettingService`              | Store settings        |
+| `reports`           | `AdminReportService`               | Sales reports         |
+| `shippingZones`     | `AdminShippingZoneService`         | Shipping zones        |
+| `shippingMethods`   | `AdminShippingMethodService`       | Shipping methods      |
+| `paymentGateways`   | `AdminPaymentGatewayService`       | Payment gateways      |
+| `systemStatus`      | `AdminSystemStatusService`         | System status         |
+| `data`              | `AdminDataService`                 | Countries, currencies |
 
 ### `events`
 
@@ -251,7 +251,11 @@ const expDate = getJwtExpiration(token);
 ### Common Utilities
 
 ```typescript
-import { extractPagination, parseLinkHeader, RequireAtLeastOne } from '@typewoo/sdk';
+import {
+  extractPagination,
+  parseLinkHeader,
+  RequireAtLeastOne,
+} from '@typewoo/sdk';
 
 // Extract pagination from response headers
 const pagination = extractPagination(headers);
@@ -271,21 +275,21 @@ import {
   ResolvedSdkConfig,
   StorageProvider,
   StorageType,
-  
+
   // State types
   SdkState,
   SdkEvent,
-  
+
   // API result types
   ApiResult,
   ApiPaginationResult,
   ApiError,
   Pagination,
-  
+
   // Request options
   RequestOptions,
   RequestContext,
-  
+
   // Store API types
   ProductRequest,
   ProductResponse,
@@ -297,17 +301,16 @@ import {
   OrderResponse,
   BatchRequest,
   BatchResponse,
-  
+
   // Admin API types
   AdminProduct,
   AdminProductRequest,
   AdminOrder,
   AdminCustomer,
   // ... many more
-  
+
   // Service classes (for extension)
   EventBus,
-  
 } from '@typewoo/sdk';
 ```
 

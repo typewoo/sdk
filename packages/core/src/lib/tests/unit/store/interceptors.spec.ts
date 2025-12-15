@@ -86,13 +86,13 @@ describe('Interceptors', () => {
     };
     addNonceInterceptors(cfg, state, events);
     const maybeReq = castClient().interceptors.request.handlers.find((h) =>
-      h.fulfilled.toString().includes('nonce')
+      h.fulfilled.toString().includes('nonce'),
     );
     if (!maybeReq) throw new Error('request interceptor not found');
     const config = await maybeReq.fulfilled({ headers: {} });
     expect(config.headers['nonce']).toBe('nnn');
     const maybeRes = castClient().interceptors.response.handlers.find((h) =>
-      h.fulfilled.toString().includes('nonce')
+      h.fulfilled.toString().includes('nonce'),
     );
     if (!maybeRes) throw new Error('response interceptor not found');
     await maybeRes.fulfilled({ headers: { nonce: 'mmm' } });

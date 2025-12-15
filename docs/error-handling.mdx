@@ -27,10 +27,10 @@ console.log('Products:', data);
 
 ```typescript
 interface ApiError {
-  code: string;           // Error code identifier
-  message: string;        // Human-readable message
+  code: string; // Error code identifier
+  message: string; // Human-readable message
   data: {
-    status: number;       // HTTP status code
+    status: number; // HTTP status code
     params?: Record<string, string>; // Parameter details
   };
   details: Record<string, Record<string, string>>; // Additional details
@@ -54,30 +54,30 @@ interface ApiError {
 
 ### Client Errors (4xx)
 
-| Status | Common Codes | Description |
-|--------|-------------|-------------|
-| 400 | `rest_invalid_param`, `woocommerce_rest_missing_parameter` | Bad request |
-| 401 | `woocommerce_rest_cannot_view`, `jwt_auth_failed` | Authentication required |
-| 403 | `woocommerce_rest_cannot_create` | Permission denied |
-| 404 | `woocommerce_rest_product_invalid_id` | Resource not found |
-| 422 | `woocommerce_rest_invalid_coupon` | Validation error |
+| Status | Common Codes                                               | Description             |
+| ------ | ---------------------------------------------------------- | ----------------------- |
+| 400    | `rest_invalid_param`, `woocommerce_rest_missing_parameter` | Bad request             |
+| 401    | `woocommerce_rest_cannot_view`, `jwt_auth_failed`          | Authentication required |
+| 403    | `woocommerce_rest_cannot_create`                           | Permission denied       |
+| 404    | `woocommerce_rest_product_invalid_id`                      | Resource not found      |
+| 422    | `woocommerce_rest_invalid_coupon`                          | Validation error        |
 
 ### Server Errors (5xx)
 
-| Status | Common Codes | Description |
-|--------|-------------|-------------|
-| 500 | `woocommerce_rest_cannot_process` | Internal server error |
-| 502 | `bad_gateway` | Bad gateway |
-| 503 | `service_unavailable` | Service unavailable |
-| 504 | `gateway_timeout` | Gateway timeout |
+| Status | Common Codes                      | Description           |
+| ------ | --------------------------------- | --------------------- |
+| 500    | `woocommerce_rest_cannot_process` | Internal server error |
+| 502    | `bad_gateway`                     | Bad gateway           |
+| 503    | `service_unavailable`             | Service unavailable   |
+| 504    | `gateway_timeout`                 | Gateway timeout       |
 
 ### Network Errors
 
-| Code | Description |
-|------|-------------|
-| `network_error` | Unable to reach server |
-| `ECONNREFUSED` | Connection refused |
-| `ETIMEDOUT` | Connection timed out |
+| Code            | Description                 |
+| --------------- | --------------------------- |
+| `network_error` | Unable to reach server      |
+| `ECONNREFUSED`  | Connection refused          |
+| `ETIMEDOUT`     | Connection timed out        |
 | `request_error` | Request configuration error |
 
 ## Handling Errors
@@ -157,11 +157,11 @@ const { data } = await Typewoo.store.products.list(
   {
     onError: (error, context) => {
       console.error(`Request to ${context.url} failed:`, error.message);
-      
+
       // Log to error tracking service
       errorTracker.captureException(error);
     },
-  }
+  },
 );
 ```
 
@@ -171,11 +171,11 @@ The error handler receives context about the failed request:
 
 ```typescript
 interface RequestContext<T = unknown> {
-  url?: string;           // Full URL
-  path?: string;          // Endpoint path
+  url?: string; // Full URL
+  path?: string; // Endpoint path
   config?: AxiosRequestConfig;
   method?: Method | string;
-  payload?: T;            // Request body
+  payload?: T; // Request body
 }
 ```
 
@@ -209,7 +209,7 @@ Typewoo.events.use((ctx, next) => {
   if (String(ctx.event).includes(':error')) {
     // Log all errors
     console.error(`[Error Event] ${String(ctx.event)}:`, ctx.payload);
-    
+
     // Send to error tracking
     if (ctx.payload instanceof Error || ctx.payload?.error) {
       errorTracker.captureException(ctx.payload);
@@ -247,57 +247,57 @@ See [Configuration](/configuration#request-configuration) for full retry options
 
 ### Authentication Errors
 
-| Code | Description |
-|------|-------------|
-| `jwt_auth_failed` | JWT authentication failed |
-| `jwt_auth_invalid_token` | Invalid JWT token |
-| `jwt_auth_expired_token` | JWT token expired |
-| `woocommerce_rest_cannot_view` | Authentication required |
-| `rest_forbidden` | Access denied |
+| Code                           | Description               |
+| ------------------------------ | ------------------------- |
+| `jwt_auth_failed`              | JWT authentication failed |
+| `jwt_auth_invalid_token`       | Invalid JWT token         |
+| `jwt_auth_expired_token`       | JWT token expired         |
+| `woocommerce_rest_cannot_view` | Authentication required   |
+| `rest_forbidden`               | Access denied             |
 
 ### Product Errors
 
-| Code | Description |
-|------|-------------|
-| `woocommerce_rest_product_invalid_id` | Product not found |
+| Code                                             | Description             |
+| ------------------------------------------------ | ----------------------- |
+| `woocommerce_rest_product_invalid_id`            | Product not found       |
 | `woocommerce_rest_product_no_longer_purchasable` | Product not purchasable |
 
 ### Cart Errors
 
-| Code | Description |
-|------|-------------|
-| `woocommerce_rest_cart_empty` | Cart is empty |
-| `woocommerce_rest_cart_invalid_key` | Invalid cart item key |
-| `woocommerce_rest_product_out_of_stock` | Product out of stock |
+| Code                                       | Description                 |
+| ------------------------------------------ | --------------------------- |
+| `woocommerce_rest_cart_empty`              | Cart is empty               |
+| `woocommerce_rest_cart_invalid_key`        | Invalid cart item key       |
+| `woocommerce_rest_product_out_of_stock`    | Product out of stock        |
 | `woocommerce_rest_product_not_purchasable` | Product cannot be purchased |
-| `woocommerce_rest_invalid_quantity` | Invalid quantity |
+| `woocommerce_rest_invalid_quantity`        | Invalid quantity            |
 
 ### Coupon Errors
 
-| Code | Description |
-|------|-------------|
-| `woocommerce_rest_invalid_coupon` | Invalid coupon code |
-| `woocommerce_rest_cart_coupon_error` | General coupon error |
+| Code                                           | Description            |
+| ---------------------------------------------- | ---------------------- |
+| `woocommerce_rest_invalid_coupon`              | Invalid coupon code    |
+| `woocommerce_rest_cart_coupon_error`           | General coupon error   |
 | `woocommerce_rest_cart_coupon_already_applied` | Coupon already in cart |
-| `woocommerce_rest_cart_coupon_expired` | Coupon has expired |
-| `woocommerce_rest_cart_coupon_min_spend` | Minimum spend not met |
-| `woocommerce_rest_cart_coupon_max_spend` | Maximum spend exceeded |
-| `woocommerce_rest_cart_coupon_usage_limit` | Usage limit reached |
+| `woocommerce_rest_cart_coupon_expired`         | Coupon has expired     |
+| `woocommerce_rest_cart_coupon_min_spend`       | Minimum spend not met  |
+| `woocommerce_rest_cart_coupon_max_spend`       | Maximum spend exceeded |
+| `woocommerce_rest_cart_coupon_usage_limit`     | Usage limit reached    |
 
 ### Checkout Errors
 
-| Code | Description |
-|------|-------------|
-| `woocommerce_rest_checkout_missing_required_field` | Required field missing |
-| `woocommerce_rest_checkout_invalid_payment_method` | Invalid payment method |
-| `woocommerce_rest_checkout_payment_error` | Payment processing failed |
-| `woocommerce_rest_checkout_invalid_address` | Invalid address |
+| Code                                               | Description               |
+| -------------------------------------------------- | ------------------------- |
+| `woocommerce_rest_checkout_missing_required_field` | Required field missing    |
+| `woocommerce_rest_checkout_invalid_payment_method` | Invalid payment method    |
+| `woocommerce_rest_checkout_payment_error`          | Payment processing failed |
+| `woocommerce_rest_checkout_invalid_address`        | Invalid address           |
 
 ### Order Errors
 
-| Code | Description |
-|------|-------------|
-| `woocommerce_rest_order_invalid_id` | Order not found |
+| Code                                 | Description       |
+| ------------------------------------ | ----------------- |
+| `woocommerce_rest_order_invalid_id`  | Order not found   |
 | `woocommerce_rest_invalid_order_key` | Invalid order key |
 
 ## Error Handling Patterns
@@ -309,11 +309,11 @@ While the SDK doesn't throw exceptions, you can create a throwing wrapper:
 ```typescript
 async function fetchProductsOrThrow(params?: ProductRequest) {
   const { data, error } = await Typewoo.store.products.list(params);
-  
+
   if (error) {
     throw new Error(`Failed to fetch products: ${error.message}`);
   }
-  
+
   return data!;
 }
 
@@ -328,17 +328,17 @@ try {
 ### Result Type Pattern
 
 ```typescript
-type Result<T, E = ApiError> = 
+type Result<T, E = ApiError> =
   | { success: true; data: T }
   | { success: false; error: E };
 
 async function addToCart(productId: number): Promise<Result<CartResponse>> {
   const { data, error } = await Typewoo.store.cart.add({ id: productId });
-  
+
   if (error) {
     return { success: false, error };
   }
-  
+
   return { success: true, data: data! };
 }
 
@@ -358,29 +358,29 @@ class ErrorHandler {
   handle(error: ApiError, context?: string) {
     // Log error
     console.error(`[${context || 'Unknown'}]`, error.code, error.message);
-    
+
     // Handle specific errors
     if (error.code === 'jwt_auth_expired_token') {
       this.handleAuthExpired();
       return;
     }
-    
+
     // Show user-friendly message
     this.showErrorMessage(error);
   }
-  
+
   private handleAuthExpired() {
     // Clear auth state
     // Redirect to login
   }
-  
+
   private showErrorMessage(error: ApiError) {
     const messages: Record<string, string> = {
-      'woocommerce_rest_cart_empty': 'Your cart is empty',
-      'woocommerce_rest_product_out_of_stock': 'This product is out of stock',
+      woocommerce_rest_cart_empty: 'Your cart is empty',
+      woocommerce_rest_product_out_of_stock: 'This product is out of stock',
       // ... more mappings
     };
-    
+
     const message = messages[error.code] || error.message;
     showNotification(message, 'error');
   }
@@ -412,7 +412,7 @@ httpClient.interceptors.response.use(
   (error) => {
     console.error('Request failed:', error.config?.url, error.response?.status);
     return Promise.reject(error);
-  }
+  },
 );
 ```
 

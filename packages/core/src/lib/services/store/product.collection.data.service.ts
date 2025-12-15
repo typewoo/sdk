@@ -25,13 +25,13 @@ export class ProductCollectionDataService extends BaseService {
    */
   async calculate(
     params?: ProductCollectionDataRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductCollectionDataResponse>(
       url,
-      options
+      options,
     );
     return { data, error };
   }

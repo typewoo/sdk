@@ -22,13 +22,13 @@ export class ProductCategoryService extends BaseService {
    */
   async list(
     params?: ProductCategoryRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<ProductCategoryResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductCategoryResponse[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);
@@ -42,7 +42,7 @@ export class ProductCategoryService extends BaseService {
    */
   async single(
     id: number,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<ProductCategoryResponse>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductCategoryResponse>(url, options);

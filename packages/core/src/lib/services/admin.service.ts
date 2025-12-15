@@ -58,7 +58,7 @@ export class AdminService extends BaseService {
       this._products = new AdminProductService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._products;
@@ -72,7 +72,7 @@ export class AdminService extends BaseService {
       this._orders = new AdminOrderService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._orders;
@@ -86,7 +86,7 @@ export class AdminService extends BaseService {
       this._customers = new AdminCustomerService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._customers;
@@ -100,7 +100,7 @@ export class AdminService extends BaseService {
       this._coupons = new AdminCouponService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._coupons;
@@ -114,7 +114,7 @@ export class AdminService extends BaseService {
       this._productCategories = new AdminProductCategoryService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._productCategories;
@@ -128,7 +128,7 @@ export class AdminService extends BaseService {
       this._productTags = new AdminProductTagService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._productTags;
@@ -142,7 +142,7 @@ export class AdminService extends BaseService {
       this._shippingClasses = new AdminShippingClassService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._shippingClasses;
@@ -156,7 +156,7 @@ export class AdminService extends BaseService {
       this._productAttributes = new AdminProductAttributeService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._productAttributes;
@@ -170,7 +170,7 @@ export class AdminService extends BaseService {
       this._attributeTerms = new AdminProductAttributeTermService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._attributeTerms;
@@ -184,7 +184,7 @@ export class AdminService extends BaseService {
       this._productBrands = new AdminProductBrandService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._productBrands;
@@ -198,7 +198,7 @@ export class AdminService extends BaseService {
       this._productReviews = new AdminProductReviewService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._productReviews;
@@ -212,7 +212,7 @@ export class AdminService extends BaseService {
       this._refunds = new AdminRefundService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._refunds;
@@ -236,7 +236,7 @@ export class AdminService extends BaseService {
       this._taxClasses = new AdminTaxClassService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._taxClasses;
@@ -250,7 +250,7 @@ export class AdminService extends BaseService {
       this._webhooks = new AdminWebhookService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._webhooks;
@@ -264,7 +264,7 @@ export class AdminService extends BaseService {
       this._settings = new AdminSettingService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._settings;
@@ -278,7 +278,7 @@ export class AdminService extends BaseService {
       this._reports = new AdminReportService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._reports;
@@ -292,7 +292,7 @@ export class AdminService extends BaseService {
       this._shippingZones = new AdminShippingZoneService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._shippingZones;
@@ -306,7 +306,7 @@ export class AdminService extends BaseService {
       this._paymentGateways = new AdminPaymentGatewayService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._paymentGateways;
@@ -320,7 +320,7 @@ export class AdminService extends BaseService {
       this._shippingMethods = new AdminShippingMethodService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._shippingMethods;
@@ -334,7 +334,7 @@ export class AdminService extends BaseService {
       this._systemStatus = new AdminSystemStatusService(
         this.state,
         this.config,
-        this.events
+        this.events,
       );
     }
     return this._systemStatus;

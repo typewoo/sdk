@@ -35,7 +35,7 @@ describe('Integration: Batch API Operations', () => {
     if (res.error) {
       // Batch API might not be supported on all installations
       expect(res.error.code).toMatch(
-        /batch|not.*found|not.*supported|method.*not.*allowed/i
+        /batch|not.*found|not.*supported|method.*not.*allowed/i,
       );
       expect(res.data).toBeFalsy();
     } else {
@@ -71,7 +71,7 @@ describe('Integration: Batch API Operations', () => {
     if (res.error) {
       // Batch API or validation mode might not be supported
       expect(res.error.code).toMatch(
-        /batch|validation|not.*found|not.*supported/i
+        /batch|validation|not.*found|not.*supported/i,
       );
     } else {
       expect(res.data).toBeTruthy();

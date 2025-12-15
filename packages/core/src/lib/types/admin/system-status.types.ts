@@ -45,7 +45,7 @@ export const AdminSystemStatusSchema = z.looseObject({
         data: z.string(),
         index: z.string(),
         engine: z.string(),
-      })
+      }),
     ),
   }),
   active_plugins: z.array(
@@ -58,7 +58,7 @@ export const AdminSystemStatusSchema = z.looseObject({
       author_name: z.string(),
       author_url: z.string(),
       network_activated: z.boolean(),
-    })
+    }),
   ),
   inactive_plugins: z.array(
     z.object({
@@ -70,14 +70,14 @@ export const AdminSystemStatusSchema = z.looseObject({
       author_name: z.string(),
       author_url: z.string(),
       network_activated: z.boolean(),
-    })
+    }),
   ),
   dropins_mu_plugins: z.object({
     dropins: z.array(
       z.object({
         plugin: z.string(),
         name: z.string(),
-      })
+      }),
     ),
     mu_plugins: z.array(
       z.object({
@@ -87,7 +87,7 @@ export const AdminSystemStatusSchema = z.looseObject({
         url: z.string(),
         author_name: z.string(),
         author_url: z.string(),
-      })
+      }),
     ),
   }),
   theme: z.object({
@@ -135,7 +135,7 @@ export const AdminSystemStatusSchema = z.looseObject({
       shortcode: z.string(),
       shortcode_required: z.boolean(),
       shortcode_present: z.boolean(),
-    })
+    }),
   ),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),

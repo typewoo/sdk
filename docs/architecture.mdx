@@ -71,7 +71,7 @@ The SDK uses the singleton pattern to ensure a single instance across the applic
 // sdk.ts
 export class Sdk {
   private _initialized = false;
-  
+
   public async init(config: SdkConfig): Promise<void> {
     if (this._initialized) return; // Idempotent
     // ...initialization logic
@@ -83,6 +83,7 @@ export const Typewoo = new Sdk();
 ```
 
 **Rationale:**
+
 - Ensures consistent state across the application
 - Prevents duplicate HTTP client instances
 - Simplifies import syntax (`Typewoo.store.products`)
@@ -98,7 +99,11 @@ export class AdminService extends BaseService {
 
   get products(): AdminProductService {
     if (!this._products) {
-      this._products = new AdminProductService(this.state, this.config, this.events);
+      this._products = new AdminProductService(
+        this.state,
+        this.config,
+        this.events,
+      );
     }
     return this._products;
   }
@@ -106,6 +111,7 @@ export class AdminService extends BaseService {
 ```
 
 **Rationale:**
+
 - Many applications don't use Admin API
 - Reduces memory footprint
 - Improves initialization speed
@@ -121,7 +127,11 @@ export class BaseService {
   protected readonly config: ResolvedSdkConfig;
   protected readonly events: EventBus<SdkEvent>;
 
-  constructor(state: SdkState, config: ResolvedSdkConfig, events: EventBus<SdkEvent>) {
+  constructor(
+    state: SdkState,
+    config: ResolvedSdkConfig,
+    events: EventBus<SdkEvent>,
+  ) {
     this.state = state;
     this.events = events;
     this.config = config;
@@ -142,6 +152,7 @@ interface ApiResult<T> {
 ```
 
 **Rationale:**
+
 - Explicit error handling (no thrown exceptions)
 - TypeScript type narrowing after error check
 - Consistent API across all methods
@@ -216,6 +227,7 @@ class EventBus<E extends EventMap> {
 ```
 
 **Features:**
+
 - Typed events via TypeScript generics
 - One-time subscriptions (`once`)
 - Wildcard subscriptions (`onAny`)
@@ -262,6 +274,7 @@ export type ProductResponse = z.infer<typeof ProductResponseSchema>;
 ```
 
 **Rationale:**
+
 - Runtime type safety
 - Schema-first approach
 - `z.looseObject()` allows extra properties from WooCommerce extensions
@@ -284,7 +297,7 @@ Public API exports only what's needed:
 
 ```typescript
 // src/index.ts
-export * from './lib/types/index.js';  // All types
+export * from './lib/types/index.js'; // All types
 export { Typewoo } from './lib/sdk.js'; // Main export
 ```
 
@@ -303,6 +316,7 @@ ResolvedSdkConfig (internal)
 ```
 
 **Resolution steps:**
+
 1. Resolve storage providers (string → StorageProvider)
 2. Apply defaults for retry configuration
 3. Ensure type safety for internal use

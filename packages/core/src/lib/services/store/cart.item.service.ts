@@ -17,13 +17,13 @@ export class CartItemService extends BaseService {
    * @returns {CartItemResponse[]}
    */
   async list(
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<CartItemResponse[]>> {
     const url = `/${this.endpoint}`;
 
     const { data, error, headers } = await doGet<CartItemResponse[]>(
       url,
-      options
+      options,
     );
 
     const pagination = extractPagination(headers);
@@ -38,7 +38,7 @@ export class CartItemService extends BaseService {
    */
   async single(
     key: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartItemResponse>> {
     const url = `/${this.endpoint}/${key}`;
 
@@ -54,7 +54,7 @@ export class CartItemService extends BaseService {
    */
   async add(
     params: CartItemAddRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
@@ -65,7 +65,7 @@ export class CartItemService extends BaseService {
     const { data, error } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -84,7 +84,7 @@ export class CartItemService extends BaseService {
   async update(
     key: string,
     quantity: number,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify({ quantity: quantity }, { encode: true });
     const url = `/${this.endpoint}/${key}?${query}`;
@@ -95,7 +95,7 @@ export class CartItemService extends BaseService {
     const { data, error } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -112,7 +112,7 @@ export class CartItemService extends BaseService {
    */
   async remove(
     key: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<unknown>> {
     const url = `/${this.endpoint}/${key}`;
 
@@ -133,7 +133,7 @@ export class CartItemService extends BaseService {
    * @returns {CartItemResponse[]}
    */
   async clear(
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartItemResponse[]>> {
     const url = `/${this.endpoint}`;
 

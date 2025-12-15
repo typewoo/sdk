@@ -38,6 +38,7 @@ console.log('Total:', cart?.totals.total_price);
 **Returns:** `Promise<ApiResult<CartResponse>>`
 
 **Events Emitted:**
+
 - `cart:loading` - `true` then `false`
 - `cart:request:start`
 - `cart:request:success` (on success)
@@ -50,18 +51,18 @@ Add an item to the cart.
 
 ```typescript
 const { data: cart, error } = await Typewoo.store.cart.add({
-  id: 123,          // Product or variation ID
-  quantity: 2,      // Optional, defaults to 1
+  id: 123, // Product or variation ID
+  quantity: 2, // Optional, defaults to 1
 });
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `params.id` | `number` | Yes | Product or variation ID |
-| `params.quantity` | `number` | No | Quantity to add (default: 1) |
-| `params.variation` | `array` | No | Variation attributes |
+| Name               | Type     | Required | Description                  |
+| ------------------ | -------- | -------- | ---------------------------- |
+| `params.id`        | `number` | Yes      | Product or variation ID      |
+| `params.quantity`  | `number` | No       | Quantity to add (default: 1) |
+| `params.variation` | `array`  | No       | Variation attributes         |
 
 **Adding Variations:**
 
@@ -84,18 +85,18 @@ Update the quantity of a cart item.
 
 ```typescript
 const { data: cart, error } = await Typewoo.store.cart.update(
-  'abc123def456',  // Cart item key
-  5                // New quantity
+  'abc123def456', // Cart item key
+  5, // New quantity
 );
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `key` | `string` | Yes | Cart item key |
-| `quantity` | `number` | Yes | New quantity |
-| `options` | `RequestOptions` | No | Request options |
+| Name       | Type             | Required | Description     |
+| ---------- | ---------------- | -------- | --------------- |
+| `key`      | `string`         | Yes      | Cart item key   |
+| `quantity` | `number`         | Yes      | New quantity    |
+| `options`  | `RequestOptions` | No       | Request options |
 
 **Returns:** `Promise<ApiResult<CartResponse>>`
 
@@ -109,10 +110,10 @@ const { data: cart, error } = await Typewoo.store.cart.remove('abc123def456');
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `key` | `string` | Yes | Cart item key |
-| `options` | `RequestOptions` | No | Request options |
+| Name      | Type             | Required | Description     |
+| --------- | ---------------- | -------- | --------------- |
+| `key`     | `string`         | Yes      | Cart item key   |
+| `options` | `RequestOptions` | No       | Request options |
 
 **Returns:** `Promise<ApiResult<CartResponse>>`
 
@@ -131,10 +132,10 @@ if (error) {
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `code` | `string` | Yes | Coupon code |
-| `options` | `RequestOptions` | No | Request options |
+| Name      | Type             | Required | Description     |
+| --------- | ---------------- | -------- | --------------- |
+| `code`    | `string`         | Yes      | Coupon code     |
+| `options` | `RequestOptions` | No       | Request options |
 
 **Returns:** `Promise<ApiResult<CartResponse>>`
 
@@ -185,18 +186,18 @@ Select a shipping rate for a package.
 
 ```typescript
 const { data: cart, error } = await Typewoo.store.cart.selectShippingRate(
-  0,                    // Package ID
-  'flat_rate:1'         // Rate ID
+  0, // Package ID
+  'flat_rate:1', // Rate ID
 );
 ```
 
 **Parameters:**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `packageId` | `number` | Yes | Shipping package ID |
-| `rateId` | `string` | Yes | Shipping rate ID |
-| `options` | `RequestOptions` | No | Request options |
+| Name        | Type             | Required | Description         |
+| ----------- | ---------------- | -------- | ------------------- |
+| `packageId` | `number`         | Yes      | Shipping package ID |
+| `rateId`    | `string`         | Yes      | Shipping rate ID    |
+| `options`   | `RequestOptions` | No       | Request options     |
 
 **Returns:** `Promise<ApiResult<CartResponse>>`
 
@@ -219,7 +220,8 @@ const { data: items, pagination } = await Typewoo.store.cartItems.list();
 Get a single cart item by key.
 
 ```typescript
-const { data: item, error } = await Typewoo.store.cartItems.single('abc123def456');
+const { data: item, error } =
+  await Typewoo.store.cartItems.single('abc123def456');
 ```
 
 **Returns:** `Promise<ApiResult<CartItemResponse>>`
@@ -242,7 +244,10 @@ const { data: item, error } = await Typewoo.store.cartItems.add({
 Update a cart item quantity (returns item).
 
 ```typescript
-const { data: item, error } = await Typewoo.store.cartItems.update('abc123def456', 3);
+const { data: item, error } = await Typewoo.store.cartItems.update(
+  'abc123def456',
+  3,
+);
 ```
 
 **Returns:** `Promise<ApiResult<CartItemResponse>>`
@@ -456,7 +461,9 @@ await Typewoo.init({ baseUrl: 'https://your-store.com' });
 
 // 2. Subscribe to updates
 Typewoo.events.on('cart:updated', (cart) => {
-  console.log(`Cart: ${cart?.items_count} items, ${formatPrice(cart?.totals.total_price)}`);
+  console.log(
+    `Cart: ${cart?.items_count} items, ${formatPrice(cart?.totals.total_price)}`,
+  );
 });
 
 // 3. Add product to cart
@@ -497,7 +504,7 @@ async function updateQuantity(itemKey: string, delta: number) {
   if (!item) return;
 
   const newQuantity = item.quantity + delta;
-  
+
   // Respect quantity limits
   const { minimum, maximum } = item.quantity_limits;
   if (newQuantity < minimum || newQuantity > maximum) {
@@ -543,7 +550,9 @@ class MiniCart {
     if (!this.cart) return;
 
     const { items_count, totals } = this.cart;
-    console.log(`${items_count} items - ${totals.currency_symbol}${totals.total_price}`);
+    console.log(
+      `${items_count} items - ${totals.currency_symbol}${totals.total_price}`,
+    );
   }
 }
 ```

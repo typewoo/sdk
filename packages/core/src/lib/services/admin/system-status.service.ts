@@ -21,7 +21,7 @@ export class AdminSystemStatusService extends BaseService {
    */
   async get(
     params?: AdminSystemStatusQueryParams,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AdminSystemStatus>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;

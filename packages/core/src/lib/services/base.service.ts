@@ -14,7 +14,7 @@ export class BaseService {
   constructor(
     state: SdkState,
     config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>
+    events: EventBus<SdkEvent>,
   ) {
     this.state = state;
     this.events = events;
