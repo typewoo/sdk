@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
-import { AxiosRequestConfig } from 'axios';
 import { doPost } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import { BatchRequest, BatchResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Batch API
@@ -19,10 +19,11 @@ export class BatchService extends BaseService {
    * @param params - Batch request parameters containing individual requests
    * @returns {BatchResponse} - Batch response containing individual results
    */
-  async execute(params: BatchRequest): Promise<ApiResult<BatchResponse>> {
+  async execute(
+    params: BatchRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<BatchResponse>> {
     const url = `/${this.endpoint}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('batch:loading', true);
     this.events.emit('batch:request:start');

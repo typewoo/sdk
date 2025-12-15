@@ -8,6 +8,7 @@ import {
   AdminPaymentGateway,
   AdminPaymentGatewayRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Payment Gateways Service
@@ -21,12 +22,16 @@ export class AdminPaymentGatewayService extends BaseService {
    * List payment gateways
    */
   async list(
-    params?: AdminPaymentGatewayQueryParams
+    params?: AdminPaymentGatewayQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminPaymentGateway[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminPaymentGateway[]>(url);
+    const { data, error, headers } = await doGet<AdminPaymentGateway[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -38,12 +43,13 @@ export class AdminPaymentGatewayService extends BaseService {
    */
   async get(
     id: string,
-    params?: AdminPaymentGatewayQueryParams
+    params?: AdminPaymentGatewayQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminPaymentGateway>(url);
+    const { data, error } = await doGet<AdminPaymentGateway>(url, options);
     return { data, error };
   }
 
@@ -52,13 +58,14 @@ export class AdminPaymentGatewayService extends BaseService {
    */
   async update(
     id: string,
-    gateway: AdminPaymentGatewayRequest
+    gateway: AdminPaymentGatewayRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminPaymentGateway,
       AdminPaymentGatewayRequest
-    >(url, gateway);
+    >(url, gateway, options);
     return { data, error };
   }
 }

@@ -4,6 +4,7 @@ import { doGet } from '../../utilities/axios.utility.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult } from '../../types/api.js';
 import { ProductTagRequest, ProductTagResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Product Tags API
@@ -17,11 +18,15 @@ export class ProductTagService extends BaseService {
    * @returns
    */
   async list(
-    params?: ProductTagRequest
+    params?: ProductTagRequest,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductTagResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductTagResponse[]>(url);
+    const { data, error, headers } = await doGet<ProductTagResponse[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
     return { data, error, pagination };

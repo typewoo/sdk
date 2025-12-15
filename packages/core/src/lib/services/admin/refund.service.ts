@@ -4,6 +4,7 @@ import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult } from '../../types/api.js';
 import { AdminRefundQueryParams, AdminRefund } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Refunds Service
@@ -18,12 +19,13 @@ export class AdminRefundService extends BaseService {
    * List refunds
    */
   async list(
-    params?: AdminRefundQueryParams
+    params?: AdminRefundQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminRefund[]>(url);
+    const { data, error, headers } = await doGet<AdminRefund[]>(url, options);
 
     const pagination = extractPagination(headers);
 

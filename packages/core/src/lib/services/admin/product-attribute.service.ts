@@ -13,6 +13,7 @@ import {
   AdminProductAttribute,
   AdminProductAttributeRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Product Attributes Service
@@ -26,12 +27,16 @@ export class AdminProductAttributeService extends BaseService {
    * List product attributes
    */
   async list(
-    params?: AdminProductAttributeQueryParams
+    params?: AdminProductAttributeQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminProductAttribute[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminProductAttribute[]>(url);
+    const { data, error, headers } = await doGet<AdminProductAttribute[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -43,12 +48,13 @@ export class AdminProductAttributeService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductAttribute>(url);
+    const { data, error } = await doGet<AdminProductAttribute>(url, options);
     return { data, error };
   }
 
@@ -56,13 +62,14 @@ export class AdminProductAttributeService extends BaseService {
    * Create a new product attribute
    */
   async create(
-    attribute: AdminProductAttributeRequest
+    attribute: AdminProductAttributeRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminProductAttribute,
       AdminProductAttributeRequest
-    >(url, attribute);
+    >(url, attribute, options);
 
     return { data, error };
   }
@@ -72,13 +79,14 @@ export class AdminProductAttributeService extends BaseService {
    */
   async update(
     id: number,
-    attribute: AdminProductAttributeRequest
+    attribute: AdminProductAttributeRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminProductAttribute,
       AdminProductAttributeRequest
-    >(url, attribute);
+    >(url, attribute, options);
 
     return { data, error };
   }
@@ -88,11 +96,12 @@ export class AdminProductAttributeService extends BaseService {
    */
   async delete(
     id: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProductAttribute>(url);
+    const { data, error } = await doDelete<AdminProductAttribute>(url, options);
 
     return { data, error };
   }
@@ -100,11 +109,14 @@ export class AdminProductAttributeService extends BaseService {
   /**
    * Batch create/update/delete product attributes
    */
-  async batch(operations: {
-    create?: AdminProductAttributeRequest[];
-    update?: Array<AdminProductAttributeRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminProductAttributeRequest[];
+      update?: Array<AdminProductAttributeRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminProductAttribute[];
       update: AdminProductAttribute[];
@@ -119,7 +131,7 @@ export class AdminProductAttributeService extends BaseService {
         delete: AdminProductAttribute[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

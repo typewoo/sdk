@@ -7,6 +7,7 @@ import {
   ProductReviewRequest,
   ProductReviewResponse,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Product Reviews API
@@ -22,11 +23,15 @@ export class ProductReviewService extends BaseService {
    * @returns
    */
   async list(
-    params?: ProductReviewRequest
+    params?: ProductReviewRequest,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductReviewResponse[]>(url);
+    const { data, error, headers } = await doGet<ProductReviewResponse[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
     return { data, error, pagination };

@@ -13,6 +13,7 @@ import {
   AdminTaxonomyTag,
   AdminTaxonomyTagRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Product Tags Service
@@ -26,12 +27,16 @@ export class AdminProductTagService extends BaseService {
    * List product tags
    */
   async list(
-    params?: AdminTaxonomyTagQueryParams
+    params?: AdminTaxonomyTagQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTaxonomyTag[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(url);
+    const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -43,12 +48,13 @@ export class AdminProductTagService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxonomyTag>(url);
+    const { data, error } = await doGet<AdminTaxonomyTag>(url, options);
     return { data, error };
   }
 
@@ -56,13 +62,14 @@ export class AdminProductTagService extends BaseService {
    * Create a new product tag
    */
   async create(
-    tag: AdminTaxonomyTagRequest
+    tag: AdminTaxonomyTagRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminTaxonomyTag,
       AdminTaxonomyTagRequest
-    >(url, tag);
+    >(url, tag, options);
 
     return { data, error };
   }
@@ -72,13 +79,14 @@ export class AdminProductTagService extends BaseService {
    */
   async update(
     id: number,
-    tag: AdminTaxonomyTagRequest
+    tag: AdminTaxonomyTagRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminTaxonomyTag,
       AdminTaxonomyTagRequest
-    >(url, tag);
+    >(url, tag, options);
 
     return { data, error };
   }
@@ -88,11 +96,12 @@ export class AdminProductTagService extends BaseService {
    */
   async delete(
     id: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTaxonomyTag>(url);
+    const { data, error } = await doDelete<AdminTaxonomyTag>(url, options);
 
     return { data, error };
   }
@@ -100,11 +109,14 @@ export class AdminProductTagService extends BaseService {
   /**
    * Batch create/update/delete product tags
    */
-  async batch(operations: {
-    create?: AdminTaxonomyTagRequest[];
-    update?: Array<AdminTaxonomyTagRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminTaxonomyTagRequest[];
+      update?: Array<AdminTaxonomyTagRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminTaxonomyTag[];
       update: AdminTaxonomyTag[];
@@ -119,7 +131,7 @@ export class AdminProductTagService extends BaseService {
         delete: AdminTaxonomyTag[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

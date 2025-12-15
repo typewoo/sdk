@@ -13,6 +13,7 @@ import {
   AdminProductAttributeTerm,
   AdminProductAttributeTermRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Attribute Terms Service
@@ -25,14 +26,16 @@ export class AdminProductAttributeTermService extends BaseService {
    */
   async list(
     attributeId: number,
-    params?: AdminProductAttributeTermQueryParams
+    params?: AdminProductAttributeTermQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminProductAttributeTerm[]>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error, headers } = await doGet<AdminProductAttributeTerm[]>(
-      url
+      url,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -46,13 +49,17 @@ export class AdminProductAttributeTermService extends BaseService {
   async get(
     attributeId: number,
     termId: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${endpoint}/${termId}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductAttributeTerm>(url);
+    const { data, error } = await doGet<AdminProductAttributeTerm>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -61,14 +68,15 @@ export class AdminProductAttributeTermService extends BaseService {
    */
   async create(
     attributeId: number,
-    term: AdminProductAttributeTermRequest
+    term: AdminProductAttributeTermRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}`;
     const { data, error } = await doPost<
       AdminProductAttributeTerm,
       AdminProductAttributeTermRequest
-    >(url, term);
+    >(url, term, options);
 
     return { data, error };
   }
@@ -79,14 +87,15 @@ export class AdminProductAttributeTermService extends BaseService {
   async update(
     attributeId: number,
     termId: number,
-    term: AdminProductAttributeTermRequest
+    term: AdminProductAttributeTermRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/${termId}`;
     const { data, error } = await doPut<
       AdminProductAttributeTerm,
       AdminProductAttributeTermRequest
-    >(url, term);
+    >(url, term, options);
 
     return { data, error };
   }
@@ -97,12 +106,16 @@ export class AdminProductAttributeTermService extends BaseService {
   async delete(
     attributeId: number,
     termId: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${endpoint}/${termId}?${query}`;
-    const { data, error } = await doDelete<AdminProductAttributeTerm>(url);
+    const { data, error } = await doDelete<AdminProductAttributeTerm>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -116,7 +129,8 @@ export class AdminProductAttributeTermService extends BaseService {
       create?: AdminProductAttributeTermRequest[];
       update?: Array<AdminProductAttributeTermRequest & { id: number }>;
       delete?: number[];
-    }
+    },
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminProductAttributeTerm[];
@@ -133,7 +147,7 @@ export class AdminProductAttributeTermService extends BaseService {
         delete: AdminProductAttributeTerm[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

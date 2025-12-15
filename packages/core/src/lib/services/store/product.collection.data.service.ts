@@ -6,6 +6,7 @@ import {
   ProductCollectionDataRequest,
   ProductCollectionDataResponse,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Product Collection Data API
@@ -23,11 +24,15 @@ export class ProductCollectionDataService extends BaseService {
    * @returns
    */
   async calculate(
-    params?: ProductCollectionDataRequest
+    params?: ProductCollectionDataRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
-    const { data, error } = await doGet<ProductCollectionDataResponse>(url);
+    const { data, error } = await doGet<ProductCollectionDataResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

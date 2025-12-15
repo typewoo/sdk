@@ -13,6 +13,7 @@ import {
   AdminTaxonomyCategory,
   AdminTaxonomyCategoryRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Product Categories Service
@@ -26,12 +27,16 @@ export class AdminProductCategoryService extends BaseService {
    * List product categories
    */
   async list(
-    params?: AdminTaxonomyCategoryQueryParams
+    params?: AdminTaxonomyCategoryQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTaxonomyCategory[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminTaxonomyCategory[]>(url);
+    const { data, error, headers } = await doGet<AdminTaxonomyCategory[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -43,12 +48,13 @@ export class AdminProductCategoryService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxonomyCategory>(url);
+    const { data, error } = await doGet<AdminTaxonomyCategory>(url, options);
     return { data, error };
   }
 
@@ -56,13 +62,14 @@ export class AdminProductCategoryService extends BaseService {
    * Create a new product category
    */
   async create(
-    category: AdminTaxonomyCategoryRequest
+    category: AdminTaxonomyCategoryRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminTaxonomyCategory,
       AdminTaxonomyCategoryRequest
-    >(url, category);
+    >(url, category, options);
 
     return { data, error };
   }
@@ -72,13 +79,14 @@ export class AdminProductCategoryService extends BaseService {
    */
   async update(
     id: number,
-    category: AdminTaxonomyCategoryRequest
+    category: AdminTaxonomyCategoryRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminTaxonomyCategory,
       AdminTaxonomyCategoryRequest
-    >(url, category);
+    >(url, category, options);
 
     return { data, error };
   }
@@ -88,11 +96,12 @@ export class AdminProductCategoryService extends BaseService {
    */
   async delete(
     id: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTaxonomyCategory>(url);
+    const { data, error } = await doDelete<AdminTaxonomyCategory>(url, options);
 
     return { data, error };
   }
@@ -100,11 +109,14 @@ export class AdminProductCategoryService extends BaseService {
   /**
    * Batch create/update/delete product categories
    */
-  async batch(operations: {
-    create?: AdminTaxonomyCategoryRequest[];
-    update?: Array<AdminTaxonomyCategoryRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminTaxonomyCategoryRequest[];
+      update?: Array<AdminTaxonomyCategoryRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminTaxonomyCategory[];
       update: AdminTaxonomyCategory[];
@@ -119,7 +131,7 @@ export class AdminProductCategoryService extends BaseService {
         delete: AdminTaxonomyCategory[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

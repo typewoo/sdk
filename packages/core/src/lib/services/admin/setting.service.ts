@@ -6,6 +6,7 @@ import {
   AdminSetting,
   AdminSettingRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Settings Service
@@ -18,20 +19,25 @@ export class AdminSettingService extends BaseService {
   /**
    * List setting groups
    */
-  async listGroups(): Promise<ApiResult<AdminSettingGroup[]>> {
+  async listGroups(
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminSettingGroup[]>> {
     const url = `/${this.endpoint}`;
 
-    const { data, error } = await doGet<AdminSettingGroup[]>(url);
+    const { data, error } = await doGet<AdminSettingGroup[]>(url, options);
     return { data, error };
   }
 
   /**
    * List settings in a group
    */
-  async listSettings(groupId: string): Promise<ApiResult<AdminSetting[]>> {
+  async listSettings(
+    groupId: string,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminSetting[]>> {
     const url = `/${this.endpoint}/${groupId}`;
 
-    const { data, error } = await doGet<AdminSetting[]>(url);
+    const { data, error } = await doGet<AdminSetting[]>(url, options);
     return { data, error };
   }
 
@@ -40,11 +46,12 @@ export class AdminSettingService extends BaseService {
    */
   async getSetting(
     groupId: string,
-    settingId: string
+    settingId: string,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
 
-    const { data, error } = await doGet<AdminSetting>(url);
+    const { data, error } = await doGet<AdminSetting>(url, options);
     return { data, error };
   }
 
@@ -54,12 +61,14 @@ export class AdminSettingService extends BaseService {
   async updateSetting(
     groupId: string,
     settingId: string,
-    setting: AdminSettingRequest
+    setting: AdminSettingRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
     const { data, error } = await doPut<AdminSetting, AdminSettingRequest>(
       url,
-      setting
+      setting,
+      options
     );
 
     return { data, error };
@@ -72,13 +81,14 @@ export class AdminSettingService extends BaseService {
     groupId: string,
     operations: {
       update?: Array<AdminSettingRequest & { id: string }>;
-    }
+    },
+    options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/${groupId}/batch`;
     const { data, error } = await doPost<
       { update: AdminSetting[] },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }
@@ -86,14 +96,17 @@ export class AdminSettingService extends BaseService {
   /**
    * Batch update multiple settings across groups
    */
-  async batchUpdate(operations: {
-    update?: Array<AdminSettingRequest & { group: string; id: string }>;
-  }): Promise<ApiResult<{ update: AdminSetting[] }>> {
+  async batchUpdate(
+    operations: {
+      update?: Array<AdminSettingRequest & { group: string; id: string }>;
+    },
+    options?: RequestOptions
+  ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<
       { update: AdminSetting[] },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

@@ -13,6 +13,7 @@ import {
   AdminProductReview,
   AdminProductReviewRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Product Reviews Service
@@ -26,12 +27,16 @@ export class AdminProductReviewService extends BaseService {
    * List product reviews
    */
   async list(
-    params?: AdminProductReviewQueryParams
+    params?: AdminProductReviewQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminProductReview[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminProductReview[]>(url);
+    const { data, error, headers } = await doGet<AdminProductReview[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -43,12 +48,13 @@ export class AdminProductReviewService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductReview>(url);
+    const { data, error } = await doGet<AdminProductReview>(url, options);
     return { data, error };
   }
 
@@ -56,13 +62,14 @@ export class AdminProductReviewService extends BaseService {
    * Create a new product review
    */
   async create(
-    review: AdminProductReviewRequest
+    review: AdminProductReviewRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminProductReview,
       AdminProductReviewRequest
-    >(url, review);
+    >(url, review, options);
 
     return { data, error };
   }
@@ -72,13 +79,14 @@ export class AdminProductReviewService extends BaseService {
    */
   async update(
     id: number,
-    review: AdminProductReviewRequest
+    review: AdminProductReviewRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminProductReview,
       AdminProductReviewRequest
-    >(url, review);
+    >(url, review, options);
 
     return { data, error };
   }
@@ -88,11 +96,12 @@ export class AdminProductReviewService extends BaseService {
    */
   async delete(
     id: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProductReview>(url);
+    const { data, error } = await doDelete<AdminProductReview>(url, options);
 
     return { data, error };
   }
@@ -100,11 +109,14 @@ export class AdminProductReviewService extends BaseService {
   /**
    * Batch create/update/delete product reviews
    */
-  async batch(operations: {
-    create?: AdminProductReviewRequest[];
-    update?: Array<AdminProductReviewRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminProductReviewRequest[];
+      update?: Array<AdminProductReviewRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminProductReview[];
       update: AdminProductReview[];
@@ -119,7 +131,7 @@ export class AdminProductReviewService extends BaseService {
         delete: AdminProductReview[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

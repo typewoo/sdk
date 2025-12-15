@@ -9,6 +9,7 @@ import {
   AdminCurrency,
   AdminContinent,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Data Service
@@ -22,12 +23,13 @@ export class AdminDataService extends BaseService {
    * List countries
    */
   async listCountries(
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCountry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/countries${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCountry[]>(url);
+    const { data, error, headers } = await doGet<AdminCountry[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -39,14 +41,15 @@ export class AdminDataService extends BaseService {
    */
   async getCountry(
     code: string,
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCountry>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/countries/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminCountry>(url);
+    const { data, error } = await doGet<AdminCountry>(url, options);
     return { data, error };
   }
 
@@ -54,12 +57,13 @@ export class AdminDataService extends BaseService {
    * List currencies
    */
   async listCurrencies(
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCurrency[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/currencies${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCurrency[]>(url);
+    const { data, error, headers } = await doGet<AdminCurrency[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -71,14 +75,15 @@ export class AdminDataService extends BaseService {
    */
   async getCurrency(
     code: string,
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCurrency>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/currencies/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminCurrency>(url);
+    const { data, error } = await doGet<AdminCurrency>(url, options);
     return { data, error };
   }
 
@@ -86,12 +91,16 @@ export class AdminDataService extends BaseService {
    * List continents
    */
   async listContinents(
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminContinent[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/continents${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminContinent[]>(url);
+    const { data, error, headers } = await doGet<AdminContinent[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -103,14 +112,15 @@ export class AdminDataService extends BaseService {
    */
   async getContinent(
     code: string,
-    params?: AdminDataQueryParams
+    params?: AdminDataQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminContinent>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/continents/${code}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminContinent>(url);
+    const { data, error } = await doGet<AdminContinent>(url, options);
     return { data, error };
   }
 }

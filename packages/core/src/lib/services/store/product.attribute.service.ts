@@ -3,6 +3,7 @@ import { doGet } from '../../utilities/axios.utility.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductAttributeResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Product Attributes API
@@ -14,10 +15,13 @@ export class ProductAttributeService extends BaseService {
    * List Product Attributes
    * @returns {ProductAttributeResponse[]}
    */
-  async list(): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
+  async list(
+    options?: RequestOptions
+  ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
     const url = `/${this.endpoint}`;
     const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
-      url
+      url,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -29,9 +33,12 @@ export class ProductAttributeService extends BaseService {
    * @param id The ID of the attribute to retrieve.
    * @returns {ProductAttributeResponse}
    */
-  async single(id: number): Promise<ApiResult<ProductAttributeResponse>> {
+  async single(
+    id: number,
+    options?: RequestOptions
+  ): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doGet<ProductAttributeResponse>(url);
+    const { data, error } = await doGet<ProductAttributeResponse>(url, options);
     return { data, error };
   }
 }

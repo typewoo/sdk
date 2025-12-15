@@ -13,6 +13,7 @@ import {
   AdminCoupon,
   AdminCouponRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Coupons Service
@@ -26,12 +27,13 @@ export class AdminCouponService extends BaseService {
    * List coupons
    */
   async list(
-    params?: AdminCouponQueryParams
+    params?: AdminCouponQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCoupon[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCoupon[]>(url);
+    const { data, error, headers } = await doGet<AdminCoupon[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -43,23 +45,28 @@ export class AdminCouponService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCoupon>(url);
+    const { data, error } = await doGet<AdminCoupon>(url, options);
     return { data, error };
   }
 
   /**
    * Create a new coupon
    */
-  async create(coupon: AdminCouponRequest): Promise<ApiResult<AdminCoupon>> {
+  async create(
+    coupon: AdminCouponRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminCoupon, AdminCouponRequest>(
       url,
-      coupon
+      coupon,
+      options
     );
 
     return { data, error };
@@ -70,12 +77,14 @@ export class AdminCouponService extends BaseService {
    */
   async update(
     id: number,
-    coupon: AdminCouponRequest
+    coupon: AdminCouponRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminCoupon, AdminCouponRequest>(
       url,
-      coupon
+      coupon,
+      options
     );
 
     return { data, error };
@@ -84,10 +93,14 @@ export class AdminCouponService extends BaseService {
   /**
    * Delete a coupon
    */
-  async delete(id: number, force = false): Promise<ApiResult<AdminCoupon>> {
+  async delete(
+    id: number,
+    force = false,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminCoupon>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCoupon>(url);
+    const { data, error } = await doDelete<AdminCoupon>(url, options);
 
     return { data, error };
   }
@@ -95,11 +108,14 @@ export class AdminCouponService extends BaseService {
   /**
    * Batch create/update/delete coupons
    */
-  async batch(operations: {
-    create?: AdminCouponRequest[];
-    update?: Array<AdminCouponRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminCouponRequest[];
+      update?: Array<AdminCouponRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminCoupon[];
       update: AdminCoupon[];
@@ -114,7 +130,7 @@ export class AdminCouponService extends BaseService {
         delete: AdminCoupon[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

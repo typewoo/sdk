@@ -13,6 +13,7 @@ import {
   AdminBrand,
   AdminBrandRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Product Brands Service
@@ -26,12 +27,13 @@ export class AdminProductBrandService extends BaseService {
    * List product brands
    */
   async list(
-    params?: AdminBrandQueryParams
+    params?: AdminBrandQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminBrand[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminBrand[]>(url);
+    const { data, error, headers } = await doGet<AdminBrand[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -43,23 +45,28 @@ export class AdminProductBrandService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminBrand>(url);
+    const { data, error } = await doGet<AdminBrand>(url, options);
     return { data, error };
   }
 
   /**
    * Create a new product brand
    */
-  async create(brand: AdminBrandRequest): Promise<ApiResult<AdminBrand>> {
+  async create(
+    brand: AdminBrandRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminBrand, AdminBrandRequest>(
       url,
-      brand
+      brand,
+      options
     );
 
     return { data, error };
@@ -70,12 +77,14 @@ export class AdminProductBrandService extends BaseService {
    */
   async update(
     id: number,
-    brand: AdminBrandRequest
+    brand: AdminBrandRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminBrand, AdminBrandRequest>(
       url,
-      brand
+      brand,
+      options
     );
 
     return { data, error };
@@ -84,10 +93,14 @@ export class AdminProductBrandService extends BaseService {
   /**
    * Delete a product brand
    */
-  async delete(id: number, force = false): Promise<ApiResult<AdminBrand>> {
+  async delete(
+    id: number,
+    force = false,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminBrand>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminBrand>(url);
+    const { data, error } = await doDelete<AdminBrand>(url, options);
 
     return { data, error };
   }
@@ -95,11 +108,14 @@ export class AdminProductBrandService extends BaseService {
   /**
    * Batch create/update/delete product brands
    */
-  async batch(operations: {
-    create?: AdminBrandRequest[];
-    update?: Array<AdminBrandRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminBrandRequest[];
+      update?: Array<AdminBrandRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminBrand[];
       update: AdminBrand[];
@@ -114,7 +130,7 @@ export class AdminProductBrandService extends BaseService {
         delete: AdminBrand[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }
