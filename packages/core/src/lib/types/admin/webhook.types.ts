@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminWebhookSchema = z.object({
+export const AdminWebhookSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   status: z.enum(['active', 'paused', 'disabled']),
@@ -22,7 +22,7 @@ export const AdminWebhookSchema = z.object({
 
 export type AdminWebhook = z.infer<typeof AdminWebhookSchema>;
 
-export const AdminWebhookRequestSchema = z.object({
+export const AdminWebhookRequestSchema = z.looseObject({
   name: z.string().optional(),
   status: z.enum(['active', 'paused', 'disabled']).optional(),
   topic: z.string().optional(),
@@ -32,7 +32,7 @@ export const AdminWebhookRequestSchema = z.object({
 
 export type AdminWebhookRequest = z.infer<typeof AdminWebhookRequestSchema>;
 
-export const AdminWebhookQueryParamsSchema = z.object({
+export const AdminWebhookQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),

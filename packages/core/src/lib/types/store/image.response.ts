@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ImageResponseSchema = z.object({
+export const ImageResponseSchema = z.looseObject({
   id: z.number(),
   src: z.string(),
   thumbnail: z.string(),

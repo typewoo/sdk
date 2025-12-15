@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Cart extensions response
  */
-export const CartExtensionsResponseSchema = z.object({
+export const CartExtensionsResponseSchema = z.looseObject({
   /**
    * Extension namespace
    */

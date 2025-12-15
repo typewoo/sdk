@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const OrderTotalResponseSchema = z.object({
+export const OrderTotalResponseSchema = z.looseObject({
   subtotal: z.string(),
   total_discount: z.string(),
   total_shipping: z.string(),

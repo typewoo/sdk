@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartItemEditRequestSchema = z.object({
+export const CartItemEditRequestSchema = z.looseObject({
   /**
    * The key of the cart item to edit.
    */

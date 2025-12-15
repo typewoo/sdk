@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CartCouponTotalResponseSchema = z.object({
+export const CartCouponTotalResponseSchema = z.looseObject({
   currency_code: z.string(),
   currency_symbol: z.string(),
   currency_minor_unit: z.number(),

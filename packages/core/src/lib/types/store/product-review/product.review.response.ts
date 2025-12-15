@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ImageResponseSchema } from '../image.response.js';
 
-export const ProductReviewResponseSchema = z.object({
+export const ProductReviewResponseSchema = z.looseObject({
   id: z.number(),
   date_created: z.string(),
   formatted_date_created: z.string(),

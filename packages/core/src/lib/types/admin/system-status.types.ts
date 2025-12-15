@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminSystemStatusSchema = z.object({
+export const AdminSystemStatusSchema = z.looseObject({
   environment: z.object({
     home_url: z.string(),
     site_url: z.string(),
@@ -144,7 +144,7 @@ export const AdminSystemStatusSchema = z.object({
 
 export type AdminSystemStatus = z.infer<typeof AdminSystemStatusSchema>;
 
-export const AdminSystemStatusQueryParamsSchema = z.object({
+export const AdminSystemStatusQueryParamsSchema = z.looseObject({
   context: z.enum(['view']).optional(),
 });
 

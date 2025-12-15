@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * WooCommerce REST API Product Attribute Response
  */
-export const AdminProductAttributeSchema = z.object({
+export const AdminProductAttributeSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -22,7 +22,7 @@ export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
 /**
  * Product attribute request parameters for creating/updating
  */
-export const AdminProductAttributeRequestSchema = z.object({
+export const AdminProductAttributeRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   type: z.enum(['select']).optional(),
@@ -37,7 +37,7 @@ export type AdminProductAttributeRequest = z.infer<
 /**
  * Product attribute query parameters for listing
  */
-export const AdminProductAttributeQueryParamsSchema = z.object({
+export const AdminProductAttributeQueryParamsSchema = z.looseObject({
   /**
    * Scope under which the request is made; determines fields present in response. Options: `view` and `edit`. Default is `view`.
    */
@@ -51,7 +51,7 @@ export type AdminProductAttributeQueryParams = z.infer<
 /**
  * WooCommerce REST API Product Attribute Term Response
  */
-export const AdminProductAttributeTermSchema = z.object({
+export const AdminProductAttributeTermSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -74,7 +74,7 @@ export type AdminProductAttributeTerm = z.infer<
 /**
  * Product attribute term request parameters for creating/updating
  */
-export const AdminProductAttributeTermRequestSchema = z.object({
+export const AdminProductAttributeTermRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
@@ -88,7 +88,7 @@ export type AdminProductAttributeTermRequest = z.infer<
 /**
  * Product attribute term query parameters for listing
  */
-export const AdminProductAttributeTermQueryParamsSchema = z.object({
+export const AdminProductAttributeTermQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ImageResponseSchema } from '../image.response.js';
 import { ProductPriceResponseSchema } from './product.price.response.js';
 
-export const ProductResponseSchema = z.object({
+export const ProductResponseSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -20,7 +20,7 @@ export const ProductResponseSchema = z.object({
   review_count: z.number(),
   images: z.array(ImageResponseSchema),
   categories: z.array(
-    z.object({
+    z.looseObject({
       id: z.number(),
       name: z.string(),
       slug: z.string(),
@@ -28,7 +28,7 @@ export const ProductResponseSchema = z.object({
     })
   ),
   tags: z.array(
-    z.object({
+    z.looseObject({
       id: z.number(),
       name: z.string(),
       slug: z.string(),
@@ -36,7 +36,7 @@ export const ProductResponseSchema = z.object({
     })
   ),
   brands: z.array(
-    z.object({
+    z.looseObject({
       id: z.number(),
       name: z.string(),
       slug: z.string(),
@@ -51,12 +51,12 @@ export const ProductResponseSchema = z.object({
   is_in_stock: z.boolean(),
   is_on_backorder: z.boolean(),
   low_stock_remaining: z.unknown(),
-  stock_availability: z.object({
+  stock_availability: z.looseObject({
     text: z.string(),
     class: z.string(),
   }),
   sold_individually: z.boolean(),
-  add_to_cart: z.object({
+  add_to_cart: z.looseObject({
     text: z.string(),
     description: z.string(),
     url: z.string(),

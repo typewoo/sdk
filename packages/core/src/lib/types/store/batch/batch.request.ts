@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const BatchRequestItemSchema = z.object({
+export const BatchRequestItemSchema = z.looseObject({
   /**
    * HTTP method for the request
    */
@@ -25,7 +25,7 @@ export const BatchRequestItemSchema = z.object({
 });
 export type BatchRequestItem = z.infer<typeof BatchRequestItemSchema>;
 
-export const BatchRequestSchema = z.object({
+export const BatchRequestSchema = z.looseObject({
   /**
    * Validation mode for the batch request
    * - 'require-all-validate': All requests must validate before any are processed

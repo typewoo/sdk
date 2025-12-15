@@ -4,7 +4,7 @@ import { AdminMetaData, AdminImage, AdminDimensions } from './common.types.js';
 /**
  * Product category reference in product
  */
-export const AdminProductCategorySchema = z.object({
+export const AdminProductCategorySchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -15,7 +15,7 @@ export type AdminProductCategory = z.infer<typeof AdminProductCategorySchema>;
 /**
  * Product tag reference in product
  */
-export const AdminProductTagSchema = z.object({
+export const AdminProductTagSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -26,7 +26,7 @@ export type AdminProductTag = z.infer<typeof AdminProductTagSchema>;
 /**
  * Product brand reference in product
  */
-export const AdminProductBrandSchema = z.object({
+export const AdminProductBrandSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -37,7 +37,7 @@ export type AdminProductBrand = z.infer<typeof AdminProductBrandSchema>;
 /**
  * Product attribute in product
  */
-export const AdminProductAttributeSchema = z.object({
+export const AdminProductAttributeSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   position: z.number(),
@@ -51,7 +51,7 @@ export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
 /**
  * Product default attribute for variations
  */
-export const AdminProductDefaultAttributeSchema = z.object({
+export const AdminProductDefaultAttributeSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   option: z.string(),
@@ -64,7 +64,7 @@ export type AdminProductDefaultAttribute = z.infer<
 /**
  * Downloadable file
  */
-export const AdminDownloadableFileSchema = z.object({
+export const AdminDownloadableFileSchema = z.looseObject({
   id: z.string(),
   name: z.string(),
   file: z.string(),
@@ -75,7 +75,7 @@ export type AdminDownloadableFile = z.infer<typeof AdminDownloadableFileSchema>;
 /**
  * WooCommerce REST API Product Response
  */
-export const AdminProductSchema = z.object({
+export const AdminProductSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
@@ -91,6 +91,7 @@ export const AdminProductSchema = z.object({
   description: z.string(),
   short_description: z.string(),
   sku: z.string(),
+  global_unique_id: z.string().optional(),
   price: z.string(),
   regular_price: z.string(),
   sale_price: z.string(),
@@ -156,7 +157,7 @@ export type AdminProduct = z.infer<typeof AdminProductSchema>;
 /**
  * Product variation for variable products
  */
-export const AdminProductVariationSchema = z.object({
+export const AdminProductVariationSchema = z.looseObject({
   id: z.number(),
   date_created: z.string(),
   date_created_gmt: z.string(),
@@ -210,7 +211,7 @@ export type AdminProductVariation = z.infer<typeof AdminProductVariationSchema>;
 /**
  * Product request parameters for creating/updating
  */
-export const AdminProductRequestSchema = z.object({
+export const AdminProductRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   type: z.enum(['simple', 'grouped', 'external', 'variable']).optional(),
@@ -266,7 +267,7 @@ export type AdminProductRequest = z.infer<typeof AdminProductRequestSchema>;
 /**
  * Product query parameters for listing
  */
-export const AdminProductQueryParamsSchema = z.object({
+export const AdminProductQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -311,7 +312,7 @@ export type ProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;
  * Query params for listing product custom-field names
  * Endpoint: wp-json/wc/v3/products/custom-fields/names
  */
-export const AdminProductCustomFieldNameQueryParamsSchema = z.object({
+export const AdminProductCustomFieldNameQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   search: z.string().optional(),
   orderby: z.string().optional(),

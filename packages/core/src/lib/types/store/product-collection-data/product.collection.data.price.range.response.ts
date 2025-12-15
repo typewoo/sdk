@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductCollectionDataPriceRangeResponseSchema = z.object({
+export const ProductCollectionDataPriceRangeResponseSchema = z.looseObject({
   min_price: z.string(),
   max_price: z.string(),
   currency_code: z.string(),

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminSettingSchema = z.object({
+export const AdminSettingSchema = z.looseObject({
   id: z.string(),
   label: z.string(),
   description: z.string(),
@@ -29,13 +29,13 @@ export const AdminSettingSchema = z.object({
 
 export type AdminSetting = z.infer<typeof AdminSettingSchema>;
 
-export const AdminSettingRequestSchema = z.object({
+export const AdminSettingRequestSchema = z.looseObject({
   value: z.union([z.string(), z.number(), z.boolean()]),
 });
 
 export type AdminSettingRequest = z.infer<typeof AdminSettingRequestSchema>;
 
-export const AdminSettingGroupSchema = z.object({
+export const AdminSettingGroupSchema = z.looseObject({
   id: z.string(),
   label: z.string(),
   description: z.string(),

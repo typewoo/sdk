@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminTaxSchema = z.object({
+export const AdminTaxSchema = z.looseObject({
   id: z.number(),
   country: z.string(),
   state: z.string(),
@@ -23,7 +23,7 @@ export const AdminTaxSchema = z.object({
 
 export type AdminTax = z.infer<typeof AdminTaxSchema>;
 
-export const AdminTaxRequestSchema = z.object({
+export const AdminTaxRequestSchema = z.looseObject({
   country: z.string().optional(),
   state: z.string().optional(),
   postcode: z.string().optional(),
@@ -41,7 +41,7 @@ export const AdminTaxRequestSchema = z.object({
 
 export type AdminTaxRequest = z.infer<typeof AdminTaxRequestSchema>;
 
-export const AdminTaxQueryParamsSchema = z.object({
+export const AdminTaxQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -53,7 +53,7 @@ export const AdminTaxQueryParamsSchema = z.object({
 
 export type AdminTaxQueryParams = z.infer<typeof AdminTaxQueryParamsSchema>;
 
-export const AdminTaxClassSchema = z.object({
+export const AdminTaxClassSchema = z.looseObject({
   slug: z.string(),
   name: z.string(),
   _links: z.object({
@@ -64,12 +64,12 @@ export const AdminTaxClassSchema = z.object({
 
 export type AdminTaxClass = z.infer<typeof AdminTaxClassSchema>;
 
-export const AdminTaxClassRequestSchema = z.object({
+export const AdminTaxClassRequestSchema = z.looseObject({
   name: z.string(),
 });
 
 export type AdminTaxClassRequest = z.infer<typeof AdminTaxClassRequestSchema>;
-export const AdminTaxClassQueryParamsSchema = z.object({
+export const AdminTaxClassQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
 });
 

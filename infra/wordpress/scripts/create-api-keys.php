@@ -45,15 +45,15 @@ if ( $existing_key ) {
 
 echo "Creating new API key...\n";
 
-// Insert the new API key - use proper wp_hash for the hashed versions
+// Insert the new API key - use wc_api_hash for proper WooCommerce key hashing
 $result = $wpdb->insert(
     $wpdb->prefix . 'woocommerce_api_keys',
     array(
         'user_id'         => $user_id,
         'description'     => $key_description,
         'permissions'     => $permissions,
-        'consumer_key'    => wp_hash( $consumer_key ),
-        'consumer_secret' => wp_hash( $consumer_secret ),
+        'consumer_key'    => wc_api_hash( $consumer_key ),
+        'consumer_secret' => $consumer_secret, // Secret is stored as-is in WooCommerce
         'truncated_key'   => substr( $consumer_key, -7 ),
     ),
     array(

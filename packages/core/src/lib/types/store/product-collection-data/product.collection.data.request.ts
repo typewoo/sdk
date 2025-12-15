@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductCollectionDataRequestSchema = z.object({
+export const ProductCollectionDataRequestSchema = z.looseObject({
   /**
    * Returns the min and max price for the product collection.
    * If false, only null will be returned.
@@ -13,7 +13,7 @@ export const ProductCollectionDataRequestSchema = z.object({
    */
   calculate_attribute_counts: z
     .array(
-      z.object({
+      z.looseObject({
         taxonomy: z.string(),
         query_type: z.string(),
       })

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AdminMetaData } from './common.types.js';
 
-export const AdminRefundLineItemSchema = z.object({
+export const AdminRefundLineItemSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   product_id: z.number(),
@@ -26,7 +26,7 @@ export const AdminRefundLineItemSchema = z.object({
 
 export type AdminRefundLineItem = z.infer<typeof AdminRefundLineItemSchema>;
 
-export const AdminRefundShippingLineSchema = z.object({
+export const AdminRefundShippingLineSchema = z.looseObject({
   id: z.number(),
   method_title: z.string(),
   method_id: z.string(),
@@ -46,7 +46,7 @@ export type AdminRefundShippingLine = z.infer<
   typeof AdminRefundShippingLineSchema
 >;
 
-export const AdminRefundTaxLineSchema = z.object({
+export const AdminRefundTaxLineSchema = z.looseObject({
   id: z.number(),
   rate_code: z.string(),
   rate_id: z.number(),
@@ -60,7 +60,7 @@ export const AdminRefundTaxLineSchema = z.object({
 
 export type AdminRefundTaxLine = z.infer<typeof AdminRefundTaxLineSchema>;
 
-export const AdminRefundFeeLineSchema = z.object({
+export const AdminRefundFeeLineSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   tax_class: z.string(),
@@ -79,7 +79,7 @@ export const AdminRefundFeeLineSchema = z.object({
 
 export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
 
-export const AdminRefundSchema = z.object({
+export const AdminRefundSchema = z.looseObject({
   id: z.number(),
   date_created: z.string(),
   date_created_gmt: z.string(),
@@ -104,7 +104,7 @@ export const AdminRefundSchema = z.object({
 
 export type AdminRefund = z.infer<typeof AdminRefundSchema>;
 
-export const AdminRefundQueryParamsSchema = z.object({
+export const AdminRefundQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),
@@ -132,7 +132,7 @@ export type AdminRefundQueryParams = z.infer<
  * Follows WooCommerce /wc/v3/orders/{orderId}/refunds POST args.
  * Note: line_items/shipping_lines/tax_lines/fee_lines shapes vary; use loose records.
  */
-export const AdminRefundCreateRequestSchema = z.object({
+export const AdminRefundCreateRequestSchema = z.looseObject({
   amount: z.string(),
   reason: z.string().optional(),
   refunded_by: z.number().optional(),

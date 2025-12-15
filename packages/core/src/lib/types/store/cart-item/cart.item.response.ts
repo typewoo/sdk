@@ -5,7 +5,7 @@ import { CartItemQuantityLimitsResponseSchema } from './cart.item.quantity.limit
 import { CartItemTotalResponseSchema } from './cart.item.total.response.js';
 import { CartItemVariationResponseSchema } from './cart.item.variation.response.js';
 
-export const CartItemResponseSchema = z.object({
+export const CartItemResponseSchema = z.looseObject({
   key: z.string(),
   id: z.number(),
   quantity: z.number(),

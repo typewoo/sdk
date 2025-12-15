@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AuthRevokeRequestSchema = z.object({
+export const AuthRevokeRequestSchema = z.looseObject({
   scope: z.enum(['refresh', 'all']).optional(),
 });
 

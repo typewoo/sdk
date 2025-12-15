@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductAttributeTermResponseSchema = z.object({
+export const ProductAttributeTermResponseSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
   slug: z.string(),

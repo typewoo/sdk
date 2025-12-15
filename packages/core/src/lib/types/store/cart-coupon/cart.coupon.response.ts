@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CartCouponTotalResponseSchema } from './cart.coupon.total.response.js';
 
-export const CartCouponResponseSchema = z.object({
+export const CartCouponResponseSchema = z.looseObject({
   code: z.string(),
   type: z.string(),
   totals: CartCouponTotalResponseSchema,

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AuthRefreshRequestSchema = z.object({
+export const AuthRefreshRequestSchema = z.looseObject({
   refresh_token: z.string().optional(),
 });
 

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AuthOneTimeTokenRequestSchema = z.object({
+export const AuthOneTimeTokenRequestSchema = z.looseObject({
   ttl: z.number().optional(),
 });
 

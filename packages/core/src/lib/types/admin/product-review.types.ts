@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AdminProductReviewSchema = z.object({
+export const AdminProductReviewSchema = z.looseObject({
   id: z.number(),
   date_created: z.string(),
   date_created_gmt: z.string(),
@@ -27,7 +27,7 @@ export const AdminProductReviewSchema = z.object({
 
 export type AdminProductReview = z.infer<typeof AdminProductReviewSchema>;
 
-export const AdminProductReviewRequestSchema = z.object({
+export const AdminProductReviewRequestSchema = z.looseObject({
   product_id: z.number().optional(),
   product_name: z.string().optional(),
   status: z
@@ -43,7 +43,7 @@ export type AdminProductReviewRequest = z.infer<
   typeof AdminProductReviewRequestSchema
 >;
 
-export const AdminProductReviewQueryParamsSchema = z.object({
+export const AdminProductReviewQueryParamsSchema = z.looseObject({
   context: z.enum(['view', 'edit']).optional(),
   page: z.number().optional(),
   per_page: z.number().optional(),

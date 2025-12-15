@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AuthStatusResponseSchema = z.object({
+export const AuthStatusResponseSchema = z.looseObject({
   active: z.boolean(),
   flag_defined: z.boolean(),
   flag_enabled: z.boolean(),
