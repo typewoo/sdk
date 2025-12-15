@@ -1,5 +1,5 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../utilities/axios.utility.js';
+import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {

@@ -1,5 +1,5 @@
 import { BaseService } from '../base.service.js';
-import { doDelete, doGet, doPost } from '../../utilities/axios.utility.js';
+import { doDelete, doGet, doPost } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { CartCouponResponse } from '../../types/index.js';

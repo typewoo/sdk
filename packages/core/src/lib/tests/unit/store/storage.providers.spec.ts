@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { resolveStorageProvider } from '../../../configs/sdk.config.js';
 import {
-  StorageProvider,
   memoryStorageProvider,
   localStorageProvider,
   sessionStorageProvider,
   storageProviders,
-} from '../../../utilities/storage.providers.js';
-import { resolveStorageProvider } from '../../../configs/sdk.config.js';
+  StorageProvider,
+} from '../../../storage/auth.storage.js';
 
 describe('Storage Providers', () => {
   describe('memoryStorageProvider', () => {

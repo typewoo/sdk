@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createHttpClient, httpClient } from '../../../services/api.js';
+import { createHttpClient, httpClient } from '../../../http';
 
 describe('api http client', () => {
   it('createHttpClient is idempotent and proxy forwards methods', () => {

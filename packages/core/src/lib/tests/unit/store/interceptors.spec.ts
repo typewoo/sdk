@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { addCartTokenInterceptors } from '../../../interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from '../../../interceptors/nonce.interceptor.js';
-import { createHttpClient, httpClient } from '../../../services/api.js';
 import { EventBus } from '../../../bus/event.bus.js';
 import type { SdkEvent } from '../../../sdk.events.js';
 import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
-import { memoryStorageProvider } from '../../../utilities/storage.providers.js';
+import { httpClient, createHttpClient } from '../../../http/http.client.js';
+import { memoryStorageProvider } from '../../../storage/auth.storage.js';
 
 type AnyConfig = { headers: Record<string, unknown> };
 interface InterceptorEntry<T> {

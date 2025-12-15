@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { doGet, doPost } from '../../utilities/axios.utility.js';
+import { doGet, doPost } from '../../http/http.js';
 import { BaseService } from '../base.service.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';

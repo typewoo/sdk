@@ -61,6 +61,7 @@ describe('Integration: Order (pay-for-order endpoint)', () => {
           email: 'test@example.com',
         },
         shipping_address: {
+          phone: '',
           first_name: 'Test',
           last_name: 'User',
           company: '',

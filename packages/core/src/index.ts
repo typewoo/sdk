@@ -7,9 +7,8 @@ export * from './lib/configs/index.js';
 export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 
 // Common
-export { httpClient, createHttpClient } from './lib/services/api.js';
+export { httpClient, createHttpClient } from './lib/http/http.client.js';
 export * from './lib/configs/sdk.config.js';
-export * from './lib/utilities/axios.utility.js';
 export * from './lib/utilities/common.js';
 
 // REST API Services

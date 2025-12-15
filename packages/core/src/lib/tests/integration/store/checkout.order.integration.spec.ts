@@ -19,25 +19,34 @@ describe('Integration: Checkout & Order', () => {
     await Typewoo.init({
       baseUrl: WP_URL,
       auth: {
-        getToken: async () => {
-          return accessToken;
+        accessToken: {
+          storage: {
+            get: async () => {
+              return accessToken;
+            },
+            set: async (t: string) => {
+              accessToken = t;
+              tokenStore.token = t;
+            },
+            clear: async () => {
+              accessToken = '';
+            },
+          },
         },
-        setToken: async (t: string) => {
-          accessToken = t;
-          tokenStore.token = t;
-        },
-        getRefreshToken: async () => {
-          return refreshToken;
-        },
-        setRefreshToken: async (t: string) => {
-          refreshToken = t;
-          tokenStore.refresh = t;
-        },
-        clearToken: async () => {
-          accessToken = '';
-
-          tokenStore.token = '';
-          tokenStore.refresh = '';
+        refreshToken: {
+          storage: {
+            get: async () => {
+              return refreshToken;
+            },
+            set: async (t: string) => {
+              refreshToken = t;
+              tokenStore.refresh = t;
+            },
+            clear: async () => {
+              tokenStore.token = '';
+              tokenStore.refresh = '';
+            },
+          },
         },
       },
     });
@@ -94,6 +103,7 @@ describe('Integration: Checkout & Order', () => {
         phone: '',
       },
       shipping_address: {
+        phone: '',
         first_name: '',
         last_name: '',
         company: '',
@@ -152,6 +162,7 @@ describe('Integration: Checkout & Order', () => {
         phone: '',
       },
       shipping_address: {
+        phone: '',
         first_name: 'Test',
         last_name: 'User',
         company: '',

@@ -1,6 +1,6 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
-import { httpClient } from '../../index.js';
+import { httpClient } from '../http/index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';

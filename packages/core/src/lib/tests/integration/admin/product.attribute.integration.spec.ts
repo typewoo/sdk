@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { Typewoo } from '../../../../index.js';
+import {
+  AdminProductAttributeRequest,
+  AdminProductAttributeTermRequest,
+  Typewoo,
+} from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -7,10 +11,6 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import {
-  AdminProductAttributeRequest,
-  AdminProductAttributeTermRequest,
-} from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -31,13 +31,10 @@ describe('Integration: Admin Product Attributes & Terms', () => {
   });
 
   it('lists product attributes', async () => {
-    const { data, error, total, totalPages } =
-      await Typewoo.admin.productAttributes.list({});
+    const { data, error } = await Typewoo.admin.productAttributes.list({});
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
-    if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-    if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
   });
 
   it('creates, retrieves, updates, and deletes a product attribute', async () => {

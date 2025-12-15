@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { Typewoo } from '../../../../index.js';
+import {
+  AdminOrderEmailTemplateId,
+  AdminOrderRequest,
+  Typewoo,
+} from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -7,7 +11,6 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { AdminOrderRequest, AdminOrderEmailTemplateId } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -28,16 +31,13 @@ describe('Integration: Admin Order Service', () => {
   });
 
   it('lists orders with pagination', async () => {
-    const { data, error, total, totalPages } = await Typewoo.admin.orders.list({
+    const { data, error } = await Typewoo.admin.orders.list({
       per_page: 5,
       page: 1,
     });
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
-
-    if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-    if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
   });
 
   it('creates, retrieves, updates, and deletes an order', async () => {

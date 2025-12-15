@@ -17,6 +17,11 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       Typewoo.init({
         baseUrl: 'http://localhost:8080',
+        request: {
+          retry: {
+            enabled: true,
+          },
+        },
       });
     }),
   ],

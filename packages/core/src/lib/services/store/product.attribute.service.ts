@@ -1,5 +1,5 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../utilities/axios.utility.js';
+import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductAttributeResponse } from '../../types/index.js';

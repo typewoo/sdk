@@ -1,6 +1,6 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { httpClient } from '../services/api.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
+import { httpClient } from '../http/index.js';
 
 export const addAdminAuthInterceptor = (config: ResolvedSdkConfig) => {
   httpClient.interceptors.request.use(

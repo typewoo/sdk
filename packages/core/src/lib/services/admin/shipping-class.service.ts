@@ -1,10 +1,5 @@
 import { BaseService } from '../base.service.js';
-import {
-  doGet,
-  doPost,
-  doPut,
-  doDelete,
-} from '../../utilities/axios.utility.js';
+import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
