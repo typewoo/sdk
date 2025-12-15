@@ -315,7 +315,7 @@ describe('Integration: Admin Order Service', () => {
     const deleteNote = await Typewoo.admin.orders.deleteNote(
       orderId,
       noteId,
-      true
+      true,
     );
     expect(deleteNote.error).toBeFalsy();
 
@@ -369,7 +369,7 @@ describe('Integration: Admin Order Service', () => {
     // Either supported (data) or not (error) depending on env
     if (gen.error) {
       expect(gen.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(gen.data?.receipt_url).toMatch(/^http?:\/\//);
@@ -379,7 +379,7 @@ describe('Integration: Admin Order Service', () => {
     const get = await Typewoo.admin.orders.getReceipt(orderId);
     if (get.error) {
       expect(get.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(get.data?.receipt_url).toMatch(/^https?:\/\//);
@@ -432,7 +432,7 @@ describe('Integration: Admin Order Service', () => {
     const templates = await Typewoo.admin.orders.getEmailTemplates(orderId);
     if (templates.error) {
       expect(templates.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(Array.isArray(templates.data)).toBe(true);
@@ -448,7 +448,7 @@ describe('Integration: Admin Order Service', () => {
         });
         if (sent.error) {
           expect(sent.error.code).toMatch(
-            /not_found|invalid|forbidden|unsupported/i
+            /not_found|invalid|forbidden|unsupported/i,
           );
         } else {
           expect(sent.data?.message).toBeTruthy();
@@ -463,7 +463,7 @@ describe('Integration: Admin Order Service', () => {
     });
     if (details.error) {
       expect(details.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(details.data?.message).toBeTruthy();
@@ -553,7 +553,7 @@ describe('Integration: Admin Order Service', () => {
       if (createRefund.error) {
         // Some environments may restrict refunds; assert acceptable error
         expect(createRefund.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i
+          /not_found|invalid|forbidden|unsupported/i,
         );
         // Skip the rest if creation failed for environmental reasons
         return;
@@ -582,7 +582,7 @@ describe('Integration: Admin Order Service', () => {
       const delRefund = await Typewoo.admin.orders.deleteRefund(
         orderId,
         refundId,
-        true
+        true,
       );
       expect(delRefund.error).toBeFalsy();
     } finally {

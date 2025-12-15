@@ -20,7 +20,7 @@ export class AdminRefundService extends BaseService {
    */
   async list(
     params?: AdminRefundQueryParams,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiPaginationResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;

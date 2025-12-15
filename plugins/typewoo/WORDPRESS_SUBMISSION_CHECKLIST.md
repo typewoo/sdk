@@ -5,7 +5,6 @@
 ### ✅ Plugin Code Quality
 
 - [ ] **Plugin header complete** with all required fields:
-
   - [ ] Plugin Name
   - [ ] Plugin URI
   - [ ] Description (under 150 characters)
@@ -20,7 +19,6 @@
   - [ ] Network: true/false (if applicable)
 
 - [ ] **Security Best Practices**:
-
   - [ ] All inputs sanitized and validated
   - [ ] Outputs escaped properly
   - [ ] Nonces used for forms and AJAX
@@ -30,7 +28,6 @@
   - [ ] Proper capability checks for admin functions
 
 - [ ] **WordPress Coding Standards**:
-
   - [ ] Follows WordPress PHP Coding Standards
   - [ ] Uses WordPress functions instead of PHP alternatives where possible
   - [ ] Proper indentation and formatting
@@ -49,7 +46,6 @@
 ### ✅ readme.txt File
 
 - [ ] **Header Section Complete**:
-
   - [ ] Plugin name
   - [ ] Contributors (WordPress.org usernames)
   - [ ] Tags (max 12, relevant keywords)
@@ -62,7 +58,6 @@
   - [ ] Donate link (optional)
 
 - [ ] **Content Sections**:
-
   - [ ] Short description (under 150 characters)
   - [ ] Detailed description
   - [ ] Installation instructions
@@ -80,12 +75,10 @@
 ### ✅ Assets for WordPress.org
 
 - [ ] **Banner Images** (uploaded to SVN /assets/ folder):
-
   - [ ] banner-1544x500.png/jpg (high resolution, required)
   - [ ] banner-772x250.png/jpg (standard resolution, recommended)
 
 - [ ] **Plugin Icons** (uploaded to SVN /assets/ folder):
-
   - [ ] icon-256x256.png/jpg (high resolution, required)
   - [ ] icon-128x128.png/jpg (standard resolution, recommended)
   - [ ] icon.svg (vector format, optional)
@@ -101,14 +94,12 @@
 ### ✅ Legal & Compliance
 
 - [ ] **Licensing**:
-
   - [ ] Plugin uses GPL-compatible license
   - [ ] License properly declared in plugin header
   - [ ] License file included if required
   - [ ] All third-party code properly licensed
 
 - [ ] **Trademarks & Copyright**:
-
   - [ ] No trademark violations
   - [ ] Proper attribution for third-party code
   - [ ] No copyrighted content without permission
@@ -124,7 +115,6 @@
 ### ✅ Technical Requirements
 
 - [ ] **WordPress Integration**:
-
   - [ ] Uses WordPress APIs exclusively
   - [ ] No direct database access outside WordPress
   - [ ] Follows WordPress plugin architecture
@@ -132,7 +122,6 @@
   - [ ] Translation ready (if applicable)
 
 - [ ] **Performance**:
-
   - [ ] No memory leaks
   - [ ] Minimal impact on page load times
   - [ ] Efficient database queries
@@ -184,19 +173,16 @@
 ### Plugin-Specific Items
 
 - [ ] **JWT Configuration**:
-
   - [ ] Clear instructions for JWT secret setup
   - [ ] Security warnings about secret key strength
   - [ ] Default configuration is secure
 
 - [ ] **WooCommerce Integration**:
-
   - [ ] Works without WooCommerce (graceful degradation)
   - [ ] Clear documentation about WooCommerce requirements
   - [ ] No hard dependencies on WooCommerce
 
 - [ ] **API Documentation**:
-
   - [ ] All endpoints documented
   - [ ] Example requests/responses provided
   - [ ] Security considerations explained
@@ -209,13 +195,11 @@
 ### Testing Scenarios
 
 - [ ] **Fresh Installation**:
-
   - [ ] Plugin activates without errors
   - [ ] Configuration notice appears
   - [ ] API endpoints return proper errors when unconfigured
 
 - [ ] **Configured Installation**:
-
   - [ ] All API endpoints function correctly
   - [ ] Token generation works
   - [ ] Token refresh works
@@ -231,21 +215,18 @@
 ## 🎯 Common Rejection Reasons to Avoid
 
 - [ ] **Security Issues**:
-
   - [ ] SQL injection vulnerabilities
   - [ ] XSS vulnerabilities
   - [ ] Missing capability checks
   - [ ] Unescaped output
 
 - [ ] **Guideline Violations**:
-
   - [ ] Premium features in free plugin
   - [ ] External service calls without disclosure
   - [ ] Trademark violations
   - [ ] Obfuscated code
 
 - [ ] **Code Quality**:
-
   - [ ] PHP errors or warnings
   - [ ] Not following WordPress coding standards
   - [ ] Missing or incorrect plugin headers

@@ -31,7 +31,7 @@ export const OrderRequestSchema = z.looseObject({
       z.looseObject({
         key: z.string(),
         value: z.string(),
-      })
+      }),
     )
     .optional(),
 });

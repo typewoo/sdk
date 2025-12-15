@@ -17,7 +17,7 @@ export const AdminRefundLineItemSchema = z.looseObject({
       id: z.number(),
       total: z.string(),
       subtotal: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
   sku: z.string(),
@@ -37,7 +37,7 @@ export const AdminRefundShippingLineSchema = z.looseObject({
     z.object({
       id: z.number(),
       total: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
 });
@@ -72,7 +72,7 @@ export const AdminRefundFeeLineSchema = z.looseObject({
       id: z.number(),
       total: z.string(),
       subtotal: z.string(),
-    })
+    }),
   ),
   meta_data: z.array(AdminMetaData),
 });

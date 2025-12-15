@@ -1,0 +1,66 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "TypeWoo SDK",
+  "colors": {
+    "primary": "#7C3AED",
+    "light": "#A78BFA",
+    "dark": "#5B21B6",
+    "anchors": {
+      "from": "#7C3AED",
+      "to": "#5B21B6"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/typewoo/sdk"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "/getting-started"
+  },
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "code",
+      "url": "/api-reference"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/typewoo/sdk"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "getting-started", "configuration"]
+    },
+    {
+      "group": "Core Concepts",
+      "pages": ["authentication", "core-concepts", "hooks-and-events"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/client",
+        "api-reference/products",
+        "api-reference/cart",
+        "api-reference/orders",
+        "api-reference/customers"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": ["error-handling", "pagination", "advanced-usage"]
+    },
+    {
+      "group": "Reference",
+      "pages": ["architecture", "contributing"]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/typewoo/sdk"
+  }
+}

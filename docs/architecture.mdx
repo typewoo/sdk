@@ -1,0 +1,446 @@
+---
+title: Architecture
+description: Project structure and internal design
+---
+
+# Architecture
+
+This page describes the internal architecture and project structure of the TypeWoo SDK.
+
+## Project Structure
+
+```
+@typewoo/sdk (packages/core)
+├── src/
+│   ├── index.ts                    # Public API exports
+│   └── lib/
+│       ├── sdk.ts                  # Main SDK class and singleton
+│       ├── sdk.events.ts           # Event type definitions
+│       ├── bus/
+│       │   └── event.bus.ts        # EventBus implementation
+│       ├── configs/
+│       │   ├── index.ts
+│       │   └── sdk.config.ts       # Configuration types and resolution
+│       ├── http/
+│       │   ├── http.client.ts      # Axios instance management
+│       │   ├── http.ts             # HTTP method helpers
+│       │   ├── http.request.ts     # Request execution with retry
+│       │   └── http.helper.ts      # Retry utilities
+│       ├── interceptors/
+│       │   ├── admin-auth.interceptor.ts   # Basic Auth for REST API
+│       │   ├── cart.token.interceptor.ts   # Cart token handling
+│       │   ├── nonce.interceptor.ts        # Nonce handling
+│       │   ├── token.interceptor.ts        # JWT token injection
+│       │   └── refresh.token.interceptor.ts # Auto token refresh
+│       ├── services/
+│       │   ├── base.service.ts     # Base service class
+│       │   ├── store.service.ts    # Store API aggregator
+│       │   ├── admin.service.ts    # Admin API aggregator
+│       │   ├── auth/
+│       │   │   └── auth.service.ts # Authentication service
+│       │   ├── store/              # Store API services
+│       │   │   ├── product.service.ts
+│       │   │   ├── cart.service.ts
+│       │   │   ├── checkout.service.ts
+│       │   │   └── ...
+│       │   └── admin/              # Admin API services
+│       │       ├── product.service.ts
+│       │       ├── order.service.ts
+│       │       └── ...
+│       ├── storage/
+│       │   └── auth.storage.ts     # Storage providers
+│       ├── types/
+│       │   ├── api.ts              # API result types
+│       │   ├── request.ts          # Request option types
+│       │   ├── sdk.state.ts        # SDK state type
+│       │   ├── store/              # Store API types
+│       │   ├── admin/              # Admin API types
+│       │   └── auth/               # Auth types
+│       └── utilities/
+│           ├── common.ts           # Pagination helpers
+│           └── jwt.utility.ts      # JWT utilities
+```
+
+## Design Patterns
+
+### Singleton Pattern
+
+The SDK uses the singleton pattern to ensure a single instance across the application:
+
+```typescript
+// sdk.ts
+export class Sdk {
+  private _initialized = false;
+
+  public async init(config: SdkConfig): Promise<void> {
+    if (this._initialized) return; // Idempotent
+    // ...initialization logic
+    this._initialized = true;
+  }
+}
+
+export const Typewoo = new Sdk();
+```
+
+**Rationale:**
+
+- Ensures consistent state across the application
+- Prevents duplicate HTTP client instances
+- Simplifies import syntax (`Typewoo.store.products`)
+
+### Lazy Initialization (Admin Services)
+
+Admin services use lazy initialization to avoid unnecessary instantiation:
+
+```typescript
+// admin.service.ts
+export class AdminService extends BaseService {
+  private _products?: AdminProductService;
+
+  get products(): AdminProductService {
+    if (!this._products) {
+      this._products = new AdminProductService(
+        this.state,
+        this.config,
+        this.events,
+      );
+    }
+    return this._products;
+  }
+}
+```
+
+**Rationale:**
+
+- Many applications don't use Admin API
+- Reduces memory footprint
+- Improves initialization speed
+
+### Service Pattern
+
+All services extend `BaseService` for consistent access to shared resources:
+
+```typescript
+// base.service.ts
+export class BaseService {
+  protected readonly state: SdkState;
+  protected readonly config: ResolvedSdkConfig;
+  protected readonly events: EventBus<SdkEvent>;
+
+  constructor(
+    state: SdkState,
+    config: ResolvedSdkConfig,
+    events: EventBus<SdkEvent>,
+  ) {
+    this.state = state;
+    this.events = events;
+    this.config = config;
+  }
+}
+```
+
+### Result Type Pattern
+
+All API methods return a consistent result structure:
+
+```typescript
+interface ApiResult<T> {
+  data?: T;
+  error?: ApiError;
+  headers?: Record<string, string>;
+}
+```
+
+**Rationale:**
+
+- Explicit error handling (no thrown exceptions)
+- TypeScript type narrowing after error check
+- Consistent API across all methods
+
+## HTTP Layer
+
+### Client Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Application                          │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                   SDK Services                           │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
+│  │Products │  │  Cart   │  │Checkout │  │  Admin  │   │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘   │
+└───────┼────────────┼────────────┼────────────┼─────────┘
+        │            │            │            │
+┌───────▼────────────▼────────────▼────────────▼─────────┐
+│              HTTP Helper Functions                       │
+│     doGet()    doPost()    doPut()    doDelete()       │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│              Request Execution (http.request.ts)        │
+│     - Retry logic                                       │
+│     - RequestOptions callbacks                          │
+│     - Error transformation                              │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                Axios Interceptors                        │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐   │
+│  │  Nonce  │  │Cart Tok │  │  Token  │  │ Refresh │   │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘   │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                  Axios HTTP Client                       │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Interceptor Chain
+
+Request flow through interceptors:
+
+1. **Request Interceptors** (in order of registration):
+   - Nonce interceptor (adds `nonce` header)
+   - Cart token interceptor (adds `cart-token` header)
+   - Token interceptor (adds `Authorization` header for Store API)
+   - Admin auth interceptor (adds Basic Auth for REST API)
+
+2. **Response Interceptors** (in reverse order):
+   - Refresh token interceptor (handles 401, refreshes token)
+   - Cart token interceptor (captures `cart-token` from response)
+   - Nonce interceptor (captures `nonce` from response)
+
+## Event System
+
+### EventBus Architecture
+
+```typescript
+class EventBus<E extends EventMap> {
+  private shared: {
+    listeners: { [K in keyof E]?: Set<Handler<E[K]>> };
+    anyListeners: Set<AnyHandler<E>>;
+    middleware: Middleware<E>[];
+  };
+}
+```
+
+**Features:**
+
+- Typed events via TypeScript generics
+- One-time subscriptions (`once`)
+- Wildcard subscriptions (`onAny`)
+- Middleware support
+- Promise-based waiting (`waitFor`)
+- Scoped event buses
+
+### Event Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Service Method                       │
+│   events.emit('cart:loading', true)                     │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────┐
+│                      Middleware                          │
+│   (logging, analytics, etc.)                            │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+┌───────▼───────┐ ┌─────▼─────┐ ┌───────▼───────┐
+│   Listener 1  │ │ Listener 2│ │  onAny Handler│
+│ (Component A) │ │(Component B│ │   (Logging)   │
+└───────────────┘ └───────────┘ └───────────────┘
+```
+
+## Type System
+
+### Zod Schema Pattern
+
+Response types are defined using Zod schemas for runtime validation:
+
+```typescript
+// types/store/product/product.response.ts
+export const ProductResponseSchema = z.looseObject({
+  id: z.number(),
+  name: z.string(),
+  // ...
+});
+
+export type ProductResponse = z.infer<typeof ProductResponseSchema>;
+```
+
+**Rationale:**
+
+- Runtime type safety
+- Schema-first approach
+- `z.looseObject()` allows extra properties from WooCommerce extensions
+
+### Type Export Strategy
+
+Types are exported through barrel files:
+
+```
+types/
+├── index.ts          # Re-exports all types
+├── store/
+│   ├── index.ts      # Re-exports store types
+│   ├── product/
+│   │   ├── index.ts  # Re-exports product types
+│   │   └── product.response.ts
+```
+
+Public API exports only what's needed:
+
+```typescript
+// src/index.ts
+export * from './lib/types/index.js'; // All types
+export { Typewoo } from './lib/sdk.js'; // Main export
+```
+
+## Configuration Resolution
+
+Configuration goes through a resolution process:
+
+```
+SdkConfig (input)
+     │
+     ▼
+resolveConfig()
+     │
+     ▼
+ResolvedSdkConfig (internal)
+```
+
+**Resolution steps:**
+
+1. Resolve storage providers (string → StorageProvider)
+2. Apply defaults for retry configuration
+3. Ensure type safety for internal use
+
+```typescript
+// Input
+{
+  auth: {
+    accessToken: {
+      storage: 'localstorage', // string type
+    }
+  }
+}
+
+// Resolved
+{
+  auth: {
+    accessToken: {
+      storage: StorageProvider, // Instance
+    }
+  }
+}
+```
+
+## Storage Architecture
+
+### Provider Interface
+
+```typescript
+interface StorageProvider {
+  type?: StorageType;
+  get: () => Promise<string | null>;
+  set: (value: string) => Promise<void>;
+  clear: () => Promise<void>;
+}
+```
+
+### Built-in Providers
+
+1. **localStorage** (default): Persists across sessions
+2. **sessionStorage**: Session-only persistence
+3. **memory**: No persistence (SSR-safe)
+
+### Fallback Behavior
+
+Browser storage providers fall back to memory in SSR environments:
+
+```typescript
+export const localStorageProvider = (key: string): StorageProvider => {
+  if (!hasLocalStorage()) {
+    console.warn(`[Typewoo] localStorage not available, using memory`);
+    return memoryStorageProvider();
+  }
+  // ...
+};
+```
+
+## Module System
+
+The SDK uses **Pure ESM**:
+
+- All imports use `.js` extensions
+- `"type": "module"` in package.json
+- Tree-shakeable exports
+- No CommonJS dual-packaging
+
+**Import pattern:**
+
+```typescript
+// Internal imports always include .js extension
+import { BaseService } from '../base.service.js';
+import { doGet } from '../../http/http.js';
+```
+
+## Build Output
+
+The SDK builds to a single directory:
+
+```
+dist/
+├── index.js          # Main entry
+├── index.d.ts        # Type declarations
+├── lib/
+│   ├── sdk.js
+│   ├── sdk.d.ts
+│   └── ...
+```
+
+**Package exports:**
+
+```json
+{
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  }
+}
+```
+
+## Internal vs Public API
+
+### Public API (exported from index.ts)
+
+- `Typewoo` - Main SDK instance
+- All type definitions
+- `EventBus` class
+- Utility functions
+- Service classes (for extension)
+
+### Internal API (not exported)
+
+- `httpClient` proxy implementation
+- Interceptor implementation details
+- Configuration resolution internals
+- Request execution logic
+
+## Extension Points
+
+The SDK can be extended through:
+
+1. **Custom Storage Providers**: Implement `StorageProvider`
+2. **Event Middleware**: Add via `Typewoo.events.use()`
+3. **Request Options**: Per-request customization
+4. **Axios Interceptors**: Direct httpClient access

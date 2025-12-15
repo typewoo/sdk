@@ -1,0 +1,472 @@
+---
+title: Pagination
+description: Pagination patterns and helpers
+---
+
+# Pagination
+
+The TypeWoo SDK supports pagination for list endpoints. This page covers pagination patterns and best practices.
+
+## Pagination Response
+
+List methods return an `ApiPaginationResult` with a `pagination` object:
+
+```typescript
+const { data, pagination, error } = await Typewoo.store.products.list({
+  page: 1,
+  per_page: 12,
+});
+
+console.log('Current page products:', data?.length);
+console.log('Total products:', pagination.total);
+console.log('Total pages:', pagination.totalPages);
+console.log('Next page:', pagination.next);
+console.log('Previous page:', pagination.previous);
+```
+
+## Pagination Interface
+
+```typescript
+interface Pagination {
+  next?: number; // Next page number (undefined if last page)
+  previous?: number; // Previous page number (undefined if first page)
+  total?: number; // Total number of items
+  totalPages?: number; // Total number of pages
+  link?: {
+    up?: string;
+    prev?: string;
+    next?: string;
+  };
+}
+```
+
+## Query Parameters
+
+### Basic Pagination
+
+```typescript
+const { data, pagination } = await Typewoo.store.products.list({
+  page: 1, // Page number (1-indexed)
+  per_page: 12, // Items per page (max varies by endpoint)
+});
+```
+
+### Offset-Based Pagination
+
+```typescript
+const { data } = await Typewoo.store.products.list({
+  offset: 20, // Skip first 20 items
+  per_page: 10, // Return 10 items
+});
+```
+
+## Pagination Patterns
+
+### Basic Page Navigation
+
+```typescript
+async function loadPage(page: number) {
+  const { data: products, pagination } = await Typewoo.store.products.list({
+    page,
+    per_page: 12,
+  });
+
+  return {
+    products,
+    currentPage: page,
+    totalPages: pagination.totalPages,
+    hasNext: pagination.next !== undefined,
+    hasPrev: pagination.previous !== undefined,
+  };
+}
+
+// Usage
+let currentPage = 1;
+
+function nextPage() {
+  currentPage++;
+  return loadPage(currentPage);
+}
+
+function prevPage() {
+  currentPage--;
+  return loadPage(currentPage);
+}
+```
+
+### Infinite Scroll
+
+```typescript
+class ProductLoader {
+  private page = 0;
+  private loading = false;
+  private hasMore = true;
+  private products: ProductResponse[] = [];
+
+  async loadMore(): Promise<ProductResponse[]> {
+    if (this.loading || !this.hasMore) {
+      return this.products;
+    }
+
+    this.loading = true;
+
+    try {
+      const { data, pagination } = await Typewoo.store.products.list({
+        page: this.page + 1,
+        per_page: 12,
+      });
+
+      if (data) {
+        this.products = [...this.products, ...data];
+        this.page++;
+        this.hasMore = pagination.next !== undefined;
+      }
+    } finally {
+      this.loading = false;
+    }
+
+    return this.products;
+  }
+
+  reset() {
+    this.page = 0;
+    this.loading = false;
+    this.hasMore = true;
+    this.products = [];
+  }
+}
+
+// Usage
+const loader = new ProductLoader();
+
+// Initial load
+await loader.loadMore();
+
+// Load more when user scrolls
+window.addEventListener('scroll', async () => {
+  if (isNearBottom()) {
+    await loader.loadMore();
+    renderProducts(loader.products);
+  }
+});
+```
+
+### Load All Pages
+
+```typescript
+async function loadAllProducts(
+  params?: ProductRequest,
+): Promise<ProductResponse[]> {
+  const allProducts: ProductResponse[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, pagination } = await Typewoo.store.products.list({
+      ...params,
+      page,
+      per_page: 100, // Max items per request
+    });
+
+    if (data) {
+      allProducts.push(...data);
+    }
+
+    hasMore = pagination.next !== undefined;
+    page++;
+  }
+
+  return allProducts;
+}
+
+// Usage
+const allProducts = await loadAllProducts({ category: 'clothing' });
+console.log('Total products:', allProducts.length);
+```
+
+### Generator-Based Iteration
+
+```typescript
+async function* iterateProducts(params?: ProductRequest) {
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, pagination } = await Typewoo.store.products.list({
+      ...params,
+      page,
+      per_page: 100,
+    });
+
+    if (data) {
+      yield* data;
+    }
+
+    hasMore = pagination.next !== undefined;
+    page++;
+  }
+}
+
+// Usage
+for await (const product of iterateProducts({ on_sale: true })) {
+  console.log(product.name, product.prices.price);
+}
+```
+
+## Pagination UI Components
+
+### Page Numbers
+
+```typescript
+function generatePageNumbers(
+  current: number,
+  total: number,
+  maxVisible = 7,
+): (number | null)[] {
+  if (total <= maxVisible) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages: (number | null)[] = [];
+  const half = Math.floor(maxVisible / 2);
+
+  // Always show first page
+  pages.push(1);
+
+  let start = Math.max(2, current - half);
+  let end = Math.min(total - 1, current + half);
+
+  // Adjust if near start or end
+  if (current <= half + 1) {
+    end = maxVisible - 2;
+  } else if (current >= total - half) {
+    start = total - maxVisible + 3;
+  }
+
+  // Add ellipsis if needed
+  if (start > 2) {
+    pages.push(null); // null = ellipsis
+  }
+
+  // Add middle pages
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  // Add ellipsis if needed
+  if (end < total - 1) {
+    pages.push(null);
+  }
+
+  // Always show last page
+  pages.push(total);
+
+  return pages;
+}
+
+// Usage
+const pages = generatePageNumbers(5, 20);
+// [1, null, 3, 4, 5, 6, 7, null, 20]
+```
+
+### React Hook Example
+
+```typescript
+import { useState, useEffect, useCallback } from 'react';
+import {
+  Typewoo,
+  ProductResponse,
+  ProductRequest,
+  Pagination,
+} from '@typewoo/sdk';
+
+interface UsePaginatedProductsResult {
+  products: ProductResponse[];
+  pagination: Pagination;
+  loading: boolean;
+  error: string | null;
+  goToPage: (page: number) => void;
+  nextPage: () => void;
+  prevPage: () => void;
+}
+
+function usePaginatedProducts(
+  params?: Omit<ProductRequest, 'page'>,
+  perPage = 12,
+): UsePaginatedProductsResult {
+  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({});
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadProducts = useCallback(
+    async (targetPage: number) => {
+      setLoading(true);
+      setError(null);
+
+      const { data, pagination, error } = await Typewoo.store.products.list({
+        ...params,
+        page: targetPage,
+        per_page: perPage,
+      });
+
+      setLoading(false);
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      setProducts(data || []);
+      setPagination(pagination);
+      setPage(targetPage);
+    },
+    [params, perPage],
+  );
+
+  useEffect(() => {
+    loadProducts(1);
+  }, [loadProducts]);
+
+  return {
+    products,
+    pagination,
+    loading,
+    error,
+    goToPage: loadProducts,
+    nextPage: () => pagination.next && loadProducts(pagination.next),
+    prevPage: () => pagination.previous && loadProducts(pagination.previous),
+  };
+}
+```
+
+## Admin API Pagination
+
+Admin API endpoints also support pagination:
+
+```typescript
+// Products
+const { data, pagination } = await Typewoo.admin.products.list({
+  page: 1,
+  per_page: 20,
+});
+
+// Orders
+const { data, pagination } = await Typewoo.admin.orders.list({
+  page: 1,
+  per_page: 50,
+  status: 'processing',
+});
+
+// Customers
+const { data, pagination } = await Typewoo.admin.customers.list({
+  page: 1,
+  per_page: 100,
+  orderby: 'registered_date',
+  order: 'desc',
+});
+```
+
+## Pagination Best Practices
+
+### 1. Use Reasonable Page Sizes
+
+```typescript
+// Good: reasonable page size
+const { data } = await Typewoo.store.products.list({ per_page: 12 });
+
+// Avoid: very large pages (slow, memory intensive)
+const { data } = await Typewoo.store.products.list({ per_page: 1000 });
+```
+
+### 2. Handle Empty Results
+
+```typescript
+const { data, pagination } = await Typewoo.store.products.list({
+  search: 'xyz123nonexistent',
+});
+
+if (!data || data.length === 0) {
+  showEmptyState('No products found');
+  return;
+}
+```
+
+### 3. Show Loading States
+
+```typescript
+const { data } = await Typewoo.store.products.list(
+  { page: 1 },
+  {
+    onLoading: (isLoading) => {
+      if (isLoading) {
+        showSkeleton();
+      } else {
+        hideSkeleton();
+      }
+    },
+  },
+);
+```
+
+### 4. Preserve Scroll Position
+
+```typescript
+async function loadPage(page: number) {
+  const scrollPosition = window.scrollY;
+
+  await loadProducts(page);
+
+  // Restore scroll position
+  window.scrollTo(0, scrollPosition);
+}
+```
+
+### 5. Cache Previous Pages
+
+```typescript
+const pageCache = new Map<number, ProductResponse[]>();
+
+async function loadPage(page: number) {
+  // Check cache first
+  if (pageCache.has(page)) {
+    return pageCache.get(page)!;
+  }
+
+  const { data } = await Typewoo.store.products.list({
+    page,
+    per_page: 12,
+  });
+
+  if (data) {
+    pageCache.set(page, data);
+  }
+
+  return data || [];
+}
+```
+
+## Utility Functions
+
+### extractPagination
+
+The SDK exports a utility to extract pagination from response headers:
+
+```typescript
+import { extractPagination } from '@typewoo/sdk';
+
+// Used internally by the SDK
+const pagination = extractPagination(responseHeaders);
+```
+
+### parseLinkHeader
+
+Parse the Link header for pagination URLs:
+
+```typescript
+import { parseLinkHeader } from '@typewoo/sdk';
+
+const links = parseLinkHeader(headers['link']);
+// { next: 'https://...', prev: 'https://...' }
+```

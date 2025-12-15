@@ -31,7 +31,7 @@ if (/^\d+\.\d+\.\d+$/.test(bumpType)) {
   const parts = currentVersion.split('.').map(Number);
   if (parts.length !== 3 || parts.some(isNaN)) {
     console.error(
-      `[bump-version] Invalid current version format: ${currentVersion}`
+      `[bump-version] Invalid current version format: ${currentVersion}`,
     );
     process.exit(1);
   }
@@ -53,7 +53,7 @@ if (/^\d+\.\d+\.\d+$/.test(bumpType)) {
       break;
     default:
       console.error(
-        `[bump-version] Invalid bump type: ${bumpType}. Use: major, minor, patch, or explicit version (e.g., 1.2.3)`
+        `[bump-version] Invalid bump type: ${bumpType}. Use: major, minor, patch, or explicit version (e.g., 1.2.3)`,
       );
       process.exit(1);
   }
@@ -66,13 +66,13 @@ console.log(`[bump-version] New version: ${newVersion}`);
 // Update version in plugin header
 let updatedContent = content.replace(
   /^(\s*\*\s*Version:\s*).+$/m,
-  `$1${newVersion}`
+  `$1${newVersion}`,
 );
 
 // Update TYPEWOO_VERSION constant
 updatedContent = updatedContent.replace(
   /(define\s*\(\s*'TYPEWOO_VERSION'\s*,\s*')([^']+)('\s*\))/,
-  `$1${newVersion}$3`
+  `$1${newVersion}$3`,
 );
 
 // Write updated content
@@ -80,5 +80,5 @@ writeFileSync(pluginFile, updatedContent, 'utf-8');
 
 console.log(`[bump-version] ✓ Updated typewoo.php`);
 console.log(
-  `[bump-version] ✓ Version bumped: ${currentVersion} → ${newVersion}`
+  `[bump-version] ✓ Version bumped: ${currentVersion} → ${newVersion}`,
 );

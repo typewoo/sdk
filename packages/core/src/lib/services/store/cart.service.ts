@@ -44,7 +44,7 @@ export class CartService extends BaseService {
    */
   async add(
     params: CartItemAddRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}/add-item?${query}`;
@@ -55,7 +55,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -75,7 +75,7 @@ export class CartService extends BaseService {
   async update(
     key: string,
     quantity: number,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify({ key, quantity }, { encode: true });
     const url = `/${this.endpoint}/update-item?${query}`;
@@ -86,7 +86,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -104,7 +104,7 @@ export class CartService extends BaseService {
    */
   async remove(
     key: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/remove-item?key=${key}`;
 
@@ -114,7 +114,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -132,7 +132,7 @@ export class CartService extends BaseService {
    */
   async applyCoupon(
     code: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/apply-coupon?code=${code}`;
 
@@ -142,7 +142,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -160,7 +160,7 @@ export class CartService extends BaseService {
    */
   async removeCoupon(
     code: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/remove-coupon?code=${code}`;
 
@@ -170,7 +170,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -188,7 +188,7 @@ export class CartService extends BaseService {
    */
   async updateCustomer(
     body: CartCustomerRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/update-customer`;
 
@@ -198,7 +198,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
       url,
       body,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -218,7 +218,7 @@ export class CartService extends BaseService {
   async selectShippingRate(
     packageId: number,
     rateId: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CartResponse>> {
     // Fixed: use query string form. Path segment form caused rest_no_route errors.
     const url = `/${this.endpoint}/select-shipping-rate?package_id=${packageId}&rate_id=${rateId}`;
@@ -229,7 +229,7 @@ export class CartService extends BaseService {
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'cart:request:success');

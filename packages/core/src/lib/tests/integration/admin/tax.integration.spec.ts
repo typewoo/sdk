@@ -33,7 +33,7 @@ describe('Integration: Admin Taxes', () => {
     const list = await Typewoo.admin.taxClasses.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(Array.isArray(list.data)).toBe(true);
@@ -44,7 +44,7 @@ describe('Integration: Admin Taxes', () => {
     const created = await Typewoo.admin.taxClasses.create({ name });
     if (created.error) {
       expect(created.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
       return; // Environment may block writes
     }
@@ -70,7 +70,7 @@ describe('Integration: Admin Taxes', () => {
     const list = await Typewoo.admin.taxes.list({ per_page: 5, page: 1 });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
     } else {
       expect(Array.isArray(list.data)).toBe(true);
@@ -88,7 +88,7 @@ describe('Integration: Admin Taxes', () => {
     });
     if (rateA.error) {
       expect(rateA.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
       return; // Skip rest if environment disallows writes
     }
@@ -124,7 +124,7 @@ describe('Integration: Admin Taxes', () => {
       });
       if (rateB.error) {
         expect(rateB.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i
+          /not_found|invalid|forbidden|unsupported/i,
         );
       } else if (rateB.data) {
         const idB = rateB.data.id;

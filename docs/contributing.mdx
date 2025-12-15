@@ -1,0 +1,368 @@
+---
+title: Contributing
+description: Guidelines for contributing to the TypeWoo SDK
+---
+
+# Contributing
+
+Thank you for your interest in contributing to the TypeWoo SDK. This guide covers the development setup, coding standards, and contribution process.
+
+## Prerequisites
+
+- Node.js 20 or higher
+- pnpm 10.20.0 or higher
+- Git
+
+## Development Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/typewoo/sdk.git
+cd sdk
+```
+
+### 2. Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Build the SDK
+
+```bash
+npx nx build core
+```
+
+### 4. Run Tests
+
+```bash
+npx nx test core
+```
+
+## Project Structure
+
+```
+sdk/
+├── packages/
+│   └── core/                 # Main SDK package (@typewoo/sdk)
+│       ├── src/
+│       │   ├── index.ts      # Public exports
+│       │   └── lib/          # Implementation
+│       │       ├── services/ # API services
+│       │       ├── types/    # Type definitions
+│       │       ├── interceptors/
+│       │       └── ...
+│       ├── package.json
+│       └── tsconfig.json
+├── plugins/
+│   └── typewoo/              # WordPress plugin
+├── examples/
+│   └── angular/              # Angular example app
+├── infra/
+│   └── wordpress/            # Docker development environment
+└── scripts/                  # Build and utility scripts
+```
+
+## Development Workflow
+
+### 1. Create a Branch
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+### 2. Make Changes
+
+Follow the coding standards described below.
+
+### 3. Format Code
+
+```bash
+npx prettier --write .
+```
+
+### 4. Run Linter
+
+```bash
+npx nx lint core
+```
+
+### 5. Run Tests
+
+```bash
+npx nx test core
+```
+
+### 6. Build
+
+```bash
+npx nx build core
+```
+
+### 7. Commit Changes
+
+Use conventional commit messages:
+
+```bash
+git commit -m "feat: add new product filtering option"
+git commit -m "fix: correct cart token handling"
+git commit -m "docs: update authentication guide"
+```
+
+## Coding Standards
+
+### TypeScript
+
+- Use strict TypeScript configuration
+- Prefer explicit types over inference for public APIs
+- Use `z.looseObject()` for Zod schemas (allows WooCommerce extensions)
+
+### Pure ESM
+
+- Always use `.js` extension in relative imports
+- No CommonJS patterns (`require`, `module.exports`)
+
+```typescript
+// Correct
+import { BaseService } from '../base.service.js';
+
+// Incorrect
+import { BaseService } from '../base.service';
+```
+
+### File Naming
+
+- Use lowercase with dots for services: `product.service.ts`
+- Use lowercase with dots for types: `product.response.ts`
+- Use lowercase with dashes for multi-word directories: `cart-item/`
+
+### Service Pattern
+
+New services should extend `BaseService`:
+
+```typescript
+import { BaseService } from '../base.service.js';
+import { doGet, doPost } from '../../http/http.js';
+import { ApiResult } from '../../types/api.js';
+import { RequestOptions } from '../../types/request.js';
+
+export class NewService extends BaseService {
+  private readonly endpoint = 'wp-json/wc/store/v1/endpoint';
+
+  async list(options?: RequestOptions): Promise<ApiResult<ResponseType[]>> {
+    const url = `/${this.endpoint}`;
+    const { data, error, headers } = await doGet<ResponseType[]>(url, options);
+    return { data, error, headers };
+  }
+}
+```
+
+### Event Emission
+
+When adding new events:
+
+1. Add the event type to `sdk.events.ts`
+2. Document the event in the hooks-and-events documentation
+3. Emit events for loading states, success, and errors
+
+```typescript
+// In service method
+this.events.emit('domain:loading', true);
+this.events.emit('domain:request:start');
+
+const { data, error } = await doGet(url, options);
+
+this.events.emitIf(!!data, 'domain:request:success');
+this.events.emitIf(!!error, 'domain:request:error', { error });
+this.events.emit('domain:loading', false);
+```
+
+### Error Handling
+
+Return errors in the result object; don't throw:
+
+```typescript
+// Correct
+const { data, error } = await doGet<T>(url);
+return { data, error };
+
+// Incorrect
+const response = await axios.get(url);
+return response.data;
+```
+
+### Testing
+
+- Write unit tests for new logic
+- Place tests in `packages/core/src/lib/tests/`
+- Use descriptive test names
+
+```typescript
+describe('ProductService', () => {
+  describe('list', () => {
+    it('should return products with pagination', async () => {
+      // Test implementation
+    });
+
+    it('should handle network errors', async () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+## Adding a New Store Service
+
+### 1. Create the Service File
+
+Create `packages/core/src/lib/services/store/new.service.ts`:
+
+```typescript
+import { BaseService } from '../base.service.js';
+import { doGet } from '../../http/http.js';
+import { ApiResult } from '../../types/api.js';
+import { NewResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
+
+export class NewService extends BaseService {
+  private readonly endpoint = 'wp-json/wc/store/v1/new';
+
+  async list(options?: RequestOptions): Promise<ApiResult<NewResponse[]>> {
+    const url = `/${this.endpoint}`;
+    const { data, error } = await doGet<NewResponse[]>(url, options);
+    return { data, error };
+  }
+}
+```
+
+### 2. Create Type Definitions
+
+Create `packages/core/src/lib/types/store/new/`:
+
+```typescript
+// new.response.ts
+import { z } from 'zod';
+
+export const NewResponseSchema = z.looseObject({
+  id: z.number(),
+  name: z.string(),
+});
+
+export type NewResponse = z.infer<typeof NewResponseSchema>;
+
+// index.ts
+export * from './new.response.js';
+```
+
+### 3. Export Types
+
+Add to `packages/core/src/lib/types/store/index.ts`:
+
+```typescript
+export * from './new/index.js';
+```
+
+### 4. Register in StoreService
+
+Add to `packages/core/src/lib/services/store.service.ts`:
+
+```typescript
+import { NewService } from './store/new.service.js';
+
+export class StoreService {
+  private _new!: NewService;
+
+  constructor(state, config, events) {
+    // ...existing services
+    this._new = new NewService(state, config, events);
+  }
+
+  get new() {
+    return this._new;
+  }
+}
+```
+
+### 5. Write Tests
+
+Create `packages/core/src/lib/tests/unit/store/new.service.spec.ts`:
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+// Test implementation
+```
+
+### 6. Update Documentation
+
+Add documentation to `docs/api-reference/`.
+
+## Pull Request Process
+
+### 1. Ensure Quality
+
+- All tests pass: `npx nx test core`
+- Linting passes: `npx nx lint core`
+- Code is formatted: `npx prettier --check .`
+- Build succeeds: `npx nx build core`
+
+### 2. Update Documentation
+
+- Add/update JSDoc comments
+- Update relevant documentation files
+- Add examples for new features
+
+### 3. Create Pull Request
+
+- Use a clear, descriptive title
+- Reference any related issues
+- Describe the changes and motivation
+- List any breaking changes
+
+### 4. Review Process
+
+- Address reviewer feedback
+- Keep the PR focused on a single concern
+- Squash commits if requested
+
+## Running the WordPress Environment
+
+For integration testing with a real WooCommerce instance:
+
+```bash
+# Start the environment
+pnpm run wp:env:up
+
+# Stop the environment
+pnpm run wp:env:down
+
+# Clean and rebuild
+pnpm run wp:env:rebuild
+```
+
+## Useful Commands
+
+| Command                    | Description        |
+| -------------------------- | ------------------ |
+| `npx nx build core`        | Build the SDK      |
+| `npx nx test core`         | Run tests          |
+| `npx nx lint core`         | Run linter         |
+| `npx prettier --write .`   | Format code        |
+| `npx nx run-many -t build` | Build all packages |
+| `pnpm run dev:rebuild`     | Clean rebuild      |
+
+## Getting Help
+
+- Open an issue for bugs or feature requests
+- Check existing issues before creating new ones
+- Provide reproduction steps for bugs
+
+## Code of Conduct
+
+- Be respectful and inclusive
+- Focus on constructive feedback
+- Help others learn and grow
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.

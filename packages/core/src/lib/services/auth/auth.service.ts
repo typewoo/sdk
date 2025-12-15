@@ -22,7 +22,7 @@ export class AuthService extends BaseService {
   async getAutoLoginUrl(
     ott: string,
     redirect: string,
-    trackingParams?: Record<string, string | number | boolean>
+    trackingParams?: Record<string, string | number | boolean>,
   ) {
     const params = qs.stringify({
       token: ott,
@@ -36,7 +36,7 @@ export class AuthService extends BaseService {
 
   async token(
     body: AuthTokenRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthTokenResponse>> {
     const url = `/${this.endpoint}/token`;
     if (this.config.auth?.revokeTokenBeforeLogin) {
@@ -48,7 +48,7 @@ export class AuthService extends BaseService {
     const { data, error } = await doPost<AuthTokenResponse, AuthTokenRequest>(
       url,
       body,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'auth:login:success');
@@ -73,7 +73,7 @@ export class AuthService extends BaseService {
 
   async refreshToken(
     body: AuthRefreshRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthTokenResponse>> {
     const url = `/${this.endpoint}/refresh`;
 
@@ -82,7 +82,7 @@ export class AuthService extends BaseService {
     const { data, error } = await doPost<AuthTokenResponse, AuthRefreshRequest>(
       url,
       body,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'auth:token:refresh:success');
@@ -106,7 +106,7 @@ export class AuthService extends BaseService {
 
   async revokeToken(
     body?: AuthRevokeRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthRevokeResponse>> {
     const url = `/${this.endpoint}/revoke`;
 
@@ -115,7 +115,7 @@ export class AuthService extends BaseService {
     const { data, error } = await doPost<AuthRevokeResponse, AuthRevokeRequest>(
       url,
       body,
-      options
+      options,
     );
 
     this.events.emitIf(!!data, 'auth:token:revoke:success');
@@ -141,7 +141,7 @@ export class AuthService extends BaseService {
 
   async oneTimeToken(
     body: AuthOneTimeTokenRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthOneTimeTokenResponse>> {
     const url = `/${this.endpoint}/one-time-token`;
 
@@ -154,7 +154,7 @@ export class AuthService extends BaseService {
   }
 
   async validate(
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthValidateResponse>> {
     const url = `/${this.endpoint}/validate`;
 
@@ -164,7 +164,7 @@ export class AuthService extends BaseService {
   }
 
   async status(
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<AuthStatusResponse>> {
     const url = `/${this.endpoint}/status`;
 

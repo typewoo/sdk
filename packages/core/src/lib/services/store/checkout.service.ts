@@ -38,7 +38,7 @@ export class CheckoutService extends BaseService {
   async update(
     params?: CheckoutUpdateRequest,
     experimental_calc_totals = false,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
 
@@ -48,7 +48,7 @@ export class CheckoutService extends BaseService {
     const { data, error } = await doPut<CheckoutResponse, unknown>(
       url,
       undefined,
-      options
+      options,
     );
 
     return { data, error };
@@ -61,7 +61,7 @@ export class CheckoutService extends BaseService {
    */
   async processOrderAndPayment(
     params: CheckoutCreateRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CheckoutResponse>> {
     // Store API expects POST body with checkout payload at the base endpoint
     const url = `/${this.endpoint}/`;

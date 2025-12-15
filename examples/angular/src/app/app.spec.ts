@@ -14,7 +14,7 @@ describe('App', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome example-angular'
+      'Welcome example-angular',
     );
   });
 });

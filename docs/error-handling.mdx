@@ -1,0 +1,431 @@
+---
+title: Error Handling
+description: Error model, handling, and common error codes
+---
+
+# Error Handling
+
+The TypeWoo SDK provides a consistent error handling model across all API operations.
+
+## Error Model
+
+All API methods return a result object with `data` and `error` properties:
+
+```typescript
+const { data, error } = await Typewoo.store.products.list();
+
+if (error) {
+  console.error('Error:', error.message);
+  return;
+}
+
+// data is defined here
+console.log('Products:', data);
+```
+
+## ApiError Interface
+
+```typescript
+interface ApiError {
+  code: string; // Error code identifier
+  message: string; // Human-readable message
+  data: {
+    status: number; // HTTP status code
+    params?: Record<string, string>; // Parameter details
+  };
+  details: Record<string, Record<string, string>>; // Additional details
+}
+```
+
+### Example Error Response
+
+```typescript
+{
+  code: 'woocommerce_rest_product_invalid_id',
+  message: 'Invalid product ID.',
+  data: {
+    status: 404
+  },
+  details: {}
+}
+```
+
+## Error Categories
+
+### Client Errors (4xx)
+
+| Status | Common Codes                                               | Description             |
+| ------ | ---------------------------------------------------------- | ----------------------- |
+| 400    | `rest_invalid_param`, `woocommerce_rest_missing_parameter` | Bad request             |
+| 401    | `woocommerce_rest_cannot_view`, `jwt_auth_failed`          | Authentication required |
+| 403    | `woocommerce_rest_cannot_create`                           | Permission denied       |
+| 404    | `woocommerce_rest_product_invalid_id`                      | Resource not found      |
+| 422    | `woocommerce_rest_invalid_coupon`                          | Validation error        |
+
+### Server Errors (5xx)
+
+| Status | Common Codes                      | Description           |
+| ------ | --------------------------------- | --------------------- |
+| 500    | `woocommerce_rest_cannot_process` | Internal server error |
+| 502    | `bad_gateway`                     | Bad gateway           |
+| 503    | `service_unavailable`             | Service unavailable   |
+| 504    | `gateway_timeout`                 | Gateway timeout       |
+
+### Network Errors
+
+| Code            | Description                 |
+| --------------- | --------------------------- |
+| `network_error` | Unable to reach server      |
+| `ECONNREFUSED`  | Connection refused          |
+| `ETIMEDOUT`     | Connection timed out        |
+| `request_error` | Request configuration error |
+
+## Handling Errors
+
+### Basic Error Handling
+
+```typescript
+const { data, error } = await Typewoo.store.cart.add({ id: 123 });
+
+if (error) {
+  switch (error.data.status) {
+    case 400:
+      console.error('Bad request:', error.message);
+      break;
+    case 401:
+      console.error('Please log in');
+      break;
+    case 404:
+      console.error('Product not found');
+      break;
+    default:
+      console.error('Error:', error.message);
+  }
+  return;
+}
+
+console.log('Added to cart:', data);
+```
+
+### Error Code Handling
+
+```typescript
+const { data, error } = await Typewoo.store.cart.applyCoupon('INVALID');
+
+if (error) {
+  switch (error.code) {
+    case 'woocommerce_rest_cart_coupon_error':
+      showError('Invalid coupon code');
+      break;
+    case 'woocommerce_rest_cart_coupon_already_applied':
+      showError('Coupon already applied');
+      break;
+    case 'woocommerce_rest_cart_coupon_expired':
+      showError('This coupon has expired');
+      break;
+    case 'woocommerce_rest_cart_coupon_min_spend':
+      showError('Minimum spend not reached');
+      break;
+    default:
+      showError(error.message);
+  }
+}
+```
+
+### Network Error Handling
+
+```typescript
+const { data, error } = await Typewoo.store.products.list();
+
+if (error) {
+  if (error.data.status === 0) {
+    // Network error
+    showError('Unable to connect. Please check your internet connection.');
+  } else {
+    showError(error.message);
+  }
+}
+```
+
+## Per-Request Error Handling
+
+Use `RequestOptions.onError` for per-request error handling:
+
+```typescript
+const { data } = await Typewoo.store.products.list(
+  { per_page: 10 },
+  {
+    onError: (error, context) => {
+      console.error(`Request to ${context.url} failed:`, error.message);
+
+      // Log to error tracking service
+      errorTracker.captureException(error);
+    },
+  },
+);
+```
+
+### Request Context
+
+The error handler receives context about the failed request:
+
+```typescript
+interface RequestContext<T = unknown> {
+  url?: string; // Full URL
+  path?: string; // Endpoint path
+  config?: AxiosRequestConfig;
+  method?: Method | string;
+  payload?: T; // Request body
+}
+```
+
+## Global Error Handling
+
+### Using Events
+
+```typescript
+// Listen for cart errors
+Typewoo.events.on('cart:request:error', (errorData) => {
+  console.error('Cart error:', errorData?.error);
+  showNotification('Cart operation failed');
+});
+
+// Listen for auth errors
+Typewoo.events.on('auth:login:error', (error) => {
+  console.error('Login failed:', error);
+});
+
+Typewoo.events.on('auth:token:refresh:error', (error) => {
+  console.error('Session expired');
+  redirectToLogin();
+});
+```
+
+### Using Middleware
+
+```typescript
+Typewoo.events.use((ctx, next) => {
+  // Check for error events
+  if (String(ctx.event).includes(':error')) {
+    // Log all errors
+    console.error(`[Error Event] ${String(ctx.event)}:`, ctx.payload);
+
+    // Send to error tracking
+    if (ctx.payload instanceof Error || ctx.payload?.error) {
+      errorTracker.captureException(ctx.payload);
+    }
+  }
+  next();
+});
+```
+
+## Retry Configuration
+
+Configure automatic retry for transient errors:
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  request: {
+    retry: {
+      enabled: true,
+      maxRetries: 3,
+      delay: 1000,
+      retryOnStatus: [408, 429, 500, 502, 503, 504],
+      retryOnMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'],
+      onRetry: (attempt, error, config) => {
+        console.log(`Retry ${attempt} for ${config?.url}`);
+      },
+    },
+  },
+});
+```
+
+See [Configuration](/configuration#request-configuration) for full retry options.
+
+## Common Error Codes
+
+### Authentication Errors
+
+| Code                           | Description               |
+| ------------------------------ | ------------------------- |
+| `jwt_auth_failed`              | JWT authentication failed |
+| `jwt_auth_invalid_token`       | Invalid JWT token         |
+| `jwt_auth_expired_token`       | JWT token expired         |
+| `woocommerce_rest_cannot_view` | Authentication required   |
+| `rest_forbidden`               | Access denied             |
+
+### Product Errors
+
+| Code                                             | Description             |
+| ------------------------------------------------ | ----------------------- |
+| `woocommerce_rest_product_invalid_id`            | Product not found       |
+| `woocommerce_rest_product_no_longer_purchasable` | Product not purchasable |
+
+### Cart Errors
+
+| Code                                       | Description                 |
+| ------------------------------------------ | --------------------------- |
+| `woocommerce_rest_cart_empty`              | Cart is empty               |
+| `woocommerce_rest_cart_invalid_key`        | Invalid cart item key       |
+| `woocommerce_rest_product_out_of_stock`    | Product out of stock        |
+| `woocommerce_rest_product_not_purchasable` | Product cannot be purchased |
+| `woocommerce_rest_invalid_quantity`        | Invalid quantity            |
+
+### Coupon Errors
+
+| Code                                           | Description            |
+| ---------------------------------------------- | ---------------------- |
+| `woocommerce_rest_invalid_coupon`              | Invalid coupon code    |
+| `woocommerce_rest_cart_coupon_error`           | General coupon error   |
+| `woocommerce_rest_cart_coupon_already_applied` | Coupon already in cart |
+| `woocommerce_rest_cart_coupon_expired`         | Coupon has expired     |
+| `woocommerce_rest_cart_coupon_min_spend`       | Minimum spend not met  |
+| `woocommerce_rest_cart_coupon_max_spend`       | Maximum spend exceeded |
+| `woocommerce_rest_cart_coupon_usage_limit`     | Usage limit reached    |
+
+### Checkout Errors
+
+| Code                                               | Description               |
+| -------------------------------------------------- | ------------------------- |
+| `woocommerce_rest_checkout_missing_required_field` | Required field missing    |
+| `woocommerce_rest_checkout_invalid_payment_method` | Invalid payment method    |
+| `woocommerce_rest_checkout_payment_error`          | Payment processing failed |
+| `woocommerce_rest_checkout_invalid_address`        | Invalid address           |
+
+### Order Errors
+
+| Code                                 | Description       |
+| ------------------------------------ | ----------------- |
+| `woocommerce_rest_order_invalid_id`  | Order not found   |
+| `woocommerce_rest_invalid_order_key` | Invalid order key |
+
+## Error Handling Patterns
+
+### Try-Catch Pattern
+
+While the SDK doesn't throw exceptions, you can create a throwing wrapper:
+
+```typescript
+async function fetchProductsOrThrow(params?: ProductRequest) {
+  const { data, error } = await Typewoo.store.products.list(params);
+
+  if (error) {
+    throw new Error(`Failed to fetch products: ${error.message}`);
+  }
+
+  return data!;
+}
+
+// Usage
+try {
+  const products = await fetchProductsOrThrow({ per_page: 10 });
+} catch (err) {
+  console.error(err);
+}
+```
+
+### Result Type Pattern
+
+```typescript
+type Result<T, E = ApiError> =
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+async function addToCart(productId: number): Promise<Result<CartResponse>> {
+  const { data, error } = await Typewoo.store.cart.add({ id: productId });
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true, data: data! };
+}
+
+// Usage
+const result = await addToCart(123);
+if (result.success) {
+  console.log('Cart:', result.data);
+} else {
+  console.error('Error:', result.error.message);
+}
+```
+
+### Centralized Error Handler
+
+```typescript
+class ErrorHandler {
+  handle(error: ApiError, context?: string) {
+    // Log error
+    console.error(`[${context || 'Unknown'}]`, error.code, error.message);
+
+    // Handle specific errors
+    if (error.code === 'jwt_auth_expired_token') {
+      this.handleAuthExpired();
+      return;
+    }
+
+    // Show user-friendly message
+    this.showErrorMessage(error);
+  }
+
+  private handleAuthExpired() {
+    // Clear auth state
+    // Redirect to login
+  }
+
+  private showErrorMessage(error: ApiError) {
+    const messages: Record<string, string> = {
+      woocommerce_rest_cart_empty: 'Your cart is empty',
+      woocommerce_rest_product_out_of_stock: 'This product is out of stock',
+      // ... more mappings
+    };
+
+    const message = messages[error.code] || error.message;
+    showNotification(message, 'error');
+  }
+}
+
+export const errorHandler = new ErrorHandler();
+```
+
+## Debugging
+
+### Enable Axios Debug
+
+```typescript
+await Typewoo.init({
+  baseUrl: 'https://your-store.com',
+  axiosConfig: {
+    // Log all requests
+  },
+});
+
+// Add response interceptor for debugging
+import { httpClient } from '@typewoo/sdk';
+
+httpClient.interceptors.response.use(
+  (response) => {
+    console.log('Response:', response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('Request failed:', error.config?.url, error.response?.status);
+    return Promise.reject(error);
+  },
+);
+```
+
+### Inspect Error Details
+
+```typescript
+const { error } = await Typewoo.store.cart.add({ id: 123 });
+
+if (error) {
+  console.log('Code:', error.code);
+  console.log('Message:', error.message);
+  console.log('HTTP Status:', error.data.status);
+  console.log('Params:', error.data.params);
+  console.log('Details:', error.details);
+}
+```

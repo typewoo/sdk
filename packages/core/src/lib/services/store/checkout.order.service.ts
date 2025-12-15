@@ -21,14 +21,14 @@ export class CheckoutOrderService extends BaseService {
   async order(
     orderId: number,
     params: OrderRequest,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<CheckoutResponse>> {
     const url = `/${this.endpoint}/${orderId}`;
 
     const { data, error } = await doPost<CheckoutResponse, OrderRequest>(
       url,
       params,
-      options
+      options,
     );
 
     return { data, error };

@@ -1,0 +1,438 @@
+---
+title: Products API
+description: Product listing and retrieval endpoints
+---
+
+# Products API
+
+The Products API provides access to WooCommerce product data through the Store API.
+
+## Access
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+const productService = Typewoo.store.products;
+```
+
+## Methods
+
+### `list(params?, options?)`
+
+Retrieve a paginated list of products.
+
+```typescript
+const { data, error, pagination } = await Typewoo.store.products.list({
+  per_page: 12,
+  page: 1,
+  orderby: 'popularity',
+  order: 'desc',
+});
+```
+
+**Parameters:**
+
+| Name      | Type             | Required | Description      |
+| --------- | ---------------- | -------- | ---------------- |
+| `params`  | `ProductRequest` | No       | Query parameters |
+| `options` | `RequestOptions` | No       | Request options  |
+
+**Returns:** `Promise<ApiPaginationResult<ProductResponse[]>>`
+
+### `single(params, options?)`
+
+Retrieve a single product by ID or slug.
+
+```typescript
+// By ID
+const { data, error } = await Typewoo.store.products.single({ id: 123 });
+
+// By slug
+const { data, error } = await Typewoo.store.products.single({
+  slug: 'blue-t-shirt',
+});
+```
+
+**Parameters:**
+
+| Name      | Type                             | Required | Description                                |
+| --------- | -------------------------------- | -------- | ------------------------------------------ |
+| `params`  | `{ id?: number; slug?: string }` | Yes      | Product identifier (at least one required) |
+| `options` | `RequestOptions`                 | No       | Request options                            |
+
+**Returns:** `Promise<ApiResult<ProductResponse>>`
+
+## Query Parameters
+
+The `ProductRequest` type supports extensive filtering:
+
+### Pagination
+
+| Parameter  | Type     | Default | Description           |
+| ---------- | -------- | ------- | --------------------- |
+| `page`     | `number` | `1`     | Page number           |
+| `per_page` | `number` | `10`    | Items per page        |
+| `offset`   | `number` | -       | Offset for pagination |
+
+### Sorting
+
+| Parameter | Type              | Default  | Description    |
+| --------- | ----------------- | -------- | -------------- |
+| `order`   | `'asc' \| 'desc'` | `'desc'` | Sort direction |
+| `orderby` | `string`          | `'date'` | Sort field     |
+
+Valid `orderby` values:
+
+- `date` - Date created
+- `modified` - Date modified
+- `id` - Product ID
+- `include` - Preserve order of IDs in `include` param
+- `title` - Product title
+- `slug` - Product slug
+- `price` - Product price
+- `popularity` - Total sales
+- `rating` - Average rating
+- `menu_order` - Menu order
+- `comment_count` - Review count
+
+### Filtering
+
+| Parameter        | Type       | Description                        |
+| ---------------- | ---------- | ---------------------------------- |
+| `search`         | `string`   | Search term                        |
+| `slug`           | `string`   | Filter by slug(s), comma-separated |
+| `include`        | `number[]` | Include specific IDs               |
+| `exclude`        | `number[]` | Exclude specific IDs               |
+| `parent`         | `number[]` | Filter by parent IDs               |
+| `parent_exclude` | `number[]` | Exclude parent IDs                 |
+
+### Date Filters
+
+| Parameter     | Type     | Description                       |
+| ------------- | -------- | --------------------------------- |
+| `after`       | `string` | Products created after (ISO8601)  |
+| `before`      | `string` | Products created before (ISO8601) |
+| `date_column` | `string` | Column for date filtering         |
+
+Valid `date_column` values: `date`, `date_gmt`, `modified`, `modified_gmt`
+
+### Product Properties
+
+| Parameter  | Type      | Description                       |
+| ---------- | --------- | --------------------------------- |
+| `type`     | `string`  | Product type                      |
+| `sku`      | `string`  | Filter by SKU(s), comma-separated |
+| `featured` | `boolean` | Filter by featured status         |
+| `on_sale`  | `boolean` | Filter by on-sale status          |
+| `rating`   | `number`  | Filter by minimum rating          |
+
+Valid `type` values: `simple`, `grouped`, `external`, `variable`, `variation`
+
+### Category Filters
+
+| Parameter           | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| `category`          | `string` | Category IDs or slugs, comma-separated |
+| `category_operator` | `string` | Logical operator                       |
+
+Valid operators: `in`, `not_in`, `and`
+
+```typescript
+// Products in clothing OR accessories
+const { data } = await Typewoo.store.products.list({
+  category: 'clothing,accessories',
+  category_operator: 'in',
+});
+
+// Products in BOTH clothing AND summer
+const { data } = await Typewoo.store.products.list({
+  category: 'clothing,summer',
+  category_operator: 'and',
+});
+```
+
+### Tag Filters
+
+| Parameter      | Type     | Description                       |
+| -------------- | -------- | --------------------------------- |
+| `tag`          | `string` | Tag IDs or slugs, comma-separated |
+| `tag_operator` | `string` | Logical operator                  |
+
+### Brand Filters
+
+| Parameter        | Type     | Description                         |
+| ---------------- | -------- | ----------------------------------- |
+| `brand`          | `string` | Brand IDs or slugs, comma-separated |
+| `brand_operator` | `string` | Logical operator                    |
+
+### Price Filters
+
+| Parameter   | Type     | Description                            |
+| ----------- | -------- | -------------------------------------- |
+| `min_price` | `string` | Minimum price (smallest currency unit) |
+| `max_price` | `string` | Maximum price (smallest currency unit) |
+
+**Note:** Prices use the smallest currency unit. For USD ($100.25), use `10025`.
+
+```typescript
+// Products between $10 and $50
+const { data } = await Typewoo.store.products.list({
+  min_price: '1000',
+  max_price: '5000',
+});
+```
+
+### Stock Filters
+
+| Parameter      | Type       | Description            |
+| -------------- | ---------- | ---------------------- |
+| `stock_status` | `string[]` | Filter by stock status |
+
+Valid values: `instock`, `outofstock`, `onbackorder`
+
+```typescript
+const { data } = await Typewoo.store.products.list({
+  stock_status: ['instock', 'onbackorder'],
+});
+```
+
+### Attribute Filters
+
+| Parameter            | Type     | Description                 |
+| -------------------- | -------- | --------------------------- |
+| `attributes`         | `array`  | Attribute filter objects    |
+| `attribute_relation` | `string` | Relation between attributes |
+
+### Visibility
+
+| Parameter            | Type     | Description               |
+| -------------------- | -------- | ------------------------- |
+| `catalog_visibility` | `string` | Catalog visibility filter |
+
+Valid values: `any`, `visible`, `catalog`, `search`, `hidden`
+
+## Response Type
+
+### ProductResponse
+
+```typescript
+interface ProductResponse {
+  id: number;
+  name: string;
+  slug: string;
+  parent: number;
+  type: string;
+  variation: string;
+  permalink: string;
+  sku: string;
+  short_description: string;
+  description: string;
+  on_sale: boolean;
+  prices: ProductPriceResponse;
+  price_html: string;
+  average_rating: string;
+  review_count: number;
+  images: ImageResponse[];
+  categories: ProductTerm[];
+  tags: ProductTerm[];
+  brands: ProductTerm[];
+  attributes: unknown[];
+  variations: unknown[];
+  grouped_products: unknown[];
+  has_options: boolean;
+  is_purchasable: boolean;
+  is_in_stock: boolean;
+  is_on_backorder: boolean;
+  low_stock_remaining: unknown;
+  stock_availability: {
+    text: string;
+    class: string;
+  };
+  sold_individually: boolean;
+  add_to_cart: {
+    text: string;
+    description: string;
+    url: string;
+    single_text: string;
+    maximum: number;
+    minimum: number;
+    multiple_of: number;
+  };
+  extensions: unknown;
+}
+```
+
+### ProductPriceResponse
+
+```typescript
+interface ProductPriceResponse {
+  price: string;
+  regular_price: string;
+  sale_price: string;
+  price_range: {
+    min_amount: string;
+    max_amount: string;
+  } | null;
+  currency_code: string;
+  currency_symbol: string;
+  currency_minor_unit: number;
+  currency_decimal_separator: string;
+  currency_thousand_separator: string;
+  currency_prefix: string;
+  currency_suffix: string;
+}
+```
+
+## Related Services
+
+### Categories
+
+```typescript
+// List categories
+const { data } = await Typewoo.store.categories.list();
+
+// Get single category
+const { data } = await Typewoo.store.categories.single({ id: 15 });
+```
+
+### Tags
+
+```typescript
+const { data } = await Typewoo.store.tags.list();
+const { data } = await Typewoo.store.tags.single({ id: 5 });
+```
+
+### Brands
+
+```typescript
+const { data } = await Typewoo.store.brands.list();
+const { data } = await Typewoo.store.brands.single({ id: 10 });
+```
+
+### Attributes
+
+```typescript
+const { data } = await Typewoo.store.attributes.list();
+const { data } = await Typewoo.store.attributes.single({ id: 1 });
+```
+
+### Attribute Terms
+
+```typescript
+const { data } = await Typewoo.store.attributesTerms.list(attributeId);
+```
+
+### Reviews
+
+```typescript
+const { data } = await Typewoo.store.reviews.list({ product_id: 123 });
+```
+
+### Collection Data
+
+Get aggregated data for product collections:
+
+```typescript
+const { data } = await Typewoo.store.collectionData.get({
+  calculate_price_range: true,
+  calculate_attribute_counts: ['pa_color', 'pa_size'],
+  calculate_rating_counts: true,
+  calculate_stock_status_counts: true,
+});
+```
+
+## Examples
+
+### Basic Product Listing
+
+```typescript
+const { data: products, pagination } = await Typewoo.store.products.list({
+  per_page: 12,
+});
+
+console.log(`Showing ${products?.length} of ${pagination.total} products`);
+console.log(`Page 1 of ${pagination.totalPages}`);
+```
+
+### Filtered Product Search
+
+```typescript
+const { data } = await Typewoo.store.products.list({
+  search: 'shirt',
+  category: 'clothing',
+  min_price: '1000',
+  max_price: '5000',
+  stock_status: ['instock'],
+  orderby: 'price',
+  order: 'asc',
+});
+```
+
+### Product Detail Page
+
+```typescript
+const { data: product, error } = await Typewoo.store.products.single({
+  slug: 'blue-cotton-shirt',
+});
+
+if (error) {
+  console.error('Product not found');
+  return;
+}
+
+console.log('Product:', product.name);
+console.log('Price:', product.prices.price);
+console.log('In stock:', product.is_in_stock);
+```
+
+### Pagination
+
+```typescript
+async function loadProducts(page: number) {
+  const { data, pagination } = await Typewoo.store.products.list({
+    page,
+    per_page: 12,
+  });
+
+  return {
+    products: data,
+    hasNext: pagination.next !== undefined,
+    hasPrev: pagination.previous !== undefined,
+    total: pagination.total,
+  };
+}
+```
+
+## Admin Products API
+
+For full CRUD operations on products, use the Admin API:
+
+```typescript
+// List products
+const { data } = await Typewoo.admin.products.list();
+
+// Get single product
+const { data } = await Typewoo.admin.products.getById(123);
+
+// Create product
+const { data } = await Typewoo.admin.products.create({
+  name: 'New Product',
+  type: 'simple',
+  regular_price: '19.99',
+});
+
+// Update product
+const { data } = await Typewoo.admin.products.update(123, {
+  regular_price: '24.99',
+});
+
+// Delete product
+const { data } = await Typewoo.admin.products.delete(123, true);
+
+// Batch operations
+const { data } = await Typewoo.admin.products.batch({
+  create: [{ name: 'Product 1' }],
+  update: [{ id: 123, regular_price: '29.99' }],
+  delete: [456],
+});
+```

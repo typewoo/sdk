@@ -16,7 +16,7 @@ export const ProductCollectionDataRequestSchema = z.looseObject({
       z.looseObject({
         taxonomy: z.string(),
         query_type: z.string(),
-      })
+      }),
     )
     .optional(),
   /**

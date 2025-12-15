@@ -54,7 +54,7 @@ describe('Integration: Admin Webhooks', () => {
     });
     if (created.error) {
       expect(created.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i
+        /not_found|invalid|forbidden|unsupported/i,
       );
       return; // Environment may block webhook writes
     }
@@ -91,7 +91,7 @@ describe('Integration: Admin Webhooks', () => {
         expect(batch.error).toBeFalsy();
       } else if (createdB.error) {
         expect(createdB.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i
+          /not_found|invalid|forbidden|unsupported/i,
         );
       }
 

@@ -3,7 +3,7 @@
 import { readFileSync } from 'fs';
 
 const baseline = JSON.parse(
-  readFileSync('snapshots/api-structure/admin/baseline.json', 'utf8')
+  readFileSync('snapshots/api-structure/admin/baseline.json', 'utf8'),
 );
 const routes = Object.keys(baseline.routes);
 
@@ -15,22 +15,22 @@ const coreRoutes = routes.filter(
     !r.includes('marketplace') &&
     !r.includes('brands') &&
     !r.includes('layouts') &&
-    !r.includes('layout-templates')
+    !r.includes('layout-templates'),
 );
 
 // Group routes by main category
 const categories = {
   Products: coreRoutes.filter(
-    (r) => r.startsWith('products') && !r.match(/\(\?P<id>.*\)$/)
+    (r) => r.startsWith('products') && !r.match(/\(\?P<id>.*\)$/),
   ),
   Orders: coreRoutes.filter(
-    (r) => r.startsWith('orders') && !r.match(/\(\?P<id>.*\)$/)
+    (r) => r.startsWith('orders') && !r.match(/\(\?P<id>.*\)$/),
   ),
   Customers: coreRoutes.filter(
-    (r) => r.startsWith('customers') && !r.match(/\(\?P<id>.*\)$/)
+    (r) => r.startsWith('customers') && !r.match(/\(\?P<id>.*\)$/),
   ),
   Coupons: coreRoutes.filter(
-    (r) => r.startsWith('coupons') && !r.match(/\(\?P<id>.*\)$/)
+    (r) => r.startsWith('coupons') && !r.match(/\(\?P<id>.*\)$/),
   ),
   Reports: coreRoutes.filter((r) => r.startsWith('reports')),
   Settings: coreRoutes.filter((r) => r.startsWith('settings')),
@@ -42,7 +42,7 @@ const categories = {
   Payment: coreRoutes.filter((r) => r.startsWith('payment_gateways')),
   Refunds: coreRoutes.filter((r) => r.startsWith('refunds')),
   'Shipping Methods': coreRoutes.filter((r) =>
-    r.startsWith('shipping_methods')
+    r.startsWith('shipping_methods'),
   ),
 };
 
@@ -91,7 +91,7 @@ Object.entries(categories).forEach(([category, endpoints]) => {
 console.log(`📊 SUMMARY:`);
 console.log(`   Core Admin API Endpoints: ${coreRoutes.length}`);
 console.log(
-  `   SDK Service Categories: ${Object.keys(sdkImplementations).length}`
+  `   SDK Service Categories: ${Object.keys(sdkImplementations).length}`,
 );
 console.log(`   Total All Endpoints (including extensions): ${routes.length}`);
 

@@ -1,0 +1,474 @@
+---
+title: Hooks and Events
+description: EventBus and event-driven architecture
+---
+
+# Hooks and Events
+
+The TypeWoo SDK uses an event-driven architecture powered by a custom EventBus. This allows reactive programming patterns and decoupled components.
+
+## EventBus
+
+The EventBus is accessible via `Typewoo.events`:
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Subscribe to events
+Typewoo.events.on('cart:updated', (cart) => {
+  console.log('Cart updated:', cart);
+});
+```
+
+## Event Subscription Methods
+
+### `on(event, handler)`
+
+Subscribe to an event. Returns an unsubscribe function.
+
+```typescript
+const unsubscribe = Typewoo.events.on('cart:updated', (cart) => {
+  console.log('Cart items:', cart?.items_count);
+});
+
+// Later: unsubscribe
+unsubscribe();
+```
+
+### `once(event, handler)`
+
+Subscribe for a single event emission only.
+
+```typescript
+Typewoo.events.once('auth:login:success', () => {
+  console.log('First login detected');
+});
+```
+
+### `off(event, handler)`
+
+Remove a specific handler.
+
+```typescript
+function handleCartUpdate(cart) {
+  console.log('Cart updated');
+}
+
+Typewoo.events.on('cart:updated', handleCartUpdate);
+
+// Later: remove handler
+Typewoo.events.off('cart:updated', handleCartUpdate);
+```
+
+### `onAny(handler)`
+
+Subscribe to all events.
+
+```typescript
+const unsubscribe = Typewoo.events.onAny((event, payload) => {
+  console.log(`Event: ${String(event)}`, payload);
+});
+```
+
+### `waitFor(event, predicate?, timeout?)`
+
+Wait for an event as a Promise.
+
+```typescript
+// Wait for any cart update
+const cart = await Typewoo.events.waitFor('cart:updated');
+
+// Wait with timeout (5 seconds)
+try {
+  const cart = await Typewoo.events.waitFor('cart:updated', undefined, 5000);
+} catch (error) {
+  console.error('Timeout waiting for cart update');
+}
+
+// Wait for specific condition
+const cart = await Typewoo.events.waitFor(
+  'cart:updated',
+  (cart) => cart !== undefined && cart.items_count > 0,
+);
+```
+
+### `clear()`
+
+Remove all event listeners.
+
+```typescript
+Typewoo.events.clear();
+```
+
+## Available Events
+
+### Authentication Events
+
+| Event                        | Payload   | Description                  |
+| ---------------------------- | --------- | ---------------------------- |
+| `auth:changed`               | `boolean` | Authentication state changed |
+| `auth:login:start`           | `void`    | Login process started        |
+| `auth:login:success`         | `void`    | Login successful             |
+| `auth:login:error`           | `unknown` | Login failed                 |
+| `auth:token:refresh:start`   | `void`    | Token refresh started        |
+| `auth:token:refresh:success` | `void`    | Token refresh successful     |
+| `auth:token:refresh:error`   | `unknown` | Token refresh failed         |
+| `auth:token:revoke:start`    | `void`    | Logout started               |
+| `auth:token:revoke:success`  | `void`    | Logout successful            |
+| `auth:token:revoke:error`    | `unknown` | Logout failed                |
+
+### Cart Events
+
+| Event                  | Payload                     | Description             |
+| ---------------------- | --------------------------- | ----------------------- |
+| `cart:updated`         | `CartResponse \| undefined` | Cart data updated       |
+| `cart:loading`         | `boolean`                   | Cart loading state      |
+| `cart:request:start`   | `void`                      | Cart request started    |
+| `cart:request:success` | `void`                      | Cart request successful |
+| `cart:request:error`   | `{ error: unknown }`        | Cart request failed     |
+
+### Batch Events
+
+| Event                   | Payload              | Description              |
+| ----------------------- | -------------------- | ------------------------ |
+| `batch:loading`         | `boolean`            | Batch loading state      |
+| `batch:request:start`   | `void`               | Batch request started    |
+| `batch:request:success` | `void`               | Batch request successful |
+| `batch:request:error`   | `{ error: unknown }` | Batch request failed     |
+
+### Cart Extensions Events
+
+| Event                             | Payload              | Description                   |
+| --------------------------------- | -------------------- | ----------------------------- |
+| `cart:extensions:loading`         | `boolean`            | Extensions loading state      |
+| `cart:extensions:request:start`   | `void`               | Extensions request started    |
+| `cart:extensions:request:success` | `void`               | Extensions request successful |
+| `cart:extensions:request:error`   | `{ error: unknown }` | Extensions request failed     |
+
+### Token Events
+
+| Event                | Payload  | Description               |
+| -------------------- | -------- | ------------------------- |
+| `nonce:changed`      | `string` | WooCommerce nonce updated |
+| `cart:hash:changed`  | `string` | Cart hash updated         |
+| `cart:token:changed` | `string` | Cart token updated        |
+
+## Request Options Hooks
+
+In addition to EventBus events, individual API calls support lifecycle hooks via `RequestOptions`:
+
+```typescript
+const { data, error } = await Typewoo.store.products.list(
+  { per_page: 10 },
+  {
+    onRequest: (context) => {
+      console.log('Request starting:', context.url);
+    },
+    onResponse: (data, context) => {
+      console.log('Response received:', data);
+    },
+    onError: (error, context) => {
+      console.error('Request failed:', error);
+    },
+    onLoading: (isLoading) => {
+      if (isLoading) {
+        showSpinner();
+      } else {
+        hideSpinner();
+      }
+    },
+    onFinally: (data, error, context) => {
+      console.log('Request complete');
+    },
+  },
+);
+```
+
+### RequestOptions Interface
+
+```typescript
+interface RequestOptions<T = unknown> {
+  axiosConfig?: AxiosRequestConfig;
+  onRequest?: (context: RequestContext<T>) => void | Promise<void>;
+  onResponse?: (
+    response: T,
+    context: RequestContext<T>,
+  ) => void | Promise<void>;
+  onError?: (
+    error: ApiError,
+    context: RequestContext<T>,
+  ) => void | Promise<void>;
+  onLoading?: (isLoading: boolean) => void | Promise<void>;
+  onFinally?: (
+    response: T | undefined,
+    error: ApiError | undefined,
+    context: RequestContext<T>,
+  ) => void | Promise<void>;
+}
+```
+
+### RequestContext Interface
+
+```typescript
+interface RequestContext<T = unknown> {
+  url?: string; // Full URL
+  path?: string; // Endpoint path
+  config?: AxiosRequestConfig;
+  method?: Method | string;
+  payload?: T; // Request body
+}
+```
+
+## Event Middleware
+
+Add middleware to intercept all events:
+
+```typescript
+const removeMiddleware = Typewoo.events.use((ctx, next) => {
+  // Log all events
+  console.log(`[Event] ${String(ctx.event)}:`, ctx.payload);
+
+  // Continue to handlers
+  next();
+});
+
+// Later: remove middleware
+removeMiddleware();
+```
+
+### Middleware Use Cases
+
+**Logging:**
+
+```typescript
+Typewoo.events.use((ctx, next) => {
+  console.log(`[${new Date().toISOString()}] ${String(ctx.event)}`);
+  next();
+});
+```
+
+**Analytics:**
+
+```typescript
+Typewoo.events.use((ctx, next) => {
+  if (ctx.event === 'cart:updated') {
+    analytics.track('Cart Updated', {
+      items_count: ctx.payload?.items_count,
+      total: ctx.payload?.totals.total_price,
+    });
+  }
+  next();
+});
+```
+
+**Error Tracking:**
+
+```typescript
+Typewoo.events.use((ctx, next) => {
+  if (String(ctx.event).includes(':error')) {
+    errorTracker.captureException(ctx.payload);
+  }
+  next();
+});
+```
+
+## Event Scoping
+
+Create scoped EventBus instances with prefixed events:
+
+```typescript
+const cartEvents = Typewoo.events.scope('cart:');
+
+// This will emit 'cart:custom-event'
+cartEvents.emit('custom-event', payload);
+
+// Listen on scoped instance
+cartEvents.on('custom-event', (payload) => {
+  console.log('Custom cart event:', payload);
+});
+```
+
+## Usage Examples
+
+### Authentication Flow
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Set up auth listeners
+Typewoo.events.on('auth:login:start', () => {
+  showLoadingSpinner();
+});
+
+Typewoo.events.on('auth:login:success', () => {
+  hideLoadingSpinner();
+  showSuccessMessage('Welcome back!');
+  router.navigate('/dashboard');
+});
+
+Typewoo.events.on('auth:login:error', (error) => {
+  hideLoadingSpinner();
+  showErrorMessage('Login failed. Please try again.');
+});
+
+Typewoo.events.on('auth:changed', (isAuthenticated) => {
+  updateNavigation(isAuthenticated);
+  if (!isAuthenticated) {
+    router.navigate('/login');
+  }
+});
+```
+
+### Cart Synchronization
+
+```typescript
+import { Typewoo, CartResponse } from '@typewoo/sdk';
+
+class CartStore {
+  private cart: CartResponse | undefined;
+  private listeners: Set<(cart: CartResponse | undefined) => void> = new Set();
+
+  constructor() {
+    Typewoo.events.on('cart:updated', (cart) => {
+      this.cart = cart;
+      this.notifyListeners();
+    });
+  }
+
+  get current() {
+    return this.cart;
+  }
+
+  subscribe(listener: (cart: CartResponse | undefined) => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((fn) => fn(this.cart));
+  }
+}
+
+export const cartStore = new CartStore();
+```
+
+### Loading States
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+const loadingStates = {
+  cart: false,
+  batch: false,
+  extensions: false,
+};
+
+Typewoo.events.on('cart:loading', (isLoading) => {
+  loadingStates.cart = isLoading;
+  updateUI();
+});
+
+Typewoo.events.on('batch:loading', (isLoading) => {
+  loadingStates.batch = isLoading;
+  updateUI();
+});
+
+Typewoo.events.on('cart:extensions:loading', (isLoading) => {
+  loadingStates.extensions = isLoading;
+  updateUI();
+});
+
+function updateUI() {
+  const isAnyLoading = Object.values(loadingStates).some(Boolean);
+  document.body.classList.toggle('loading', isAnyLoading);
+}
+```
+
+### Token Persistence
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+// Sync tokens with server-side session
+Typewoo.events.on('cart:token:changed', async (token) => {
+  await fetch('/api/session', {
+    method: 'POST',
+    body: JSON.stringify({ cartToken: token }),
+  });
+});
+
+Typewoo.events.on('nonce:changed', async (nonce) => {
+  await fetch('/api/session', {
+    method: 'POST',
+    body: JSON.stringify({ nonce }),
+  });
+});
+```
+
+### Async Event Handling with waitFor
+
+```typescript
+import { Typewoo } from '@typewoo/sdk';
+
+async function addToCartAndWait(productId: number) {
+  // Start the add operation (don't await)
+  const addPromise = Typewoo.store.cart.add({ id: productId });
+
+  // Wait for the cart update event
+  const updatedCart = await Typewoo.events.waitFor(
+    'cart:updated',
+    undefined,
+    5000,
+  );
+
+  // Also get the API result
+  const { error } = await addPromise;
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return updatedCart;
+}
+```
+
+## TypeScript Support
+
+The EventBus is fully typed. TypeScript will enforce correct event names and payload types:
+
+```typescript
+import { Typewoo, SdkEvent } from '@typewoo/sdk';
+
+// TypeScript knows the payload type
+Typewoo.events.on('cart:updated', (cart) => {
+  // cart is typed as CartResponse | undefined
+  console.log(cart?.items_count);
+});
+
+// TypeScript error: invalid event name
+Typewoo.events.on('invalid:event', () => {}); // Error!
+
+// TypeScript error: wrong payload type
+Typewoo.events.on('cart:loading', (cart) => {
+  // Error: payload should be boolean, not CartResponse
+});
+```
+
+### Custom Event Types
+
+If extending the SDK, you can create a typed EventBus:
+
+```typescript
+import { EventBus } from '@typewoo/sdk';
+
+type CustomEvents = {
+  'custom:event': { data: string };
+  'custom:other': number;
+};
+
+const customBus = new EventBus<CustomEvents>();
+
+customBus.on('custom:event', (payload) => {
+  console.log(payload.data); // Typed as string
+});
+```

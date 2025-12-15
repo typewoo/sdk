@@ -129,7 +129,7 @@ describe('Flow: Customer Checkout', () => {
 
     if (checkout.error) {
       expect(['woocommerce_rest_invalid_address']).not.toContain(
-        checkout.error.code
+        checkout.error.code,
       );
     } else if (checkout.data) {
       expect(checkout.data.order_id).toBeGreaterThan(0);

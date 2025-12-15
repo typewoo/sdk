@@ -8,7 +8,7 @@ import { SdkEvent } from '../sdk.events.js';
 export const addCartTokenInterceptors = (
   config: ResolvedSdkConfig,
   state: SdkState,
-  events: EventBus<SdkEvent>
+  events: EventBus<SdkEvent>,
 ) => {
   const cartTokenStorage = config.cartToken?.storage;
 
@@ -28,7 +28,7 @@ export const addCartTokenInterceptors = (
     },
     (error: AxiosError | Error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   httpClient.interceptors.response.use(async (response) => {

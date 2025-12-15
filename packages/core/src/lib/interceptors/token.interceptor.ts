@@ -24,6 +24,6 @@ export const addTokenInterceptor = (config: ResolvedSdkConfig) => {
     },
     (error: AxiosError | Error) => {
       return Promise.reject(error);
-    }
+    },
   );
 };

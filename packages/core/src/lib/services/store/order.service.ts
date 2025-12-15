@@ -23,7 +23,7 @@ export class OrderService extends BaseService {
     key: string,
     orderId: string,
     billingEmail?: string,
-    options?: RequestOptions
+    options?: RequestOptions,
   ): Promise<ApiResult<OrderResponse>> {
     let url = `/${this.endpoint}/${orderId}?key=${key}`;
     if (billingEmail) {

@@ -33,7 +33,7 @@ describe('Integration: Cart Coupons (graceful handling)', () => {
     const after = await Typewoo.store.cartCoupons.list();
     const afterCount = after.data?.length || 0;
     const stillAbsent = !(after.data || []).some(
-      (c) => c.code?.toLowerCase() === INVALID_COUPON.toLowerCase()
+      (c) => c.code?.toLowerCase() === INVALID_COUPON.toLowerCase(),
     );
     expect(stillAbsent).toBe(true);
     expect(afterCount).toBe(beforeCount);
@@ -47,7 +47,7 @@ describe('Integration: Cart Coupons (graceful handling)', () => {
     // Verify present via list()
     const listAfterFirst = await Typewoo.store.cartCoupons.list();
     const occurrencesAfterFirst = (listAfterFirst.data || []).filter(
-      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase()
+      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase(),
     ).length;
     expect(occurrencesAfterFirst).toBeGreaterThanOrEqual(1);
 
@@ -58,10 +58,10 @@ describe('Integration: Cart Coupons (graceful handling)', () => {
     }
     const listAfterSecond = await Typewoo.store.cartCoupons.list();
     const occurrencesAfterSecond = (listAfterSecond.data || []).filter(
-      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase()
+      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase(),
     ).length;
     expect(occurrencesAfterSecond).toBeLessThanOrEqual(
-      Math.max(1, occurrencesAfterFirst)
+      Math.max(1, occurrencesAfterFirst),
     );
   });
 
@@ -74,7 +74,7 @@ describe('Integration: Cart Coupons (graceful handling)', () => {
     }
     const withCoupon = await Typewoo.store.cartCoupons.list();
     const present = (withCoupon.data || []).some(
-      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase()
+      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase(),
     );
     expect(present).toBe(true);
 
@@ -83,7 +83,7 @@ describe('Integration: Cart Coupons (graceful handling)', () => {
     expect(removed.error).toBeFalsy();
     const afterList = await Typewoo.store.cartCoupons.list();
     const stillPresent = (afterList.data || []).some(
-      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase()
+      (c) => c.code?.toLowerCase() === VALID_COUPON.toLowerCase(),
     );
     expect(stillPresent).toBe(false);
   });
