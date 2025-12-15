@@ -95,8 +95,10 @@ export const addRefreshTokenInterceptor = (
               refresh_token: refreshToken,
             },
             {
-              _retry: true,
-            } as AxiosRequestConfig
+              axiosConfig: {
+                _retry: true,
+              } as AxiosRequestConfig,
+            }
           );
 
           if (refreshError) {

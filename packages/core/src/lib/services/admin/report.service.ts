@@ -16,6 +16,7 @@ import {
   AdminOrdersReport,
   AdminTotalsReportEntry,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Reports Service
@@ -29,12 +30,13 @@ export class AdminReportService extends BaseService {
    * List available reports
    */
   async list(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminReport[]>(url);
+    const { data, error, headers } = await doGet<AdminReport[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -45,12 +47,13 @@ export class AdminReportService extends BaseService {
    * Get sales report
    */
   async getSalesReport(
-    params?: AdminSalesReportQueryParams
+    params?: AdminSalesReportQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSalesReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/sales${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminSalesReport[]>(url);
+    const { data, error } = await doGet<AdminSalesReport[]>(url, options);
     return { data, error };
   }
 
@@ -58,12 +61,16 @@ export class AdminReportService extends BaseService {
    * Get top sellers report
    */
   async getTopSellersReport(
-    params?: AdminTopSellersReportQueryParams
+    params?: AdminTopSellersReportQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTopSellersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/top_sellers${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminTopSellersReport[]>(url);
+    const { data, error, headers } = await doGet<AdminTopSellersReport[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -74,12 +81,16 @@ export class AdminReportService extends BaseService {
    * Get customers report
    */
   async getCustomersReport(
-    params?: AdminCustomersReportQueryParams
+    params?: AdminCustomersReportQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCustomersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCustomersReport[]>(url);
+    const { data, error, headers } = await doGet<AdminCustomersReport[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -90,12 +101,13 @@ export class AdminReportService extends BaseService {
    * Get orders report
    */
   async getOrdersReport(
-    params?: AdminOrdersReportQueryParams
+    params?: AdminOrdersReportQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrdersReport[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminOrdersReport[]>(url);
+    const { data, error } = await doGet<AdminOrdersReport[]>(url, options);
     return { data, error };
   }
 
@@ -103,11 +115,15 @@ export class AdminReportService extends BaseService {
    * Orders totals report
    */
   async getOrdersTotals(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/orders/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(
+      url,
+      options
+    );
     const pagination = extractPagination(headers);
     return { data, error, pagination };
   }
@@ -116,11 +132,15 @@ export class AdminReportService extends BaseService {
    * Products totals report
    */
   async getProductsTotals(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/products/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(
+      url,
+      options
+    );
     const pagination = extractPagination(headers);
     return { data, error, pagination };
   }
@@ -129,11 +149,15 @@ export class AdminReportService extends BaseService {
    * Customers totals report
    */
   async getCustomersTotals(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/customers/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(
+      url,
+      options
+    );
     const pagination = extractPagination(headers);
     return { data, error, pagination };
   }
@@ -142,11 +166,15 @@ export class AdminReportService extends BaseService {
    * Coupons totals report
    */
   async getCouponsTotals(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/coupons/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(
+      url,
+      options
+    );
     const pagination = extractPagination(headers);
     return { data, error, pagination };
   }
@@ -155,11 +183,15 @@ export class AdminReportService extends BaseService {
    * Reviews totals report
    */
   async getReviewsTotals(
-    params?: AdminReportsQueryParams
+    params?: AdminReportsQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTotalsReportEntry[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/reviews/totals${query ? `?${query}` : ''}`;
-    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(url);
+    const { data, error, headers } = await doGet<AdminTotalsReportEntry[]>(
+      url,
+      options
+    );
     const pagination = extractPagination(headers);
     return { data, error, pagination };
   }

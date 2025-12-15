@@ -13,6 +13,7 @@ import {
   AdminWebhook,
   AdminWebhookRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Webhooks Service
@@ -26,12 +27,13 @@ export class AdminWebhookService extends BaseService {
    * List webhooks
    */
   async list(
-    params?: AdminWebhookQueryParams
+    params?: AdminWebhookQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminWebhook[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminWebhook[]>(url);
+    const { data, error, headers } = await doGet<AdminWebhook[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -43,23 +45,28 @@ export class AdminWebhookService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminWebhook>(url);
+    const { data, error } = await doGet<AdminWebhook>(url, options);
     return { data, error };
   }
 
   /**
    * Create a new webhook
    */
-  async create(webhook: AdminWebhookRequest): Promise<ApiResult<AdminWebhook>> {
+  async create(
+    webhook: AdminWebhookRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminWebhook, AdminWebhookRequest>(
       url,
-      webhook
+      webhook,
+      options
     );
 
     return { data, error };
@@ -70,12 +77,14 @@ export class AdminWebhookService extends BaseService {
    */
   async update(
     id: number,
-    webhook: AdminWebhookRequest
+    webhook: AdminWebhookRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminWebhook, AdminWebhookRequest>(
       url,
-      webhook
+      webhook,
+      options
     );
 
     return { data, error };
@@ -84,10 +93,14 @@ export class AdminWebhookService extends BaseService {
   /**
    * Delete a webhook
    */
-  async delete(id: number, force = true): Promise<ApiResult<AdminWebhook>> {
+  async delete(
+    id: number,
+    force = true,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminWebhook>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminWebhook>(url);
+    const { data, error } = await doDelete<AdminWebhook>(url, options);
 
     return { data, error };
   }
@@ -95,11 +108,14 @@ export class AdminWebhookService extends BaseService {
   /**
    * Batch create/update/delete webhooks
    */
-  async batch(operations: {
-    create?: AdminWebhookRequest[];
-    update?: Array<AdminWebhookRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminWebhookRequest[];
+      update?: Array<AdminWebhookRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminWebhook[];
       update: AdminWebhook[];
@@ -114,7 +130,7 @@ export class AdminWebhookService extends BaseService {
         delete: AdminWebhook[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

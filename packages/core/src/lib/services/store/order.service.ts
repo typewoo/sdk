@@ -1,8 +1,8 @@
 import { BaseService } from '../base.service.js';
-import { AxiosRequestConfig } from 'axios';
 import { doGet } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import { OrderResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Order API
@@ -22,14 +22,13 @@ export class OrderService extends BaseService {
   async get(
     key: string,
     orderId: string,
-    billingEmail?: string
+    billingEmail?: string,
+    options?: RequestOptions
   ): Promise<ApiResult<OrderResponse>> {
     let url = `/${this.endpoint}/${orderId}?key=${key}`;
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-
-    const options: AxiosRequestConfig = {};
 
     const { data, error } = await doGet<OrderResponse>(url, options);
     return { data, error };

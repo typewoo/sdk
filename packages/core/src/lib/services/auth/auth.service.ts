@@ -14,6 +14,7 @@ import {
   AuthValidateResponse,
   AuthStatusResponse,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 export class AuthService extends BaseService {
   private readonly endpoint = 'wp-json/typewoo/v1/auth';
@@ -35,7 +36,7 @@ export class AuthService extends BaseService {
 
   async token(
     body: AuthTokenRequest,
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthTokenResponse>> {
     const url = `/${this.endpoint}/token`;
     if (this.config.auth?.revokeTokenBeforeLogin) {
@@ -72,7 +73,7 @@ export class AuthService extends BaseService {
 
   async refreshToken(
     body: AuthRefreshRequest,
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthTokenResponse>> {
     const url = `/${this.endpoint}/refresh`;
 
@@ -105,7 +106,7 @@ export class AuthService extends BaseService {
 
   async revokeToken(
     body?: AuthRevokeRequest,
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthRevokeResponse>> {
     const url = `/${this.endpoint}/revoke`;
 
@@ -140,7 +141,7 @@ export class AuthService extends BaseService {
 
   async oneTimeToken(
     body: AuthOneTimeTokenRequest,
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthOneTimeTokenResponse>> {
     const url = `/${this.endpoint}/one-time-token`;
 
@@ -153,7 +154,7 @@ export class AuthService extends BaseService {
   }
 
   async validate(
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthValidateResponse>> {
     const url = `/${this.endpoint}/validate`;
 
@@ -163,7 +164,7 @@ export class AuthService extends BaseService {
   }
 
   async status(
-    options?: AxiosRequestConfig
+    options?: RequestOptions
   ): Promise<ApiResult<AuthStatusResponse>> {
     const url = `/${this.endpoint}/status`;
 

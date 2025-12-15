@@ -4,6 +4,7 @@ import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { Paginated, ProductBrandResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Product Brands API
@@ -16,11 +17,15 @@ export class ProductBrandService extends BaseService {
    * @returns
    */
   async list(
-    params?: Paginated
+    params?: Paginated,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductBrandResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductBrandResponse[]>(url);
+    const { data, error, headers } = await doGet<ProductBrandResponse[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
     return { data, error, pagination };
@@ -31,9 +36,12 @@ export class ProductBrandService extends BaseService {
    * @param id The identifier of the brand to retrieve. Can be an brand ID or slug.
    * @returns
    */
-  async single(id: number): Promise<ApiResult<ProductBrandResponse>> {
+  async single(
+    id: number,
+    options?: RequestOptions
+  ): Promise<ApiResult<ProductBrandResponse>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doGet<ProductBrandResponse>(url);
+    const { data, error } = await doGet<ProductBrandResponse>(url, options);
     return { data, error };
   }
 }

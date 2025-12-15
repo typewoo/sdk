@@ -7,6 +7,7 @@ import {
   AdminShippingMethodQueryParams,
   AdminShippingMethod,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Shipping Methods Service
@@ -20,12 +21,16 @@ export class AdminShippingMethodService extends BaseService {
    * List shipping methods
    */
   async list(
-    params?: AdminShippingMethodQueryParams
+    params?: AdminShippingMethodQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminShippingMethod[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminShippingMethod[]>(url);
+    const { data, error, headers } = await doGet<AdminShippingMethod[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -37,12 +42,13 @@ export class AdminShippingMethodService extends BaseService {
    */
   async get(
     id: string,
-    params?: AdminShippingMethodQueryParams
+    params?: AdminShippingMethodQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminShippingMethod>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminShippingMethod>(url);
+    const { data, error } = await doGet<AdminShippingMethod>(url, options);
     return { data, error };
   }
 }

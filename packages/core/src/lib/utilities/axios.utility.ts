@@ -1,63 +1,100 @@
 import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { httpClient } from '../services/api.js';
 import { AxiosApiResult, ApiError } from '../types/api.js';
+import { RequestContext, RequestOptions } from '../types/request.js';
 
-export const doGet = async <T>(url: string, options?: AxiosRequestConfig) => {
+export const doGet = async <T>(
+  url: string,
+  requestOptions?: RequestOptions
+) => {
   return await doRequest<T>(httpClient, url, {
-    ...options,
-    method: 'get',
+    ...requestOptions,
+    axiosConfig: {
+      ...requestOptions?.axiosConfig,
+      method: 'get',
+    },
   });
 };
 
 export const doPost = async <T, TData>(
   url: string,
   data?: TData,
-  options?: AxiosRequestConfig
+  requestOptions?: RequestOptions
 ) => {
   return await doRequest<T>(httpClient, url, {
-    ...options,
-    method: 'post',
-    data: data,
+    ...requestOptions,
+    axiosConfig: {
+      ...requestOptions?.axiosConfig,
+      method: 'post',
+      data: data,
+    },
   });
 };
 
 export const doPut = async <T, TData>(
   url: string,
   data?: TData,
-  options?: AxiosRequestConfig
+  requestOptions?: RequestOptions
 ) => {
   return await doRequest<T>(httpClient, url, {
-    ...options,
-    method: 'put',
-    data: data,
+    ...requestOptions,
+    axiosConfig: {
+      ...requestOptions?.axiosConfig,
+      method: 'put',
+      data: data,
+    },
   });
 };
 
 export const doDelete = async <T>(
   url: string,
-  options?: AxiosRequestConfig
+  requestOptions?: RequestOptions
 ) => {
   return await doRequest<T>(httpClient, url, {
-    ...options,
-    method: 'delete',
+    ...requestOptions,
+    axiosConfig: {
+      ...requestOptions?.axiosConfig,
+      method: 'delete',
+    },
   });
 };
 
-export const doHead = async <T>(url: string, options?: AxiosRequestConfig) => {
+export const doHead = async <T>(
+  url: string,
+  requestOptions?: RequestOptions
+) => {
   return await doRequest<T>(httpClient, url, {
-    ...options,
-    method: 'head',
-    validateStatus: () => true,
+    ...requestOptions,
+    axiosConfig: {
+      ...requestOptions?.axiosConfig,
+      method: 'head',
+      validateStatus: () => true,
+    },
   });
 };
 
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
-  options: AxiosRequestConfig
+  requestOptions: RequestOptions
 ): Promise<AxiosApiResult<T>> => {
-  const { method = 'get', data, params, headers } = options;
+  const options = requestOptions.axiosConfig;
+  const { method = 'get', data, params, headers } = options ?? {};
+
+  const context: RequestContext<T> = {
+    url: `${instance.defaults.baseURL}${url}`,
+    path: url,
+    config: { ...(instance.defaults as AxiosRequestConfig), ...options },
+    method: method,
+    payload: data,
+  };
+
+  let responseData: T | undefined;
+  let responseError: ApiError | undefined;
+
   try {
+    requestOptions?.onLoading?.(true);
+    requestOptions?.onRequest?.(context);
     const response = await instance.request<T>({
       ...options,
       url,
@@ -67,8 +104,11 @@ export const doRequest = async <T>(
       headers,
     });
 
+    responseData = response.data;
+    requestOptions?.onResponse?.(responseData, context);
+
     return {
-      data: response.data,
+      data: responseData,
       headers: response.headers
         ? Object.fromEntries(
             Object.entries(response.headers).map(([key, value]) => [
@@ -81,10 +121,9 @@ export const doRequest = async <T>(
     } as AxiosApiResult<T>;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
-
     // Server returned an error response (4xx, 5xx)
     if (axiosError.response) {
-      return {
+      const result = {
         error: axiosError.response.data ?? {
           code: `http_${axiosError.response.status}`,
           message: axiosError.message || 'Request failed',
@@ -99,11 +138,15 @@ export const doRequest = async <T>(
         ),
         status: axiosError.response.status,
       } as AxiosApiResult<T>;
+
+      responseError = result.error as ApiError;
+      requestOptions?.onError?.(responseError, context);
+      return result;
     }
 
     // Network error (server down, timeout, DNS failure, etc.)
     if (axiosError.request) {
-      return {
+      const result = {
         error: {
           code: axiosError.code || 'network_error',
           message:
@@ -115,10 +158,14 @@ export const doRequest = async <T>(
         },
         status: 0,
       } as AxiosApiResult<T>;
+
+      responseError = result.error as ApiError;
+      requestOptions?.onError?.(responseError, context);
+      return result;
     }
 
     // Request setup error (e.g., invalid config)
-    return {
+    const result = {
       error: {
         code: 'request_error',
         message: axiosError.message || 'Failed to setup request',
@@ -127,5 +174,12 @@ export const doRequest = async <T>(
       },
       status: 0,
     } as AxiosApiResult<T>;
+
+    responseError = result.error as ApiError;
+    requestOptions?.onError?.(responseError, context);
+    return result;
+  } finally {
+    requestOptions?.onFinally?.(responseData, responseError, context);
+    requestOptions?.onLoading?.(false);
   }
 };

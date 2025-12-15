@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { AxiosRequestConfig } from 'axios';
 import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -8,6 +7,7 @@ import {
   CheckoutUpdateRequest,
   CheckoutCreateRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Checkout API
@@ -21,10 +21,8 @@ export class CheckoutService extends BaseService {
    * Get Checkout Data
    * @returns {CheckoutResponse}
    */
-  async get(): Promise<ApiResult<CheckoutResponse>> {
+  async get(options?: RequestOptions): Promise<ApiResult<CheckoutResponse>> {
     const url = `/${this.endpoint}/`;
-
-    const options: AxiosRequestConfig = {};
 
     const { data, error } = await doGet<CheckoutResponse>(url, options);
 
@@ -39,11 +37,10 @@ export class CheckoutService extends BaseService {
    */
   async update(
     params?: CheckoutUpdateRequest,
-    experimental_calc_totals = false
+    experimental_calc_totals = false,
+    options?: RequestOptions
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
-
-    const options: AxiosRequestConfig = {};
 
     const url = `/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
@@ -63,12 +60,11 @@ export class CheckoutService extends BaseService {
    * @returns {CheckoutResponse}
    */
   async processOrderAndPayment(
-    params: CheckoutCreateRequest
+    params: CheckoutCreateRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<CheckoutResponse>> {
     // Store API expects POST body with checkout payload at the base endpoint
     const url = `/${this.endpoint}/`;
-
-    const options: AxiosRequestConfig = {};
 
     const { data, error } = await doPost<
       CheckoutResponse,

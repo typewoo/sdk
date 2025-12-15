@@ -7,6 +7,7 @@ import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductRequest, ProductResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Products API
@@ -22,7 +23,8 @@ export class ProductService extends BaseService {
    * @returns
    */
   async list(
-    params?: ProductRequest
+    params?: ProductRequest,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductResponse[]>> {
     let unstable_tax: string | undefined = undefined;
     let unstable_tax_operator: string | undefined = undefined;
@@ -49,7 +51,10 @@ export class ProductService extends BaseService {
     );
 
     const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductResponse[]>(url);
+    const { data, error, headers } = await doGet<ProductResponse[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
     return { data, error, pagination, headers };
@@ -61,10 +66,11 @@ export class ProductService extends BaseService {
    * @returns
    */
   async single(
-    params: RequireAtLeastOne<{ id: number; slug: string }>
+    params: RequireAtLeastOne<{ id: number; slug: string }>,
+    options?: RequestOptions
   ): Promise<ApiResult<ProductResponse>> {
     const url = `/${this.endpoint}/${params.id || params.slug}`;
-    const { data, error } = await doGet<ProductResponse>(url);
+    const { data, error } = await doGet<ProductResponse>(url, options);
     return { data, error };
   }
 }

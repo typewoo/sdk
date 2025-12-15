@@ -1,11 +1,11 @@
 import { BaseService } from '../base.service.js';
-import { AxiosRequestConfig } from 'axios';
 import { doPost } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import {
   CartExtensionsRequest,
   CartExtensionsResponse,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Cart Extensions API
@@ -22,11 +22,10 @@ export class CartExtensionsService extends BaseService {
    * @returns {CartExtensionsResponse} - Response indicating success/failure
    */
   async store(
-    params: CartExtensionsRequest
+    params: CartExtensionsRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<CartExtensionsResponse>> {
     const url = `/${this.endpoint}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:extensions:loading', true);
     this.events.emit('cart:extensions:request:start');

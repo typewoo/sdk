@@ -6,6 +6,7 @@ import {
   AdminSystemStatusQueryParams,
   AdminSystemStatus,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API System Status Service
@@ -19,12 +20,13 @@ export class AdminSystemStatusService extends BaseService {
    * Get system status
    */
   async get(
-    params?: AdminSystemStatusQueryParams
+    params?: AdminSystemStatusQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSystemStatus>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminSystemStatus>(url);
+    const { data, error } = await doGet<AdminSystemStatus>(url, options);
     return { data, error };
   }
 }

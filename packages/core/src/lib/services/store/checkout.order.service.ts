@@ -1,8 +1,8 @@
-import { AxiosRequestConfig } from 'axios';
 import { BaseService } from '../base.service.js';
 import { doPost } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import { OrderRequest, CheckoutResponse } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Checkout order API
@@ -20,11 +20,10 @@ export class CheckoutOrderService extends BaseService {
    */
   async order(
     orderId: number,
-    params: OrderRequest
+    params: OrderRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<CheckoutResponse>> {
     const url = `/${this.endpoint}/${orderId}`;
-
-    const options: AxiosRequestConfig = {};
 
     const { data, error } = await doPost<CheckoutResponse, OrderRequest>(
       url,

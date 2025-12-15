@@ -13,6 +13,7 @@ import {
   AdminCustomer,
   AdminCustomerRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Customers Service
@@ -26,12 +27,13 @@ export class AdminCustomerService extends BaseService {
    * List customers
    */
   async list(
-    params?: AdminCustomerQueryParams
+    params?: AdminCustomerQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCustomer[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCustomer[]>(url);
+    const { data, error, headers } = await doGet<AdminCustomer[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -43,12 +45,13 @@ export class AdminCustomerService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCustomer>(url);
+    const { data, error } = await doGet<AdminCustomer>(url, options);
     return { data, error };
   }
 
@@ -56,12 +59,14 @@ export class AdminCustomerService extends BaseService {
    * Create a new customer
    */
   async create(
-    customer: AdminCustomerRequest
+    customer: AdminCustomerRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminCustomer, AdminCustomerRequest>(
       url,
-      customer
+      customer,
+      options
     );
 
     return { data, error };
@@ -72,12 +77,14 @@ export class AdminCustomerService extends BaseService {
    */
   async update(
     id: number,
-    customer: AdminCustomerRequest
+    customer: AdminCustomerRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminCustomer, AdminCustomerRequest>(
       url,
-      customer
+      customer,
+      options
     );
 
     return { data, error };
@@ -89,11 +96,12 @@ export class AdminCustomerService extends BaseService {
   async delete(
     id: number,
     force = false,
-    reassign = 0
+    reassign = 0,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const query = qs.stringify({ force, reassign }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCustomer>(url);
+    const { data, error } = await doDelete<AdminCustomer>(url, options);
 
     return { data, error };
   }
@@ -101,11 +109,14 @@ export class AdminCustomerService extends BaseService {
   /**
    * Batch create/update/delete customers
    */
-  async batch(operations: {
-    create?: AdminCustomerRequest[];
-    update?: Array<AdminCustomerRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminCustomerRequest[];
+      update?: Array<AdminCustomerRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminCustomer[];
       update: AdminCustomer[];
@@ -120,7 +131,7 @@ export class AdminCustomerService extends BaseService {
         delete: AdminCustomer[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }

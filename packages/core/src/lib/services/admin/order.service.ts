@@ -24,6 +24,7 @@ import {
   AdminRefund,
   AdminRefundCreateRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Orders Service
@@ -37,12 +38,13 @@ export class AdminOrderService extends BaseService {
    * List orders
    */
   async list(
-    params?: AdminOrderQueryParams
+    params?: AdminOrderQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminOrder[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminOrder[]>(url);
+    const { data, error, headers } = await doGet<AdminOrder[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -54,23 +56,28 @@ export class AdminOrderService extends BaseService {
    */
   async get(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminOrder>(url);
+    const { data, error } = await doGet<AdminOrder>(url, options);
     return { data, error };
   }
 
   /**
    * Create a new order
    */
-  async create(order: AdminOrderRequest): Promise<ApiResult<AdminOrder>> {
+  async create(
+    order: AdminOrderRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminOrder, AdminOrderRequest>(
       url,
-      order
+      order,
+      options
     );
 
     return { data, error };
@@ -81,12 +88,14 @@ export class AdminOrderService extends BaseService {
    */
   async update(
     id: number,
-    order: AdminOrderRequest
+    order: AdminOrderRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminOrder, AdminOrderRequest>(
       url,
-      order
+      order,
+      options
     );
 
     return { data, error };
@@ -95,10 +104,14 @@ export class AdminOrderService extends BaseService {
   /**
    * Delete an order
    */
-  async delete(id: number, force = false): Promise<ApiResult<AdminOrder>> {
+  async delete(
+    id: number,
+    force = false,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminOrder>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminOrder>(url);
+    const { data, error } = await doDelete<AdminOrder>(url, options);
 
     return { data, error };
   }
@@ -106,11 +119,14 @@ export class AdminOrderService extends BaseService {
   /**
    * Batch create/update/delete orders
    */
-  async batch(operations: {
-    create?: AdminOrderRequest[];
-    update?: Array<AdminOrderRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminOrderRequest[];
+      update?: Array<AdminOrderRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminOrder[];
       update: AdminOrder[];
@@ -125,7 +141,7 @@ export class AdminOrderService extends BaseService {
         delete: AdminOrder[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }
@@ -138,12 +154,13 @@ export class AdminOrderService extends BaseService {
     params?: {
       context?: 'view' | 'edit';
       type?: 'any' | 'customer' | 'internal';
-    }
+    },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/notes${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminOrderNote[]>(url);
+    const { data, error } = await doGet<AdminOrderNote[]>(url, options);
     return { data, error };
   }
 
@@ -152,10 +169,11 @@ export class AdminOrderService extends BaseService {
    */
   async getNote(
     orderId: number,
-    noteId: number
+    noteId: number,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}`;
-    const { data, error } = await doGet<AdminOrderNote>(url);
+    const { data, error } = await doGet<AdminOrderNote>(url, options);
     return { data, error };
   }
 
@@ -164,12 +182,14 @@ export class AdminOrderService extends BaseService {
    */
   async createNote(
     orderId: number,
-    note: AdminOrderNoteRequest
+    note: AdminOrderNoteRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes`;
     const { data, error } = await doPost<AdminOrderNote, AdminOrderNoteRequest>(
       url,
-      note
+      note,
+      options
     );
 
     return { data, error };
@@ -181,11 +201,12 @@ export class AdminOrderService extends BaseService {
   async deleteNote(
     orderId: number,
     noteId: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}?${query}`;
-    const { data, error } = await doDelete<AdminOrderNote>(url);
+    const { data, error } = await doDelete<AdminOrderNote>(url, options);
 
     return { data, error };
   }
@@ -195,13 +216,14 @@ export class AdminOrderService extends BaseService {
    */
   async generateReceipt(
     orderId: number,
-    params?: AdminOrderReceiptRequest
+    params?: AdminOrderReceiptRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
     const { data, error } = await doPost<
       AdminOrderReceipt,
       AdminOrderReceiptRequest
-    >(url, params || {});
+    >(url, params || {}, options);
 
     return { data, error };
   }
@@ -209,9 +231,12 @@ export class AdminOrderService extends BaseService {
   /**
    * Get order receipt
    */
-  async getReceipt(orderId: number): Promise<ApiResult<AdminOrderReceipt>> {
+  async getReceipt(
+    orderId: number,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
-    const { data, error } = await doGet<AdminOrderReceipt>(url);
+    const { data, error } = await doGet<AdminOrderReceipt>(url, options);
 
     return { data, error };
   }
@@ -220,10 +245,14 @@ export class AdminOrderService extends BaseService {
    * Get available email templates for orders
    */
   async getEmailTemplates(
-    orderId: number
+    orderId: number,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderEmailTemplate[]>> {
     const url = `/${this.endpoint}/${orderId}/actions/email_templates`;
-    const { data, error } = await doGet<AdminOrderEmailTemplate[]>(url);
+    const { data, error } = await doGet<AdminOrderEmailTemplate[]>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -233,13 +262,14 @@ export class AdminOrderService extends BaseService {
    */
   async sendEmail(
     orderId: number,
-    params: AdminOrderSendEmailRequest
+    params: AdminOrderSendEmailRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_email`;
     const { data, error } = await doPost<
       { message: string },
       AdminOrderSendEmailRequest
-    >(url, params);
+    >(url, params, options);
 
     return { data, error };
   }
@@ -249,13 +279,14 @@ export class AdminOrderService extends BaseService {
    */
   async sendOrderDetails(
     orderId: number,
-    params?: AdminOrderSendDetailsRequest
+    params?: AdminOrderSendDetailsRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_order_details`;
     const { data, error } = await doPost<
       { message: string },
       AdminOrderSendDetailsRequest
-    >(url, params || {});
+    >(url, params || {}, options);
 
     return { data, error };
   }
@@ -263,9 +294,11 @@ export class AdminOrderService extends BaseService {
   /**
    * Get order statuses with counts
    */
-  async getStatuses(): Promise<ApiResult<AdminOrderStatusInfo[]>> {
+  async getStatuses(
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminOrderStatusInfo[]>> {
     const url = `/wp-json/wc/v3/orders/statuses`;
-    const { data, error } = await doGet<AdminOrderStatusInfo[]>(url);
+    const { data, error } = await doGet<AdminOrderStatusInfo[]>(url, options);
 
     return { data, error };
   }
@@ -275,13 +308,14 @@ export class AdminOrderService extends BaseService {
    */
   async listRefunds(
     orderId: number,
-    params?: AdminRefundQueryParams
+    params?: AdminRefundQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<AdminRefund[]>(url);
+    const { data, error } = await doGet<AdminRefund[]>(url, options);
     return { data, error };
   }
 
@@ -291,13 +325,14 @@ export class AdminOrderService extends BaseService {
   async getRefund(
     orderId: number,
     refundId: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<AdminRefund>(url);
+    const { data, error } = await doGet<AdminRefund>(url, options);
     return { data, error };
   }
 
@@ -306,12 +341,14 @@ export class AdminOrderService extends BaseService {
    */
   async createRefund(
     orderId: number,
-    refund: AdminRefundCreateRequest
+    refund: AdminRefundCreateRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const url = `/${this.endpoint}/${orderId}/refunds`;
     const { data, error } = await doPost<AdminRefund, AdminRefundCreateRequest>(
       url,
-      refund
+      refund,
+      options
     );
     return { data, error };
   }
@@ -322,11 +359,12 @@ export class AdminOrderService extends BaseService {
   async deleteRefund(
     orderId: number,
     refundId: number,
-    force = true
+    force = true,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}?${query}`;
-    const { data, error } = await doDelete<AdminRefund>(url);
+    const { data, error } = await doDelete<AdminRefund>(url, options);
     return { data, error };
   }
 }

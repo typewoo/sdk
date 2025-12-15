@@ -15,6 +15,7 @@ import {
   AdminProductVariation,
   ProductCustomFieldNameQueryParams,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * WooCommerce REST API Products Service
@@ -28,12 +29,13 @@ export class AdminProductService extends BaseService {
    * List products
    */
   async list(
-    params?: ProductQueryParams
+    params?: ProductQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminProduct[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminProduct[]>(url);
+    const { data, error, headers } = await doGet<AdminProduct[]>(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -45,23 +47,28 @@ export class AdminProductService extends BaseService {
    */
   async getById(
     id: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProduct>(url);
+    const { data, error } = await doGet<AdminProduct>(url, options);
     return { data, error };
   }
 
   /**
    * Create a new product
    */
-  async create(product: AdminProductRequest): Promise<ApiResult<AdminProduct>> {
+  async create(
+    product: AdminProductRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminProduct, AdminProductRequest>(
       url,
-      product
+      product,
+      options
     );
 
     return { data, error };
@@ -72,12 +79,14 @@ export class AdminProductService extends BaseService {
    */
   async update(
     id: number,
-    product: AdminProductRequest
+    product: AdminProductRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminProduct, AdminProductRequest>(
       url,
-      product
+      product,
+      options
     );
 
     return { data, error };
@@ -86,10 +95,14 @@ export class AdminProductService extends BaseService {
   /**
    * Delete a product
    */
-  async delete(id: number, force = false): Promise<ApiResult<AdminProduct>> {
+  async delete(
+    id: number,
+    force = false,
+    options?: RequestOptions
+  ): Promise<ApiResult<AdminProduct>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProduct>(url);
+    const { data, error } = await doDelete<AdminProduct>(url, options);
 
     return { data, error };
   }
@@ -97,11 +110,14 @@ export class AdminProductService extends BaseService {
   /**
    * Batch create/update/delete products
    */
-  async batch(operations: {
-    create?: AdminProductRequest[];
-    update?: Array<AdminProductRequest & { id: number }>;
-    delete?: number[];
-  }): Promise<
+  async batch(
+    operations: {
+      create?: AdminProductRequest[];
+      update?: Array<AdminProductRequest & { id: number }>;
+      delete?: number[];
+    },
+    options?: RequestOptions
+  ): Promise<
     ApiResult<{
       create: AdminProduct[];
       update: AdminProduct[];
@@ -116,7 +132,7 @@ export class AdminProductService extends BaseService {
         delete: AdminProduct[];
       },
       typeof operations
-    >(url, operations);
+    >(url, operations, options);
 
     return { data, error };
   }
@@ -126,12 +142,14 @@ export class AdminProductService extends BaseService {
    */
   async duplicate(
     id: number,
-    product?: Partial<AdminProductRequest>
+    product?: Partial<AdminProductRequest>,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}/duplicate`;
     const { data, error } = await doPost<AdminProduct, AdminProductRequest>(
       url,
-      product || {}
+      product || {},
+      options
     );
 
     return { data, error };
@@ -142,14 +160,18 @@ export class AdminProductService extends BaseService {
    */
   async listVariations(
     productId: number,
-    params?: ProductQueryParams
+    params?: ProductQueryParams,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminProductVariation[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${productId}/variations${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error, headers } = await doGet<AdminProductVariation[]>(url);
+    const { data, error, headers } = await doGet<AdminProductVariation[]>(
+      url,
+      options
+    );
 
     const pagination = extractPagination(headers);
 
@@ -162,14 +184,15 @@ export class AdminProductService extends BaseService {
   async getVariation(
     productId: number,
     variationId: number,
-    params?: { context?: 'view' | 'edit' }
+    params?: { context?: 'view' | 'edit' },
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${productId}/variations/${variationId}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminProductVariation>(url);
+    const { data, error } = await doGet<AdminProductVariation>(url, options);
     return { data, error };
   }
 
@@ -178,13 +201,14 @@ export class AdminProductService extends BaseService {
    */
   async createVariation(
     productId: number,
-    variation: Partial<AdminProductVariation>
+    variation: Partial<AdminProductVariation>,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations`;
     const { data, error } = await doPost<
       AdminProductVariation,
       Partial<AdminProductVariation>
-    >(url, variation);
+    >(url, variation, options);
 
     return { data, error };
   }
@@ -195,13 +219,14 @@ export class AdminProductService extends BaseService {
   async updateVariation(
     productId: number,
     variationId: number,
-    variation: Partial<AdminProductVariation>
+    variation: Partial<AdminProductVariation>,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations/${variationId}`;
     const { data, error } = await doPut<
       AdminProductVariation,
       Partial<AdminProductVariation>
-    >(url, variation);
+    >(url, variation, options);
 
     return { data, error };
   }
@@ -212,11 +237,12 @@ export class AdminProductService extends BaseService {
   async deleteVariation(
     productId: number,
     variationId: number,
-    force = false
+    force = false,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${productId}/variations/${variationId}?${query}`;
-    const { data, error } = await doDelete<AdminProductVariation>(url);
+    const { data, error } = await doDelete<AdminProductVariation>(url, options);
 
     return { data, error };
   }
@@ -229,12 +255,14 @@ export class AdminProductService extends BaseService {
     options?: {
       delete?: boolean;
       default_values?: Partial<AdminProductVariation>;
-    }
+    },
+    requestOptions?: RequestOptions
   ): Promise<ApiResult<{ count: number }>> {
     const url = `/${this.endpoint}/${productId}/variations/generate`;
     const { data, error } = await doPost<{ count: number }, typeof options>(
       url,
-      options || {}
+      options || {},
+      requestOptions
     );
 
     return { data, error };
@@ -245,13 +273,14 @@ export class AdminProductService extends BaseService {
    * GET /wp-json/wc/v3/products/custom-fields/names
    */
   async listCustomFieldNames(
-    params?: ProductCustomFieldNameQueryParams
+    params?: ProductCustomFieldNameQueryParams,
+    options?: RequestOptions
   ): Promise<ApiResult<string[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/custom-fields/names${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<string[]>(url);
+    const { data, error } = await doGet<string[]>(url, options);
     return { data, error };
   }
 }

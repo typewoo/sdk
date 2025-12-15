@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { AxiosRequestConfig } from 'axios';
 import { doGet, doPost } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -8,6 +7,7 @@ import {
   CartItemAddRequest,
   CartCustomerRequest,
 } from '../../types/index.js';
+import { RequestOptions } from '../../types/request.js';
 
 /**
  * Cart API
@@ -21,10 +21,8 @@ export class CartService extends BaseService {
    * Get Cart
    * @returns {CartResponse}
    */
-  async get(): Promise<ApiResult<CartResponse>> {
+  async get(options?: RequestOptions): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -44,11 +42,12 @@ export class CartService extends BaseService {
    * @param params
    * @returns {CartResponse}
    */
-  async add(params: CartItemAddRequest): Promise<ApiResult<CartResponse>> {
+  async add(
+    params: CartItemAddRequest,
+    options?: RequestOptions
+  ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}/add-item?${query}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -75,12 +74,11 @@ export class CartService extends BaseService {
    */
   async update(
     key: string,
-    quantity: number
+    quantity: number,
+    options?: RequestOptions
   ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify({ key, quantity }, { encode: true });
     const url = `/${this.endpoint}/update-item?${query}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -104,10 +102,11 @@ export class CartService extends BaseService {
    * @param key
    * @returns {CartResponse}
    */
-  async remove(key: string): Promise<ApiResult<CartResponse>> {
+  async remove(
+    key: string,
+    options?: RequestOptions
+  ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/remove-item?key=${key}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -131,10 +130,11 @@ export class CartService extends BaseService {
    * @param code The coupon code you wish to apply to the cart.
    * @returns {CartResponse}
    */
-  async applyCoupon(code: string): Promise<ApiResult<CartResponse>> {
+  async applyCoupon(
+    code: string,
+    options?: RequestOptions
+  ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/apply-coupon?code=${code}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -158,10 +158,11 @@ export class CartService extends BaseService {
    * @param code The coupon code you wish to remove from the cart.
    * @returns {CartResponse}
    */
-  async removeCoupon(code: string): Promise<ApiResult<CartResponse>> {
+  async removeCoupon(
+    code: string,
+    options?: RequestOptions
+  ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/remove-coupon?code=${code}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -186,11 +187,10 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async updateCustomer(
-    body: CartCustomerRequest
+    body: CartCustomerRequest,
+    options?: RequestOptions
   ): Promise<ApiResult<CartResponse>> {
     const url = `/${this.endpoint}/update-customer`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
@@ -217,12 +217,11 @@ export class CartService extends BaseService {
    */
   async selectShippingRate(
     packageId: number,
-    rateId: string
+    rateId: string,
+    options?: RequestOptions
   ): Promise<ApiResult<CartResponse>> {
     // Fixed: use query string form. Path segment form caused rest_no_route errors.
     const url = `/${this.endpoint}/select-shipping-rate?package_id=${packageId}&rate_id=${rateId}`;
-
-    const options: AxiosRequestConfig = {};
 
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
