@@ -6,14 +6,14 @@ import {
   storageProviders,
 } from '../storage/auth.storage.js';
 
-let _sdkConfig: ResolvedSdkConfig | null = null;
+let resolvedSdkConfig: ResolvedSdkConfig | null = null;
 
 export function setSdkConfig(config: ResolvedSdkConfig): void {
-  _sdkConfig = config;
+  resolvedSdkConfig = config;
 }
 
 export function getSdkConfig(): ResolvedSdkConfig | null {
-  return _sdkConfig;
+  return resolvedSdkConfig;
 }
 
 /**

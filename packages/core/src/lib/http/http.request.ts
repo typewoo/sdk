@@ -1,4 +1,9 @@
-import { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
+import {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosError,
+  AxiosResponse,
+} from 'axios';
 import { getSdkConfig } from '../configs';
 import { AxiosApiResult, ApiError } from '../types';
 import { RequestContext, RequestOptions } from '../types/request';
@@ -127,7 +132,7 @@ const doRequestWithRetry = async <T>(
   requestOptions: RequestOptions,
   context: RequestContext<T>
 ): Promise<{
-  response?: Awaited<ReturnType<typeof instance.request<T>>>;
+  response?: AxiosResponse<T>;
   error?: AxiosError;
 }> => {
   const config = getSdkConfig();
