@@ -83,14 +83,27 @@
       "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true
     },
+    "conventionalCommits": {
+      "types": {
+        "chore": {
+          "semverBump": "patch",
+          "changelog": {
+            "title": "🧹 Chores"
+          }
+        },
+        "refactor": {
+          "semverBump": "patch",
+          "changelog": {
+            "title": "♻️ Code Refactoring"
+          }
+        }
+      }
+    },
     "changelog": {
       "workspaceChangelog": {
-        "createRelease": "github"
-      },
-      "projectChangelogs": {
+        "createRelease": "github",
         "renderOptions": {
-          "authors": false,
-          "applyUsernameToAuthors": false
+          "authors": false
         }
       }
     }
