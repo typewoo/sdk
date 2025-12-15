@@ -138,10 +138,24 @@ const doRequestWithRetry = async <T>(
   const config = getSdkConfig();
   const retryConfig = config?.request?.retry;
   const method = requestOptions.axiosConfig?.method ?? 'get';
+
+  // If retry is not enabled or not configured, just make a single request
+  if (!retryConfig?.enabled) {
+    try {
+      const response = await createRequest<T>(instance, url, requestOptions);
+      return { response };
+    } catch (error) {
+      return { error: error as AxiosError };
+    }
+  }
+
   const maxRetries =
-    typeof retryConfig?.maxRetries === 'number'
+    typeof retryConfig.maxRetries === 'number'
       ? retryConfig.maxRetries
-      : retryConfig.maxRetries();
+      : typeof retryConfig.maxRetries === 'function'
+      ? retryConfig.maxRetries()
+      : 3;
+
   let attempt = 0;
 
   while (attempt <= maxRetries) {
