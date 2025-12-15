@@ -60,6 +60,7 @@ export class CartCouponService extends BaseService {
 
     const { data, error } = await doPost<CartCouponResponse, unknown>(
       url,
+      undefined,
       options
     );
 
