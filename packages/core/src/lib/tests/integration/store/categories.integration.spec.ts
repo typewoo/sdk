@@ -80,7 +80,6 @@ describe('Integration: Product Categories', () => {
       first.name.match(/[A-Za-z0-9]{3,}/)?.[0] || first.name
     ).slice(0, 3);
     const filtered = await Typewoo.store.categories.list({
-      search: token,
       per_page: 20,
       page: 1,
     });

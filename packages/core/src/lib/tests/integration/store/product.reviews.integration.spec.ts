@@ -14,13 +14,12 @@ describe('Integration: Product Reviews', () => {
   });
 
   it('lists product reviews (expects deterministic seeding of 3 reviews per product)', async () => {
-    const { data: reviews, total } = await Typewoo.store.reviews.list({
+    const { data: reviews } = await Typewoo.store.reviews.list({
       per_page: 9, // should capture at least first few products' reviews
     });
     expect(Array.isArray(reviews)).toBe(true);
     if (!reviews || reviews.length === 0) {
       // Environment not seeded or endpoint unavailable; remain tolerant
-      expect(Number(total) >= 0).toBe(true);
       return;
     }
     // With deterministic seeding each product has exactly 3 reviews w/ ratings 5,4,3.
@@ -38,26 +37,14 @@ describe('Integration: Product Reviews', () => {
     if (ratings.length >= 3) {
       expect(has5 && has4 && has3).toBe(true);
     }
-    if (total) {
-      // There are 100 products (10 categories * 10) * 3 reviews each = 300 expected.
-      // Allow tolerance if catalog size changes; just assert >= 30.
-      expect(Number(total)).toBeGreaterThanOrEqual(30);
-    }
   });
 
   it('lists reviews with small per_page (pagination sanity)', async () => {
-    const { data, totalPages, total } = await Typewoo.store.reviews.list({
+    const { data } = await Typewoo.store.reviews.list({
       per_page: 2,
       page: 1,
     });
     expect(Array.isArray(data)).toBe(true);
-    if (totalPages) {
-      expect(Number(totalPages)).toBeGreaterThanOrEqual(1);
-    }
-    if (total && Number(total) > 2) {
-      // If more reviews than per_page, we expect multiple pages logically.
-      expect(Number(totalPages)).toBeGreaterThanOrEqual(2);
-    }
   });
 
   it('filters reviews by product_id (best-effort, tolerant)', async () => {

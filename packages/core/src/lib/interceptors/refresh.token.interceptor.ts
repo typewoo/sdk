@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { Typewoo } from '../sdk.js';
-import { httpClient } from '../services/api.js';
+import { httpClient } from '../http/index.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';

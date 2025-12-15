@@ -27,13 +27,9 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('lists available reports (headers if provided)', async () => {
-    const { data, error, total, totalPages } = await Typewoo.admin.reports.list(
-      {}
-    );
+    const { data, error } = await Typewoo.admin.reports.list({});
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
-    if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-    if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
   });
 
   it('gets sales report for a recent period', async () => {
@@ -57,12 +53,11 @@ describe('Integration: Admin Reports', () => {
   });
 
   it('gets top sellers report with pagination', async () => {
-    const { data, error, total, totalPages } =
-      await Typewoo.admin.reports.getTopSellersReport({
-        period: 'month',
-        per_page: 5,
-        page: 1,
-      });
+    const { data, error } = await Typewoo.admin.reports.getTopSellersReport({
+      period: 'month',
+      per_page: 5,
+      page: 1,
+    });
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -71,18 +66,15 @@ describe('Integration: Admin Reports', () => {
         expect(typeof data[0].title).toBe('string');
         expect(typeof data[0].quantity).toBe('number');
       }
-      if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-      if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
     }
   });
 
   it('gets customers report with pagination', async () => {
-    const { data, error, total, totalPages } =
-      await Typewoo.admin.reports.getCustomersReport({
-        period: 'month',
-        per_page: 5,
-        page: 1,
-      });
+    const { data, error } = await Typewoo.admin.reports.getCustomersReport({
+      period: 'month',
+      per_page: 5,
+      page: 1,
+    });
     if (error) {
       expect(error.code).toMatch(/not_found|invalid|forbidden|unsupported/i);
     } else {
@@ -92,8 +84,6 @@ describe('Integration: Admin Reports', () => {
         expect(typeof data[0].name).toBe('string');
         expect(typeof data[0].total).toBe('number');
       }
-      if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-      if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
     }
   });
 

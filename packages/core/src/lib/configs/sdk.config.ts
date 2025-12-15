@@ -1,9 +1,20 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, Method } from 'axios';
+import { DEFAULT_RETRY_CONFIG } from '../http/http.helper.js';
 import {
+  StorageType,
   StorageProvider,
   storageProviders,
-  StorageType,
-} from '../utilities/storage.providers.js';
+} from '../storage/auth.storage.js';
+
+let _sdkConfig: ResolvedSdkConfig | null = null;
+
+export function setSdkConfig(config: ResolvedSdkConfig): void {
+  _sdkConfig = config;
+}
+
+export function getSdkConfig(): ResolvedSdkConfig | null {
+  return _sdkConfig;
+}
 
 /**
  * Configuration interface for the SDK.
@@ -56,6 +67,57 @@ export interface SdkConfig {
     storage?: StorageType | StorageProvider;
   };
   axiosConfig?: AxiosRequestConfig;
+  request?: {
+    /**
+     * Retry configuration for failed requests.
+     * Automatically retries requests that fail due to network issues or specific HTTP status codes.
+     */
+    retry?: {
+      /**
+       * Whether retry is enabled. Defaults to `false`.
+       */
+      enabled?: boolean;
+      /**
+       * Maximum number of retry attempts.
+       * Can be a number or a function that returns a number (useful for dynamic retry counts).
+       * Defaults to `3`.
+       */
+      maxRetries?: number | (() => number);
+      /**
+       * Delay between retries in milliseconds.
+       * Can be a number for fixed delay, or a function receiving attempt number for exponential backoff.
+       * Example exponential: `(attempt) => Math.min(1000 * 2 ** attempt, 30000)`
+       * Defaults to `1000` (1 second).
+       */
+      delay?: number | ((attempt: number) => number);
+      /**
+       * HTTP status codes that should trigger a retry.
+       * Defaults to `[408, 429, 500, 502, 503, 504]`.
+       */
+      retryOnStatus?: number[];
+      /**
+       * HTTP methods that are safe to retry.
+       * Defaults to `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']`.
+       * Note: POST is excluded by default as it may not be idempotent.
+       */
+      retryOnMethods?: Method[];
+      /**
+       * Custom condition to determine if a request should be retried.
+       * Receives the error and attempt number. Return `true` to retry.
+       * This is called in addition to status/method checks.
+       */
+      retryCondition?: (error: unknown, attempt: number) => boolean;
+      /**
+       * Callback fired before each retry attempt.
+       * Useful for logging or updating UI state.
+       */
+      onRetry?: (
+        attempt: number,
+        error: unknown,
+        config?: AxiosRequestConfig
+      ) => void;
+    };
+  };
 }
 
 /**
@@ -99,6 +161,21 @@ export interface ResolvedSdkConfig {
     storage: StorageProvider;
   };
   axiosConfig?: AxiosRequestConfig;
+  request: {
+    retry: {
+      enabled: boolean;
+      maxRetries?: number | (() => number);
+      delay?: number | ((attempt: number) => number);
+      retryOnStatus?: number[];
+      retryOnMethods?: Method[];
+      retryCondition?: (error: unknown, attempt: number) => boolean;
+      onRetry?: (
+        attempt: number,
+        error: unknown,
+        config?: AxiosRequestConfig
+      ) => void;
+    };
+  };
 }
 
 /**
@@ -129,7 +206,29 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
     baseUrl: config.baseUrl,
     admin: config.admin,
     axiosConfig: config.axiosConfig,
+    request: {
+      retry: {
+        enabled: false,
+      },
+    },
   };
+
+  if (config.request?.retry) {
+    resolved.request.retry = {
+      delay: config.request?.retry.delay ?? DEFAULT_RETRY_CONFIG.delay,
+      enabled: config.request?.retry.enabled ?? false,
+      retryOnMethods:
+        config.request?.retry.retryOnMethods ??
+        DEFAULT_RETRY_CONFIG.retryOnMethods,
+      retryOnStatus:
+        config.request?.retry.retryOnStatus ??
+        DEFAULT_RETRY_CONFIG.retryOnStatus,
+      maxRetries:
+        config.request?.retry.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries,
+      onRetry: config.request?.retry.onRetry,
+      retryCondition: config.request?.retry.retryCondition,
+    };
+  }
 
   // Resolve auth storage providers
   // Auth is always initialized unless access token is explicitly disabled

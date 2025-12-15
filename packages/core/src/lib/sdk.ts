@@ -2,9 +2,10 @@ import {
   resolveConfig,
   ResolvedSdkConfig,
   SdkConfig,
+  setSdkConfig,
 } from './configs/sdk.config.js';
 import { SdkState } from './types/sdk.state.js';
-import { createHttpClient } from './services/api.js';
+import { createHttpClient } from './http/http.client.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
 import { StoreService } from './services/store.service.js';
@@ -33,6 +34,9 @@ export class Sdk {
 
     // Resolve all storage providers to ensure type safety
     this._config = resolveConfig(config);
+
+    // Store original config for retry logic access
+    setSdkConfig(this._config);
 
     this._auth = new AuthService(this.state, this._config, this.events);
     this._store = new StoreService(this.state, this._config, this.events);

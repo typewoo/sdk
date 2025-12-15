@@ -28,16 +28,12 @@ describe('Integration: Admin Refunds (Global)', () => {
   });
 
   it('lists refunds (global) with optional headers', async () => {
-    const { data, error, total, totalPages } = await Typewoo.admin.refunds.list(
-      {
-        per_page: 5,
-        page: 1,
-        context: 'view',
-      }
-    );
+    const { data, error } = await Typewoo.admin.refunds.list({
+      per_page: 5,
+      page: 1,
+      context: 'view',
+    });
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
-    if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-    if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
   });
 });

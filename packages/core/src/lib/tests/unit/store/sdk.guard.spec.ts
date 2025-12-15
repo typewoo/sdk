@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Sdk } from '../../../sdk.js';
-import { createHttpClient } from '../../../services/api.js';
 import type { SdkConfig } from '../../../configs/sdk.config.js';
+import { createHttpClient } from '../../../http/http.client.js';
 
 describe('Sdk guards', () => {
   it('throws when accessing store before init', () => {

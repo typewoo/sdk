@@ -1,77 +1,9 @@
-import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
-import { httpClient } from '../services/api.js';
-import { AxiosApiResult, ApiError } from '../types/api.js';
-import { RequestContext, RequestOptions } from '../types/request.js';
-
-export const doGet = async <T>(
-  url: string,
-  requestOptions?: RequestOptions
-) => {
-  return await doRequest<T>(httpClient, url, {
-    ...requestOptions,
-    axiosConfig: {
-      ...requestOptions?.axiosConfig,
-      method: 'get',
-    },
-  });
-};
-
-export const doPost = async <T, TData>(
-  url: string,
-  data?: TData,
-  requestOptions?: RequestOptions
-) => {
-  return await doRequest<T>(httpClient, url, {
-    ...requestOptions,
-    axiosConfig: {
-      ...requestOptions?.axiosConfig,
-      method: 'post',
-      data: data,
-    },
-  });
-};
-
-export const doPut = async <T, TData>(
-  url: string,
-  data?: TData,
-  requestOptions?: RequestOptions
-) => {
-  return await doRequest<T>(httpClient, url, {
-    ...requestOptions,
-    axiosConfig: {
-      ...requestOptions?.axiosConfig,
-      method: 'put',
-      data: data,
-    },
-  });
-};
-
-export const doDelete = async <T>(
-  url: string,
-  requestOptions?: RequestOptions
-) => {
-  return await doRequest<T>(httpClient, url, {
-    ...requestOptions,
-    axiosConfig: {
-      ...requestOptions?.axiosConfig,
-      method: 'delete',
-    },
-  });
-};
-
-export const doHead = async <T>(
-  url: string,
-  requestOptions?: RequestOptions
-) => {
-  return await doRequest<T>(httpClient, url, {
-    ...requestOptions,
-    axiosConfig: {
-      ...requestOptions?.axiosConfig,
-      method: 'head',
-      validateStatus: () => true,
-    },
-  });
-};
+import { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
+import { getSdkConfig } from '../configs';
+import { AxiosApiResult, ApiError } from '../types';
+import { RequestContext, RequestOptions } from '../types/request';
+import { createRequest } from './http';
+import { getRetryDelay, shouldRetry, sleep } from './http.helper';
 
 export const doRequest = async <T>(
   instance: AxiosInstance,
@@ -79,7 +11,7 @@ export const doRequest = async <T>(
   requestOptions: RequestOptions
 ): Promise<AxiosApiResult<T>> => {
   const options = requestOptions.axiosConfig;
-  const { method = 'get', data, params, headers } = options ?? {};
+  const { method = 'get', data } = options ?? {};
 
   const context: RequestContext<T> = {
     url: `${instance.defaults.baseURL}${url}`,
@@ -95,21 +27,24 @@ export const doRequest = async <T>(
   try {
     requestOptions?.onLoading?.(true);
     requestOptions?.onRequest?.(context);
-    const response = await instance.request<T>({
-      ...options,
-      url,
-      method,
-      data,
-      params,
-      headers,
-    });
 
-    responseData = response.data;
+    const { response, error } = await doRequestWithRetry<T>(
+      instance,
+      url,
+      requestOptions,
+      context
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    responseData = response?.data;
     requestOptions?.onResponse?.(responseData, context);
 
     return {
       data: responseData,
-      headers: response.headers
+      headers: response?.headers
         ? Object.fromEntries(
             Object.entries(response.headers).map(([key, value]) => [
               key.toLowerCase(),
@@ -117,7 +52,7 @@ export const doRequest = async <T>(
             ])
           )
         : undefined,
-      status: response.status,
+      status: response?.status,
     } as AxiosApiResult<T>;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
@@ -181,5 +116,47 @@ export const doRequest = async <T>(
   } finally {
     requestOptions?.onFinally?.(responseData, responseError, context);
     requestOptions?.onLoading?.(false);
+  }
+};
+/**
+ * Execute request with retry logic
+ */
+const doRequestWithRetry = async <T>(
+  instance: AxiosInstance,
+  url: string,
+  requestOptions: RequestOptions,
+  context: RequestContext<T>
+): Promise<{
+  response?: Awaited<ReturnType<typeof instance.request<T>>>;
+  error?: AxiosError;
+}> => {
+  const config = getSdkConfig();
+  const retryConfig = config?.request?.retry;
+  const method = requestOptions.axiosConfig?.method ?? 'get';
+
+  let attempt = 0;
+
+  while (true) {
+    try {
+      const response = await createRequest<T>(instance, url, requestOptions);
+      return { response };
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      if (!shouldRetry(axiosError, attempt, method)) {
+        return { error: axiosError };
+      }
+
+      // Call onRetry callback
+      if (retryConfig?.onRetry) {
+        retryConfig.onRetry(attempt + 1, axiosError, context.config);
+      }
+
+      // Wait before retrying
+      const delay = getRetryDelay(retryConfig?.delay, attempt);
+      await sleep(delay);
+
+      attempt++;
+    }
   }
 };

@@ -4,7 +4,7 @@ import {
 } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../utilities/axios.utility.js';
+import { doGet } from '../../http/http.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductRequest, ProductResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';

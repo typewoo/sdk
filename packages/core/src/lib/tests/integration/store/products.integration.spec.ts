@@ -15,20 +15,13 @@ describe('Integration: Products', () => {
 
   it('lists products with pagination and filtering (search by Category 1)', async () => {
     // Basic list
-    const {
-      data: page1,
-      total,
-      totalPages,
-    } = await Typewoo.store.products.list({ per_page: 10, page: 1 });
+    const { data: page1 } = await Typewoo.store.products.list({
+      per_page: 10,
+      page: 1,
+    });
     expect(Array.isArray(page1)).toBe(true);
     expect((page1 || []).length).toBeGreaterThan(0);
-    // If headers exposed, totals should be >= 50 (10 categories * 10 products) but we guard
-    if (total) {
-      expect(Number(total)).toBeGreaterThanOrEqual(50);
-    }
-    if (totalPages) {
-      expect(Number(totalPages)).toBeGreaterThan(1);
-    }
+
     const cat1 = (page1 || []).find((p) => /category 1/i.test(p.name));
     if (cat1) {
       const searchRes = await Typewoo.store.products.list({

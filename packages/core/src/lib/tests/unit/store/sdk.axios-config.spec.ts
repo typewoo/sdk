@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Sdk } from '../../../sdk.js';
-import * as api from '../../../services/api.js';
+import * as client from '../../../http/http.client.js';
 import type { SdkConfig } from '../../../configs/sdk.config.js';
 
 describe('Sdk axiosConfig', () => {
@@ -10,7 +10,7 @@ describe('Sdk axiosConfig', () => {
 
   it('passes axiosConfig to createHttpClient when provided', async () => {
     const sdk = new Sdk();
-    const createHttpClientSpy = vi.spyOn(api, 'createHttpClient');
+    const createHttpClientSpy = vi.spyOn(client, 'createHttpClient');
 
     const config: SdkConfig = {
       baseUrl: 'https://example.test',
@@ -35,7 +35,7 @@ describe('Sdk axiosConfig', () => {
 
   it('works correctly when axiosConfig is undefined', async () => {
     const sdk = new Sdk();
-    const createHttpClientSpy = vi.spyOn(api, 'createHttpClient');
+    const createHttpClientSpy = vi.spyOn(client, 'createHttpClient');
 
     const config: SdkConfig = {
       baseUrl: 'https://example2.test',
@@ -50,7 +50,7 @@ describe('Sdk axiosConfig', () => {
 
   it('axiosConfig can override baseURL if explicitly provided', async () => {
     const sdk = new Sdk();
-    const createHttpClientSpy = vi.spyOn(api, 'createHttpClient');
+    const createHttpClientSpy = vi.spyOn(client, 'createHttpClient');
 
     const config: SdkConfig = {
       baseUrl: 'https://example.test',

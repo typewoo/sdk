@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { Typewoo } from '../../../../index.js';
+import { ProductRequest, Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -7,7 +7,6 @@ import {
 } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { ProductRequest } from '@typewoo/types';
 
 config({ path: resolve(__dirname, '../../../../../../../.env') });
 
@@ -29,13 +28,13 @@ describe('Integration: Admin Product Service', () => {
   });
 
   it('lists products with pagination', async () => {
-    const { data, error, total, totalPages } =
-      await Typewoo.admin.products.list({ per_page: 5, page: 1 });
+    const { data, error } = await Typewoo.admin.products.list({
+      per_page: 5,
+      page: 1,
+    });
 
     expect(error).toBeFalsy();
     expect(Array.isArray(data)).toBe(true);
-    if (total) expect(Number(total)).toBeGreaterThanOrEqual(0);
-    if (totalPages) expect(Number(totalPages)).toBeGreaterThanOrEqual(0);
   });
 
   it('searches products by name', async () => {

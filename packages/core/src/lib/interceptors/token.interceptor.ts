@@ -1,5 +1,5 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { httpClient } from '../services/api.js';
+import { httpClient } from '../http/index.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 
 export const addTokenInterceptor = (config: ResolvedSdkConfig) => {

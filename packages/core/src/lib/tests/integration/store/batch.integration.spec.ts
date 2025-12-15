@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { BatchRequest, Typewoo } from '../../../../index.js';
+import { BatchRequestSchema, Typewoo } from '../../../../index.js';
 import { GET_WP_URL } from '../../config.tests.js';
 import { config } from 'dotenv';
 import { resolve } from 'path';
@@ -16,7 +16,7 @@ describe('Integration: Batch API Operations', () => {
 
   it('executes batch request with multiple operations', async () => {
     // Test batch operation with cart get and product listing
-    const batchRequest: z.infer<typeof BatchRequest> = {
+    const batchRequest: z.infer<typeof BatchRequestSchema> = {
       validation: 'normal',
       requests: [
         {
@@ -56,7 +56,7 @@ describe('Integration: Batch API Operations', () => {
   });
 
   it('handles batch request with require-all-validate mode', async () => {
-    const batchRequest: z.infer<typeof BatchRequest> = {
+    const batchRequest: z.infer<typeof BatchRequestSchema> = {
       validation: 'require-all-validate',
       requests: [
         {
