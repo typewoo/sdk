@@ -1,8 +1,8 @@
 <?php
 /**
- * TypeWoo Uninstall
+ * Typewoo Uninstall
  *
- * Cleanup for TypeWoo Authentication plugin.
+ * Cleanup for Typewoo Authentication plugin.
  * Removes user meta and transient data created by the JWT auth module.
  *
  * @since 1.0.0
@@ -27,9 +27,9 @@ if (function_exists('apply_filters')) {
 }
 
 /**
- * TypeWoo Uninstaller Class
+ * Typewoo Uninstaller Class
  */
-class TypeWoo_Uninstaller {
+class Typewoo_Uninstaller {
 
 	/**
 	 * Run the uninstall process.
@@ -103,4 +103,4 @@ class TypeWoo_Uninstaller {
 }
 
 // Run the uninstaller
-TypeWoo_Uninstaller::uninstall();
+Typewoo_Uninstaller::uninstall();

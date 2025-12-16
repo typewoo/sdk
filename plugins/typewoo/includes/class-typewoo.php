@@ -1,6 +1,6 @@
 <?php
 /**
- * The main TypeWoo plugin class.
+ * The main Typewoo plugin class.
  *
  * @since 1.0.0
  */
@@ -11,16 +11,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Main TypeWoo Class.
+ * Main Typewoo Class.
  *
- * @class TypeWoo
+ * @class Typewoo
  */
-final class TypeWoo {
+final class Typewoo {
 
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var TypeWoo
+	 * @var Typewoo
 	 * @since 1.0.0
 	 */
 	protected static $_instance = null;
@@ -28,42 +28,42 @@ final class TypeWoo {
 	/**
 	 * CORS handler instance.
 	 *
-	 * @var TypeWoo_CORS
+	 * @var Typewoo_CORS
 	 */
 	public $cors;
 
 	/**
 	 * JWT handler instance.
 	 *
-	 * @var TypeWoo_JWT
+	 * @var Typewoo_JWT
 	 */
 	public $jwt;
 
 	/**
 	 * Auth handler instance.
 	 *
-	 * @var TypeWoo_Auth
+	 * @var Typewoo_Auth
 	 */
 	public $auth;
 
 	/**
 	 * API handler instance.
 	 *
-	 * @var TypeWoo_API
+	 * @var Typewoo_API
 	 */
 	public $api;
 
 	/**
 	 * Tracking handler instance.
 	 *
-	 * @var TypeWoo_Tracking
+	 * @var Typewoo_Tracking
 	 */
 	public $tracking;
 
 	/**
 	 * Admin handler instance.
 	 *
-	 * @var TypeWoo_Admin
+	 * @var Typewoo_Admin
 	 */
 	public $admin;
 
@@ -75,13 +75,13 @@ final class TypeWoo {
 	private $initialized = false;
 
 	/**
-	 * Main TypeWoo Instance.
+	 * Main Typewoo Instance.
 	 *
-	 * Ensures only one instance of TypeWoo is loaded or can be loaded.
+	 * Ensures only one instance of Typewoo is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @return TypeWoo - Main instance.
+	 * @return Typewoo - Main instance.
 	 */
 	public static function instance() {
 		if (is_null(self::$_instance)) {
@@ -91,7 +91,7 @@ final class TypeWoo {
 	}
 
 	/**
-	 * TypeWoo Constructor.
+	 * Typewoo Constructor.
 	 */
 	public function __construct() {
 		// Prevent double initialization
@@ -118,7 +118,7 @@ final class TypeWoo {
 	}
 
 	/**
-	 * Define TypeWoo Constants.
+	 * Define Typewoo Constants.
 	 */
 	private function define_constants() {
 		$this->define('TYPEWOO_ABSPATH', dirname(TYPEWOO_PLUGIN_FILE) . '/');
@@ -176,7 +176,7 @@ final class TypeWoo {
 	}
 
 	/**
-	 * Init TypeWoo when WordPress Initialises.
+	 * Init Typewoo when WordPress Initialises.
 	 */
 	public function init() {
 		// Before init action.
@@ -186,14 +186,14 @@ final class TypeWoo {
 		$this->load_plugin_textdomain();
 
 		// Initialize core components.
-		$this->cors = new TypeWoo_CORS();
-		$this->jwt = new TypeWoo_JWT();
-		$this->auth = new TypeWoo_Auth();
-		$this->api = new TypeWoo_API();
-		$this->tracking = new TypeWoo_Tracking();
+		$this->cors = new Typewoo_CORS();
+		$this->jwt = new Typewoo_JWT();
+		$this->auth = new Typewoo_Auth();
+		$this->api = new Typewoo_API();
+		$this->tracking = new Typewoo_Tracking();
 
 		if ($this->is_request('admin')) {
-			$this->admin = new TypeWoo_Admin();
+			$this->admin = new Typewoo_Admin();
 		}
 
 		// Init action.
@@ -219,7 +219,7 @@ final class TypeWoo {
 		if (version_compare(PHP_VERSION, '8.0', '<')) {
 			deactivate_plugins(plugin_basename(TYPEWOO_PLUGIN_FILE));
 			wp_die(
-				esc_html__('TypeWoo requires PHP version 8.0 or above.', 'typewoo'),
+				esc_html__('Typewoo requires PHP version 8.0 or above.', 'typewoo'),
 				esc_html__('Plugin Activation Error', 'typewoo'),
 				array('response' => 200, 'back_link' => true)
 			);

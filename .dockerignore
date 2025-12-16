@@ -1,4 +1,4 @@
-# Root dockerignore for TypeWoo monorepo
+# Root dockerignore for Typewoo monorepo
 # Keep Docker build context small and avoid platform-specific caches
 
 # VCS and tooling

@@ -1,4 +1,4 @@
-## TypeWoo Monorepo – Coding Agent Onboarding
+## Typewoo Monorepo – Coding Agent Onboarding
 
 Purpose: Fast, low-error contributions to a TypeScript / Nx monorepo that provides a headless WooCommerce Store API SDK plus authentication plugins and an Angular example app.
 

@@ -38,7 +38,7 @@ else
   # Install WordPress
   wp core install \
     --url="http://localhost:8080" \
-    --title="TypeWoo Test" \
+    --title="Typewoo Test" \
     --admin_user="admin" \
     --admin_password="password" \
     --admin_email="test@example.com" \
@@ -47,24 +47,24 @@ else
   log "WordPress installed successfully"
 fi
 
-# Install/activate the TypeWoolugin
-log "Installing TypeWoo plugin..."
+# Install/activate the Typewoolugin
+log "Installing Typewoo plugin..."
 
 # Check if plugin exists and activate it
 if wp plugin is-installed typewoo 2>/dev/null; then
-  log "TypeWoo plugin already installed"
+  log "Typewoo plugin already installed"
   if ! wp plugin is-active typewoo 2>/dev/null; then
     wp plugin activate typewoo
-    log "TypeWoo plugin activated"
+    log "Typewoo plugin activated"
   else
-    log "TypeWoo plugin already active"
+    log "Typewoo plugin already active"
   fi
 else
-  log "TypeWoo plugin not found - this should be mounted in the container"
+  log "Typewoo plugin not found - this should be mounted in the container"
   wp plugin list
   exit 1
 fi
 
 log "Minimal WordPress setup complete!"
 log "- WordPress version: $(wp core version)"
-log "- TypeWoo plugin: $(wp plugin is-active typewoo && echo 'Active' || echo 'Inactive')"
+log "- Typewoo plugin: $(wp plugin is-active typewoo && echo 'Active' || echo 'Inactive')"

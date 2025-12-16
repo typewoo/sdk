@@ -49,7 +49,7 @@ export const addRefreshTokenInterceptor = (
   httpClient.interceptors.response.use(
     (response) => response,
     async (error) => {
-      // Only handle errors for Store API or TypeWoo endpoints
+      // Only handle errors for Store API or Typewoo endpoints
       const reqUrl: string | undefined = error?.config?.url;
       if (
         !reqUrl ||

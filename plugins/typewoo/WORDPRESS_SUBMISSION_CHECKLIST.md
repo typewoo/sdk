@@ -179,7 +179,7 @@
 - [ ] Address any security concerns promptly
 - [ ] Keep plugin updated for WordPress compatibility
 
-## 📝 TypeWoo Specific Checklist
+## 📝 Typewoo Specific Checklist
 
 ### Plugin-Specific Items
 

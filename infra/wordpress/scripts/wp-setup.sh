@@ -216,9 +216,9 @@ chmod 666 wp-content/debug.log
 log "Debug log file created and made writable"
 
 # ---------------------------------------------------------------------------
-# Verify TypeWoo JWT plugin presence & REST route registration
+# Verify Typewoo JWT plugin presence & REST route registration
 # ---------------------------------------------------------------------------
-log "Verifying TypeWoo plugin (slug: typewoo)..."
+log "Verifying Typewoo plugin (slug: typewoo)..."
 if wp plugin is-installed typewoo >/dev/null 2>&1; then
   if ! wp plugin is-active typewoo >/dev/null 2>&1; then
     log "Activating typewoolugin"

@@ -1,8 +1,8 @@
 <?php
 /**
- * TypeWoo CORS Handling
+ * Typewoo CORS Handling
  *
- * Handles Cross-Origin Resource Sharing (CORS) for the TypeWoo plugin.
+ * Handles Cross-Origin Resource Sharing (CORS) for the Typewoo plugin.
  *
  * @since 1.0.0
  */
@@ -13,11 +13,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo CORS Class.
+ * Typewoo CORS Class.
  *
- * @class TypeWoo_CORS
+ * @class Typewoo_CORS
  */
-class TypeWoo_CORS {
+class Typewoo_CORS {
 
 	/**
 	 * Constructor.

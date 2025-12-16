@@ -121,7 +121,7 @@ async function issueOneTimeToken() {
   oneTimeToken = (r.data as OneTimeTokenResponse).one_time_token;
 }
 
-describe('TypeWoo JWT mu-plugin', () => {
+describe('Typewoo JWT mu-plugin', () => {
   beforeAll(async () => {
     // Acquire baseline token once
     await issueStandardToken();

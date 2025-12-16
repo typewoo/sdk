@@ -123,7 +123,7 @@
 
 ### 🚀 Features
 
-- **typewoo:** add initialization flag to prevent double initialization in TypeWoo ([31cc4cd](https://github.com/typewoo/sdk/commit/31cc4cd))
+- **typewoo:** add initialization flag to prevent double initialization in Typewoo ([31cc4cd](https://github.com/typewoo/sdk/commit/31cc4cd))
 - **tracking:** implement tracking functionality and enhance auto-login URL generation ([fa71133](https://github.com/typewoo/sdk/commit/fa71133))
 
 ### 🩹 Fixes
@@ -267,8 +267,8 @@ This was a version bump only, there were no code changes.
 - create comprehensive README.md with detailed documentation ([d466536](https://github.com/typewoo/sdk/commit/d466536))
 - Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/typewoo/sdk/commit/fcf9ac3))
 - enhance cart and order integration tests, improve error handling and assertions ([649641d](https://github.com/typewoo/sdk/commit/649641d))
-- Implement TypeWoo JWT Authentication Plugin ([098a02a](https://github.com/typewoo/sdk/commit/098a02a))
-- Refactor TypeWoo authentication plugin structure and update documentation for unified JWT support ([b39db7f](https://github.com/typewoo/sdk/commit/b39db7f))
+- Implement Typewoo JWT Authentication Plugin ([098a02a](https://github.com/typewoo/sdk/commit/098a02a))
+- Refactor Typewoo authentication plugin structure and update documentation for unified JWT support ([b39db7f](https://github.com/typewoo/sdk/commit/b39db7f))
 - Add JWT support configuration and enhance user creation logic in setup script ([853a08b](https://github.com/typewoo/sdk/commit/853a08b))
 - **auth:** implement token management and refresh functionality ([3511c31](https://github.com/typewoo/sdk/commit/3511c31))
 

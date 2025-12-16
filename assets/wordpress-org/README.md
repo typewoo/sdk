@@ -26,7 +26,7 @@ This directory contains assets for the WordPress.org plugin directory listing.
 
 ### Icons
 
-- Use the TypeWoo brand colors
+- Use the Typewoo brand colors
 - Should be simple and recognizable at small sizes
 - Include the "SDK" text or initials if space allows
 - Use JWT/security-related imagery (lock, key, shield)

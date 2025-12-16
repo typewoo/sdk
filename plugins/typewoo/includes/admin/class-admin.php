@@ -1,6 +1,6 @@
 <?php
 /**
- * TypeWoo Admin
+ * Typewoo Admin
  *
  * Handles admin interface and notices.
  *
@@ -13,11 +13,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo Admin Class.
+ * Typewoo Admin Class.
  *
- * @class TypeWoo_Admin
+ * @class Typewoo_Admin
  */
-class TypeWoo_Admin {
+class Typewoo_Admin {
 
 	/**
 	 * Constructor.
@@ -105,7 +105,7 @@ class TypeWoo_Admin {
 			return;
 		}
 
-		$title = __('TypeWoo authentication configuration', 'typewoo');
+		$title = __('Typewoo authentication configuration', 'typewoo');
 		$notice_class = $config['active'] && $config['debug_force'] ? 'notice-info' : 'notice-error';
 		
 		echo '<div class="notice ' . esc_attr($notice_class) . '">';

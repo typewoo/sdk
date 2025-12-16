@@ -1,6 +1,6 @@
 <?php
 /**
- * TypeWoo Tracking Functionality
+ * Typewoo Tracking Functionality
  *
  * Handles parameter tracking and order attribution.
  *
@@ -13,11 +13,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo Tracking Class.
+ * Typewoo Tracking Class.
  *
- * @class TypeWoo_Tracking
+ * @class Typewoo_Tracking
  */
-class TypeWoo_Tracking {
+class Typewoo_Tracking {
 
 	/**
 	 * Constructor.

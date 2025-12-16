@@ -1,6 +1,6 @@
 <?php
 // ensure-test-coupons.php
-// Idempotently create / ensure existence of test coupons for the TypeWoo integration environment.
+// Idempotently create / ensure existence of test coupons for the Typewoo integration environment.
 // Executed via: wp eval-file /scripts/ensure-test-coupons.php
 
 if (!function_exists('ensure_coupon')) {

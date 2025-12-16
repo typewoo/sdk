@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: TypeWoo
+ * Plugin Name: Typewoo
  * Plugin URI:  https://github.com/typewoo/sdk
  * Description: Authentication support for @typewoo/core (JWT endpoints: token, refresh, one-time, autologin, validate, revoke) enabling headless WooCommerce integrations.
  * Version: 1.0.0
- * Author: TypeWoo
+ * Author: Typewoo
  * Author URI: https://github.com/typewoo
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -94,22 +94,22 @@ if (!defined('TYPEWOO_JWT_PLUGIN_ACTIVE')) {
 unset($typewoo_flag_defined, $typewoo_flag_enabled, $typewoo_secret_defined);
 
 /**
- * Returns the main instance of TypeWoo.
+ * Returns the main instance of Typewoo.
  *
  * @since 1.0.0
- * @return TypeWoo
+ * @return Typewoo
  */
-function TypeWoo() {
-	return TypeWoo::instance();
+function Typewoo() {
+	return Typewoo::instance();
 }
 
-// Include the main TypeWoo class.
-if (!class_exists('TypeWoo', false)) {
+// Include the main Typewoo class.
+if (!class_exists('Typewoo', false)) {
 	include_once dirname(TYPEWOO_PLUGIN_FILE) . '/includes/class-typewoo.php';
 }
 
 // Global for backwards compatibility.
-$GLOBALS['typewoo'] = TypeWoo();
+$GLOBALS['typewoo'] = Typewoo();
 
 // Hook for final action after plugin is fully loaded.
 do_action('typewoo_jwt_auth_loaded');

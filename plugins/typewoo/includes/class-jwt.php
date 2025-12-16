@@ -1,6 +1,6 @@
 <?php
 /**
- * TypeWoo JWT Utilities
+ * Typewoo JWT Utilities
  *
  * Handles JWT token encoding, decoding, and related utility functions.
  *
@@ -13,11 +13,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo JWT Class.
+ * Typewoo JWT Class.
  *
- * @class TypeWoo_JWT
+ * @class Typewoo_JWT
  */
-class TypeWoo_JWT {
+class Typewoo_JWT {
 
 	/**
 	 * Constructor.

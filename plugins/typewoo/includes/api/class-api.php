@@ -1,6 +1,6 @@
 <?php
 /**
- * TypeWoo REST API
+ * Typewoo REST API
  *
  * Handles all REST API endpoint registration and management.
  *
@@ -13,23 +13,23 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo API Class.
+ * Typewoo API Class.
  *
- * @class TypeWoo_API
+ * @class Typewoo_API
  */
-class TypeWoo_API {
+class Typewoo_API {
 
 	/**
 	 * JWT instance.
 	 *
-	 * @var TypeWoo_JWT
+	 * @var Typewoo_JWT
 	 */
 	private $jwt;
 
 	/**
 	 * Auth instance.
 	 *
-	 * @var TypeWoo_Auth
+	 * @var Typewoo_Auth
 	 */
 	private $auth;
 
@@ -37,8 +37,8 @@ class TypeWoo_API {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->jwt = new TypeWoo_JWT();
-		$this->auth = new TypeWoo_Auth();
+		$this->jwt = new Typewoo_JWT();
+		$this->auth = new Typewoo_Auth();
 		$this->init();
 	}
 
@@ -165,7 +165,7 @@ class TypeWoo_API {
 	 */
 	private function check_plugin_active() {
 		if (!defined('TYPEWOO_JWT_PLUGIN_ACTIVE') || !TYPEWOO_JWT_PLUGIN_ACTIVE) {
-			return new WP_Error('typewoo_jwt.inactive', __('TypeWoo JWT authentication inactive', 'typewoo'), array('status' => 400));
+			return new WP_Error('typewoo_jwt.inactive', __('Typewoo JWT authentication inactive', 'typewoo'), array('status' => 400));
 		}
 		return true;
 	}

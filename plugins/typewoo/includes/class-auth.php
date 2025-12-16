@@ -1,6 +1,6 @@
 <?php
 /**
- * TypeWoo Authentication
+ * Typewoo Authentication
  *
  * Handles WordPress authentication integration and user management.
  *
@@ -13,16 +13,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * TypeWoo Authentication Class.
+ * Typewoo Authentication Class.
  *
- * @class TypeWoo_Auth
+ * @class Typewoo_Auth
  */
-class TypeWoo_Auth {
+class Typewoo_Auth {
 
 	/**
 	 * JWT instance.
 	 *
-	 * @var TypeWoo_JWT
+	 * @var Typewoo_JWT
 	 */
 	private $jwt;
 
@@ -30,7 +30,7 @@ class TypeWoo_Auth {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->jwt = new TypeWoo_JWT();
+		$this->jwt = new Typewoo_JWT();
 		$this->init();
 	}
 

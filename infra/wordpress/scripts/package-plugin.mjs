@@ -17,7 +17,7 @@ const version = versionMatch ? versionMatch[1].trim() : 'unknown';
 const zipFilename = `typewoo-${version}.zip`;
 const zipPath = join(distDir, zipFilename);
 
-console.log(`[package-plugin] Packaging TypeWoo v${version}...`);
+console.log(`[package-plugin] Packaging Typewoo v${version}...`);
 
 // Ensure dist directory exists and clean staging
 mkdirSync(distDir, { recursive: true });
