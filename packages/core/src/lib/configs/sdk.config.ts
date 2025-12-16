@@ -211,7 +211,6 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         DEFAULT_RETRY_CONFIG.retryOnStatus,
       maxRetries:
         config.request.retry.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries,
-      onRetry: config.request?.retry.onRetry,
       retryCondition: config.request?.retry.retryCondition,
     };
   }
