@@ -46,3 +46,7 @@ const cart = await sdk.store.cart.get();
 ## 📄 License
 
 MIT
+
+## ⚠️ Disclaimer
+
+This project is **not affiliated with, endorsed by, or officially connected to WooCommerce, Automattic, or WordPress**. WooCommerce® is a registered trademark of Automattic Inc. This is an independent, community-driven SDK that interacts with the WooCommerce Store API.

@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "TypeWoo SDK",
+  "theme": "almond",
+  "name": "Typewoo SDK",
   "colors": {
-    "primary": "#7C3AED",
-    "light": "#A78BFA",
-    "dark": "#5B21B6"
+    "primary": "#00bba7",
+    "light": "#33c9b9",
+    "dark": "#009689"
   },
   "favicon": "",
   "navigation": {
