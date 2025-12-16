@@ -111,19 +111,19 @@ export const createRequestError = <T>(axiosError: AxiosError<ApiError>) => {
 };
 export const createServerError = <T>(axiosError: AxiosError<ApiError>) => {
   return {
-    error: axiosError.response.data ?? {
-      code: `http_${axiosError.response.status}`,
+    error: axiosError.response?.data ?? {
+      code: `http_${axiosError.response?.status}`,
       message: axiosError.message || 'Request failed',
-      data: { status: axiosError.response.status },
+      data: { status: axiosError.response?.status },
       details: {},
     },
     headers: Object.fromEntries(
-      Object.entries(axiosError.response.headers).map(([key, value]) => [
+      Object.entries(axiosError.response?.headers ?? []).map(([key, value]) => [
         key.toLowerCase(),
         value,
       ])
     ),
-    status: axiosError.response.status,
+    status: axiosError.response?.status,
   } as AxiosApiResult<T>;
 };
 export const createNetworkError = <T>(axiosError: AxiosError<ApiError>) => {
