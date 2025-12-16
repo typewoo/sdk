@@ -34,7 +34,7 @@ export class AdminOrderService extends BaseService {
    */
   async list(
     params?: AdminOrderQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminOrder[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -52,7 +52,7 @@ export class AdminOrderService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -66,13 +66,13 @@ export class AdminOrderService extends BaseService {
    */
   async create(
     order: AdminOrderRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminOrder, AdminOrderRequest>(
       url,
       order,
-      options,
+      options
     );
 
     return { data, error };
@@ -84,13 +84,13 @@ export class AdminOrderService extends BaseService {
   async update(
     id: number,
     order: AdminOrderRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminOrder, AdminOrderRequest>(
       url,
       order,
-      options,
+      options
     );
 
     return { data, error };
@@ -102,7 +102,7 @@ export class AdminOrderService extends BaseService {
   async delete(
     id: number,
     force = false,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -120,7 +120,7 @@ export class AdminOrderService extends BaseService {
       update?: Array<AdminOrderRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminOrder[];
@@ -150,7 +150,7 @@ export class AdminOrderService extends BaseService {
       context?: 'view' | 'edit';
       type?: 'any' | 'customer' | 'internal';
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/notes${query ? `?${query}` : ''}`;
@@ -165,7 +165,7 @@ export class AdminOrderService extends BaseService {
   async getNote(
     orderId: number,
     noteId: number,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}`;
     const { data, error } = await doGet<AdminOrderNote>(url, options);
@@ -178,13 +178,13 @@ export class AdminOrderService extends BaseService {
   async createNote(
     orderId: number,
     note: AdminOrderNoteRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes`;
     const { data, error } = await doPost<AdminOrderNote, AdminOrderNoteRequest>(
       url,
       note,
-      options,
+      options
     );
 
     return { data, error };
@@ -197,7 +197,7 @@ export class AdminOrderService extends BaseService {
     orderId: number,
     noteId: number,
     force = false,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}?${query}`;
@@ -212,7 +212,7 @@ export class AdminOrderService extends BaseService {
   async generateReceipt(
     orderId: number,
     params?: AdminOrderReceiptRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
     const { data, error } = await doPost<
@@ -228,7 +228,7 @@ export class AdminOrderService extends BaseService {
    */
   async getReceipt(
     orderId: number,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderReceipt>> {
     const url = `/${this.endpoint}/${orderId}/receipt`;
     const { data, error } = await doGet<AdminOrderReceipt>(url, options);
@@ -241,12 +241,12 @@ export class AdminOrderService extends BaseService {
    */
   async getEmailTemplates(
     orderId: number,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderEmailTemplate[]>> {
     const url = `/${this.endpoint}/${orderId}/actions/email_templates`;
     const { data, error } = await doGet<AdminOrderEmailTemplate[]>(
       url,
-      options,
+      options
     );
 
     return { data, error };
@@ -258,7 +258,7 @@ export class AdminOrderService extends BaseService {
   async sendEmail(
     orderId: number,
     params: AdminOrderSendEmailRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_email`;
     const { data, error } = await doPost<
@@ -275,7 +275,7 @@ export class AdminOrderService extends BaseService {
   async sendOrderDetails(
     orderId: number,
     params?: AdminOrderSendDetailsRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<{ message: string }>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_order_details`;
     const { data, error } = await doPost<
@@ -290,7 +290,7 @@ export class AdminOrderService extends BaseService {
    * Get order statuses with counts
    */
   async getStatuses(
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminOrderStatusInfo[]>> {
     const url = `/wp-json/wc/v3/orders/statuses`;
     const { data, error } = await doGet<AdminOrderStatusInfo[]>(url, options);
@@ -304,7 +304,7 @@ export class AdminOrderService extends BaseService {
   async listRefunds(
     orderId: number,
     params?: AdminRefundQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds${
@@ -321,7 +321,7 @@ export class AdminOrderService extends BaseService {
     orderId: number,
     refundId: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}${
@@ -337,13 +337,13 @@ export class AdminOrderService extends BaseService {
   async createRefund(
     orderId: number,
     refund: AdminRefundCreateRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const url = `/${this.endpoint}/${orderId}/refunds`;
     const { data, error } = await doPost<AdminRefund, AdminRefundCreateRequest>(
       url,
       refund,
-      options,
+      options
     );
     return { data, error };
   }
@@ -355,7 +355,7 @@ export class AdminOrderService extends BaseService {
     orderId: number,
     refundId: number,
     force = true,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}?${query}`;

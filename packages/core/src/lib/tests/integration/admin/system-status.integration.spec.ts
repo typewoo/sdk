@@ -30,7 +30,7 @@ describe('Integration: Admin System Status', () => {
     const res = await Typewoo.admin.systemStatus.get({ context: 'view' });
     if (res.error) {
       expect(res.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(res.data).toBeTruthy();

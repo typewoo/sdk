@@ -31,7 +31,7 @@ describe('Integration: Admin Settings', () => {
     const groups = await Typewoo.admin.settings.listGroups();
     if (groups.error) {
       expect(groups.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return;
     }
@@ -42,7 +42,7 @@ describe('Integration: Admin Settings', () => {
     const list = await Typewoo.admin.settings.listSettings(groupId);
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(Array.isArray(list.data)).toBe(true);
@@ -78,7 +78,7 @@ describe('Integration: Admin Settings', () => {
     });
     if (upd.error) {
       expect(upd.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(upd.data?.id).toBe(settingId);
@@ -90,7 +90,7 @@ describe('Integration: Admin Settings', () => {
     });
     if (batchGrp.error) {
       expect(batchGrp.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(Array.isArray(batchGrp.data?.update ?? [])).toBe(true);
@@ -102,7 +102,7 @@ describe('Integration: Admin Settings', () => {
     });
     if (batch.error) {
       expect(batch.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(Array.isArray(batch.data?.update ?? [])).toBe(true);

@@ -7,7 +7,7 @@ export const AdminCountrySchema = z.looseObject({
     z.object({
       code: z.string(),
       name: z.string(),
-    }),
+    })
   ),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
@@ -47,9 +47,9 @@ export const AdminContinentSchema = z.looseObject({
         z.object({
           code: z.string(),
           name: z.string(),
-        }),
+        })
       ),
-    }),
+    })
   ),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),

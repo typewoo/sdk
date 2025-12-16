@@ -2,6 +2,10 @@
 
 A modern, TypeScript-first SDK for integrating with the **WooCommerce Store API**. Build headless or decoupled WooCommerce storefronts with full type safety.
 
+## 📚 Documentation
+
+For full documentation, guides, and API reference, visit **[typewoo.dev](https://typewoo.dev)**.
+
 ## ✨ Features
 
 - 📦 Easy-to-use API for WooCommerce Store endpoints (products, cart, checkout, orders)
@@ -23,11 +27,22 @@ npm install @typewoo/sdk axios qs zod
 import { Typewoo } from '@typewoo/sdk';
 
 // Initialize the SDK
-Typewoo.init({
+const sdk = Typewoo.init({
   baseUrl: 'https://your-store.com',
 });
 
 // Access store services
-const products = await sdk.store.products.get();
+const products = await sdk.store.products.list();
 const cart = await sdk.store.cart.get();
 ```
+
+## 📖 Learn More
+
+- [Getting Started](https://typewoo.dev/getting-started)
+- [Configuration](https://typewoo.dev/configuration)
+- [Authentication](https://typewoo.dev/authentication)
+- [API Reference](https://typewoo.dev/api-reference/client)
+
+## 📄 License
+
+MIT

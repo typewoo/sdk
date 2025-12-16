@@ -16,12 +16,12 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse[]}
    */
   async list(
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<CartCouponResponse[]>> {
     const url = `/${this.endpoint}`;
     const { data, error, headers } = await doGet<CartCouponResponse[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -36,7 +36,7 @@ export class CartCouponService extends BaseService {
    */
   async single(
     code: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}/${code}`;
     const { data, error } = await doGet<CartCouponResponse>(url, options);
@@ -51,7 +51,7 @@ export class CartCouponService extends BaseService {
    */
   async add(
     code: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}?code=${code}`;
 
@@ -61,7 +61,7 @@ export class CartCouponService extends BaseService {
     const { data, error } = await doPost<CartCouponResponse, unknown>(
       url,
       undefined,
-      options,
+      options
     );
 
     this.events.emitIf(!!data, 'cart:request:success');
@@ -78,7 +78,7 @@ export class CartCouponService extends BaseService {
    */
   async delete(
     code: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<unknown>> {
     const url = `/${this.endpoint}/${code}`;
 
@@ -99,7 +99,7 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse[]}
    */
   async clear(
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `/${this.endpoint}`;
 

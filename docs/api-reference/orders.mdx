@@ -61,7 +61,7 @@ const { data: checkout, error } = await Typewoo.store.checkout.update(
       postcode: '94102',
     },
   },
-  true,
+  true
 ); // true = recalculate totals
 ```
 
@@ -152,7 +152,7 @@ const { data: result, error } = await Typewoo.store.checkoutOrder.order(
     key: 'wc_order_xxx', // Order key
     payment_method: 'stripe',
     payment_data: [{ key: 'stripe_source', value: 'src_xxx' }],
-  },
+  }
 );
 ```
 
@@ -178,7 +178,7 @@ Get order details for pay-for-order pages.
 const { data: order, error } = await Typewoo.store.orders.get(
   'wc_order_xxx', // Order key
   '12345', // Order ID
-  'john@example.com', // Optional billing email for guest orders
+  'john@example.com' // Optional billing email for guest orders
 );
 
 console.log('Order status:', order?.status);
@@ -305,7 +305,7 @@ import { Typewoo } from '@typewoo/sdk';
 
 async function processCheckout(
   customerData: CustomerData,
-  paymentData: PaymentData,
+  paymentData: PaymentData
 ) {
   // 1. Get current checkout state
   const { data: checkout } = await Typewoo.store.checkout.get();
@@ -317,7 +317,7 @@ async function processCheckout(
         billing_address: customerData.billing,
         shipping_address: customerData.shipping,
       },
-      true,
+      true
     );
 
   if (updateError) {
@@ -369,13 +369,13 @@ For existing orders that need payment:
 async function payForOrder(
   orderId: number,
   orderKey: string,
-  billingEmail: string,
+  billingEmail: string
 ) {
   // 1. Get order details
   const { data: order, error } = await Typewoo.store.orders.get(
     orderKey,
     orderId.toString(),
-    billingEmail,
+    billingEmail
   );
 
   if (error) {
@@ -451,8 +451,9 @@ const { data: refund } = await Typewoo.admin.refunds.create(12345, {
 Common checkout errors:
 
 ```typescript
-const { data, error } =
-  await Typewoo.store.checkout.processOrderAndPayment(params);
+const { data, error } = await Typewoo.store.checkout.processOrderAndPayment(
+  params
+);
 
 if (error) {
   switch (error.code) {
@@ -463,7 +464,7 @@ if (error) {
     case 'woocommerce_rest_checkout_missing_required_field':
       // error.data.params contains the missing field
       showError(
-        `Missing field: ${Object.keys(error.data.params || {}).join(', ')}`,
+        `Missing field: ${Object.keys(error.data.params || {}).join(', ')}`
       );
       break;
 

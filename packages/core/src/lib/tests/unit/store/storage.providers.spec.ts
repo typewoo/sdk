@@ -73,10 +73,10 @@ describe('Storage Providers', () => {
     it('should warn when falling back to memory storage', () => {
       localStorageProvider('my-token-key');
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('localStorage is not available'),
+        expect.stringContaining('localStorage is not available')
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('my-token-key'),
+        expect.stringContaining('my-token-key')
       );
     });
 
@@ -135,11 +135,11 @@ describe('Storage Providers', () => {
 
       const provider = localStorageProvider('test-key');
       await expect(provider.set('large-value')).rejects.toThrow(
-        'QuotaExceededError',
+        'QuotaExceededError'
       );
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         '[Typewoo] Failed to save to localStorage:',
-        quotaError,
+        quotaError
       );
     });
 
@@ -154,7 +154,7 @@ describe('Storage Providers', () => {
       await expect(provider.clear()).rejects.toThrow('SecurityError');
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         '[Typewoo] Failed to clear localStorage:',
-        securityError,
+        securityError
       );
     });
   });
@@ -178,10 +178,10 @@ describe('Storage Providers', () => {
     it('should warn when falling back to memory storage', () => {
       sessionStorageProvider('session-key');
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('sessionStorage is not available'),
+        expect.stringContaining('sessionStorage is not available')
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('session-key'),
+        expect.stringContaining('session-key')
       );
     });
 
@@ -243,11 +243,11 @@ describe('Storage Providers', () => {
 
       const provider = sessionStorageProvider('test-key');
       await expect(provider.set('large-value')).rejects.toThrow(
-        'QuotaExceededError',
+        'QuotaExceededError'
       );
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         '[Typewoo] Failed to save to sessionStorage:',
-        quotaError,
+        quotaError
       );
     });
 
@@ -262,7 +262,7 @@ describe('Storage Providers', () => {
       await expect(provider.clear()).rejects.toThrow('SecurityError');
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         '[Typewoo] Failed to clear sessionStorage:',
-        securityError,
+        securityError
       );
     });
   });

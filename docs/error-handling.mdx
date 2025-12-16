@@ -161,7 +161,7 @@ const { data } = await Typewoo.store.products.list(
       // Log to error tracking service
       errorTracker.captureException(error);
     },
-  },
+  }
 );
 ```
 
@@ -412,7 +412,7 @@ httpClient.interceptors.response.use(
   (error) => {
     console.error('Request failed:', error.config?.url, error.response?.status);
     return Promise.reject(error);
-  },
+  }
 );
 ```
 

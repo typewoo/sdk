@@ -109,7 +109,7 @@ async function testEndpoint(name, url, schema, isArray = false) {
 
       if (validation.success) {
         console.log(
-          `\n✅ PASSED: Schema validation successful (${response.data.length} items)`,
+          `\n✅ PASSED: Schema validation successful (${response.data.length} items)`
         );
         results.passed.push({
           name,
@@ -147,7 +147,7 @@ async function testEndpoint(name, url, schema, isArray = false) {
       console.log('Response Status:', error.response.status);
       console.log(
         'Response Data:',
-        JSON.stringify(error.response.data, null, 2),
+        JSON.stringify(error.response.data, null, 2)
       );
     }
     results.errors.push({
@@ -172,14 +172,14 @@ async function runTests() {
     'Products Brands - List',
     `${BASE_URL}/wp-json/wc/store/v1/products/brands`,
     ProductBrandResponseSchema,
-    true,
+    true
   );
 
   // Test Products Brands - Single (if we have any brands)
   try {
     const listResponse = await axios.get(
       `${BASE_URL}/wp-json/wc/store/v1/products/brands?per_page=1`,
-      { headers },
+      { headers }
     );
     if (listResponse.data.length > 0) {
       const brandId = listResponse.data[0].id;
@@ -187,7 +187,7 @@ async function runTests() {
         'Products Brands - Single',
         `${BASE_URL}/wp-json/wc/store/v1/products/brands/${brandId}`,
         ProductBrandResponseSchema,
-        false,
+        false
       );
     }
   } catch {
@@ -199,14 +199,14 @@ async function runTests() {
     'Products Categories - List',
     `${BASE_URL}/wp-json/wc/store/v1/products/categories`,
     ProductCategoryResponseSchema,
-    true,
+    true
   );
 
   // Test Products Categories - Single
   try {
     const listResponse = await axios.get(
       `${BASE_URL}/wp-json/wc/store/v1/products/categories?per_page=1`,
-      { headers },
+      { headers }
     );
     if (listResponse.data.length > 0) {
       const categoryId = listResponse.data[0].id;
@@ -214,7 +214,7 @@ async function runTests() {
         'Products Categories - Single',
         `${BASE_URL}/wp-json/wc/store/v1/products/categories/${categoryId}`,
         ProductCategoryResponseSchema,
-        false,
+        false
       );
     }
   } catch {
@@ -226,14 +226,14 @@ async function runTests() {
     'Products Tags - List',
     `${BASE_URL}/wp-json/wc/store/v1/products/tags`,
     ProductTagResponseSchema,
-    true,
+    true
   );
 
   // Test Products Tags - Single
   try {
     const listResponse = await axios.get(
       `${BASE_URL}/wp-json/wc/store/v1/products/tags?per_page=1`,
-      { headers },
+      { headers }
     );
     if (listResponse.data.length > 0) {
       const tagId = listResponse.data[0].id;
@@ -241,7 +241,7 @@ async function runTests() {
         'Products Tags - Single',
         `${BASE_URL}/wp-json/wc/store/v1/products/tags/${tagId}`,
         ProductTagResponseSchema,
-        false,
+        false
       );
     }
   } catch {
@@ -253,14 +253,14 @@ async function runTests() {
     'Products Attributes - List',
     `${BASE_URL}/wp-json/wc/store/v1/products/attributes`,
     ProductAttributeResponseSchema,
-    true,
+    true
   );
 
   // Test Products Attributes - Single
   try {
     const listResponse = await axios.get(
       `${BASE_URL}/wp-json/wc/store/v1/products/attributes?per_page=1`,
-      { headers },
+      { headers }
     );
     if (listResponse.data.length > 0) {
       const attributeId = listResponse.data[0].id;
@@ -268,7 +268,7 @@ async function runTests() {
         'Products Attributes - Single',
         `${BASE_URL}/wp-json/wc/store/v1/products/attributes/${attributeId}`,
         ProductAttributeResponseSchema,
-        false,
+        false
       );
     }
   } catch {

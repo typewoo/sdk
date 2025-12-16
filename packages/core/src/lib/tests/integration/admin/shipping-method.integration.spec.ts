@@ -45,11 +45,11 @@ describe('Integration: Admin Shipping Methods', () => {
 
   it('handles shipping method error cases gracefully', async () => {
     const notFound = await Typewoo.admin.shippingMethods.get(
-      'definitely-not-a-method',
+      'definitely-not-a-method'
     );
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(
-      /not_found|invalid|forbidden|unsupported|rest_no_route/i,
+      /not_found|invalid|forbidden|unsupported|rest_no_route/i
     );
   });
 });

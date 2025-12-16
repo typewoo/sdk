@@ -83,7 +83,7 @@ describe('Integration: Products', () => {
     const first = list.data?.find(
       (p) =>
         Array.isArray((p as ProdWithCats).categories) &&
-        ((p as ProdWithCats).categories || []).length > 0,
+        ((p as ProdWithCats).categories || []).length > 0
     ) as ProdWithCats | undefined;
     if (!first) {
       expect(Array.isArray(list.data)).toBe(true);
@@ -101,8 +101,8 @@ describe('Integration: Products', () => {
     if (byCat.data && byCat.data.length > 0) {
       const allMatch = byCat.data.every((p) =>
         ((p as ProdWithCats).categories || []).some(
-          (c: { id?: number }) => c.id === catId,
-        ),
+          (c: { id?: number }) => c.id === catId
+        )
       );
       expect(allMatch || true).toBe(true); // tolerate backend differences
     } else {
@@ -118,7 +118,7 @@ describe('Integration: Products', () => {
     expect(Array.isArray(res.data)).toBe(true);
     if ((res.data || []).length > 0) {
       const anyMatch = (res.data || []).some((p) =>
-        (p.name || '').toLowerCase().includes('unlikely_token_zzz'),
+        (p.name || '').toLowerCase().includes('unlikely_token_zzz')
       );
       expect(anyMatch || true).toBe(true);
     }

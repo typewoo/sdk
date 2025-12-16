@@ -16,7 +16,7 @@ export const CartShippingRateResponseSchema = z.looseObject({
       key: z.string(),
       name: z.string(),
       quantity: z.number(),
-    }),
+    })
   ),
   shipping_rates: z.array(
     z.looseObject({
@@ -32,7 +32,7 @@ export const CartShippingRateResponseSchema = z.looseObject({
         z.looseObject({
           key: z.string(),
           value: z.string(),
-        }),
+        })
       ),
       selected: z.boolean(),
       currency_code: z.string(),
@@ -42,7 +42,7 @@ export const CartShippingRateResponseSchema = z.looseObject({
       currency_thousand_separator: z.string(),
       currency_prefix: z.string(),
       currency_suffix: z.string(),
-    }),
+    })
   ),
 });
 

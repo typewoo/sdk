@@ -45,7 +45,7 @@ describe('Integration: Cart Items (read-only robustness)', () => {
     const afterFirst = await Typewoo.store.cartItems.list();
     expect(Array.isArray(afterFirst.data)).toBe(true);
     const item1 = afterFirst.data?.find(
-      (i: { id?: number; quantity?: number }) => i?.id === prod.id,
+      (i: { id?: number; quantity?: number }) => i?.id === prod.id
     );
     const qty1 = item1?.quantity ?? 0;
 
@@ -54,7 +54,7 @@ describe('Integration: Cart Items (read-only robustness)', () => {
     const afterSecond = await Typewoo.store.cartItems.list();
     expect(Array.isArray(afterSecond.data)).toBe(true);
     const item2 = afterSecond.data?.find(
-      (i: { id?: number }) => i?.id === prod.id,
+      (i: { id?: number }) => i?.id === prod.id
     );
     const qty2 = item2?.quantity ?? 0;
 
@@ -80,7 +80,7 @@ describe('Integration: Cart Items (read-only robustness)', () => {
     // Ensure invalid id not present
     const list = await Typewoo.store.cartItems.list();
     const found = (list.data || []).some(
-      (i: { id?: number }) => i?.id === invalidId,
+      (i: { id?: number }) => i?.id === invalidId
     );
     expect(found).toBe(false);
   });

@@ -49,7 +49,7 @@ describe('Integration: Admin Product Service', () => {
 
     if (data && data.length > 0) {
       const has = data.some((p) =>
-        (p.name || '').toLowerCase().includes(query),
+        (p.name || '').toLowerCase().includes(query)
       );
       expect(has).toBe(true);
     }
@@ -197,7 +197,7 @@ describe('Integration: Admin Product Service', () => {
           attributes: [{ name: 'Size', option: 'S' }],
           regular_price: '15.00',
           stock_status: 'instock',
-        } as Partial<ProductVariation>,
+        } as Partial<ProductVariation>
       );
       if (createVar.error) {
         // Some environments may restrict variation creation
@@ -211,7 +211,7 @@ describe('Integration: Admin Product Service', () => {
       // Get variation
       const getVar = await Typewoo.admin.products.getVariation(
         productId,
-        variationId,
+        variationId
       );
       expect(getVar.error).toBeFalsy();
       expect(getVar.data?.id).toBe(variationId);
@@ -220,7 +220,7 @@ describe('Integration: Admin Product Service', () => {
       const updVar = await Typewoo.admin.products.updateVariation(
         productId,
         variationId,
-        { regular_price: '16.00' },
+        { regular_price: '16.00' }
       );
       expect(updVar.error).toBeFalsy();
       expect(updVar.data?.regular_price).toBe('16.00');
@@ -239,7 +239,7 @@ describe('Integration: Admin Product Service', () => {
       const delVar = await Typewoo.admin.products.deleteVariation(
         productId,
         variationId,
-        true,
+        true
       );
       expect(delVar.error).toBeFalsy();
     } finally {

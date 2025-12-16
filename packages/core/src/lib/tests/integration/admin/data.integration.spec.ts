@@ -31,7 +31,7 @@ describe('Integration: Admin Data', () => {
     const list = await Typewoo.admin.data.listCountries({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return;
     }
@@ -41,7 +41,7 @@ describe('Integration: Admin Data', () => {
     const get = await Typewoo.admin.data.getCountry(code, { context: 'view' });
     if (get.error) {
       expect(get.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(get.data?.code).toBe(code);
@@ -52,7 +52,7 @@ describe('Integration: Admin Data', () => {
     const list = await Typewoo.admin.data.listCurrencies({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return;
     }
@@ -64,7 +64,7 @@ describe('Integration: Admin Data', () => {
     });
     if (get.error) {
       expect(get.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(get.data?.code).toBe(code);
@@ -75,7 +75,7 @@ describe('Integration: Admin Data', () => {
     const list = await Typewoo.admin.data.listContinents({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return;
     }
@@ -87,7 +87,7 @@ describe('Integration: Admin Data', () => {
     });
     if (get.error) {
       expect(get.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(get.data?.code).toBe(code);

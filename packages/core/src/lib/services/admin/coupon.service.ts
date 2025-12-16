@@ -23,7 +23,7 @@ export class AdminCouponService extends BaseService {
    */
   async list(
     params?: AdminCouponQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCoupon[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -41,7 +41,7 @@ export class AdminCouponService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -55,13 +55,13 @@ export class AdminCouponService extends BaseService {
    */
   async create(
     coupon: AdminCouponRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminCoupon, AdminCouponRequest>(
       url,
       coupon,
-      options,
+      options
     );
 
     return { data, error };
@@ -73,13 +73,13 @@ export class AdminCouponService extends BaseService {
   async update(
     id: number,
     coupon: AdminCouponRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminCoupon, AdminCouponRequest>(
       url,
       coupon,
-      options,
+      options
     );
 
     return { data, error };
@@ -91,7 +91,7 @@ export class AdminCouponService extends BaseService {
   async delete(
     id: number,
     force = false,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -109,7 +109,7 @@ export class AdminCouponService extends BaseService {
       update?: Array<AdminCouponRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminCoupon[];

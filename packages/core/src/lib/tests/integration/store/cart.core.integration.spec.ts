@@ -132,7 +132,7 @@ describe('Integration: Cart Core Operations', () => {
     });
     if (upd.error) {
       expect(upd.error.code).toMatch(
-        /invalid|billing|shipping|address|email|required/i,
+        /invalid|billing|shipping|address|email|required/i
       );
     } else {
       expect(upd.data).toBeTruthy();

@@ -60,7 +60,7 @@ interface JsonFetchResult<T = unknown> {
 
 async function jsonFetch<T = unknown>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<JsonFetchResult<T>> {
   const res = await fetch(url, {
     ...options,
@@ -97,7 +97,7 @@ async function issueStandardToken() {
         login: CUSTOMER_LOGIN,
         password: CUSTOMER_PASSWORD,
       }),
-    },
+    }
   );
   expect(r.ok).toBe(true);
   if (!r.data || isErrorResponse(r.data))
@@ -113,7 +113,7 @@ async function issueOneTimeToken() {
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${passwordToken}` },
-    },
+    }
   );
   expect(r.ok).toBe(true);
   if (!r.data || isErrorResponse(r.data))
@@ -133,7 +133,7 @@ describe('TypeWoo JWT mu-plugin', () => {
       {
         method: 'POST',
         body: JSON.stringify({ login: 'nope', password: 'wrong' }),
-      },
+      }
     );
     expect(r.ok).toBe(false);
     expect(r.status).toBe(403);
@@ -143,14 +143,14 @@ describe('TypeWoo JWT mu-plugin', () => {
   it('silently ignores invalid bearer by default (no 401)', async () => {
     const r = await jsonFetch<ValidateResponse | ErrorResponse>(
       `${BASE}/wp-json/typewoo/v1/auth/validate`,
-      { headers: { Authorization: 'Bearer totally.invalid.token' } },
+      { headers: { Authorization: 'Bearer totally.invalid.token' } }
     );
     expect(r.ok).toBe(false);
     // Should be JWT structure error 401 (our endpoint returns payload error). Accept either malformed or bad_signature codes.
     if (r.data && isErrorResponse(r.data)) {
       const code = r.data.code || '';
       expect(code).toMatch(
-        /typewoo_jwt\.(malformed|bad_signature|invalid_json)/,
+        /typewoo_jwt\.(malformed|bad_signature|invalid_json)/
       );
     }
   });
@@ -160,7 +160,7 @@ describe('TypeWoo JWT mu-plugin', () => {
       `${BASE}/wp-json/typewoo/v1/auth/validate`,
       {
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(r.ok).toBe(true);
     if (!r.data || isErrorResponse(r.data))
@@ -177,14 +177,14 @@ describe('TypeWoo JWT mu-plugin', () => {
     if (!passwordToken) throw new Error('passwordToken missing');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
       `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
-        passwordToken,
-      )}`,
+        passwordToken
+      )}`
     );
     expect(r.ok).toBe(false);
     expect(r.status).toBe(401);
     if (!r.data) throw new Error('No response body');
     expect(isErrorResponse(r.data) ? r.data.code : undefined).toBe(
-      'typewoo_jwt.not_one_time',
+      'typewoo_jwt.not_one_time'
     );
   });
 
@@ -202,7 +202,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(r1.ok).toBe(true);
     if (!r1.data || isErrorResponse(r1.data)) throw new Error('Refresh failed');
@@ -220,7 +220,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(r2.ok).toBe(true);
     if (!r2.data || isErrorResponse(r2.data))
@@ -235,7 +235,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         method: 'POST',
         body: JSON.stringify({ refresh_token: oldRefresh }),
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(reuse.ok).toBe(false);
     expect([400, 401]).toContain(reuse.status);
@@ -246,8 +246,8 @@ describe('TypeWoo JWT mu-plugin', () => {
       throw new Error('oneTimeToken missing (issueOneTimeToken failed)');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
       `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
-        oneTimeToken,
-      )}`,
+        oneTimeToken
+      )}`
     );
     expect(r.ok).toBe(true);
     if (!r.data || isErrorResponse(r.data))
@@ -261,14 +261,14 @@ describe('TypeWoo JWT mu-plugin', () => {
     if (!oneTimeToken) throw new Error('oneTimeToken missing for reuse test');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
       `${BASE}/wp-json/typewoo/v1/auth/autologin?token=${encodeURIComponent(
-        oneTimeToken,
-      )}`,
+        oneTimeToken
+      )}`
     );
     expect(r.ok).toBe(false);
     expect(r.status).toBe(401);
     if (!r.data) throw new Error('Missing response for reuse test');
     expect(isErrorResponse(r.data) ? r.data.code : undefined).toBe(
-      'typewoo_jwt.one_time_invalid',
+      'typewoo_jwt.one_time_invalid'
     );
   });
 
@@ -282,7 +282,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         method: 'POST',
         body: JSON.stringify({ scope: 'refresh' }),
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(revoke.ok).toBe(true);
     if (!revoke.data || isErrorResponse(revoke.data))
@@ -291,7 +291,7 @@ describe('TypeWoo JWT mu-plugin', () => {
     // Old access token should still validate
     const validate = await jsonFetch<ValidateResponse | ErrorResponse>(
       `${BASE}/wp-json/typewoo/v1/auth/validate`,
-      { headers: { Authorization: `Bearer ${passwordToken}` } },
+      { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validate.ok).toBe(true);
   });
@@ -304,7 +304,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         method: 'POST',
         body: JSON.stringify({ scope: 'all' }),
         headers: { Authorization: `Bearer ${passwordToken}` },
-      },
+      }
     );
     expect(revoke.ok).toBe(true);
     if (!revoke.data || isErrorResponse(revoke.data))
@@ -314,14 +314,14 @@ describe('TypeWoo JWT mu-plugin', () => {
     // Old token should now fail validation with version mismatch or unauthorized
     const validateOld = await jsonFetch<ValidateResponse | ErrorResponse>(
       `${BASE}/wp-json/typewoo/v1/auth/validate`,
-      { headers: { Authorization: `Bearer ${passwordToken}` } },
+      { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateOld.ok).toBe(false);
     // Issue a new token (login again) -> should have new version
     await issueStandardToken();
     const validateNew = await jsonFetch<ValidateResponse | ErrorResponse>(
       `${BASE}/wp-json/typewoo/v1/auth/validate`,
-      { headers: { Authorization: `Bearer ${passwordToken}` } },
+      { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateNew.ok).toBe(true);
     if (!validateNew.data || isErrorResponse(validateNew.data))
@@ -335,7 +335,7 @@ describe('TypeWoo JWT mu-plugin', () => {
   it('front-channel autologin ignores standard token silently (should not 200 success)', async () => {
     if (!passwordToken) throw new Error('passwordToken missing');
     const r = await fetch(
-      `${BASE}/?typewoo_autologin=1&token=${encodeURIComponent(passwordToken)}`,
+      `${BASE}/?typewoo_autologin=1&token=${encodeURIComponent(passwordToken)}`
     );
     // We cannot easily assert cookie in this environment; just ensure not a redirect loop
     expect(r.status).toBeGreaterThanOrEqual(200);
@@ -354,7 +354,7 @@ describe('TypeWoo JWT mu-plugin', () => {
       `${BASE}/${testEndpoint}`,
       {
         method: 'GET',
-      },
+      }
     );
 
     console.log(`📍 Endpoint: ${testEndpoint}`);
@@ -374,8 +374,8 @@ describe('TypeWoo JWT mu-plugin', () => {
         // Accept either our custom error or WordPress's built-in errors
         expect(
           ['typewoo_jwt.auth_required', 'rest_not_logged_in'].includes(
-            errorCode || '',
-          ),
+            errorCode || ''
+          )
         ).toBe(true);
       }
 
@@ -388,7 +388,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         {
           method: 'GET',
           headers: { Authorization: `Bearer ${passwordToken}` },
-        },
+        }
       );
 
       console.log(`🔑 With auth status: ${authenticatedRequest.status}`);
@@ -402,7 +402,7 @@ describe('TypeWoo JWT mu-plugin', () => {
         {
           method: 'GET',
           headers: { Authorization: 'Bearer invalid.jwt.token' },
-        },
+        }
       );
 
       expect(invalidTokenRequest.ok).toBe(false);
@@ -442,7 +442,7 @@ describe('TypeWoo JWT mu-plugin', () => {
     // Test 5: Demonstrate the constant check function
     // This shows that the infrastructure is in place even if not currently active
     console.log(
-      '📋 Force authentication infrastructure is properly implemented',
+      '📋 Force authentication infrastructure is properly implemented'
     );
   });
 });

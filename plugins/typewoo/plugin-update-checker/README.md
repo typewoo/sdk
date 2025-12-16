@@ -34,6 +34,7 @@ _Note:_ In each of the below examples, part of the instructions is to create an 
 
 1. Download [the latest release](https://github.com/YahnisElsts/plugin-update-checker/releases/latest) and copy the `plugin-update-checker` directory to your plugin or theme.
 2. Go to the `examples` subdirectory and open the .json file that fits your project type. Replace the placeholder data with your plugin/theme details.
+
    - Plugin example:
 
      ```json

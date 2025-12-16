@@ -5,12 +5,12 @@ type EventMap = SdkEvent;
 type Handler<P> = (payload: P) => void | Promise<void>;
 type AnyHandler<E extends EventMap> = <K extends keyof E>(
   event: K,
-  payload: E[K],
+  payload: E[K]
 ) => void;
 
 export type Middleware<E extends EventMap> = <K extends keyof E>(
   ctx: { event: K; payload: E[K] },
-  next: () => void,
+  next: () => void
 ) => void;
 
 type OptionalPayloadEvents<E extends EventMap> = {
@@ -57,7 +57,7 @@ export class EventBus<E extends EventMap> {
   // --- emit overloads: require payload unless payload is void/undefined
   emit<K extends Exclude<keyof E, OptionalPayloadEvents<E>>>(
     event: K,
-    payload: E[K],
+    payload: E[K]
   ): void;
   emit<K extends OptionalPayloadEvents<E>>(event: K): void;
   emit<K extends keyof E>(event: K, payload?: E[K]): void {
@@ -85,16 +85,16 @@ export class EventBus<E extends EventMap> {
   emitIf<K extends Exclude<keyof E, OptionalPayloadEvents<E>>>(
     condition: boolean,
     event: K,
-    payload: E[K],
+    payload: E[K]
   ): boolean;
   emitIf<K extends OptionalPayloadEvents<E>>(
     condition: boolean,
-    event: K,
+    event: K
   ): boolean;
   emitIf<K extends keyof E>(
     condition: boolean,
     event: K,
-    payload?: E[K],
+    payload?: E[K]
   ): boolean {
     if (!condition) return false;
     (this.emit as (e: K, p?: E[K]) => void)(event, payload);
@@ -104,7 +104,7 @@ export class EventBus<E extends EventMap> {
   waitFor<K extends keyof E>(
     event: K,
     predicate?: (p: E[K]) => boolean,
-    timeoutMs?: number,
+    timeoutMs?: number
   ): Promise<E[K]> {
     return new Promise<E[K]>((resolve, reject) => {
       const off = this.on(event, (p) => {

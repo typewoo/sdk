@@ -114,7 +114,7 @@ export interface SdkConfig {
       onRetry?: (
         attempt: number,
         error: unknown,
-        config?: AxiosRequestConfig,
+        config?: AxiosRequestConfig
       ) => void;
     };
   };
@@ -172,7 +172,7 @@ export interface ResolvedSdkConfig {
       onRetry?: (
         attempt: number,
         error: unknown,
-        config?: AxiosRequestConfig,
+        config?: AxiosRequestConfig
       ) => void;
     };
   };
@@ -186,7 +186,7 @@ export interface ResolvedSdkConfig {
 export const resolveStorageProvider = (
   storage: StorageType | StorageProvider | undefined,
   key: string,
-  defaultType: StorageType = 'localstorage',
+  defaultType: StorageType = 'localstorage'
 ): StorageProvider => {
   if (!storage) {
     return storageProviders[defaultType](key);
@@ -246,7 +246,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         useInterceptor: config.auth?.accessToken?.useInterceptor,
         storage: resolveStorageProvider(
           config.auth?.accessToken?.storage,
-          config.auth?.accessToken?.key ?? 'typewoo_access_token',
+          config.auth?.accessToken?.key ?? 'typewoo_access_token'
         ),
       },
     };
@@ -258,7 +258,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         useInterceptor: config.auth?.refreshToken?.useInterceptor,
         storage: resolveStorageProvider(
           config.auth?.refreshToken?.storage,
-          config.auth?.refreshToken?.key ?? 'typewoo_refresh_token',
+          config.auth?.refreshToken?.key ?? 'typewoo_refresh_token'
         ),
       };
     }
@@ -271,7 +271,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       disabled: config.cartToken?.disabled,
       storage: resolveStorageProvider(
         config.cartToken?.storage,
-        config.cartToken?.key ?? 'typewoo_cart_token',
+        config.cartToken?.key ?? 'typewoo_cart_token'
       ),
     };
   }
@@ -283,7 +283,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       disabled: config.nonce?.disabled,
       storage: resolveStorageProvider(
         config.nonce?.storage,
-        config.nonce?.key ?? 'typewoo_nonce',
+        config.nonce?.key ?? 'typewoo_nonce'
       ),
     };
   }

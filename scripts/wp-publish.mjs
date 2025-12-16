@@ -93,7 +93,7 @@ function execCommand(command, options = {}) {
       error(
         `Command failed: ${
           Array.isArray(command) ? command.join(' ') : command
-        }`,
+        }`
       );
       error(err.message);
       process.exit(1);
@@ -217,7 +217,7 @@ function copyPluginFiles(targetDir) {
     {
       silent: true,
       allowFailure: true,
-    },
+    }
   );
 
   if (files) {
@@ -334,7 +334,7 @@ async function publishToWordPress() {
       `2. Update trunk with current plugin files\n` +
       `3. Create a new tag for version ${version}\n` +
       `4. Commit changes to WordPress.org\n\n` +
-      `Continue? (y/N): `,
+      `Continue? (y/N): `
   );
 
   if (action.toLowerCase() !== 'y' && action.toLowerCase() !== 'yes') {
@@ -353,15 +353,15 @@ async function publishToWordPress() {
     createTag(version);
 
     const commitMessage = await promptUser(
-      `\nEnter commit message (default: "Release version ${version}"): `,
+      `\nEnter commit message (default: "Release version ${version}"): `
     );
     commitChanges(version, commitMessage);
 
     success(
-      `\n🎉 Plugin ${CONFIG.PLUGIN_SLUG} v${version} published successfully!`,
+      `\n🎉 Plugin ${CONFIG.PLUGIN_SLUG} v${version} published successfully!`
     );
     info(
-      `Plugin will be available at: https://wordpress.org/plugins/${CONFIG.PLUGIN_SLUG}/`,
+      `Plugin will be available at: https://wordpress.org/plugins/${CONFIG.PLUGIN_SLUG}/`
     );
     info(`It may take a few minutes to appear in the WordPress.org directory.`);
   } catch (err) {

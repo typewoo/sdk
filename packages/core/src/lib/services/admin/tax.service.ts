@@ -26,7 +26,7 @@ export class AdminTaxService extends BaseService {
    */
   async list(
     params?: AdminTaxQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminTax[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -44,7 +44,7 @@ export class AdminTaxService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -58,13 +58,13 @@ export class AdminTaxService extends BaseService {
    */
   async create(
     tax: AdminTaxRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminTax, AdminTaxRequest>(
       url,
       tax,
-      options,
+      options
     );
 
     return { data, error };
@@ -76,13 +76,13 @@ export class AdminTaxService extends BaseService {
   async update(
     id: number,
     tax: AdminTaxRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminTax, AdminTaxRequest>(
       url,
       tax,
-      options,
+      options
     );
 
     return { data, error };
@@ -94,7 +94,7 @@ export class AdminTaxService extends BaseService {
   async delete(
     id: number,
     force = true,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -112,7 +112,7 @@ export class AdminTaxService extends BaseService {
       update?: Array<AdminTaxRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminTax[];
@@ -147,7 +147,7 @@ export class AdminTaxClassService extends BaseService {
    */
   async list(
     params?: AdminTaxClassQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -161,7 +161,7 @@ export class AdminTaxClassService extends BaseService {
    */
   async get(
     slug: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass[]>> {
     const url = `/${this.endpoint}/${slug}`;
 
@@ -174,13 +174,13 @@ export class AdminTaxClassService extends BaseService {
    */
   async create(
     taxClass: AdminTaxClassRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminTaxClass, AdminTaxClassRequest>(
       url,
       taxClass,
-      options,
+      options
     );
 
     return { data, error };
@@ -192,7 +192,7 @@ export class AdminTaxClassService extends BaseService {
   async delete(
     slug: string,
     force = true,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${slug}?${query}`;

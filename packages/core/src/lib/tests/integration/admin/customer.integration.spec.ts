@@ -97,7 +97,7 @@ describe('Integration: Admin Customer Service', () => {
 
     const updateResult = await Typewoo.admin.customers.update(
       createResult.data.id,
-      updateData,
+      updateData
     );
     expect(updateResult.error).toBeFalsy();
     expect(updateResult.data).toBeTruthy();
@@ -108,14 +108,14 @@ describe('Integration: Admin Customer Service', () => {
     const deleteResult = await Typewoo.admin.customers.delete(
       createResult.data.id,
       true,
-      0,
+      0
     );
     expect(deleteResult.error).toBeFalsy();
     expect(deleteResult.data).toBeTruthy();
 
     // Verify customer is deleted
     const getDeletedResult = await Typewoo.admin.customers.get(
-      createResult.data.id,
+      createResult.data.id
     );
     expect(getDeletedResult.error).toBeTruthy();
     expect(getDeletedResult.error?.code).toMatch(/not_found|invalid/i);

@@ -32,7 +32,7 @@ export const AdminSalesReportSchema = z.looseObject({
       shipping: z.string(),
       discount: z.string(),
       customers: z.number(),
-    }),
+    })
   ),
   _links: z.object({
     about: z.array(z.object({ href: z.string() })),

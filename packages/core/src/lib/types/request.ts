@@ -12,17 +12,17 @@ export interface RequestOptions<T = unknown> {
   axiosConfig?: AxiosRequestConfig;
   onError?: (
     error: ApiError,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onRequest?: (context: RequestContext<T>) => void | Promise<void>;
   onResponse?: (
     response: T,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onLoading?: (isLoading: boolean) => void | Promise<void>;
 }

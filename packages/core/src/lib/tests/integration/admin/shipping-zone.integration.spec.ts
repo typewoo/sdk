@@ -29,7 +29,7 @@ describe('Integration: Admin Shipping Zones', () => {
     const list = await Typewoo.admin.shippingZones.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(Array.isArray(list.data)).toBe(true);
@@ -41,7 +41,7 @@ describe('Integration: Admin Shipping Zones', () => {
     });
     if (created.error) {
       expect(created.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return; // environment may block writes
     }
@@ -76,7 +76,7 @@ describe('Integration: Admin Shipping Zones', () => {
     if (created.error || !created.data) {
       if (created.error) {
         expect(created.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i,
+          /not_found|invalid|forbidden|unsupported/i
         );
       }
       return;
@@ -88,16 +88,16 @@ describe('Integration: Admin Shipping Zones', () => {
       const locList = await Typewoo.admin.shippingZones.listLocations(zoneId);
       if (locList.error) {
         expect(locList.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i,
+          /not_found|invalid|forbidden|unsupported/i
         );
       } else {
         const update = await Typewoo.admin.shippingZones.updateLocations(
           zoneId,
-          locList.data ?? [],
+          locList.data ?? []
         );
         if (update.error) {
           expect(update.error.code).toMatch(
-            /not_found|invalid|forbidden|unsupported/i,
+            /not_found|invalid|forbidden|unsupported/i
           );
         } else {
           expect(Array.isArray(update.data)).toBe(true);
@@ -110,7 +110,7 @@ describe('Integration: Admin Shipping Zones', () => {
       });
       if (methods.error) {
         expect(methods.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i,
+          /not_found|invalid|forbidden|unsupported/i
         );
       } else {
         expect(Array.isArray(methods.data)).toBe(true);
@@ -122,11 +122,11 @@ describe('Integration: Admin Shipping Zones', () => {
         'flat_rate',
         {
           enabled: false,
-        },
+        }
       );
       if (added.error) {
         expect(added.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i,
+          /not_found|invalid|forbidden|unsupported/i
         );
         return; // can't proceed without a method instance
       }
@@ -137,7 +137,7 @@ describe('Integration: Admin Shipping Zones', () => {
       // Get method
       const getM = await Typewoo.admin.shippingZones.getMethod(
         zoneId,
-        instanceId,
+        instanceId
       );
       expect(getM.error).toBeFalsy();
       expect(getM.data?.instance_id).toBe(instanceId);
@@ -147,11 +147,11 @@ describe('Integration: Admin Shipping Zones', () => {
       const updM = await Typewoo.admin.shippingZones.updateMethod(
         zoneId,
         instanceId,
-        payload,
+        payload
       );
       if (updM.error) {
         expect(updM.error.code).toMatch(
-          /not_found|invalid|forbidden|unsupported/i,
+          /not_found|invalid|forbidden|unsupported/i
         );
       } else {
         expect(updM.data?.instance_id).toBe(instanceId);
@@ -161,7 +161,7 @@ describe('Integration: Admin Shipping Zones', () => {
       const delM = await Typewoo.admin.shippingZones.deleteMethod(
         zoneId,
         instanceId,
-        true,
+        true
       );
       expect(delM.error).toBeFalsy();
     } finally {

@@ -47,7 +47,7 @@ describe('Integration: Admin Product Reviews', () => {
       const has = data.some((r) =>
         ((r.reviewer || '') + ' ' + (r.review || ''))
           .toLowerCase()
-          .includes(query),
+          .includes(query)
       );
       expect(has).toBe(true);
     }
@@ -169,7 +169,7 @@ describe('Integration: Admin Product Reviews', () => {
     const notFound = await Typewoo.admin.productReviews.get(999999);
     expect(notFound.error).toBeTruthy();
     expect(notFound.error?.code).toMatch(
-      /not_found|invalid|forbidden|unsupported/i,
+      /not_found|invalid|forbidden|unsupported/i
     );
 
     const badCreate = await Typewoo.admin.productReviews.create({

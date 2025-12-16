@@ -23,14 +23,14 @@ export class AdminShippingClassService extends BaseService {
    */
   async list(
     params?: AdminShippingClassQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminShippingClass[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error, headers } = await doGet<AdminShippingClass[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -44,7 +44,7 @@ export class AdminShippingClassService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -58,7 +58,7 @@ export class AdminShippingClassService extends BaseService {
    */
   async create(
     shippingClass: AdminShippingClassRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
@@ -75,7 +75,7 @@ export class AdminShippingClassService extends BaseService {
   async update(
     id: number,
     shippingClass: AdminShippingClassRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
@@ -92,7 +92,7 @@ export class AdminShippingClassService extends BaseService {
   async delete(
     id: number,
     force = false,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -110,7 +110,7 @@ export class AdminShippingClassService extends BaseService {
       update?: Array<AdminShippingClassRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminShippingClass[];

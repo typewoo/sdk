@@ -44,7 +44,7 @@ const processQueue = (error: ApiError | null, token: string | null = null) => {
 
 export const addRefreshTokenInterceptor = (
   config: ResolvedSdkConfig,
-  auth: AuthService,
+  auth: AuthService
 ) => {
   httpClient.interceptors.response.use(
     (response) => response,
@@ -98,13 +98,13 @@ export const addRefreshTokenInterceptor = (
               axiosConfig: {
                 _retry: true,
               } as AxiosRequestConfig,
-            },
+            }
           );
 
           if (refreshError) {
             const tokenFailedError = await refreshTokenFailed(
               config,
-              refreshError,
+              refreshError
             );
             processQueue(tokenFailedError, null);
             return tokenFailedError;
@@ -129,7 +129,7 @@ export const addRefreshTokenInterceptor = (
         } catch (refreshError) {
           const tokenFailedError = await refreshTokenFailed(
             config,
-            refreshError,
+            refreshError
           );
           processQueue(tokenFailedError, null);
           return tokenFailedError;
@@ -139,13 +139,13 @@ export const addRefreshTokenInterceptor = (
       }
       // For non-401 errors, just reject with the original error
       return Promise.reject(error);
-    },
+    }
   );
 };
 
 const refreshTokenFailed = async (
   config: ResolvedSdkConfig,
-  reason?: unknown,
+  reason?: unknown
 ) => {
   // Clear both access and refresh tokens
   const accessTokenStorage = config.auth?.accessToken?.storage;

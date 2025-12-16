@@ -38,7 +38,7 @@ describe('Integration: Admin Reports', () => {
     });
     if (res.error) {
       expect(res.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(res.data).toBeTruthy();
@@ -93,7 +93,7 @@ describe('Integration: Admin Reports', () => {
     });
     if (res.error) {
       expect(res.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(res.data).toBeTruthy();

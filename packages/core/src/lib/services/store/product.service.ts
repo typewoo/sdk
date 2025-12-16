@@ -24,7 +24,7 @@ export class ProductService extends BaseService {
    */
   async list(
     params?: ProductRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductResponse[]>> {
     let unstable_tax: string | undefined = undefined;
     let unstable_tax_operator: string | undefined = undefined;
@@ -47,13 +47,13 @@ export class ProductService extends BaseService {
     }
     const query = qs.stringify(
       { ...params, unstable_tax, unstable_tax_operator },
-      { encode: false },
+      { encode: false }
     );
 
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductResponse[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -67,7 +67,7 @@ export class ProductService extends BaseService {
    */
   async single(
     params: RequireAtLeastOne<{ id: number; slug: string }>,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<ProductResponse>> {
     const url = `/${this.endpoint}/${params.id || params.slug}`;
     const { data, error } = await doGet<ProductResponse>(url, options);

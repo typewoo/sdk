@@ -25,7 +25,7 @@ export const ProductResponseSchema = z.looseObject({
       name: z.string(),
       slug: z.string(),
       link: z.string(),
-    }),
+    })
   ),
   tags: z.array(
     z.looseObject({
@@ -33,7 +33,7 @@ export const ProductResponseSchema = z.looseObject({
       name: z.string(),
       slug: z.string(),
       link: z.string(),
-    }),
+    })
   ),
   brands: z.array(
     z.looseObject({
@@ -41,7 +41,7 @@ export const ProductResponseSchema = z.looseObject({
       name: z.string(),
       slug: z.string(),
       link: z.string(),
-    }),
+    })
   ),
   attributes: z.array(z.unknown()),
   variations: z.array(z.unknown()),

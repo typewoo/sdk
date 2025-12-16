@@ -30,7 +30,7 @@ describe('Integration: Admin Payment Gateways', () => {
     const list = await Typewoo.admin.paymentGateways.list({ context: 'view' });
     if (list.error) {
       expect(list.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
       return;
     }
@@ -43,7 +43,7 @@ describe('Integration: Admin Payment Gateways', () => {
     });
     if (get.error) {
       expect(get.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(get.data?.id).toBe(gw.id);
@@ -72,7 +72,7 @@ describe('Integration: Admin Payment Gateways', () => {
     const upd = await Typewoo.admin.paymentGateways.update(gw.id, safePayload);
     if (upd.error) {
       expect(upd.error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported/i,
+        /not_found|invalid|forbidden|unsupported/i
       );
     } else {
       expect(upd.data?.id).toBe(gw.id);

@@ -18,13 +18,13 @@ export class ProductBrandService extends BaseService {
    */
   async list(
     params?: Paginated,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductBrandResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
     const { data, error, headers } = await doGet<ProductBrandResponse[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -38,7 +38,7 @@ export class ProductBrandService extends BaseService {
    */
   async single(
     id: number,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<ProductBrandResponse>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductBrandResponse>(url, options);

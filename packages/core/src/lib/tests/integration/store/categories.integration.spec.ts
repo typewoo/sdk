@@ -69,7 +69,7 @@ describe('Integration: Product Categories', () => {
       page: 1,
     });
     const first = base.data?.find(
-      (c) => typeof c.name === 'string' && c.name.length >= 3,
+      (c) => typeof c.name === 'string' && c.name.length >= 3
     );
     if (!first) {
       expect(Array.isArray(base.data)).toBe(true);
@@ -88,7 +88,7 @@ describe('Integration: Product Categories', () => {
     if ((filtered.data || []).length > 0) {
       (filtered.data || []).forEach((c) => {
         expect((c.name || '').toLowerCase().includes(token.toLowerCase())).toBe(
-          true,
+          true
         );
       });
     }

@@ -23,14 +23,14 @@ export class AdminPaymentGatewayService extends BaseService {
    */
   async list(
     params?: AdminPaymentGatewayQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminPaymentGateway[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error, headers } = await doGet<AdminPaymentGateway[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -44,7 +44,7 @@ export class AdminPaymentGatewayService extends BaseService {
   async get(
     id: string,
     params?: AdminPaymentGatewayQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -59,7 +59,7 @@ export class AdminPaymentGatewayService extends BaseService {
   async update(
     id: string,
     gateway: AdminPaymentGatewayRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<

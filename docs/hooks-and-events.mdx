@@ -88,7 +88,7 @@ try {
 // Wait for specific condition
 const cart = await Typewoo.events.waitFor(
   'cart:updated',
-  (cart) => cart !== undefined && cart.items_count > 0,
+  (cart) => cart !== undefined && cart.items_count > 0
 );
 ```
 
@@ -180,7 +180,7 @@ const { data, error } = await Typewoo.store.products.list(
     onFinally: (data, error, context) => {
       console.log('Request complete');
     },
-  },
+  }
 );
 ```
 
@@ -192,17 +192,17 @@ interface RequestOptions<T = unknown> {
   onRequest?: (context: RequestContext<T>) => void | Promise<void>;
   onResponse?: (
     response: T,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onError?: (
     error: ApiError,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onLoading?: (isLoading: boolean) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
 }
 ```
@@ -418,7 +418,7 @@ async function addToCartAndWait(productId: number) {
   const updatedCart = await Typewoo.events.waitFor(
     'cart:updated',
     undefined,
-    5000,
+    5000
   );
 
   // Also get the API result

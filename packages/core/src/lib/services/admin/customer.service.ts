@@ -23,7 +23,7 @@ export class AdminCustomerService extends BaseService {
    */
   async list(
     params?: AdminCustomerQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminCustomer[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -41,7 +41,7 @@ export class AdminCustomerService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -55,13 +55,13 @@ export class AdminCustomerService extends BaseService {
    */
   async create(
     customer: AdminCustomerRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminCustomer, AdminCustomerRequest>(
       url,
       customer,
-      options,
+      options
     );
 
     return { data, error };
@@ -73,13 +73,13 @@ export class AdminCustomerService extends BaseService {
   async update(
     id: number,
     customer: AdminCustomerRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminCustomer, AdminCustomerRequest>(
       url,
       customer,
-      options,
+      options
     );
 
     return { data, error };
@@ -92,7 +92,7 @@ export class AdminCustomerService extends BaseService {
     id: number,
     force = false,
     reassign = 0,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const query = qs.stringify({ force, reassign }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -110,7 +110,7 @@ export class AdminCustomerService extends BaseService {
       update?: Array<AdminCustomerRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminCustomer[];

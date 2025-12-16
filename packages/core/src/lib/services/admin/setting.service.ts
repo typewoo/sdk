@@ -20,7 +20,7 @@ export class AdminSettingService extends BaseService {
    * List setting groups
    */
   async listGroups(
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSettingGroup[]>> {
     const url = `/${this.endpoint}`;
 
@@ -33,7 +33,7 @@ export class AdminSettingService extends BaseService {
    */
   async listSettings(
     groupId: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSetting[]>> {
     const url = `/${this.endpoint}/${groupId}`;
 
@@ -47,7 +47,7 @@ export class AdminSettingService extends BaseService {
   async getSetting(
     groupId: string,
     settingId: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
 
@@ -62,13 +62,13 @@ export class AdminSettingService extends BaseService {
     groupId: string,
     settingId: string,
     setting: AdminSettingRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
     const { data, error } = await doPut<AdminSetting, AdminSettingRequest>(
       url,
       setting,
-      options,
+      options
     );
 
     return { data, error };
@@ -82,7 +82,7 @@ export class AdminSettingService extends BaseService {
     operations: {
       update?: Array<AdminSettingRequest & { id: string }>;
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/${groupId}/batch`;
     const { data, error } = await doPost<
@@ -100,7 +100,7 @@ export class AdminSettingService extends BaseService {
     operations: {
       update?: Array<AdminSettingRequest & { group: string; id: string }>;
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/batch`;
     const { data, error } = await doPost<

@@ -42,7 +42,7 @@ export class StoreService {
   constructor(
     state: SdkState,
     config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>,
+    events: EventBus<SdkEvent>
   ) {
     this._tags = new ProductTagService(state, config, events);
     this._orders = new OrderService(state, config, events);
@@ -56,12 +56,12 @@ export class StoreService {
     this._attributesTerms = new ProductAttributeTermService(
       state,
       config,
-      events,
+      events
     );
     this._collectionData = new ProductCollectionDataService(
       state,
       config,
-      events,
+      events
     );
 
     this._cart = new CartService(state, config, events);

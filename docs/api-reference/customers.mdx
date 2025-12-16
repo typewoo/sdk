@@ -44,7 +44,7 @@ const {
 
 customers?.forEach((customer) => {
   console.log(
-    `${customer.first_name} ${customer.last_name} - ${customer.email}`,
+    `${customer.first_name} ${customer.last_name} - ${customer.email}`
   );
 });
 ```
@@ -213,7 +213,7 @@ const { data: downloads, error } = await Typewoo.admin.customers.downloads(123);
 
 downloads?.forEach((download) => {
   console.log(
-    `${download.product_name}: ${download.downloads_remaining} remaining`,
+    `${download.product_name}: ${download.downloads_remaining} remaining`
   );
 });
 ```
@@ -394,7 +394,7 @@ for await (const customer of exportAllCustomers()) {
 async function updateCustomerAddress(
   customerId: number,
   type: 'billing' | 'shipping',
-  address: CustomerAddress,
+  address: CustomerAddress
 ) {
   const { data, error } = await Typewoo.admin.customers.update(customerId, {
     [type]: address,
@@ -485,7 +485,7 @@ const { data } = await Typewoo.admin.settings.getGroup('general');
 const { data } = await Typewoo.admin.settings.updateOption(
   'general',
   'woocommerce_store_address',
-  { value: '123 Main St' },
+  { value: '123 Main St' }
 );
 ```
 

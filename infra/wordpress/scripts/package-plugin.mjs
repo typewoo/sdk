@@ -46,7 +46,7 @@ cpSync(srcDir, stagingDir, {
 const pucPath = join(stagingDir, 'plugin-update-checker');
 if (!existsSync(pucPath)) {
   console.warn(
-    '[package-plugin] Warning: plugin-update-checker not found. Auto-updates will not work.',
+    '[package-plugin] Warning: plugin-update-checker not found. Auto-updates will not work.'
   );
 }
 
@@ -59,14 +59,14 @@ try {
       '-Command',
       `Push-Location '${distDir}'; Compress-Archive -Path 'typewoo' -DestinationPath '${zipPath}' -Force; Pop-Location`,
     ],
-    { stdio: 'inherit' },
+    { stdio: 'inherit' }
   );
   console.log(`[package-plugin] ✓ Plugin packaged: ${zipPath}`);
   console.log(`[package-plugin] ✓ Version: ${version}`);
 } catch (error) {
   console.error(
     '[package-plugin] Failed to create zip:',
-    error?.message || error,
+    error?.message || error
   );
   process.exit(1);
 }

@@ -10,7 +10,7 @@ beforeAll(() => {
 
 function buildJwt(expSecondsFromNow: number) {
   const header = Buffer.from(
-    JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
+    JSON.stringify({ alg: 'HS256', typ: 'JWT' })
   ).toString('base64');
   const exp = Math.floor(Date.now() / 1000) + expSecondsFromNow;
   const payload = Buffer.from(JSON.stringify({ exp })).toString('base64');

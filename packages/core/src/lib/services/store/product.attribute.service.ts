@@ -16,12 +16,12 @@ export class ProductAttributeService extends BaseService {
    * @returns {ProductAttributeResponse[]}
    */
   async list(
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
     const url = `/${this.endpoint}`;
     const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
       url,
-      options,
+      options
     );
 
     const pagination = extractPagination(headers);
@@ -35,7 +35,7 @@ export class ProductAttributeService extends BaseService {
    */
   async single(
     id: number,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductAttributeResponse>(url, options);

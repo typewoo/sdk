@@ -102,7 +102,7 @@ export class AdminService extends BaseService {
       this._products = new AdminProductService(
         this.state,
         this.config,
-        this.events,
+        this.events
       );
     }
     return this._products;
@@ -130,7 +130,7 @@ export class BaseService {
   constructor(
     state: SdkState,
     config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>,
+    events: EventBus<SdkEvent>
   ) {
     this.state = state;
     this.events = events;
@@ -202,6 +202,7 @@ interface ApiResult<T> {
 Request flow through interceptors:
 
 1. **Request Interceptors** (in order of registration):
+
    - Nonce interceptor (adds `nonce` header)
    - Cart token interceptor (adds `cart-token` header)
    - Token interceptor (adds `Authorization` header for Store API)

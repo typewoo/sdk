@@ -110,7 +110,7 @@ class ProductService extends BaseService {
   constructor(
     state: SdkState,
     config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>,
+    events: EventBus<SdkEvent>
   ) {
     super(state, config, events);
   }
@@ -286,7 +286,7 @@ try {
 // Wait with predicate
 const cart = await Typewoo.events.waitFor(
   'cart:updated',
-  (cart) => cart?.items_count > 0,
+  (cart) => cart?.items_count > 0
 );
 ```
 
@@ -324,14 +324,14 @@ const { data, error, headers } = await doGet<ProductResponse[]>(url, options);
 const { data, error } = await doPost<CartResponse, CartItemAddRequest>(
   url,
   requestBody,
-  options,
+  options
 );
 
 // PUT request
 const { data, error } = await doPut<CheckoutResponse, CheckoutUpdateRequest>(
   url,
   requestBody,
-  options,
+  options
 );
 
 // DELETE request

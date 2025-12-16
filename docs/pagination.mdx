@@ -155,7 +155,7 @@ window.addEventListener('scroll', async () => {
 
 ```typescript
 async function loadAllProducts(
-  params?: ProductRequest,
+  params?: ProductRequest
 ): Promise<ProductResponse[]> {
   const allProducts: ProductResponse[] = [];
   let page = 1;
@@ -221,7 +221,7 @@ for await (const product of iterateProducts({ on_sale: true })) {
 function generatePageNumbers(
   current: number,
   total: number,
-  maxVisible = 7,
+  maxVisible = 7
 ): (number | null)[] {
   if (total <= maxVisible) {
     return Array.from({ length: total }, (_, i) => i + 1);
@@ -292,7 +292,7 @@ interface UsePaginatedProductsResult {
 
 function usePaginatedProducts(
   params?: Omit<ProductRequest, 'page'>,
-  perPage = 12,
+  perPage = 12
 ): UsePaginatedProductsResult {
   const [products, setProducts] = useState<ProductResponse[]>([]);
   const [pagination, setPagination] = useState<Pagination>({});
@@ -322,7 +322,7 @@ function usePaginatedProducts(
       setPagination(pagination);
       setPage(targetPage);
     },
-    [params, perPage],
+    [params, perPage]
   );
 
   useEffect(() => {
@@ -406,7 +406,7 @@ const { data } = await Typewoo.store.products.list(
         hideSkeleton();
       }
     },
-  },
+  }
 );
 ```
 

@@ -23,7 +23,7 @@ export class AdminProductBrandService extends BaseService {
    */
   async list(
     params?: AdminBrandQueryParams,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminBrand[]>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
@@ -41,7 +41,7 @@ export class AdminProductBrandService extends BaseService {
   async get(
     id: number,
     params?: { context?: 'view' | 'edit' },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
@@ -55,13 +55,13 @@ export class AdminProductBrandService extends BaseService {
    */
   async create(
     brand: AdminBrandRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<AdminBrand, AdminBrandRequest>(
       url,
       brand,
-      options,
+      options
     );
 
     return { data, error };
@@ -73,13 +73,13 @@ export class AdminProductBrandService extends BaseService {
   async update(
     id: number,
     brand: AdminBrandRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<AdminBrand, AdminBrandRequest>(
       url,
       brand,
-      options,
+      options
     );
 
     return { data, error };
@@ -91,7 +91,7 @@ export class AdminProductBrandService extends BaseService {
   async delete(
     id: number,
     force = false,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
@@ -109,7 +109,7 @@ export class AdminProductBrandService extends BaseService {
       update?: Array<AdminBrandRequest & { id: number }>;
       delete?: number[];
     },
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<
     ApiResult<{
       create: AdminBrand[];

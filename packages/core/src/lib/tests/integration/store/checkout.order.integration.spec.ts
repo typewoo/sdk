@@ -71,7 +71,7 @@ describe('Integration: Checkout & Order', () => {
     if (checkout.error) {
       // Expect a recognizable checkout/cart related error code
       expect(checkout.error.code).toMatch(
-        /cart|empty|checkout|nonce|required|request_error/i,
+        /cart|empty|checkout|nonce|required|request_error/i
       );
       expect(checkout.data).toBeFalsy();
     } else {
@@ -119,7 +119,7 @@ describe('Integration: Checkout & Order', () => {
     expect(attempt.error).toBeTruthy();
     if (attempt.error) {
       expect(attempt.error.code).toMatch(
-        /invalid|required|billing|email|address/i,
+        /invalid|required|billing|email|address/i
       );
     }
     expect(attempt.data).toBeFalsy();
@@ -178,7 +178,7 @@ describe('Integration: Checkout & Order', () => {
     if (create.error) {
       // Expect recognizable error code (nonce/state/cart/payment validation)
       expect(create.error.code).toMatch(
-        /nonce|payment|cart|empty|invalid|required|request_error/i,
+        /nonce|payment|cart|empty|invalid|required|request_error/i
       );
       expect(create.data).toBeFalsy();
     } else {

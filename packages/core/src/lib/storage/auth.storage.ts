@@ -61,7 +61,7 @@ export const memoryStorageProvider = (_key?: string): StorageProvider => {
 export const localStorageProvider = (key: string): StorageProvider => {
   if (!hasLocalStorage()) {
     console.warn(
-      `[Typewoo] localStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`,
+      `[Typewoo] localStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
     );
     return memoryStorageProvider();
   }
@@ -93,7 +93,7 @@ export const localStorageProvider = (key: string): StorageProvider => {
 export const sessionStorageProvider = (key: string): StorageProvider => {
   if (!hasSessionStorage()) {
     console.warn(
-      `[Typewoo] sessionStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`,
+      `[Typewoo] sessionStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
     );
     return memoryStorageProvider();
   }

@@ -23,7 +23,7 @@ export class CartExtensionsService extends BaseService {
    */
   async store(
     params: CartExtensionsRequest,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ApiResult<CartExtensionsResponse>> {
     const url = `/${this.endpoint}`;
 

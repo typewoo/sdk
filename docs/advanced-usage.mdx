@@ -142,17 +142,17 @@ interface RequestOptions<T = unknown> {
   onRequest?: (context: RequestContext<T>) => void | Promise<void>;
   onResponse?: (
     response: T,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onError?: (
     error: ApiError,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
   onLoading?: (isLoading: boolean) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
-    context: RequestContext<T>,
+    context: RequestContext<T>
   ) => void | Promise<void>;
 }
 ```
@@ -169,7 +169,7 @@ const { data } = await Typewoo.store.products.list(
         'Accept-Language': 'en-US',
       },
     },
-  },
+  }
 );
 ```
 
@@ -182,7 +182,7 @@ const { data } = await Typewoo.store.products.list(
     axiosConfig: {
       timeout: 30000, // 30 seconds
     },
-  },
+  }
 );
 ```
 
@@ -210,7 +210,7 @@ const { data } = await Typewoo.store.cart.add(
     onFinally: (data, error, context) => {
       hideSpinner();
     },
-  },
+  }
 );
 ```
 
@@ -297,7 +297,7 @@ httpClient.interceptors.response.use(
     console.log('Response time:', Date.now() - response.config.startTime);
     return response;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 ```
 
@@ -365,7 +365,7 @@ For SSR, you may need request-scoped SDK instances:
 const cookieStorage = (
   key: string,
   req: Request,
-  res: Response,
+  res: Response
 ): StorageProvider => ({
   get: async () => {
     return req.cookies[key] || null;
@@ -443,7 +443,7 @@ export class StoreService {
       Typewoo.store.products.list(params).then(({ data, error }) => {
         if (error) throw new Error(error.message);
         return data!;
-      }),
+      })
     );
   }
 
@@ -452,7 +452,7 @@ export class StoreService {
       Typewoo.store.cart.add({ id: productId }).then(({ data, error }) => {
         if (error) throw new Error(error.message);
         return data!;
-      }),
+      })
     );
   }
 }
@@ -576,7 +576,7 @@ const { data } = await Typewoo.store.products.list(
     onRequest: (ctx) => console.log('Request:', ctx.method, ctx.url),
     onResponse: (data) => console.log('Response:', data),
     onError: (err) => console.error('Error:', err),
-  },
+  }
 );
 ```
 

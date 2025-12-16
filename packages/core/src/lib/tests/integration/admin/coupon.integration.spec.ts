@@ -49,7 +49,7 @@ describe('Integration: Admin Coupon Service', () => {
     // If coupons found, verify they contain the search term
     if (data && data.length > 0) {
       const hasSearchTerm = data.some((coupon) =>
-        coupon.code.toLowerCase().includes(code),
+        coupon.code.toLowerCase().includes(code)
       );
       expect(hasSearchTerm).toBe(true);
     }
@@ -94,7 +94,7 @@ describe('Integration: Admin Coupon Service', () => {
 
     const updateResult = await Typewoo.admin.coupons.update(
       createResult.data.id,
-      updateData,
+      updateData
     );
     expect(updateResult.error).toBeFalsy();
     expect(updateResult.data).toBeTruthy();
@@ -104,14 +104,14 @@ describe('Integration: Admin Coupon Service', () => {
     // Delete the coupon (force delete to skip trash)
     const deleteResult = await Typewoo.admin.coupons.delete(
       createResult.data.id,
-      true,
+      true
     );
     expect(deleteResult.error).toBeFalsy();
     expect(deleteResult.data).toBeTruthy();
 
     // Verify coupon is deleted
     const getDeletedResult = await Typewoo.admin.coupons.get(
-      createResult.data.id,
+      createResult.data.id
     );
     expect(getDeletedResult.error).toBeTruthy();
     expect(getDeletedResult.error?.code).toMatch(/not_found|invalid/i);
@@ -173,8 +173,9 @@ describe('Integration: Admin Coupon Service', () => {
       amount: 'invalid_amount', // Invalid amount
     };
 
-    const invalidCreateResult =
-      await Typewoo.admin.coupons.create(invalidCouponData);
+    const invalidCreateResult = await Typewoo.admin.coupons.create(
+      invalidCouponData
+    );
     expect(invalidCreateResult.error).toBeTruthy();
 
     // Test updating non-existent coupon

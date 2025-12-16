@@ -20,7 +20,7 @@ export const AdminPaymentGatewaySchema = z.looseObject({
       default: z.string(),
       tip: z.string(),
       placeholder: z.string(),
-    }),
+    })
   ),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),

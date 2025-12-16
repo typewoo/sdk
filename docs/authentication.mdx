@@ -241,7 +241,7 @@ const { data } = await Typewoo.auth.oneTimeToken({
 const autoLoginUrl = await Typewoo.auth.getAutoLoginUrl(
   data.token,
   '/my-account',
-  { utm_source: 'email' }, // Optional tracking params
+  { utm_source: 'email' } // Optional tracking params
 );
 
 // Example result:

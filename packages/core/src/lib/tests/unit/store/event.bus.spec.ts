@@ -93,7 +93,7 @@ describe('EventBus', () => {
     const result = await bus.waitFor(
       'test:with:payload',
       (p) => p.value === 5,
-      100,
+      100
     );
     expect(result.value).toBe(5);
   });
@@ -101,7 +101,7 @@ describe('EventBus', () => {
   it('waitFor rejects on timeout', async () => {
     const bus = new EventBus<TestEvents>();
     await expect(
-      bus.waitFor('test:with:payload', (p) => p.value === 9, 10),
+      bus.waitFor('test:with:payload', (p) => p.value === 9, 10)
     ).rejects.toThrow(/timeout/);
   });
 
@@ -112,7 +112,7 @@ describe('EventBus', () => {
     // Access internal shared structure indirectly by registering on scoped bus and emitting via parent after prefix
     scoped.on(
       'test:with:payload',
-      handler as unknown as (p: { value: number }) => void,
+      handler as unknown as (p: { value: number }) => void
     );
     // Emitting with prefixed key through parent is not part of public API, so simulate by emitting via scoped bus
     scoped.emit('test:with:payload', { value: 3 });
