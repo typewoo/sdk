@@ -178,9 +178,6 @@ await Typewoo.init({
         // Custom retry logic
         return true;
       },
-      onRetry: (attempt, error, config) => {
-        console.log(`Retry attempt ${attempt}:`, error.message);
-      },
     },
   },
 });
@@ -188,15 +185,19 @@ await Typewoo.init({
 
 ### Retry Options
 
-| Option           | Type                               | Default                                       | Description                          |
-| ---------------- | ---------------------------------- | --------------------------------------------- | ------------------------------------ |
-| `enabled`        | `boolean`                          | `false`                                       | Enable retry logic                   |
-| `maxRetries`     | `number \| () => number`           | `3`                                           | Maximum retry attempts               |
-| `delay`          | `number \| (attempt) => number`    | `1000`                                        | Delay between retries (ms)           |
-| `retryOnStatus`  | `number[]`                         | `[408, 429, 500, 502, 503, 504]`              | HTTP status codes that trigger retry |
-| `retryOnMethods` | `Method[]`                         | `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']` | HTTP methods safe to retry           |
-| `retryCondition` | `(error, attempt) => boolean`      | -                                             | Custom retry condition               |
-| `onRetry`        | `(attempt, error, config) => void` | -                                             | Callback before each retry           |
+| Option           | Type                            | Default                                       | Description                          |
+| ---------------- | ------------------------------- | --------------------------------------------- | ------------------------------------ |
+| `enabled`        | `boolean`                       | `false`                                       | Enable retry logic                   |
+| `maxRetries`     | `number \| () => number`        | `3`                                           | Maximum retry attempts               |
+| `delay`          | `number \| (attempt) => number` | `1000`                                        | Delay between retries (ms)           |
+| `retryOnStatus`  | `number[]`                      | `[408, 429, 500, 502, 503, 504]`              | HTTP status codes that trigger retry |
+| `retryOnMethods` | `Method[]`                      | `['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE']` | HTTP methods safe to retry           |
+| `retryCondition` | `(error, attempt) => boolean`   | -                                             | Custom retry condition               |
+
+<Note>
+  To handle retry events, use the `onRetry` callback in
+  [RequestOptions](#per-request-retry-handling) when making individual requests.
+</Note>
 
 ### Exponential Backoff
 

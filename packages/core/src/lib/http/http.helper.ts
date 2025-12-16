@@ -1,5 +1,6 @@
 import { AxiosError, Method } from 'axios';
 import { getSdkConfig } from '../configs';
+import { ApiError, AxiosApiResult } from '../types';
 
 /**
  * Default retry configuration
@@ -86,4 +87,56 @@ export const shouldRetry = (
   }
 
   return retryOnStatus.includes(error.response.status);
+};
+
+export const createError = <T>(axiosError: AxiosError<ApiError>) => {
+  if (axiosError.response) {
+    return createServerError<T>(axiosError);
+  }
+  if (axiosError.request) {
+    return createNetworkError<T>(axiosError);
+  }
+  return createRequestError<T>(axiosError);
+};
+export const createRequestError = <T>(axiosError: AxiosError<ApiError>) => {
+  return {
+    error: {
+      code: 'request_error',
+      message: axiosError.message || 'Failed to setup request',
+      data: { status: 0 },
+      details: {},
+    },
+    status: 0,
+  } as AxiosApiResult<T>;
+};
+export const createServerError = <T>(axiosError: AxiosError<ApiError>) => {
+  return {
+    error: axiosError.response?.data ?? {
+      code: `http_${axiosError.response?.status}`,
+      message: axiosError.message || 'Request failed',
+      data: { status: axiosError.response?.status },
+      details: {},
+    },
+    headers: Object.fromEntries(
+      Object.entries(axiosError.response?.headers ?? []).map(([key, value]) => [
+        key.toLowerCase(),
+        value,
+      ])
+    ),
+    status: axiosError.response?.status,
+  } as AxiosApiResult<T>;
+};
+export const createNetworkError = <T>(axiosError: AxiosError<ApiError>) => {
+  return {
+    error: {
+      code: axiosError.code || 'network_error',
+      message:
+        axiosError.message || 'Network error: Unable to reach the server',
+      data: {
+        status: 0,
+      },
+      details: {},
+    },
+    status: 0,
+  } as AxiosApiResult<T>;
 };

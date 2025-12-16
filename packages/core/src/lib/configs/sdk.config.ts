@@ -107,15 +107,6 @@ export interface SdkConfig {
        * This is called in addition to status/method checks.
        */
       retryCondition?: (error: unknown, attempt: number) => boolean;
-      /**
-       * Callback fired before each retry attempt.
-       * Useful for logging or updating UI state.
-       */
-      onRetry?: (
-        attempt: number,
-        error: unknown,
-        config?: AxiosRequestConfig
-      ) => void;
     };
   };
 }
@@ -169,11 +160,6 @@ export interface ResolvedSdkConfig {
       retryOnStatus?: number[];
       retryOnMethods?: Method[];
       retryCondition?: (error: unknown, attempt: number) => boolean;
-      onRetry?: (
-        attempt: number,
-        error: unknown,
-        config?: AxiosRequestConfig
-      ) => void;
     };
   };
 }
@@ -225,7 +211,6 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         DEFAULT_RETRY_CONFIG.retryOnStatus,
       maxRetries:
         config.request.retry.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries,
-      onRetry: config.request?.retry.onRetry,
       retryCondition: config.request?.retry.retryCondition,
     };
   }
