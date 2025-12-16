@@ -8,6 +8,7 @@
     "apps/*"
   ],
   "scripts": {
+    "docs:start:dev": "cd docs/ && npx mint dev",
     "serve:example:angular": "pnpm nx serve example-angular",
     "dev:rebuild": "rimraf .angular && nx reset && npx nx run-many -t build",
     "tests:unit": "npx vitest run src/lib/tests/unit",

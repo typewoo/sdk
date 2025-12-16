@@ -8,7 +8,7 @@ import { getSdkConfig } from '../configs';
 import { AxiosApiResult, ApiError } from '../types';
 import { RequestContext, RequestOptions } from '../types/request';
 import { createRequest } from './http';
-import { getRetryDelay, shouldRetry, sleep } from './http.helper';
+import { createError, getRetryDelay, shouldRetry, sleep } from './http.helper';
 
 export const doRequest = async <T>(
   instance: AxiosInstance,
@@ -61,63 +61,10 @@ export const doRequest = async <T>(
     } as AxiosApiResult<T>;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
-    // Server returned an error response (4xx, 5xx)
-    if (axiosError.response) {
-      const result = {
-        error: axiosError.response.data ?? {
-          code: `http_${axiosError.response.status}`,
-          message: axiosError.message || 'Request failed',
-          data: { status: axiosError.response.status },
-          details: {},
-        },
-        headers: Object.fromEntries(
-          Object.entries(axiosError.response.headers).map(([key, value]) => [
-            key.toLowerCase(),
-            value,
-          ])
-        ),
-        status: axiosError.response.status,
-      } as AxiosApiResult<T>;
-
-      responseError = result.error as ApiError;
-      requestOptions?.onError?.(responseError, context);
-      return result;
-    }
-
-    // Network error (server down, timeout, DNS failure, etc.)
-    if (axiosError.request) {
-      const result = {
-        error: {
-          code: axiosError.code || 'network_error',
-          message:
-            axiosError.message || 'Network error: Unable to reach the server',
-          data: {
-            status: 0,
-          },
-          details: {},
-        },
-        status: 0,
-      } as AxiosApiResult<T>;
-
-      responseError = result.error as ApiError;
-      requestOptions?.onError?.(responseError, context);
-      return result;
-    }
-
-    // Request setup error (e.g., invalid config)
-    const result = {
-      error: {
-        code: 'request_error',
-        message: axiosError.message || 'Failed to setup request',
-        data: { status: 0 },
-        details: {},
-      },
-      status: 0,
-    } as AxiosApiResult<T>;
-
-    responseError = result.error as ApiError;
+    const errorResult = createError<T>(axiosError);
+    responseError = errorResult.error;
     requestOptions?.onError?.(responseError, context);
-    return result;
+    return errorResult;
   } finally {
     requestOptions?.onFinally?.(responseData, responseError, context);
     requestOptions?.onLoading?.(false);
@@ -145,7 +92,7 @@ const doRequestWithRetry = async <T>(
       const response = await createRequest<T>(instance, url, requestOptions);
       return { response };
     } catch (error) {
-      return { error: error as AxiosError };
+      return { error: error as AxiosError<ApiError> };
     }
   }
 
@@ -163,16 +110,14 @@ const doRequestWithRetry = async <T>(
       const response = await createRequest<T>(instance, url, requestOptions);
       return { response };
     } catch (error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError<ApiError>;
 
       if (!shouldRetry(axiosError, attempt, method)) {
         return { error: axiosError };
       }
 
-      // Call onRetry callback
-      if (retryConfig?.onRetry) {
-        retryConfig.onRetry(attempt + 1, axiosError, context.config);
-      }
+      const errorResult = createError<T>(axiosError);
+      requestOptions?.onRetry?.(attempt + 1, errorResult.error, context);
 
       // Wait before retrying
       const delay = getRetryDelay(retryConfig?.delay, attempt);

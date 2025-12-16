@@ -10,6 +10,11 @@ export interface RequestContext<T = unknown> {
 }
 export interface RequestOptions<T = unknown> {
   axiosConfig?: AxiosRequestConfig;
+  onRetry?: (
+    attempt: number,
+    error: ApiError,
+    context: RequestContext<T>
+  ) => void | Promise<void>;
   onError?: (
     error: ApiError,
     context: RequestContext<T>
