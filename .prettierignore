@@ -6,3 +6,4 @@
 /.nx/workspace-data
 .angular
 graph.json
+pnpm-lock.yaml
