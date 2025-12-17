@@ -46,8 +46,8 @@
     "@angular-devkit/schematics": "20.3.13",
     "@angular/build": "20.3.13",
     "@angular/cli": "20.3.13",
-    "@angular/compiler-cli": "20.3.7",
-    "@angular/language-service": "20.3.7",
+    "@angular/compiler-cli": "20.3.15",
+    "@angular/language-service": "20.3.15",
     "@eslint/js": "9.35.0",
     "@nx/angular": "22.0.3",
     "@nx/devkit": "22.0.3",
@@ -104,17 +104,17 @@
     "webpack-cli": "5.1.4"
   },
   "dependencies": {
-    "@angular/common": "20.3.7",
-    "@angular/compiler": "20.3.7",
-    "@angular/core": "20.3.7",
-    "@angular/forms": "20.3.7",
-    "@angular/platform-browser": "20.3.7",
+    "@angular/common": "20.3.15",
+    "@angular/compiler": "20.3.15",
+    "@angular/core": "20.3.15",
+    "@angular/forms": "20.3.15",
+    "@angular/platform-browser": "20.3.15",
     "@angular/platform-browser-dynamic": "~20.3.0",
-    "@angular/router": "20.3.7",
+    "@angular/router": "20.3.15",
     "qs": "6.14.0",
     "rxjs": "~7.8.0",
     "zod": "4.0.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.16.0"
   },
   "nx": {
     "includedScripts": [
