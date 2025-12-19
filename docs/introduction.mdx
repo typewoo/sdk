@@ -1,27 +1,22 @@
 ---
-title: Introduction
-description: TypeScript-first SDK for the WooCommerce Store API
+title: "Introduction"
+description: "Typewoo SDK is a modern, TypeScript-first SDK for integrating with the WooCommerce Store API. It enables developers to build headless or decoupled WooCommerce storefronts with full type safety."
 ---
 
 <Warning>
-  This project is **not affiliated with, endorsed by, or officially connected to
-  WooCommerce, Automattic, or WordPress**. WooCommerce® is a registered
-  trademark of Automattic Inc. This is an independent, community-driven SDK.
+  This project is **not affiliated with, endorsed by, or officially connected to**\
+  **WooCommerce, Automattic, or WordPress**. WooCommerce® is a registered trademark of Automattic Inc. This is an independent, community-driven SDK.
 </Warning>
-
-# Typewoo SDK
-
-Typewoo SDK is a modern, TypeScript-first SDK for integrating with the WooCommerce Store API. It enables developers to build headless or decoupled WooCommerce storefronts with full type safety.
 
 ## Overview
 
-The SDK provides a comprehensive interface to interact with WooCommerce's Store API and REST API endpoints. It handles authentication, session management, cart tokens, nonces, and provides strongly-typed responses for all API operations.
+The SDK provides a comprehensive interface to interact with WooCommerce's Store API and Admin REST API endpoints. It handles authentication, session management, cart tokens, nonces, and provides strongly-typed responses for all API operations.
 
 ## Key Features
 
 - **Type Safety**: Full TypeScript support with strongly-typed request parameters and responses powered by Zod schemas
-- **Store API Support**: Complete coverage of WooCommerce Store API endpoints (products, cart, checkout, orders)
-- **Admin REST API**: Full access to WooCommerce REST API v3 for administrative operations
+- **Store API Support**: Complete coverage of WooCommerce Store API endpoints.
+- **Admin REST API Support**: Full access to WooCommerce REST API v3 for administrative operations
 - **Authentication**: Built-in support for JWT authentication with automatic token refresh
 - **Session Management**: Automatic handling of nonces and cart tokens via Axios interceptors
 - **Event-Driven Architecture**: Custom EventBus for reactive state management
@@ -37,10 +32,10 @@ Typewoo SDK is organized into three main service layers:
 
 The Store API provides public-facing endpoints optimized for storefront use:
 
-- **Products**: Browse and search products
 - **Cart**: Full cart management (add, update, remove items, apply coupons)
 - **Checkout**: Process orders and payments
 - **Orders**: Retrieve order details for pay-for-order flows
+- **Products**: Browse and search products
 
 ### Auth API (`Typewoo.auth`)
 
