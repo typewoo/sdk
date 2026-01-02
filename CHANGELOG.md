@@ -1,3 +1,9 @@
+## 3.5.2 (2026-01-02)
+
+### 🩹 Fixes
+
+- update import paths to include file extensions for consistency ([52aac22](https://github.com/typewoo/sdk/commit/52aac22))
+
 ## 3.5.1 (2026-01-02)
 
 ### 🩹 Fixes
