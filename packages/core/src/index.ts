@@ -6,6 +6,9 @@ export * from './lib/configs/index.js';
 // Utilities
 export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 
+// Extensions (PaginatedRequest, loop, etc.)
+export * from './lib/extensions/index.js';
+
 // Common
 export { httpClient, createHttpClient } from './lib/http/http.client.js';
 export * from './lib/configs/sdk.config.js';

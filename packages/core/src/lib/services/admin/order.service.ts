@@ -20,6 +20,7 @@ import {
   AdminRefundCreateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Orders Service
@@ -32,18 +33,25 @@ export class AdminOrderService extends BaseService {
   /**
    * List orders
    */
-  async list(
+  list(
     params?: AdminOrderQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminOrder[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminOrder[], AdminOrderQueryParams> {
+    const request = async (
+      pageParams?: AdminOrderQueryParams
+    ): Promise<ApiPaginationResult<AdminOrder[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminOrder[]>(url, options);
+      const { data, error, headers } = await doGet<AdminOrder[]>(url, options);
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

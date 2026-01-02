@@ -9,6 +9,7 @@ import {
   AdminShippingClassRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Shipping Classes Service
@@ -21,21 +22,28 @@ export class AdminShippingClassService extends BaseService {
   /**
    * List shipping classes
    */
-  async list(
+  list(
     params?: AdminShippingClassQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminShippingClass[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminShippingClass[], AdminShippingClassQueryParams> {
+    const request = async (
+      pageParams?: AdminShippingClassQueryParams
+    ): Promise<ApiPaginationResult<AdminShippingClass[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminShippingClass[]>(
-      url,
-      options
-    );
+      const { data, error, headers } = await doGet<AdminShippingClass[]>(
+        url,
+        options
+      );
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

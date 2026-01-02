@@ -9,6 +9,7 @@ import {
   AdminBrandRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Product Brands Service
@@ -21,18 +22,25 @@ export class AdminProductBrandService extends BaseService {
   /**
    * List product brands
    */
-  async list(
+  list(
     params?: AdminBrandQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminBrand[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminBrand[], AdminBrandQueryParams> {
+    const request = async (
+      pageParams?: AdminBrandQueryParams
+    ): Promise<ApiPaginationResult<AdminBrand[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminBrand[]>(url, options);
+      const { data, error, headers } = await doGet<AdminBrand[]>(url, options);
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

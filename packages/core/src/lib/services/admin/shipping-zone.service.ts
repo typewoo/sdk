@@ -14,6 +14,7 @@ import {
   AdminShippingZoneMethodRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Shipping Zones Service
@@ -26,21 +27,28 @@ export class AdminShippingZoneService extends BaseService {
   /**
    * List shipping zones
    */
-  async list(
+  list(
     params?: AdminShippingZoneQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminShippingZone[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminShippingZone[], AdminShippingZoneQueryParams> {
+    const request = async (
+      pageParams?: AdminShippingZoneQueryParams
+    ): Promise<ApiPaginationResult<AdminShippingZone[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminShippingZone[]>(
-      url,
-      options
-    );
+      const { data, error, headers } = await doGet<AdminShippingZone[]>(
+        url,
+        options
+      );
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

@@ -9,6 +9,7 @@ import {
   AdminWebhookRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Webhooks Service
@@ -21,18 +22,28 @@ export class AdminWebhookService extends BaseService {
   /**
    * List webhooks
    */
-  async list(
+  list(
     params?: AdminWebhookQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminWebhook[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminWebhook[], AdminWebhookQueryParams> {
+    const request = async (
+      pageParams?: AdminWebhookQueryParams
+    ): Promise<ApiPaginationResult<AdminWebhook[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminWebhook[]>(url, options);
+      const { data, error, headers } = await doGet<AdminWebhook[]>(
+        url,
+        options
+      );
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

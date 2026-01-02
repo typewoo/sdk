@@ -5,6 +5,7 @@ import * as qs from 'qs';
 import { ApiPaginationResult } from '../../types/api.js';
 import { AdminRefundQueryParams, AdminRefund } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Refunds Service
@@ -18,17 +19,24 @@ export class AdminRefundService extends BaseService {
   /**
    * List refunds
    */
-  async list(
+  list(
     params?: AdminRefundQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminRefund[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminRefund[], AdminRefundQueryParams> {
+    const request = async (
+      pageParams?: AdminRefundQueryParams
+    ): Promise<ApiPaginationResult<AdminRefund[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminRefund[]>(url, options);
+      const { data, error, headers } = await doGet<AdminRefund[]>(url, options);
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 }
