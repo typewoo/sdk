@@ -1,3 +1,34 @@
+## 3.4.0 (2026-01-02)
+
+### 🚀 Features
+
+- add pagination loop function ([#138](https://github.com/typewoo/sdk/pull/138))
+
+### 🩹 Fixes
+
+- standardize 'TypeWoo' to 'Typewoo' across documentation and codebase ([b37eec2](https://github.com/typewoo/sdk/commit/b37eec2))
+- implement retry logic with error handling in HTTP requests ([#120](https://github.com/typewoo/sdk/pull/120))
+- **deps:** update angular monorepo ([de7063a](https://github.com/typewoo/sdk/commit/de7063a))
+
+### 🧹 Chores
+
+- update README ([7f59f72](https://github.com/typewoo/sdk/commit/7f59f72))
+- add pnpm-lock.yaml to .prettierignore ([8e77ffe](https://github.com/typewoo/sdk/commit/8e77ffe))
+- **deps:** update angular-cli monorepo to v20.3.13 ([f22e07b](https://github.com/typewoo/sdk/commit/f22e07b))
+- **deps:** update angular-cli monorepo to v20.3.13 ([#94](https://github.com/typewoo/sdk/pull/94))
+- **deps:** update analog monorepo to ~1.22.0 ([941ad23](https://github.com/typewoo/sdk/commit/941ad23))
+- **deps:** update dependency @playwright/test to v1.57.0 ([cd6f05b](https://github.com/typewoo/sdk/commit/cd6f05b))
+- **deps:** update typescript-eslint monorepo to v8.50.0 ([f3a8744](https://github.com/typewoo/sdk/commit/f3a8744))
+- **deps:** update dependency vite to v6.4.1 ([d5e5ab0](https://github.com/typewoo/sdk/commit/d5e5ab0))
+- **deps:** update swc monorepo ([aa4b74a](https://github.com/typewoo/sdk/commit/aa4b74a))
+- **deps:** update dependency autoprefixer to v10.4.23 ([10e20c6](https://github.com/typewoo/sdk/commit/10e20c6))
+- **deps:** update dependency tailwindcss to v3.4.19 ([19779e7](https://github.com/typewoo/sdk/commit/19779e7))
+- **deps:** update dependency ts-node to v10.9.2 ([bc3664c](https://github.com/typewoo/sdk/commit/bc3664c))
+- **deps:** update dependency tsup to v8.5.1 ([6c8779d](https://github.com/typewoo/sdk/commit/6c8779d))
+- **deps:** update typescript-eslint monorepo to v8.50.1 ([7e7cbf2](https://github.com/typewoo/sdk/commit/7e7cbf2))
+- **deps:** update dependency ts-jest to v29.4.6 ([128ab1b](https://github.com/typewoo/sdk/commit/128ab1b))
+- **deps:** update dependency jiti to v2.6.1 ([893236a](https://github.com/typewoo/sdk/commit/893236a))
+
 ## 3.3.0 (2025-12-15)
 
 ### 🚀 Features
