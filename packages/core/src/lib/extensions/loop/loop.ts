@@ -1,5 +1,5 @@
 import { ApiPaginationResult, ApiError, Pagination } from '../../types/api.js';
-import { LoopOptions, LoopPageResult } from './loop.options.js';
+import { LoopOptions } from './loop.options.js';
 
 /**
  * Loop extension function that fetches all pages and returns combined results.
@@ -55,14 +55,7 @@ export async function loopExtension<T, TParams>(
 
     // Call the onPage callback if provided
     if (onPage) {
-      const pageResult: LoopPageResult<T> = {
-        data: result.data,
-        page: currentPage,
-        totalPages,
-        total,
-        error: result.error,
-      };
-      await onPage(pageResult);
+      await onPage(result);
     }
 
     // Handle errors

@@ -153,38 +153,34 @@ window.addEventListener('scroll', async () => {
 
 ### Load All Pages
 
+For fetching all pages automatically, use the [`.loop()` extension](/extensions#loop-extension):
+
 ```typescript
-async function loadAllProducts(
-  params?: ProductRequest
-): Promise<ProductResponse[]> {
-  const allProducts: ProductResponse[] = [];
-  let page = 1;
-  let hasMore = true;
+// Fetch all products with progress tracking
+const { data: allProducts } = await Typewoo.store.products
+  .list({ category: 'clothing', per_page: 100 })
+  .loop({
+    onPage: ({ page, totalPages }) => {
+      console.log(`Loading page ${page}/${totalPages}`);
+    },
+  });
 
-  while (hasMore) {
-    const { data, pagination } = await Typewoo.store.products.list({
-      ...params,
-      page,
-      per_page: 100, // Max items per request
-    });
-
-    if (data) {
-      allProducts.push(...data);
-    }
-
-    hasMore = pagination.next !== undefined;
-    page++;
-  }
-
-  return allProducts;
-}
-
-// Usage
-const allProducts = await loadAllProducts({ category: 'clothing' });
-console.log('Total products:', allProducts.length);
+console.log('Total products:', allProducts?.length);
 ```
 
+<Info>
+  The `.loop()` extension handles pagination automatically, supports
+  cancellation via `AbortController`, and includes safety measures to prevent
+  infinite loops. See [Extensions](/extensions) for full documentation.
+</Info>
+
 ### Generator-Based Iteration
+
+<Note>
+  For most use cases, the [`.loop()` extension](/extensions#loop-extension)
+  provides a simpler way to fetch all pages. Use generators when you need
+  fine-grained control over iteration.
+</Note>
 
 ```typescript
 async function* iterateProducts(params?: ProductRequest) {

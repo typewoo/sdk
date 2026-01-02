@@ -70,8 +70,8 @@ export class PaginatedRequest<T, TParams> {
    * ```typescript
    * // Fetch all products with progress callback
    * const { data, pagination } = await sdk.admin.products.list({ per_page: 100 }).loop({
-   *   onPage: ({ page, totalPages, data }) => {
-   *     console.log(`Fetched page ${page}/${totalPages}: ${data?.length} items`);
+   *   onPage: ({ data, pagination }) => {
+   *     console.log(`Fetched ${data?.length} items, total: ${pagination.total}`);
    *   }
    * });
    * console.log(`Total products fetched: ${data?.length}`);

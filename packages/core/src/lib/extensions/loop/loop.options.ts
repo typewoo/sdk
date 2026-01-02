@@ -1,4 +1,4 @@
-import { ApiError } from '../../types/api.js';
+import { ApiError, ApiPaginationResult } from '../../types/api.js';
 
 /**
  * Options for the loop() pagination method
@@ -15,15 +15,17 @@ export interface LoopOptions<T> {
   delayMs?: number;
 
   /**
-   * Whether to stop iteration on first error. Defaults to true.
+   * Whether to stop iteration on first error. When false, the loop continues to the next
+   * page after an error, but will still stop if a page returns no data. Defaults to true.
    */
   stopOnError?: boolean;
 
   /**
    * Callback invoked after each page is fetched.
+   * Receives the same result type as the original list method.
    * Useful for progress tracking or processing items as they arrive.
    */
-  onPage?: (result: LoopPageResult<T>) => void | Promise<void>;
+  onPage?: (result: ApiPaginationResult<T>) => void | Promise<void>;
 
   /**
    * AbortSignal to cancel the loop operation.
@@ -38,25 +40,9 @@ export interface LoopOptions<T> {
    *
    * const { data } = await sdk.admin.products.list().loop({
    *   signal: controller.signal,
-   *   onPage: ({ page }) => console.log(`Page ${page}`)
+   *   onPage: ({ data, pagination }) => console.log(`Page ${pagination.total}`)
    * });
    * ```
    */
   signal?: AbortSignal;
-}
-
-/**
- * Result passed to the onPage callback for each page
- */
-export interface LoopPageResult<T> {
-  /** The items from this page */
-  data?: T;
-  /** Current page number (1-based) */
-  page: number;
-  /** Total pages if known */
-  totalPages?: number;
-  /** Total items if known */
-  total?: number;
-  /** Error if the request failed */
-  error?: ApiError;
 }

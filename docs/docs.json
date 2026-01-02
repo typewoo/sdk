@@ -24,7 +24,12 @@
           },
           {
             "group": "Guides",
-            "pages": ["error-handling", "pagination", "advanced-usage"]
+            "pages": [
+              "error-handling",
+              "pagination",
+              "extensions",
+              "advanced-usage"
+            ]
           },
           {
             "group": "Reference",
