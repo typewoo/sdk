@@ -38,7 +38,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run lint
         run: |
-          pnpm exec nx affected -t lint --parallel=3 --base=origin/main
+          pnpm exec nx lint @typewoo/sdk
   format:
     name: format
     runs-on: ubuntu-latest
