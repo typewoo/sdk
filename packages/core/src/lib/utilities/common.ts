@@ -1,4 +1,4 @@
-import { Pagination } from '../types';
+import { Pagination } from '../types/index.js';
 
 export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
   T,
