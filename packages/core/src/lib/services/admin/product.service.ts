@@ -165,11 +165,11 @@ export class AdminProductService extends BaseService {
   /**
    * List product variations
    */
-  async listVariations(
+  listVariations(
     productId: number,
     params?: ProductQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminProductVariation[]>> {
+  ): PaginatedRequest<AdminProductVariation[], ProductQueryParams> {
     const request = async (
       pageParams?: ProductQueryParams
     ): Promise<ApiPaginationResult<AdminProductVariation[]>> => {
