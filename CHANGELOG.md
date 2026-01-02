@@ -1,3 +1,9 @@
+## 3.5.1 (2026-01-02)
+
+### 🩹 Fixes
+
+- update import paths to include file extension for consistency ([679e24d](https://github.com/typewoo/sdk/commit/679e24d))
+
 ## 3.5.0 (2026-01-02)
 
 ### 🚀 Features
