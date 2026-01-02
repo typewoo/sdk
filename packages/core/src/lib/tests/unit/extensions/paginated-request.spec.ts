@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { PaginatedRequest } from '../../../extensions/paginated-request.js';
-import { ApiPaginationResult } from '../../../types/api.js';
 
 interface TestItem {
   id: number;
