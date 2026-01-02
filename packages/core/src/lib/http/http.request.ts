@@ -4,7 +4,7 @@ import {
   AxiosError,
   AxiosResponse,
 } from 'axios';
-import { getSdkConfig } from '../configs';
+import { getSdkConfig } from '../configs/index.js';
 import { AxiosApiResult, ApiError } from '../types';
 import { RequestContext, RequestOptions } from '../types/request';
 import { createRequest } from './http';

@@ -1,5 +1,5 @@
 import { AxiosError, Method } from 'axios';
-import { getSdkConfig } from '../configs';
+import { getSdkConfig } from '../configs/index.js';
 import { ApiError, AxiosApiResult } from '../types';
 
 /**
