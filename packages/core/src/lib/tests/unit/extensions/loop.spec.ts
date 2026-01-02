@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { loopExtension } from '../../../extensions/loop/loop.js';
-import { ApiPaginationResult, ApiError } from '../../../types/api.js';
+import { ApiError } from '../../../types/api.js';
 
 interface TestItem {
   id: number;
