@@ -40,14 +40,16 @@ console.log(`Fetched ${allProducts?.length} products`);
 Track progress as each page is fetched using the `onPage` callback:
 
 ```typescript
+let currentPage = 0;
+
 const { data: allOrders } = await Typewoo.admin.orders
   .list({ status: 'processing', per_page: 100 })
   .loop({
     onPage: ({ data, pagination }) => {
-      const page = pagination.totalPages
-        ? pagination.totalPages - (pagination.totalPages - 1)
-        : 1;
-      const percent = Math.round((page / (pagination.totalPages || 1)) * 100);
+      currentPage += 1;
+      const percent = Math.round(
+        (currentPage / (pagination.totalPages || 1)) * 100
+      );
       console.log(
         `Progress: ${percent}% (${data?.length} orders, total: ${pagination.total})`
       );
