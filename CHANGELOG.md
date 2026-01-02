@@ -1,3 +1,9 @@
+## 3.5.0 (2026-01-02)
+
+### 🚀 Features
+
+- export http helpers ([#139](https://github.com/typewoo/sdk/pull/139))
+
 ## 3.4.0 (2026-01-02)
 
 ### 🚀 Features
