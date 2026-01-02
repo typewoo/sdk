@@ -58,7 +58,8 @@ Core internals (`packages/core/src/lib/`):
 - `services/admin/*.service.ts` – Admin REST API services (21+ services for full WC admin)
 - `services/store.service.ts` – Aggregates all Store services as `sdk.store.*`
 - `services/admin.service.ts` – Aggregates all Admin services as `sdk.admin.*`
-- `http/http.ts` – HTTP helpers (`doGet`, `doPost`, `doPut`, `doDelete`) using shared Axios client
+- `http/http.ts` – HTTP helpers (`doGet`, `doPost`, `doPut`, `doDelete`, `doHead`, `createRequest`) – all exported for direct use
+- `http/http.request.ts` – Core `doRequest` function with retry logic, exported for advanced use cases
 - `interceptors/*.interceptor.ts` – Nonce, cart token, access token, refresh token, admin auth
 - `bus/event.bus.ts` – Typed EventBus with `on`/`once`/`onAny`/middleware support
 - `configs/sdk.config.ts` – SDK configuration types and resolution

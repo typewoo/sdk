@@ -11,6 +11,15 @@ export * from './lib/extensions/index.js';
 
 // Common
 export { httpClient, createHttpClient } from './lib/http/http.client.js';
+export { doRequest } from './lib/http/http.request.js';
+export {
+  doGet,
+  doPost,
+  doPut,
+  doDelete,
+  doHead,
+  createRequest,
+} from './lib/http/http.js';
 export * from './lib/configs/sdk.config.js';
 export * from './lib/utilities/common.js';
 
