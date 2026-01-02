@@ -40,7 +40,7 @@ export interface LoopOptions<T> {
    *
    * const { data } = await sdk.admin.products.list().loop({
    *   signal: controller.signal,
-   *   onPage: ({ data, pagination }) => console.log(`Page ${pagination.total}`)
+   *   onPage: ({ data, pagination }) => console.log(`Total items: ${pagination.total}`)
    * });
    * ```
    */
