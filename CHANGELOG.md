@@ -1,3 +1,9 @@
+## 3.5.3 (2026-01-02)
+
+### 🩹 Fixes
+
+- update `.js` imports and add missing `loop` function in product variations ([#140](https://github.com/typewoo/sdk/pull/140))
+
 ## 3.5.2 (2026-01-02)
 
 ### 🩹 Fixes
