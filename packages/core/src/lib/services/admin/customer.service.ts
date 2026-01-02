@@ -9,6 +9,7 @@ import {
   AdminCustomerRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Customers Service
@@ -21,18 +22,28 @@ export class AdminCustomerService extends BaseService {
   /**
    * List customers
    */
-  async list(
+  list(
     params?: AdminCustomerQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminCustomer[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminCustomer[], AdminCustomerQueryParams> {
+    const request = async (
+      pageParams?: AdminCustomerQueryParams
+    ): Promise<ApiPaginationResult<AdminCustomer[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCustomer[]>(url, options);
+      const { data, error, headers } = await doGet<AdminCustomer[]>(
+        url,
+        options
+      );
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

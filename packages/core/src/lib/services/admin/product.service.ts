@@ -11,6 +11,7 @@ import {
   ProductCustomFieldNameQueryParams,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Products Service
@@ -23,18 +24,29 @@ export class AdminProductService extends BaseService {
   /**
    * List products
    */
-  async list(
+  list(
     params?: ProductQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminProduct[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminProduct[], ProductQueryParams> {
+    const request = async (
+      pageParams?: ProductQueryParams
+    ): Promise<ApiPaginationResult<AdminProduct[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminProduct[]>(url, options);
+      const { data, error, headers } = await doGet<AdminProduct[]>(
+        url,
+        options
+      );
 
-    const pagination = extractPagination(headers);
+      const pagination = extractPagination(headers);
 
-    return { data, error, pagination };
+      return { data, error, pagination };
+    };
+
+    return new PaginatedRequest(request, params);
   }
 
   /**

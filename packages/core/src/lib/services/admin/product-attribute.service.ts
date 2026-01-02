@@ -9,6 +9,7 @@ import {
   AdminProductAttributeRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Product Attributes Service
@@ -21,21 +22,31 @@ export class AdminProductAttributeService extends BaseService {
   /**
    * List product attributes
    */
-  async list(
+  list(
     params?: AdminProductAttributeQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminProductAttribute[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<
+    AdminProductAttribute[],
+    AdminProductAttributeQueryParams
+  > {
+    const request = async (
+      pageParams?: AdminProductAttributeQueryParams
+    ): Promise<ApiPaginationResult<AdminProductAttribute[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminProductAttribute[]>(
-      url,
-      options
-    );
+      const { data, error, headers } = await doGet<AdminProductAttribute[]>(
+        url,
+        options
+      );
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

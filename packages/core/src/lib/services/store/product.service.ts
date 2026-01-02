@@ -8,6 +8,7 @@ import { doGet } from '../../http/http.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductRequest, ProductResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * Products API
@@ -22,42 +23,48 @@ export class ProductService extends BaseService {
    * @param params
    * @returns
    */
-  async list(
+  list(
     params?: ProductRequest,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<ProductResponse[]>> {
-    let unstable_tax: string | undefined = undefined;
-    let unstable_tax_operator: string | undefined = undefined;
-    if (params && params._unstable_tax_) {
-      params._unstable_tax_?.forEach((item) => {
-        Object.keys(item).forEach((key) => {
-          unstable_tax += `_unstable_tax_${key}=${item[key]}`;
+  ): PaginatedRequest<ProductResponse[], ProductRequest> {
+    const request = async (
+      pageParams?: ProductRequest
+    ): Promise<ApiPaginationResult<ProductResponse[]>> => {
+      let unstable_tax: string | undefined = undefined;
+      let unstable_tax_operator: string | undefined = undefined;
+      if (pageParams && pageParams._unstable_tax_) {
+        pageParams._unstable_tax_?.forEach((item) => {
+          Object.keys(item).forEach((key) => {
+            unstable_tax += `_unstable_tax_${key}=${item[key]}`;
+          });
         });
-      });
-      params._unstable_tax_ = [];
-    }
+        pageParams._unstable_tax_ = [];
+      }
 
-    if (params && params._unstable_tax_operator) {
-      params._unstable_tax_operator?.forEach((item) => {
-        Object.keys(item).forEach((key) => {
-          unstable_tax_operator += `_unstable_tax_${key}_operator=${item[key]}`;
+      if (pageParams && pageParams._unstable_tax_operator) {
+        pageParams._unstable_tax_operator?.forEach((item) => {
+          Object.keys(item).forEach((key) => {
+            unstable_tax_operator += `_unstable_tax_${key}_operator=${item[key]}`;
+          });
         });
-      });
-      params._unstable_tax_operator = [];
-    }
-    const query = qs.stringify(
-      { ...params, unstable_tax, unstable_tax_operator },
-      { encode: false }
-    );
+        pageParams._unstable_tax_operator = [];
+      }
+      const query = qs.stringify(
+        { ...pageParams, unstable_tax, unstable_tax_operator },
+        { encode: false }
+      );
 
-    const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductResponse[]>(
-      url,
-      options
-    );
+      const url = `/${this.endpoint}?${query}`;
+      const { data, error, headers } = await doGet<ProductResponse[]>(
+        url,
+        options
+      );
 
-    const pagination = extractPagination(headers);
-    return { data, error, pagination, headers };
+      const pagination = extractPagination(headers);
+      return { data, error, pagination, headers };
+    };
+
+    return new PaginatedRequest(request, params);
   }
 
   /**

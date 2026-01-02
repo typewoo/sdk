@@ -8,6 +8,7 @@ import {
   ProductReviewResponse,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * Product Reviews API
@@ -22,18 +23,24 @@ export class ProductReviewService extends BaseService {
    * @param params
    * @returns
    */
-  async list(
+  list(
     params?: ProductReviewRequest,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<ProductReviewResponse[]>> {
-    const query = qs.stringify(params, { encode: true });
-    const url = `/${this.endpoint}?${query}`;
-    const { data, error, headers } = await doGet<ProductReviewResponse[]>(
-      url,
-      options
-    );
+  ): PaginatedRequest<ProductReviewResponse[], ProductReviewRequest> {
+    const request = async (
+      pageParams?: ProductReviewRequest
+    ): Promise<ApiPaginationResult<ProductReviewResponse[]>> => {
+      const query = qs.stringify(pageParams, { encode: true });
+      const url = `/${this.endpoint}?${query}`;
+      const { data, error, headers } = await doGet<ProductReviewResponse[]>(
+        url,
+        options
+      );
 
-    const pagination = extractPagination(headers);
-    return { data, error, pagination };
+      const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
+
+    return new PaginatedRequest(request, params);
   }
 }

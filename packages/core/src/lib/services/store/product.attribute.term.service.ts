@@ -8,6 +8,7 @@ import {
   ProductAttributeResponse,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * Product Attribute Terms API
@@ -21,19 +22,25 @@ export class ProductAttributeTermService extends BaseService {
    * @param params
    * @returns
    */
-  async list(
+  list(
     attributeId: number,
     params?: ProductAttributeTermRequest,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
-    const query = qs.stringify(params, { encode: true });
-    const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
-    const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
-      url,
-      options
-    );
+  ): PaginatedRequest<ProductAttributeResponse[], ProductAttributeTermRequest> {
+    const request = async (
+      pageParams?: ProductAttributeTermRequest
+    ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> => {
+      const query = qs.stringify(pageParams, { encode: true });
+      const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
+      const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
+        url,
+        options
+      );
 
-    const pagination = extractPagination(headers);
-    return { data, error, pagination };
+      const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
+
+    return new PaginatedRequest(request, params);
   }
 }

@@ -9,6 +9,7 @@ import {
   AdminCouponRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
+import { PaginatedRequest } from '../../extensions/paginated-request.js';
 
 /**
  * WooCommerce REST API Coupons Service
@@ -19,20 +20,45 @@ export class AdminCouponService extends BaseService {
   private readonly endpoint = 'wp-json/wc/v3/coupons';
 
   /**
-   * List coupons
+   * List coupons with pagination support.
+   *
+   * @example
+   * ```typescript
+   * // Standard usage (backward compatible)
+   * const { data, pagination } = await sdk.admin.coupons.list({ per_page: 10 });
+   *
+   * // Loop through all pages with callback
+   * await sdk.admin.coupons
+   *   .list({ per_page: 10 })
+   *   .loop({
+   *     onPage: ({ pagination }) => {
+   *       console.log(`Total pages: ${pagination?.totalPages ?? 'unknown'}`);
+   *     },
+   *   });
+   *
+   * // Simple - get all items
+   * const { data: allCoupons } = await sdk.admin.coupons.list().loop();
+   * ```
    */
-  async list(
+  list(
     params?: AdminCouponQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminCoupon[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
+  ): PaginatedRequest<AdminCoupon[], AdminCouponQueryParams> {
+    const request = async (
+      pageParams?: AdminCouponQueryParams
+    ): Promise<ApiPaginationResult<AdminCoupon[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error, headers } = await doGet<AdminCoupon[]>(url, options);
+      const { data, error, headers } = await doGet<AdminCoupon[]>(url, options);
+      const pagination = extractPagination(headers);
 
-    const pagination = extractPagination(headers);
+      return { data, error, pagination };
+    };
 
-    return { data, error, pagination };
+    return new PaginatedRequest(request, params);
   }
 
   /**

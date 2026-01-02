@@ -1,0 +1,273 @@
+---
+title: Extensions
+description: SDK extensions for enhanced functionality
+---
+
+# Extensions
+
+The Typewoo SDK provides a set of extensions that enhance core functionality. Extensions are optional methods that can be chained onto existing API calls to add powerful capabilities without complicating the base API.
+
+## Available Extensions
+
+| Extension | Description                   | Available On               |
+| --------- | ----------------------------- | -------------------------- |
+| `loop()`  | Fetch all pages automatically | All paginated list methods |
+
+---
+
+## Loop Extension
+
+The `loop()` extension fetches all pages from a paginated endpoint and returns a single combined result. It's available on any `list()` method that returns paginated data.
+
+### Basic Usage
+
+```typescript
+// Fetch all products across all pages
+const { data: allProducts, pagination } = await Typewoo.admin.products
+  .list({ per_page: 100 })
+  .loop();
+
+console.log(`Fetched ${allProducts?.length} products`);
+```
+
+<Note>
+  The `loop()` extension maintains backward compatibility. Without calling
+  `.loop()`, the request works exactly as before—returning only the first page.
+</Note>
+
+### With Progress Callback
+
+Track progress as each page is fetched using the `onPage` callback:
+
+```typescript
+let currentPage = 0;
+
+const { data: allOrders } = await Typewoo.admin.orders
+  .list({ status: 'processing', per_page: 100 })
+  .loop({
+    onPage: ({ data, pagination }) => {
+      currentPage += 1;
+      const percent = Math.round(
+        (currentPage / (pagination.totalPages || 1)) * 100
+      );
+      console.log(
+        `Progress: ${percent}% (${data?.length} orders, total: ${pagination.total})`
+      );
+    },
+  });
+```
+
+### Cancellation with AbortController
+
+Cancel long-running operations using the standard `AbortController` API:
+
+```typescript
+const controller = new AbortController();
+
+// Cancel after 10 seconds
+const timeout = setTimeout(() => controller.abort(), 10000);
+
+try {
+  const { data } = await Typewoo.admin.products.list({ per_page: 100 }).loop({
+    signal: controller.signal,
+    onPage: ({ pagination }) =>
+      console.log(`Fetched batch, total items: ${pagination.total}`),
+  });
+
+  console.log(`Fetched ${data?.length} products`);
+} finally {
+  clearTimeout(timeout);
+}
+```
+
+When aborted, the extension returns items collected so far rather than throwing an error.
+
+### User-Initiated Cancellation
+
+```typescript
+// In a UI component
+let abortController: AbortController | null = null;
+
+async function fetchAllProducts() {
+  abortController = new AbortController();
+
+  const { data } = await Typewoo.admin.products.list().loop({
+    signal: abortController.signal,
+    onPage: ({ pagination }) => {
+      updateProgressBar(pagination.totalPages || 0);
+    },
+  });
+
+  return data;
+}
+
+function cancelFetch() {
+  abortController?.abort();
+}
+```
+
+### Loop Options
+
+The `loop()` method accepts the following options:
+
+```typescript
+interface LoopOptions<T> {
+  /**
+   * Maximum number of pages to fetch.
+   * @default Infinity
+   */
+  maxPages?: number;
+
+  /**
+   * Delay in milliseconds between page requests.
+   * Useful for rate limiting.
+   * @default 0
+   */
+  delayMs?: number;
+
+  /**
+   * Whether to stop iteration on first error.
+   * @default true
+   */
+  stopOnError?: boolean;
+
+  /**
+   * Callback invoked after each page is fetched.
+   * Receives the same result type as the original list method.
+   */
+  onPage?: (result: ApiPaginationResult<T>) => void | Promise<void>;
+
+  /**
+   * AbortSignal to cancel the loop operation.
+   */
+  signal?: AbortSignal;
+}
+```
+
+### Callback Result Type
+
+The `onPage` callback receives the same `ApiPaginationResult<T>` as the original list method:
+
+```typescript
+interface ApiPaginationResult<T> {
+  /** The items from this page */
+  data?: T;
+  /** Error if the request failed */
+  error?: ApiError;
+  /** Pagination metadata */
+  pagination: {
+    next?: number;
+    previous?: number;
+    total?: number;
+    totalPages?: number;
+  };
+}
+```
+
+### Examples
+
+#### Rate-Limited Fetching
+
+Add delays between requests to avoid hitting rate limits:
+
+```typescript
+const { data } = await Typewoo.admin.customers.list({ per_page: 100 }).loop({
+  delayMs: 200, // 200ms delay between pages
+  onPage: ({ pagination }) =>
+    console.log(`Fetched page, total: ${pagination.total}`),
+});
+```
+
+#### Limit Total Pages
+
+Fetch only a specific number of pages:
+
+```typescript
+const { data } = await Typewoo.admin.orders.list({ per_page: 50 }).loop({
+  maxPages: 5, // Stop after 5 pages (250 orders max)
+});
+```
+
+#### Continue on Errors
+
+By default, loop stops on the first error. Override this behavior:
+
+```typescript
+const { data, error } = await Typewoo.admin.products.list().loop({
+  stopOnError: false,
+  onPage: ({ error, pagination }) => {
+    if (error) {
+      console.warn(`Request failed:`, error.message);
+    } else {
+      console.log(`Fetched items, total: ${pagination.total}`);
+    }
+  },
+});
+
+// data contains items from successful pages
+```
+
+#### Process Items as They Arrive
+
+Use the callback to process items incrementally:
+
+```typescript
+const processedIds: number[] = [];
+
+await Typewoo.admin.products.list({ per_page: 100 }).loop({
+  onPage: async ({ data }) => {
+    if (data) {
+      for (const product of data) {
+        await processProduct(product);
+        processedIds.push(product.id);
+      }
+    }
+  },
+});
+
+console.log(`Processed ${processedIds.length} products`);
+```
+
+### Store API Support
+
+The `loop()` extension also works with Store API endpoints:
+
+```typescript
+// Fetch all product categories
+const { data: categories } = await Typewoo.store.products.categories
+  .list({ per_page: 100 })
+  .loop();
+
+// Fetch all products with a specific attribute
+const { data: products } = await Typewoo.store.products
+  .list({ attribute: 'pa_color', attribute_term: 'red', per_page: 100 })
+  .loop({
+    onPage: ({ pagination }) => {
+      console.log(`Loading products... total: ${pagination.total}`);
+    },
+  });
+```
+
+### Safety Features
+
+The `loop()` extension includes built-in safety measures:
+
+1. **Empty Page Detection**: Stops if a page returns an empty array
+2. **No Data Detection**: Stops if the response has no data
+3. **Total Pages Tracking**: Respects the `totalPages` header from the API
+4. **Abort Signal Checking**: Checks for cancellation before each request and after delays
+
+### TypeScript Support
+
+The extension is fully typed and preserves the original response type:
+
+```typescript
+// Type is PaginatedRequest<ProductResponse[], ProductRequest>
+const request = Typewoo.admin.products.list({ status: 'publish' });
+
+// Type is Promise<ApiPaginationResult<ProductResponse[]>>
+const result = request.loop();
+
+// data is ProductResponse[] | undefined
+const { data } = await result;
+```
