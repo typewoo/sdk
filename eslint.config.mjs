@@ -9,6 +9,8 @@ export default [
       '**/dist',
       '**/vite.config.*.timestamp*',
       '**/vitest.config.*.timestamp*',
+      '**/vite.config.ts',
+      '**/vitest.config.ts',
     ],
   },
   {
@@ -18,7 +20,11 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+            '^.*/vite\\.config\\.[cm]?[jt]s$',
+            '^.*/vitest\\.config\\.[cm]?[jt]s$',
+          ],
           depConstraints: [
             {
               sourceTag: '*',

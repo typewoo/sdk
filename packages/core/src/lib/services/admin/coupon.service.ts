@@ -28,9 +28,9 @@ export class AdminCouponService extends BaseService {
    * const { data, pagination } = await sdk.admin.coupons.list({ per_page: 10 });
    *
    * // Loop through all pages with callback
-   * const { data: allCoupons } = await sdk.admin.coupons.list({ per_page: 100 }).loop({
-   *   onPage: ({ page, totalPages }) => console.log(`Page ${page}/${totalPages}`)
-   * });
+   *   onPage: ({ pagination }) => {
+   *     console.log(`Total pages: ${pagination?.totalPages ?? 'unknown'}`);
+   *   },
    *
    * // Simple - get all items
    * const { data: allCoupons } = await sdk.admin.coupons.list().loop();

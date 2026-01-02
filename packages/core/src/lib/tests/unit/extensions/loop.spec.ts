@@ -262,7 +262,6 @@ describe('loopExtension', () => {
     });
 
     it('skips delay on first request', async () => {
-      const startTime = Date.now();
       const mockRequest = vi.fn().mockResolvedValue({
         data: [{ id: 1, name: 'Item' }],
         pagination: { totalPages: 1 },

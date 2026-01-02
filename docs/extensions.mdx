@@ -43,10 +43,13 @@ Track progress as each page is fetched using the `onPage` callback:
 const { data: allOrders } = await Typewoo.admin.orders
   .list({ status: 'processing', per_page: 100 })
   .loop({
-    onPage: ({ page, totalPages, data }) => {
-      const percent = Math.round((page / (totalPages || 1)) * 100);
+    onPage: ({ data, pagination }) => {
+      const page = pagination.totalPages
+        ? pagination.totalPages - (pagination.totalPages - 1)
+        : 1;
+      const percent = Math.round((page / (pagination.totalPages || 1)) * 100);
       console.log(
-        `Progress: ${percent}% (${data?.length} orders on page ${page})`
+        `Progress: ${percent}% (${data?.length} orders, total: ${pagination.total})`
       );
     },
   });
@@ -65,7 +68,8 @@ const timeout = setTimeout(() => controller.abort(), 10000);
 try {
   const { data } = await Typewoo.admin.products.list({ per_page: 100 }).loop({
     signal: controller.signal,
-    onPage: ({ page }) => console.log(`Fetching page ${page}...`),
+    onPage: ({ pagination }) =>
+      console.log(`Fetched batch, total items: ${pagination.total}`),
   });
 
   console.log(`Fetched ${data?.length} products`);
@@ -87,8 +91,8 @@ async function fetchAllProducts() {
 
   const { data } = await Typewoo.admin.products.list().loop({
     signal: abortController.signal,
-    onPage: ({ page, totalPages }) => {
-      updateProgressBar(page, totalPages || 0);
+    onPage: ({ pagination }) => {
+      updateProgressBar(pagination.totalPages || 0);
     },
   });
 
@@ -236,8 +240,8 @@ const { data: categories } = await Typewoo.store.products.categories
 const { data: products } = await Typewoo.store.products
   .list({ attribute: 'pa_color', attribute_term: 'red', per_page: 100 })
   .loop({
-    onPage: ({ page, totalPages }) => {
-      console.log(`Loading products... ${page}/${totalPages}`);
+    onPage: ({ pagination }) => {
+      console.log(`Loading products... total: ${pagination.total}`);
     },
   });
 ```

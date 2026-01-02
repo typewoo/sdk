@@ -164,7 +164,11 @@ describe('PaginatedRequest', () => {
 
       const request = new PaginatedRequest<TestItem[], TestParams>(mockRequest);
 
-      await request.catch(() => {}).finally(cleanup);
+      await request
+        .catch(() => {
+          // noop - suppress error
+        })
+        .finally(cleanup);
 
       expect(cleanup).toHaveBeenCalledOnce();
     });
@@ -178,7 +182,9 @@ describe('PaginatedRequest', () => {
 
       const request = new PaginatedRequest<TestItem[], TestParams>(mockRequest);
 
-      const result = await request.finally(() => {});
+      const result = await request.finally(() => {
+        // noop - test cleanup
+      });
 
       expect(result.data).toEqual(mockData);
     });

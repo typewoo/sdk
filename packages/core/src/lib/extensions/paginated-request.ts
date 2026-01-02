@@ -17,7 +17,7 @@ import { LoopOptions } from './loop/loop.options.js';
  *
  * // Loop through all pages
  * const { data: allProducts } = await sdk.admin.products.list({ per_page: 100 }).loop({
- *   onPage: ({ page, totalPages }) => console.log(`Page ${page}/${totalPages}`)
+ *   onPage: ({ data, pagination }) => console.log(`Fetched ${data?.length} items, total: ${pagination.total}`)
  * });
  * ```
  */

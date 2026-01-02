@@ -1,2 +1,2 @@
-export * from './loop';
-export * from './loop.options';
+export * from './loop.js';
+export * from './loop.options.js';

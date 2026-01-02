@@ -160,8 +160,10 @@ For fetching all pages automatically, use the [`.loop()` extension](/extensions#
 const { data: allProducts } = await Typewoo.store.products
   .list({ category: 'clothing', per_page: 100 })
   .loop({
-    onPage: ({ page, totalPages }) => {
-      console.log(`Loading page ${page}/${totalPages}`);
+    onPage: ({ pagination }) => {
+      console.log(
+        `Fetched batch, total: ${pagination.total}/${pagination.totalPages} pages`
+      );
     },
   });
 
