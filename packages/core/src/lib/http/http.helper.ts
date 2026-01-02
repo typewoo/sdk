@@ -1,6 +1,6 @@
 import { AxiosError, Method } from 'axios';
 import { getSdkConfig } from '../configs/index.js';
-import { ApiError, AxiosApiResult } from '../types';
+import { ApiError, AxiosApiResult } from '../types/index.js';
 
 /**
  * Default retry configuration

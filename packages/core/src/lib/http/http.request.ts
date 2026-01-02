@@ -5,10 +5,15 @@ import {
   AxiosResponse,
 } from 'axios';
 import { getSdkConfig } from '../configs/index.js';
-import { AxiosApiResult, ApiError } from '../types';
-import { RequestContext, RequestOptions } from '../types/request';
-import { createRequest } from './http';
-import { createError, getRetryDelay, shouldRetry, sleep } from './http.helper';
+import { AxiosApiResult, ApiError } from '../types/index.js';
+import { RequestContext, RequestOptions } from '../types/request.js';
+import { createRequest } from './http.js';
+import {
+  createError,
+  getRetryDelay,
+  shouldRetry,
+  sleep,
+} from './http.helper.js';
 
 export const doRequest = async <T>(
   instance: AxiosInstance,

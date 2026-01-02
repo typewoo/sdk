@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { RequestOptions } from '../types/request';
-import { doRequest } from './http.request';
-import { httpClient } from './http.client';
+import { RequestOptions } from '../types/request.js';
+import { doRequest } from './http.request.js';
+import { httpClient } from './http.client.js';
 
 export const doGet = async <T>(
   url: string,
