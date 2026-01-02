@@ -1,4 +1,4 @@
-import { ApiError, ApiPaginationResult } from '../../types/api.js';
+import { ApiPaginationResult } from '../../types/api.js';
 
 /**
  * Options for the loop() pagination method
