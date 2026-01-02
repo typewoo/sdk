@@ -165,24 +165,32 @@ export class AdminProductService extends BaseService {
   /**
    * List product variations
    */
-  async listVariations(
+  listVariations(
     productId: number,
     params?: ProductQueryParams,
     options?: RequestOptions
-  ): Promise<ApiPaginationResult<AdminProductVariation[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}/${productId}/variations${
-      query ? `?${query}` : ''
-    }`;
+  ): PaginatedRequest<AdminProductVariation[], ProductQueryParams> {
+    const request = async (
+      pageParams?: ProductQueryParams
+    ): Promise<ApiPaginationResult<AdminProductVariation[]>> => {
+      const query = pageParams
+        ? qs.stringify(pageParams, { encode: false })
+        : '';
+      const url = `/${this.endpoint}/${productId}/variations${
+        query ? `?${query}` : ''
+      }`;
 
-    const { data, error, headers } = await doGet<AdminProductVariation[]>(
-      url,
-      options
-    );
+      const { data, error, headers } = await doGet<AdminProductVariation[]>(
+        url,
+        options
+      );
 
-    const pagination = extractPagination(headers);
+      const pagination = extractPagination(headers);
 
-    return { data, error, pagination };
+      return { data, error, pagination };
+    };
+
+    return new PaginatedRequest(request, params);
   }
 
   /**

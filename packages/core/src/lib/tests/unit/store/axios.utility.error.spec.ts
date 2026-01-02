@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { AxiosInstance } from 'axios';
-import { doRequest } from '../../../http';
+import { doRequest } from '../../../http/index.js';
 
 describe('axios.utility error path', () => {
   it('returns error structure on axios error', async () => {

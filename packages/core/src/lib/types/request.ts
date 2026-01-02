@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, Method } from 'axios';
-import { ApiError } from './api';
+import { ApiError } from './api.js';
 
 export interface RequestContext<T = unknown> {
   url?: string;
