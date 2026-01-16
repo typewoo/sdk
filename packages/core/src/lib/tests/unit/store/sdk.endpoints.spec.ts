@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createTypewoo, TypewooClient } from '../../../sdk.js';
+import { createTypewoo } from '../../../sdk.js';
 import type { CustomEndpoints } from '../../../configs/sdk.config.js';
 
 // Mock the HTTP client and interceptors to isolate SDK tests
