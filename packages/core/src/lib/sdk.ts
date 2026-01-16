@@ -33,7 +33,7 @@ import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.j
  *   baseUrl: 'https://mystore.com',
  *   endpoints: {
  *     posts: (options?: RequestOptions) => doGet(`/wp/v2/posts`, options),
- *     pages: () => doPost(`/wp/v2/pages`),
+ *     pages: () => doGet(`/wp/v2/pages`),
  *
  *     // using different baseUrl
  *     pages: () => doGet(`https://another-store.com/wp/v2/comments`),
