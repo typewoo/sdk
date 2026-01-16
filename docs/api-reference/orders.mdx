@@ -10,11 +10,13 @@ The Checkout and Orders APIs handle the checkout process, order creation, and or
 ## Access
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-const checkoutService = Typewoo.store.checkout;
-const checkoutOrderService = Typewoo.store.checkoutOrder;
-const orderService = Typewoo.store.orders;
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
+
+const checkoutService = sdk.store.checkout;
+const checkoutOrderService = sdk.store.checkoutOrder;
+const orderService = sdk.store.orders;
 ```
 
 ## Checkout Service
@@ -24,7 +26,7 @@ const orderService = Typewoo.store.orders;
 Get checkout data including cart contents and customer information.
 
 ```typescript
-const { data: checkout, error } = await Typewoo.store.checkout.get();
+const { data: checkout, error } = await sdk.store.checkout.get();
 
 console.log('Billing:', checkout?.billing_address);
 console.log('Shipping:', checkout?.shipping_address);
@@ -38,7 +40,7 @@ console.log('Payment methods:', checkout?.payment_methods);
 Update checkout data (addresses, customer note, etc.).
 
 ```typescript
-const { data: checkout, error } = await Typewoo.store.checkout.update(
+const { data: checkout, error } = await sdk.store.checkout.update(
   {
     billing_address: {
       first_name: 'John',
@@ -80,8 +82,8 @@ const { data: checkout, error } = await Typewoo.store.checkout.update(
 Create an order and process payment.
 
 ```typescript
-const { data: result, error } =
-  await Typewoo.store.checkout.processOrderAndPayment({
+const { data: result, error } = await sdk.store.checkout.processOrderAndPayment(
+  {
     billing_address: {
       first_name: 'John',
       last_name: 'Doe',
@@ -112,7 +114,8 @@ const { data: result, error } =
       { key: 'stripe_source', value: 'src_xxx' },
       { key: 'stripe_payment_type', value: 'card' },
     ],
-  });
+  }
+);
 
 if (error) {
   console.error('Checkout failed:', error.message);
@@ -146,7 +149,7 @@ For processing existing orders (pay-for-order flow):
 Process payment for an existing order.
 
 ```typescript
-const { data: result, error } = await Typewoo.store.checkoutOrder.order(
+const { data: result, error } = await sdk.store.checkoutOrder.order(
   12345, // Order ID
   {
     key: 'wc_order_xxx', // Order key
@@ -175,7 +178,7 @@ const { data: result, error } = await Typewoo.store.checkoutOrder.order(
 Get order details for pay-for-order pages.
 
 ```typescript
-const { data: order, error } = await Typewoo.store.orders.get(
+const { data: order, error } = await sdk.store.orders.get(
   'wc_order_xxx', // Order key
   '12345', // Order ID
   'john@example.com' // Optional billing email for guest orders
@@ -301,18 +304,20 @@ interface OrderTotalResponse {
 ## Complete Checkout Example
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 async function processCheckout(
   customerData: CustomerData,
   paymentData: PaymentData
 ) {
   // 1. Get current checkout state
-  const { data: checkout } = await Typewoo.store.checkout.get();
+  const { data: checkout } = await sdk.store.checkout.get();
 
   // 2. Update customer addresses
   const { data: updatedCheckout, error: updateError } =
-    await Typewoo.store.checkout.update(
+    await sdk.store.checkout.update(
       {
         billing_address: customerData.billing,
         shipping_address: customerData.shipping,
@@ -326,7 +331,7 @@ async function processCheckout(
 
   // 3. Process order and payment
   const { data: result, error } =
-    await Typewoo.store.checkout.processOrderAndPayment({
+    await sdk.store.checkout.processOrderAndPayment({
       billing_address: customerData.billing,
       shipping_address: customerData.shipping,
       customer_note: customerData.notes,
@@ -372,7 +377,7 @@ async function payForOrder(
   billingEmail: string
 ) {
   // 1. Get order details
-  const { data: order, error } = await Typewoo.store.orders.get(
+  const { data: order, error } = await sdk.store.orders.get(
     orderKey,
     orderId.toString(),
     billingEmail
@@ -388,7 +393,7 @@ async function payForOrder(
 
   // 2. Process payment
   const { data: result, error: paymentError } =
-    await Typewoo.store.checkoutOrder.order(orderId, {
+    await sdk.store.checkoutOrder.order(orderId, {
       key: orderKey,
       payment_method: 'stripe',
       payment_data: [{ key: 'stripe_source', value: stripeToken }],
@@ -409,21 +414,21 @@ For full order management, use the Admin API:
 
 ```typescript
 // List orders
-const { data: orders, pagination } = await Typewoo.admin.orders.list({
+const { data: orders, pagination } = await sdk.admin.orders.list({
   status: 'processing',
   per_page: 20,
 });
 
 // Get single order
-const { data: order } = await Typewoo.admin.orders.getById(12345);
+const { data: order } = await sdk.admin.orders.getById(12345);
 
 // Update order status
-const { data: updated } = await Typewoo.admin.orders.update(12345, {
+const { data: updated } = await sdk.admin.orders.update(12345, {
   status: 'completed',
 });
 
 // Create order
-const { data: newOrder } = await Typewoo.admin.orders.create({
+const { data: newOrder } = await sdk.admin.orders.create({
   payment_method: 'bacs',
   payment_method_title: 'Direct Bank Transfer',
   status: 'pending',
@@ -437,10 +442,10 @@ const { data: newOrder } = await Typewoo.admin.orders.create({
 });
 
 // Delete order
-await Typewoo.admin.orders.delete(12345, true);
+await sdk.admin.orders.delete(12345, true);
 
 // Create refund
-const { data: refund } = await Typewoo.admin.refunds.create(12345, {
+const { data: refund } = await sdk.admin.refunds.create(12345, {
   amount: '10.00',
   reason: 'Customer request',
 });
@@ -451,9 +456,7 @@ const { data: refund } = await Typewoo.admin.refunds.create(12345, {
 Common checkout errors:
 
 ```typescript
-const { data, error } = await Typewoo.store.checkout.processOrderAndPayment(
-  params
-);
+const { data, error } = await sdk.store.checkout.processOrderAndPayment(params);
 
 if (error) {
   switch (error.code) {

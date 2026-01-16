@@ -10,17 +10,17 @@ The Typewoo SDK is exported as a singleton instance. This page documents the mai
 ## Import
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 ```
 
 ## Initialization
 
-### `init(config: SdkConfig): Promise<void>`
+### `createTypewoo(config: SdkConfig): Sdk`
 
-Initialize the SDK with configuration options. Must be called before accessing any services.
+Create an SDK instance with configuration options. Returns the SDK instance synchronously.
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 ```
@@ -75,12 +75,12 @@ interface SdkConfig {
 }
 ```
 
-**Returns:** `Promise<void>`
+**Returns:** `Sdk`
 
 **Notes:**
 
-- Initialization is idempotent; subsequent calls are ignored
-- Must complete before accessing services, state, or config
+- Returns an SDK instance that can be used immediately
+- Multiple instances can be created with different configurations
 
 ## Properties
 
@@ -89,8 +89,8 @@ interface SdkConfig {
 Access Store API services (WooCommerce Store API endpoints).
 
 ```typescript
-const products = await Typewoo.store.products.list();
-const cart = await Typewoo.store.cart.get();
+const products = await sdk.store.products.list();
+const cart = await sdk.store.cart.get();
 ```
 
 **Available Services:**
@@ -119,8 +119,8 @@ const cart = await Typewoo.store.cart.get();
 Access Authentication API services.
 
 ```typescript
-await Typewoo.auth.token({ login: 'user', password: 'pass' });
-await Typewoo.auth.validate();
+await sdk.auth.token({ login: 'user', password: 'pass' });
+await sdk.auth.validate();
 ```
 
 **Available Methods:**
@@ -140,8 +140,8 @@ await Typewoo.auth.validate();
 Access Admin REST API services (WooCommerce REST API v3).
 
 ```typescript
-const products = await Typewoo.admin.products.list();
-const order = await Typewoo.admin.orders.getById(123);
+const products = await sdk.admin.products.list();
+const order = await sdk.admin.orders.getById(123);
 ```
 
 **Available Services:**
@@ -176,7 +176,7 @@ const order = await Typewoo.admin.orders.getById(123);
 Access the EventBus for subscribing to SDK events.
 
 ```typescript
-Typewoo.events.on('cart:updated', (cart) => {
+sdk.events.on('cart:updated', (cart) => {
   console.log('Cart updated:', cart);
 });
 ```
@@ -190,8 +190,8 @@ See [Hooks and Events](/hooks-and-events) for full documentation.
 Access the SDK's runtime state.
 
 ```typescript
-console.log('Authenticated:', Typewoo.state.authenticated);
-console.log('Cart token:', Typewoo.state.cartToken);
+console.log('Authenticated:', sdk.state.authenticated);
+console.log('Cart token:', sdk.state.cartToken);
 ```
 
 **Type:** `SdkState`
@@ -211,7 +211,7 @@ interface SdkState {
 Access the resolved SDK configuration.
 
 ```typescript
-console.log('Base URL:', Typewoo.config.baseUrl);
+console.log('Base URL:', sdk.config.baseUrl);
 ```
 
 **Type:** `ResolvedSdkConfig`
@@ -319,7 +319,7 @@ import {
 All SDK methods return an `ApiResult` object with `data` or `error`:
 
 ```typescript
-const { data, error } = await Typewoo.store.products.list();
+const { data, error } = await sdk.store.products.list();
 
 if (error) {
   console.error('Error code:', error.code);
@@ -337,10 +337,10 @@ See [Error Handling](/error-handling) for detailed information.
 ## Complete Example
 
 ```typescript
-import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+import { createTypewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
 
 // Initialize
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -350,16 +350,16 @@ await Typewoo.init({
 });
 
 // Subscribe to events
-Typewoo.events.on('auth:changed', (isAuth) => {
+sdk.events.on('auth:changed', (isAuth) => {
   console.log('Auth changed:', isAuth);
 });
 
-Typewoo.events.on('cart:updated', (cart) => {
+sdk.events.on('cart:updated', (cart) => {
   updateCartUI(cart);
 });
 
 // Authenticate
-const { error: authError } = await Typewoo.auth.token({
+const { error: authError } = await sdk.auth.token({
   login: 'user@example.com',
   password: 'password',
 });
@@ -367,16 +367,16 @@ const { error: authError } = await Typewoo.auth.token({
 if (authError) {
   console.error('Login failed');
 } else {
-  console.log('Logged in, authenticated:', Typewoo.state.authenticated);
+  console.log('Logged in, authenticated:', sdk.state.authenticated);
 }
 
 // Use Store API
-const { data: products } = await Typewoo.store.products.list({
+const { data: products } = await sdk.store.products.list({
   per_page: 10,
   orderby: 'popularity',
 });
 
-const { data: cart } = await Typewoo.store.cart.add({
+const { data: cart } = await sdk.store.cart.add({
   id: products![0].id,
   quantity: 1,
 });

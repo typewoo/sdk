@@ -26,25 +26,31 @@ pnpm add @typewoo/sdk axios qs zod
 
 ### Initialize the SDK
 
-The SDK must be initialized before use. Call `Typewoo.init()` with your store's base URL:
+The recommended way to initialize the SDK is using `createTypewoo()`. This returns a typed client instance:
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 ```
 
-The SDK is a singleton instance. Calling `init()` multiple times is safe; subsequent calls are ignored.
+You can export this instance from a shared module and import it throughout your application.
+
+<Note>
+  The legacy `Typewoo.init()` singleton pattern is deprecated and will be
+  removed in a future major version. Migrate to `createTypewoo()` for better
+  TypeScript support and custom endpoints.
+</Note>
 
 ### Access Store Services
 
-After initialization, access the Store API through `Typewoo.store`:
+After initialization, access the Store API through `sdk.store`:
 
 ```typescript
 // Get products
-const { data: products, error } = await Typewoo.store.products.list();
+const { data: products, error } = await sdk.store.products.list();
 
 if (error) {
   console.error('Failed to fetch products:', error.message);
@@ -58,20 +64,18 @@ if (error) {
 ### Fetch Products
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
-
 // List products with filters
-const { data: products, pagination } = await Typewoo.store.products.list({
+const { data: products, pagination } = await sdk.store.products.list({
   per_page: 12,
   orderby: 'popularity',
   category: 'clothing',
 });
 
 // Get a single product by ID
-const { data: product } = await Typewoo.store.products.single({ id: 123 });
+const { data: product } = await sdk.store.products.single({ id: 123 });
 
 // Get a single product by slug
-const { data: productBySlug } = await Typewoo.store.products.single({
+const { data: productBySlug } = await sdk.store.products.single({
   slug: 'blue-t-shirt',
 });
 ```
@@ -79,31 +83,29 @@ const { data: productBySlug } = await Typewoo.store.products.single({
 ### Cart Operations
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
-
 // Get the current cart
-const { data: cart } = await Typewoo.store.cart.get();
+const { data: cart } = await sdk.store.cart.get();
 
 // Add an item to the cart
-const { data: updatedCart } = await Typewoo.store.cart.add({
+const { data: updatedCart } = await sdk.store.cart.add({
   id: 123, // Product or variation ID
   quantity: 2,
 });
 
 // Update item quantity
-const { data: cart } = await Typewoo.store.cart.update(
+const { data: cart } = await sdk.store.cart.update(
   'item_key_here', // Cart item key
   3 // New quantity
 );
 
 // Remove an item
-const { data: cart } = await Typewoo.store.cart.remove('item_key_here');
+const { data: cart } = await sdk.store.cart.remove('item_key_here');
 
 // Apply a coupon
-const { data: cart } = await Typewoo.store.cart.applyCoupon('SAVE10');
+const { data: cart } = await sdk.store.cart.applyCoupon('SAVE10');
 
 // Remove a coupon
-const { data: cart } = await Typewoo.store.cart.removeCoupon('SAVE10');
+const { data: cart } = await sdk.store.cart.removeCoupon('SAVE10');
 ```
 
 ### User Authentication
@@ -111,10 +113,8 @@ const { data: cart } = await Typewoo.store.cart.removeCoupon('SAVE10');
 Authentication requires the Typewoo WordPress plugin to be installed on your WooCommerce store.
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
-
 // Login with username and password
-const { data: authResponse, error } = await Typewoo.auth.token({
+const { data: authResponse, error } = await sdk.auth.token({
   login: 'username',
   password: 'password',
 });
@@ -127,23 +127,21 @@ if (error) {
 }
 
 // Check authentication status
-const { data: status } = await Typewoo.auth.status();
+const { data: status } = await sdk.auth.status();
 console.log('Authenticated:', status?.authenticated);
 
 // Logout (revoke token)
-await Typewoo.auth.revokeToken();
+await sdk.auth.revokeToken();
 ```
 
 ### Checkout Flow
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
-
 // Get checkout data (cart + customer info)
-const { data: checkout } = await Typewoo.store.checkout.get();
+const { data: checkout } = await sdk.store.checkout.get();
 
 // Update customer addresses
-const { data: updatedCheckout } = await Typewoo.store.checkout.update({
+const { data: updatedCheckout } = await sdk.store.checkout.update({
   billing_address: {
     first_name: 'John',
     last_name: 'Doe',
@@ -159,7 +157,7 @@ const { data: updatedCheckout } = await Typewoo.store.checkout.update({
 
 // Process order and payment
 const { data: orderResult, error } =
-  await Typewoo.store.checkout.processOrderAndPayment({
+  await sdk.store.checkout.processOrderAndPayment({
     billing_address: {
       /* ... */
     },
@@ -181,20 +179,18 @@ if (orderResult) {
 The SDK emits events for key operations. Subscribe to them for reactive UI updates:
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
-
 // Listen for cart updates
-Typewoo.events.on('cart:updated', (cart) => {
+sdk.events.on('cart:updated', (cart) => {
   console.log('Cart updated:', cart?.items_count);
 });
 
 // Listen for authentication changes
-Typewoo.events.on('auth:changed', (isAuthenticated) => {
+sdk.events.on('auth:changed', (isAuthenticated) => {
   console.log('Auth state:', isAuthenticated ? 'logged in' : 'logged out');
 });
 
 // Listen for loading states
-Typewoo.events.on('cart:loading', (isLoading) => {
+sdk.events.on('cart:loading', (isLoading) => {
   if (isLoading) {
     showSpinner();
   } else {
@@ -208,9 +204,10 @@ Typewoo.events.on('cart:loading', (isLoading) => {
 All API responses are strongly typed. Use TypeScript for full IntelliSense support:
 
 ```typescript
-import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+import { createTypewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
 
-const { data } = await Typewoo.store.products.list();
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
+const { data } = await sdk.store.products.list();
 
 // `data` is typed as ProductResponse[] | undefined
 data?.forEach((product: ProductResponse) => {

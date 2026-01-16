@@ -86,7 +86,7 @@ export const Typewoo = new Sdk();
 
 - Ensures consistent state across the application
 - Prevents duplicate HTTP client instances
-- Simplifies import syntax (`Typewoo.store.products`)
+- Simplifies import syntax (`sdk.store.products`)
 
 ### Lazy Initialization (Admin Services)
 
@@ -442,6 +442,6 @@ dist/
 The SDK can be extended through:
 
 1. **Custom Storage Providers**: Implement `StorageProvider`
-2. **Event Middleware**: Add via `Typewoo.events.use()`
+2. **Event Middleware**: Add via `sdk.events.use()`
 3. **Request Options**: Per-request customization
 4. **Axios Interceptors**: Direct httpClient access

@@ -14,7 +14,7 @@ The Batch API allows multiple Store API operations in a single HTTP request, red
 ### Basic Batch Request
 
 ```typescript
-const { data, error } = await Typewoo.store.batch.execute({
+const { data, error } = await sdk.store.batch.execute({
   requests: [
     {
       method: 'POST',
@@ -40,7 +40,7 @@ data?.responses.forEach((response, index) => {
 
 ```typescript
 // All requests must validate before any are processed
-const { data } = await Typewoo.store.batch.execute({
+const { data } = await sdk.store.batch.execute({
   validation: 'require-all-validate',
   requests: [
     /* ... */
@@ -48,7 +48,7 @@ const { data } = await Typewoo.store.batch.execute({
 });
 
 // Process requests individually (default)
-const { data } = await Typewoo.store.batch.execute({
+const { data } = await sdk.store.batch.execute({
   validation: 'normal',
   requests: [
     /* ... */
@@ -93,7 +93,7 @@ interface BatchResponseItem {
 ```typescript
 const productIds = [123, 456, 789];
 
-const { data } = await Typewoo.store.batch.execute({
+const { data } = await sdk.store.batch.execute({
   requests: productIds.map((id) => ({
     method: 'POST',
     path: '/wc/store/v1/cart/add-item',
@@ -110,7 +110,7 @@ const updates = [
   { key: 'item2', quantity: 5 },
 ];
 
-const { data } = await Typewoo.store.batch.execute({
+const { data } = await sdk.store.batch.execute({
   requests: updates.map(({ key, quantity }) => ({
     method: 'POST',
     path: '/wc/store/v1/cart/update-item',
@@ -124,7 +124,7 @@ const { data } = await Typewoo.store.batch.execute({
 The Cart Extensions API allows interaction with registered WooCommerce cart extensions:
 
 ```typescript
-const { data, error } = await Typewoo.store.cartExtensions.update({
+const { data, error } = await sdk.store.cartExtensions.update({
   namespace: 'my-extension',
   data: {
     custom_field: 'value',
@@ -160,7 +160,7 @@ interface RequestOptions<T = unknown> {
 ### Custom Headers
 
 ```typescript
-const { data } = await Typewoo.store.products.list(
+const { data } = await sdk.store.products.list(
   { per_page: 10 },
   {
     axiosConfig: {
@@ -176,7 +176,7 @@ const { data } = await Typewoo.store.products.list(
 ### Request Timeout
 
 ```typescript
-const { data } = await Typewoo.store.products.list(
+const { data } = await sdk.store.products.list(
   { per_page: 100 },
   {
     axiosConfig: {
@@ -189,7 +189,7 @@ const { data } = await Typewoo.store.products.list(
 ### Lifecycle Callbacks
 
 ```typescript
-const { data } = await Typewoo.store.cart.add(
+const { data } = await sdk.store.cart.add(
   { id: 123 },
   {
     onRequest: (context) => {
@@ -219,7 +219,7 @@ const { data } = await Typewoo.store.cart.add(
 ### Configuration
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   request: {
     retry: {
@@ -325,7 +325,7 @@ httpClient.interceptors.response.use((response) => {
 For server-side rendering, use memory storage:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -385,14 +385,16 @@ const cookieStorage = (
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Typewoo, ProductRequest } from '@typewoo/sdk';
+import { createTypewoo, ProductRequest } from '@typewoo/sdk';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 // Products query
 function useProducts(params?: ProductRequest) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {
-      const { data, error } = await Typewoo.store.products.list(params);
+      const { data, error } = await sdk.store.products.list(params);
       if (error) throw new Error(error.message);
       return data!;
     },
@@ -405,7 +407,7 @@ function useAddToCart() {
 
   return useMutation({
     mutationFn: async (productId: number) => {
-      const { data, error } = await Typewoo.store.cart.add({ id: productId });
+      const { data, error } = await sdk.store.cart.add({ id: productId });
       if (error) throw new Error(error.message);
       return data!;
     },
@@ -420,8 +422,10 @@ function useAddToCart() {
 
 ```typescript
 import { Injectable, inject } from '@angular/core';
-import { Typewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
+import { createTypewoo, ProductResponse, CartResponse } from '@typewoo/sdk';
 import { BehaviorSubject, Observable, from } from 'rxjs';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {
@@ -429,7 +433,7 @@ export class StoreService {
 
   constructor() {
     // Listen to SDK events
-    Typewoo.events.on('cart:updated', (cart) => {
+    sdk.events.on('cart:updated', (cart) => {
       this.cart$.next(cart);
     });
   }
@@ -440,7 +444,7 @@ export class StoreService {
 
   getProducts(params?: ProductRequest): Observable<ProductResponse[]> {
     return from(
-      Typewoo.store.products.list(params).then(({ data, error }) => {
+      sdk.store.products.list(params).then(({ data, error }) => {
         if (error) throw new Error(error.message);
         return data!;
       })
@@ -449,7 +453,7 @@ export class StoreService {
 
   addToCart(productId: number): Observable<CartResponse> {
     return from(
-      Typewoo.store.cart.add({ id: productId }).then(({ data, error }) => {
+      sdk.store.cart.add({ id: productId }).then(({ data, error }) => {
         if (error) throw new Error(error.message);
         return data!;
       })
@@ -462,7 +466,9 @@ export class StoreService {
 
 ```typescript
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Typewoo, CartResponse } from '@typewoo/sdk';
+import { createTypewoo, CartResponse } from '@typewoo/sdk';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 export function useCart() {
   const cart = ref<CartResponse | undefined>();
@@ -471,16 +477,16 @@ export function useCart() {
   let unsubscribe: (() => void) | undefined;
 
   onMounted(() => {
-    unsubscribe = Typewoo.events.on('cart:updated', (newCart) => {
+    unsubscribe = sdk.events.on('cart:updated', (newCart) => {
       cart.value = newCart;
     });
 
-    Typewoo.events.on('cart:loading', (isLoading) => {
+    sdk.events.on('cart:loading', (isLoading) => {
       loading.value = isLoading;
     });
 
     // Initial load
-    Typewoo.store.cart.get();
+    sdk.store.cart.get();
   });
 
   onUnmounted(() => {
@@ -488,7 +494,7 @@ export function useCart() {
   });
 
   const addToCart = async (productId: number) => {
-    const { error } = await Typewoo.store.cart.add({ id: productId });
+    const { error } = await sdk.store.cart.add({ id: productId });
     if (error) throw new Error(error.message);
   };
 
@@ -507,12 +513,12 @@ export function useCart() {
 ```typescript
 // Preload products on page load
 async function preloadProducts() {
-  await Typewoo.store.products.list({ per_page: 12 });
+  await sdk.store.products.list({ per_page: 12 });
 }
 
 // Preload cart
 async function preloadCart() {
-  await Typewoo.store.cart.get();
+  await sdk.store.cart.get();
 }
 ```
 
@@ -521,9 +527,9 @@ async function preloadCart() {
 ```typescript
 // Load multiple resources in parallel
 const [productsResult, cartResult, categoriesResult] = await Promise.all([
-  Typewoo.store.products.list({ per_page: 12 }),
-  Typewoo.store.cart.get(),
-  Typewoo.store.categories.list(),
+  sdk.store.products.list({ per_page: 12 }),
+  sdk.store.cart.get(),
+  sdk.store.categories.list(),
 ]);
 ```
 
@@ -551,7 +557,7 @@ const cache = new RequestCache();
 
 // Deduplicated cart fetch
 async function getCart() {
-  return cache.dedupe('cart', () => Typewoo.store.cart.get());
+  return cache.dedupe('cart', () => sdk.store.cart.get());
 }
 ```
 
@@ -561,7 +567,7 @@ async function getCart() {
 
 ```typescript
 // Log all events
-Typewoo.events.onAny((event, payload) => {
+sdk.events.onAny((event, payload) => {
   console.log(`[SDK Event] ${String(event)}:`, payload);
 });
 ```
@@ -570,7 +576,7 @@ Typewoo.events.onAny((event, payload) => {
 
 ```typescript
 // Log all requests
-const { data } = await Typewoo.store.products.list(
+const { data } = await sdk.store.products.list(
   {},
   {
     onRequest: (ctx) => console.log('Request:', ctx.method, ctx.url),
@@ -585,8 +591,8 @@ const { data } = await Typewoo.store.products.list(
 ```typescript
 // Inspect SDK state
 console.log('SDK State:', {
-  authenticated: Typewoo.state.authenticated,
-  cartToken: Typewoo.state.cartToken,
-  nonce: Typewoo.state.nonce,
+  authenticated: sdk.state.authenticated,
+  cartToken: sdk.state.cartToken,
+  nonce: sdk.state.nonce,
 });
 ```
