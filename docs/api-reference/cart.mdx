@@ -10,16 +10,18 @@ The Cart API provides comprehensive cart management through the WooCommerce Stor
 ## Access
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 // Main cart operations
-const cartService = Typewoo.store.cart;
+const cartService = sdk.store.cart;
 
 // Individual cart item operations
-const cartItemsService = Typewoo.store.cartItems;
+const cartItemsService = sdk.store.cartItems;
 
 // Coupon operations
-const cartCouponsService = Typewoo.store.cartCoupons;
+const cartCouponsService = sdk.store.cartCoupons;
 ```
 
 ## Cart Service
@@ -29,7 +31,7 @@ const cartCouponsService = Typewoo.store.cartCoupons;
 Retrieve the current cart.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.get();
+const { data: cart, error } = await sdk.store.cart.get();
 
 console.log('Items:', cart?.items_count);
 console.log('Total:', cart?.totals.total_price);
@@ -50,7 +52,7 @@ console.log('Total:', cart?.totals.total_price);
 Add an item to the cart.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.add({
+const { data: cart, error } = await sdk.store.cart.add({
   id: 123, // Product or variation ID
   quantity: 2, // Optional, defaults to 1
 });
@@ -67,7 +69,7 @@ const { data: cart, error } = await Typewoo.store.cart.add({
 **Adding Variations:**
 
 ```typescript
-const { data } = await Typewoo.store.cart.add({
+const { data } = await sdk.store.cart.add({
   id: 456,
   quantity: 1,
   variation: [
@@ -84,7 +86,7 @@ const { data } = await Typewoo.store.cart.add({
 Update the quantity of a cart item.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.update(
+const { data: cart, error } = await sdk.store.cart.update(
   'abc123def456', // Cart item key
   5 // New quantity
 );
@@ -105,7 +107,7 @@ const { data: cart, error } = await Typewoo.store.cart.update(
 Remove an item from the cart.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.remove('abc123def456');
+const { data: cart, error } = await sdk.store.cart.remove('abc123def456');
 ```
 
 **Parameters:**
@@ -122,7 +124,7 @@ const { data: cart, error } = await Typewoo.store.cart.remove('abc123def456');
 Apply a coupon to the cart.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.applyCoupon('SAVE10');
+const { data: cart, error } = await sdk.store.cart.applyCoupon('SAVE10');
 
 if (error) {
   console.error('Coupon error:', error.message);
@@ -144,7 +146,7 @@ if (error) {
 Remove a coupon from the cart.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.removeCoupon('SAVE10');
+const { data: cart, error } = await sdk.store.cart.removeCoupon('SAVE10');
 ```
 
 **Returns:** `Promise<ApiResult<CartResponse>>`
@@ -154,7 +156,7 @@ const { data: cart, error } = await Typewoo.store.cart.removeCoupon('SAVE10');
 Update customer billing and shipping addresses.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.updateCustomer({
+const { data: cart, error } = await sdk.store.cart.updateCustomer({
   billing_address: {
     first_name: 'John',
     last_name: 'Doe',
@@ -185,7 +187,7 @@ const { data: cart, error } = await Typewoo.store.cart.updateCustomer({
 Select a shipping rate for a package.
 
 ```typescript
-const { data: cart, error } = await Typewoo.store.cart.selectShippingRate(
+const { data: cart, error } = await sdk.store.cart.selectShippingRate(
   0, // Package ID
   'flat_rate:1' // Rate ID
 );
@@ -210,7 +212,7 @@ For granular cart item operations:
 List all cart items.
 
 ```typescript
-const { data: items, pagination } = await Typewoo.store.cartItems.list();
+const { data: items, pagination } = await sdk.store.cartItems.list();
 ```
 
 **Returns:** `Promise<ApiPaginationResult<CartItemResponse[]>>`
@@ -220,9 +222,7 @@ const { data: items, pagination } = await Typewoo.store.cartItems.list();
 Get a single cart item by key.
 
 ```typescript
-const { data: item, error } = await Typewoo.store.cartItems.single(
-  'abc123def456'
-);
+const { data: item, error } = await sdk.store.cartItems.single('abc123def456');
 ```
 
 **Returns:** `Promise<ApiResult<CartItemResponse>>`
@@ -232,7 +232,7 @@ const { data: item, error } = await Typewoo.store.cartItems.single(
 Add a cart item (returns item, not full cart).
 
 ```typescript
-const { data: item, error } = await Typewoo.store.cartItems.add({
+const { data: item, error } = await sdk.store.cartItems.add({
   id: 123,
   quantity: 2,
 });
@@ -245,7 +245,7 @@ const { data: item, error } = await Typewoo.store.cartItems.add({
 Update a cart item quantity (returns item).
 
 ```typescript
-const { data: item, error } = await Typewoo.store.cartItems.update(
+const { data: item, error } = await sdk.store.cartItems.update(
   'abc123def456',
   3
 );
@@ -258,7 +258,7 @@ const { data: item, error } = await Typewoo.store.cartItems.update(
 Remove a single cart item.
 
 ```typescript
-const { data, error } = await Typewoo.store.cartItems.remove('abc123def456');
+const { data, error } = await sdk.store.cartItems.remove('abc123def456');
 ```
 
 **Returns:** `Promise<ApiResult<unknown>>`
@@ -268,7 +268,7 @@ const { data, error } = await Typewoo.store.cartItems.remove('abc123def456');
 Remove all items from the cart.
 
 ```typescript
-const { data: items, error } = await Typewoo.store.cartItems.clear();
+const { data: items, error } = await sdk.store.cartItems.clear();
 ```
 
 **Returns:** `Promise<ApiResult<CartItemResponse[]>>`
@@ -280,7 +280,7 @@ const { data: items, error } = await Typewoo.store.cartItems.clear();
 List applied coupons.
 
 ```typescript
-const { data: coupons } = await Typewoo.store.cartCoupons.list();
+const { data: coupons } = await sdk.store.cartCoupons.list();
 ```
 
 ### `single(code, options?)`
@@ -288,7 +288,7 @@ const { data: coupons } = await Typewoo.store.cartCoupons.list();
 Get details of an applied coupon.
 
 ```typescript
-const { data: coupon } = await Typewoo.store.cartCoupons.single('SAVE10');
+const { data: coupon } = await sdk.store.cartCoupons.single('SAVE10');
 ```
 
 ### `add(code, options?)`
@@ -296,7 +296,7 @@ const { data: coupon } = await Typewoo.store.cartCoupons.single('SAVE10');
 Apply a coupon.
 
 ```typescript
-const { data: coupon, error } = await Typewoo.store.cartCoupons.add('SAVE10');
+const { data: coupon, error } = await sdk.store.cartCoupons.add('SAVE10');
 ```
 
 ### `remove(code, options?)`
@@ -304,7 +304,7 @@ const { data: coupon, error } = await Typewoo.store.cartCoupons.add('SAVE10');
 Remove a coupon.
 
 ```typescript
-const { data, error } = await Typewoo.store.cartCoupons.remove('SAVE10');
+const { data, error } = await sdk.store.cartCoupons.remove('SAVE10');
 ```
 
 ## Response Types
@@ -417,13 +417,13 @@ Subscribe to cart-related events:
 
 ```typescript
 // Cart data updated
-Typewoo.events.on('cart:updated', (cart) => {
+sdk.events.on('cart:updated', (cart) => {
   updateCartBadge(cart?.items_count);
   updateCartTotal(cart?.totals.total_price);
 });
 
 // Loading state
-Typewoo.events.on('cart:loading', (isLoading) => {
+sdk.events.on('cart:loading', (isLoading) => {
   if (isLoading) {
     showSpinner();
   } else {
@@ -432,20 +432,20 @@ Typewoo.events.on('cart:loading', (isLoading) => {
 });
 
 // Request lifecycle
-Typewoo.events.on('cart:request:start', () => {
+sdk.events.on('cart:request:start', () => {
   console.log('Cart request started');
 });
 
-Typewoo.events.on('cart:request:success', () => {
+sdk.events.on('cart:request:success', () => {
   console.log('Cart request succeeded');
 });
 
-Typewoo.events.on('cart:request:error', (errorData) => {
+sdk.events.on('cart:request:error', (errorData) => {
   console.error('Cart request failed:', errorData?.error);
 });
 
 // Cart token changes
-Typewoo.events.on('cart:token:changed', (token) => {
+sdk.events.on('cart:token:changed', (token) => {
   console.log('New cart token:', token);
 });
 ```
@@ -455,29 +455,29 @@ Typewoo.events.on('cart:token:changed', (token) => {
 ### Complete Cart Flow
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
 // 1. Initialize SDK
-await Typewoo.init({ baseUrl: 'https://your-store.com' });
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 // 2. Subscribe to updates
-Typewoo.events.on('cart:updated', (cart) => {
+sdk.events.on('cart:updated', (cart) => {
   console.log(
     `Cart: ${cart?.items_count} items, ${formatPrice(cart?.totals.total_price)}`
   );
 });
 
 // 3. Add product to cart
-const { data: cart, error } = await Typewoo.store.cart.add({
+const { data: cart, error } = await sdk.store.cart.add({
   id: 123,
   quantity: 2,
 });
 
 // 4. Apply coupon
-await Typewoo.store.cart.applyCoupon('WELCOME10');
+await sdk.store.cart.applyCoupon('WELCOME10');
 
 // 5. Update shipping address
-await Typewoo.store.cart.updateCustomer({
+await sdk.store.cart.updateCustomer({
   shipping_address: {
     country: 'US',
     state: 'CA',
@@ -488,11 +488,11 @@ await Typewoo.store.cart.updateCustomer({
 // 6. Select shipping method
 const rates = cart?.shipping_rates[0]?.shipping_rates;
 if (rates?.length) {
-  await Typewoo.store.cart.selectShippingRate(0, rates[0].rate_id);
+  await sdk.store.cart.selectShippingRate(0, rates[0].rate_id);
 }
 
 // 7. Get final cart state
-const { data: finalCart } = await Typewoo.store.cart.get();
+const { data: finalCart } = await sdk.store.cart.get();
 console.log('Ready for checkout:', finalCart);
 ```
 
@@ -501,7 +501,7 @@ console.log('Ready for checkout:', finalCart);
 ```typescript
 async function updateQuantity(itemKey: string, delta: number) {
   // Get current item
-  const { data: item } = await Typewoo.store.cartItems.single(itemKey);
+  const { data: item } = await sdk.store.cartItems.single(itemKey);
   if (!item) return;
 
   const newQuantity = item.quantity + delta;
@@ -515,25 +515,27 @@ async function updateQuantity(itemKey: string, delta: number) {
 
   if (newQuantity <= 0) {
     // Remove item
-    return Typewoo.store.cart.remove(itemKey);
+    return sdk.store.cart.remove(itemKey);
   }
 
   // Update quantity
-  return Typewoo.store.cart.update(itemKey, newQuantity);
+  return sdk.store.cart.update(itemKey, newQuantity);
 }
 ```
 
 ### Mini Cart Component
 
 ```typescript
-import { Typewoo, CartResponse } from '@typewoo/sdk';
+import { createTypewoo, CartResponse } from '@typewoo/sdk';
+
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 class MiniCart {
   private cart: CartResponse | undefined;
 
   constructor() {
     // Subscribe to updates
-    Typewoo.events.on('cart:updated', (cart) => {
+    sdk.events.on('cart:updated', (cart) => {
       this.cart = cart;
       this.render();
     });
@@ -543,7 +545,7 @@ class MiniCart {
   }
 
   async loadCart() {
-    const { data } = await Typewoo.store.cart.get();
+    const { data } = await sdk.store.cart.get();
     // cart:updated event will trigger render
   }
 
@@ -562,7 +564,7 @@ class MiniCart {
 
 ```typescript
 async function addToCart(productId: number) {
-  const { data, error } = await Typewoo.store.cart.add({
+  const { data, error } = await sdk.store.cart.add({
     id: productId,
     quantity: 1,
   });

@@ -23,7 +23,7 @@ The `loop()` extension fetches all pages from a paginated endpoint and returns a
 
 ```typescript
 // Fetch all products across all pages
-const { data: allProducts, pagination } = await Typewoo.admin.products
+const { data: allProducts, pagination } = await sdk.admin.products
   .list({ per_page: 100 })
   .loop();
 
@@ -42,7 +42,7 @@ Track progress as each page is fetched using the `onPage` callback:
 ```typescript
 let currentPage = 0;
 
-const { data: allOrders } = await Typewoo.admin.orders
+const { data: allOrders } = await sdk.admin.orders
   .list({ status: 'processing', per_page: 100 })
   .loop({
     onPage: ({ data, pagination }) => {
@@ -68,7 +68,7 @@ const controller = new AbortController();
 const timeout = setTimeout(() => controller.abort(), 10000);
 
 try {
-  const { data } = await Typewoo.admin.products.list({ per_page: 100 }).loop({
+  const { data } = await sdk.admin.products.list({ per_page: 100 }).loop({
     signal: controller.signal,
     onPage: ({ pagination }) =>
       console.log(`Fetched batch, total items: ${pagination.total}`),
@@ -91,7 +91,7 @@ let abortController: AbortController | null = null;
 async function fetchAllProducts() {
   abortController = new AbortController();
 
-  const { data } = await Typewoo.admin.products.list().loop({
+  const { data } = await sdk.admin.products.list().loop({
     signal: abortController.signal,
     onPage: ({ pagination }) => {
       updateProgressBar(pagination.totalPages || 0);
@@ -171,7 +171,7 @@ interface ApiPaginationResult<T> {
 Add delays between requests to avoid hitting rate limits:
 
 ```typescript
-const { data } = await Typewoo.admin.customers.list({ per_page: 100 }).loop({
+const { data } = await sdk.admin.customers.list({ per_page: 100 }).loop({
   delayMs: 200, // 200ms delay between pages
   onPage: ({ pagination }) =>
     console.log(`Fetched page, total: ${pagination.total}`),
@@ -183,7 +183,7 @@ const { data } = await Typewoo.admin.customers.list({ per_page: 100 }).loop({
 Fetch only a specific number of pages:
 
 ```typescript
-const { data } = await Typewoo.admin.orders.list({ per_page: 50 }).loop({
+const { data } = await sdk.admin.orders.list({ per_page: 50 }).loop({
   maxPages: 5, // Stop after 5 pages (250 orders max)
 });
 ```
@@ -193,7 +193,7 @@ const { data } = await Typewoo.admin.orders.list({ per_page: 50 }).loop({
 By default, loop stops on the first error. Override this behavior:
 
 ```typescript
-const { data, error } = await Typewoo.admin.products.list().loop({
+const { data, error } = await sdk.admin.products.list().loop({
   stopOnError: false,
   onPage: ({ error, pagination }) => {
     if (error) {
@@ -214,7 +214,7 @@ Use the callback to process items incrementally:
 ```typescript
 const processedIds: number[] = [];
 
-await Typewoo.admin.products.list({ per_page: 100 }).loop({
+await sdk.admin.products.list({ per_page: 100 }).loop({
   onPage: async ({ data }) => {
     if (data) {
       for (const product of data) {
@@ -234,12 +234,12 @@ The `loop()` extension also works with Store API endpoints:
 
 ```typescript
 // Fetch all product categories
-const { data: categories } = await Typewoo.store.products.categories
+const { data: categories } = await sdk.store.products.categories
   .list({ per_page: 100 })
   .loop();
 
 // Fetch all products with a specific attribute
-const { data: products } = await Typewoo.store.products
+const { data: products } = await sdk.store.products
   .list({ attribute: 'pa_color', attribute_term: 'red', per_page: 100 })
   .loop({
     onPage: ({ pagination }) => {
@@ -263,7 +263,7 @@ The extension is fully typed and preserves the original response type:
 
 ```typescript
 // Type is PaginatedRequest<ProductResponse[], ProductRequest>
-const request = Typewoo.admin.products.list({ status: 'publish' });
+const request = sdk.admin.products.list({ status: 'publish' });
 
 // Type is Promise<ApiPaginationResult<ProductResponse[]>>
 const result = request.loop();

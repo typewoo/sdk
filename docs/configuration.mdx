@@ -9,20 +9,28 @@ The Typewoo SDK accepts a configuration object during initialization. This page 
 
 ## Basic Configuration
 
-```typescript
-import { Typewoo } from '@typewoo/sdk';
+The recommended way to initialize the SDK is using `createTypewoo()`:
 
-await Typewoo.init({
+```typescript
+import { createTypewoo } from '@typewoo/sdk';
+
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 ```
+
+<Note>
+  The legacy `Typewoo.init()` singleton pattern is deprecated. Use
+  `createTypewoo()` for better TypeScript support and access to custom
+  endpoints.
+</Note>
 
 ## Configuration Interface
 
 The full configuration interface (`SdkConfig`) supports the following options:
 
 ```typescript
-interface SdkConfig {
+interface SdkConfig<TEndpoints> {
   baseUrl: string;
   admin?: AdminConfig;
   auth?: AuthConfig;
@@ -30,6 +38,7 @@ interface SdkConfig {
   cartToken?: CartTokenConfig;
   axiosConfig?: AxiosRequestConfig;
   request?: RequestConfig;
+  endpoints?: TEndpoints; // Custom API endpoints
 }
 ```
 
@@ -38,7 +47,7 @@ interface SdkConfig {
 The `baseUrl` is required and should be your WooCommerce store's base URL without a trailing slash.
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 ```
@@ -48,7 +57,7 @@ await Typewoo.init({
 Configure JWT token handling and storage:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     // URL for auto-login redirects (optional)
@@ -102,7 +111,7 @@ await Typewoo.init({
 WooCommerce Store API uses nonces for CSRF protection. The SDK handles nonces automatically:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   nonce: {
     key: 'typewoo_nonce',
@@ -123,7 +132,7 @@ await Typewoo.init({
 Cart tokens identify guest carts across sessions:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   cartToken: {
     key: 'typewoo_cart_token',
@@ -144,7 +153,7 @@ await Typewoo.init({
 For accessing the WooCommerce REST API v3 (admin endpoints):
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   admin: {
     consumer_key: 'ck_xxxxxxxxxxxxx',
@@ -165,7 +174,7 @@ await Typewoo.init({
 Configure request retry behavior:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   request: {
     retry: {
@@ -204,7 +213,7 @@ await Typewoo.init({
 Use a function for `delay` to implement exponential backoff:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   request: {
     retry: {
@@ -220,7 +229,7 @@ await Typewoo.init({
 Pass custom Axios configuration for all requests:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   axiosConfig: {
     timeout: 30000,
@@ -294,7 +303,7 @@ const customStorage: StorageProvider = {
   },
 };
 
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -309,7 +318,7 @@ await Typewoo.init({
 In server-side environments where `localStorage` and `sessionStorage` are unavailable, the SDK automatically falls back to memory storage with a warning. For explicit SSR support:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -330,18 +339,139 @@ await Typewoo.init({
 After initialization, access the resolved configuration:
 
 ```typescript
-const config = Typewoo.config;
+const config = sdk.config;
 console.log(config.baseUrl);
 ```
 
-Note: Accessing `Typewoo.config` before initialization throws an error.
+## Custom Endpoints
+
+Define custom API endpoints that become accessible via `sdk.endpoints`. This is useful for calling custom WordPress REST API endpoints, WooCommerce extensions, or any other endpoints on your store.
+
+### Basic Usage
+
+Use the exported HTTP helpers (`doGet`, `doPost`, `doPut`, `doDelete`, `doHead`) to define your endpoints:
+
+```typescript
+import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/sdk';
+
+interface Notification {
+  id: number;
+  message: string;
+  read: boolean;
+}
+
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  endpoints: {
+    // GET request with parameters
+    getNotifications: (userId: string, options?: RequestOptions) =>
+      doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+
+    // POST request
+    markAsRead: (id: number) =>
+      doPost<{ success: boolean }>(`/custom/notifications/${id}/read`),
+
+    // WordPress REST API endpoints
+    getPosts: (options?: RequestOptions) => doGet(`/wp/v2/posts`, options),
+
+    getPages: () => doGet(`/wp/v2/pages`),
+  },
+});
+
+// Use your custom endpoints with full type inference
+const { data: notifications } = await sdk.endpoints.getNotifications(
+  'user-123'
+);
+const { data: result } = await sdk.endpoints.markAsRead(456);
+const { data: posts } = await sdk.endpoints.getPosts({
+  params: { per_page: 10 },
+});
+```
+
+### Type Inference
+
+Custom endpoints defined in the configuration are fully typed. TypeScript will infer the parameter types and return types from your endpoint functions:
+
+```typescript
+// Full autocomplete for endpoint names
+await sdk.endpoints.getNotifications('user-123');
+//                  ^-- autocomplete shows: getNotifications, markAsRead, getPosts, getPages
+
+// Parameter types are enforced
+await sdk.endpoints.getNotifications(123); // ❌ Error: expected string, got number
+
+// Return types are inferred
+const { data } = await sdk.endpoints.getNotifications('user-123');
+//      ^-- data is typed as Notification[] | undefined
+```
+
+### Different Base URLs
+
+Endpoints can call different base URLs by providing a full URL:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://main-store.com',
+  endpoints: {
+    // Uses the SDK's baseUrl
+    getProducts: () => doGet('/wc/store/v1/products'),
+
+    // Uses a completely different URL
+    getExternalData: () => doGet('https://api.external-service.com/data'),
+
+    // Another store
+    getOtherStoreProducts: () =>
+      doGet('https://other-store.com/wc/store/v1/products'),
+  },
+});
+```
+
+### Request Options
+
+All HTTP helpers accept an optional `RequestOptions` parameter for customizing requests:
+
+```typescript
+import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/sdk';
+
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  endpoints: {
+    search: (query: string, options?: RequestOptions) =>
+      doGet(`/custom/search`, {
+        ...options,
+        params: { q: query, ...options?.params },
+      }),
+
+    createItem: (data: CreateItemRequest, options?: RequestOptions) =>
+      doPost<ItemResponse>(`/custom/items`, {
+        ...options,
+        data,
+      }),
+  },
+});
+
+// Use with additional options
+const { data } = await sdk.endpoints.search('keyword', {
+  params: { limit: 20 },
+  headers: { 'X-Custom-Header': 'value' },
+});
+```
+
+### Accessing SDK State
+
+Custom endpoints automatically use the SDK's configured Axios instance, which includes all interceptors (authentication, nonce, cart token, etc.). Your endpoints benefit from:
+
+- Automatic JWT token injection (if authenticated)
+- Automatic nonce handling for Store API requests
+- Retry logic (if configured)
+- Cart token management
 
 ## Complete Example
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   admin: {
     consumer_key: process.env.WC_CONSUMER_KEY,

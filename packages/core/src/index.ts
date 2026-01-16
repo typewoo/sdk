@@ -1,5 +1,8 @@
 export * from './lib/sdk.js';
 export * from './lib/configs/sdk.config.js';
+export type { CustomEndpoints } from './lib/configs/sdk.config.js';
+export type { TypewooClient } from './lib/sdk.js';
+export { createTypewoo } from './lib/sdk.js';
 
 export * from './lib/configs/index.js';
 
@@ -60,3 +63,4 @@ export { EventBus } from './lib/bus/event.bus.js';
 export * from './lib/sdk.events.js';
 export * from './lib/types/sdk.state.js';
 export * from './lib/types/index.js';
+export type { RequestOptions, RequestContext } from './lib/types/request.js';

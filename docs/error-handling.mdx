@@ -12,7 +12,7 @@ The Typewoo SDK provides a consistent error handling model across all API operat
 All API methods return a result object with `data` and `error` properties:
 
 ```typescript
-const { data, error } = await Typewoo.store.products.list();
+const { data, error } = await sdk.store.products.list();
 
 if (error) {
   console.error('Error:', error.message);
@@ -85,7 +85,7 @@ interface ApiError {
 ### Basic Error Handling
 
 ```typescript
-const { data, error } = await Typewoo.store.cart.add({ id: 123 });
+const { data, error } = await sdk.store.cart.add({ id: 123 });
 
 if (error) {
   switch (error.data.status) {
@@ -110,7 +110,7 @@ console.log('Added to cart:', data);
 ### Error Code Handling
 
 ```typescript
-const { data, error } = await Typewoo.store.cart.applyCoupon('INVALID');
+const { data, error } = await sdk.store.cart.applyCoupon('INVALID');
 
 if (error) {
   switch (error.code) {
@@ -135,7 +135,7 @@ if (error) {
 ### Network Error Handling
 
 ```typescript
-const { data, error } = await Typewoo.store.products.list();
+const { data, error } = await sdk.store.products.list();
 
 if (error) {
   if (error.data.status === 0) {
@@ -152,7 +152,7 @@ if (error) {
 Use `RequestOptions` callbacks for per-request error and retry handling:
 
 ```typescript
-const { data } = await Typewoo.store.products.list(
+const { data } = await sdk.store.products.list(
   { per_page: 10 },
   {
     onError: (error, context) => {
@@ -191,17 +191,17 @@ interface RequestContext<T = unknown> {
 
 ```typescript
 // Listen for cart errors
-Typewoo.events.on('cart:request:error', (errorData) => {
+sdk.events.on('cart:request:error', (errorData) => {
   console.error('Cart error:', errorData?.error);
   showNotification('Cart operation failed');
 });
 
 // Listen for auth errors
-Typewoo.events.on('auth:login:error', (error) => {
+sdk.events.on('auth:login:error', (error) => {
   console.error('Login failed:', error);
 });
 
-Typewoo.events.on('auth:token:refresh:error', (error) => {
+sdk.events.on('auth:token:refresh:error', (error) => {
   console.error('Session expired');
   redirectToLogin();
 });
@@ -210,7 +210,7 @@ Typewoo.events.on('auth:token:refresh:error', (error) => {
 ### Using Middleware
 
 ```typescript
-Typewoo.events.use((ctx, next) => {
+sdk.events.use((ctx, next) => {
   // Check for error events
   if (String(ctx.event).includes(':error')) {
     // Log all errors
@@ -230,7 +230,7 @@ Typewoo.events.use((ctx, next) => {
 Configure automatic retry for transient errors:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   request: {
     retry: {
@@ -249,7 +249,7 @@ await Typewoo.init({
 Use the `onRetry` callback in request options to handle retry events:
 
 ```typescript
-const { data } = await Typewoo.store.products.list(
+const { data } = await sdk.store.products.list(
   { per_page: 10 },
   {
     onRetry: (attempt, error, context) => {
@@ -332,7 +332,7 @@ While the SDK doesn't throw exceptions, you can create a throwing wrapper:
 
 ```typescript
 async function fetchProductsOrThrow(params?: ProductRequest) {
-  const { data, error } = await Typewoo.store.products.list(params);
+  const { data, error } = await sdk.store.products.list(params);
 
   if (error) {
     throw new Error(`Failed to fetch products: ${error.message}`);
@@ -357,7 +357,7 @@ type Result<T, E = ApiError> =
   | { success: false; error: E };
 
 async function addToCart(productId: number): Promise<Result<CartResponse>> {
-  const { data, error } = await Typewoo.store.cart.add({ id: productId });
+  const { data, error } = await sdk.store.cart.add({ id: productId });
 
   if (error) {
     return { success: false, error };
@@ -418,7 +418,9 @@ export const errorHandler = new ErrorHandler();
 ### Enable Axios Debug
 
 ```typescript
-await Typewoo.init({
+import { createTypewoo, httpClient } from '@typewoo/sdk';
+
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   axiosConfig: {
     // Log all requests
@@ -426,8 +428,6 @@ await Typewoo.init({
 });
 
 // Add response interceptor for debugging
-import { httpClient } from '@typewoo/sdk';
-
 httpClient.interceptors.response.use(
   (response) => {
     console.log('Response:', response.config.url, response.status);
@@ -443,7 +443,7 @@ httpClient.interceptors.response.use(
 ### Inspect Error Details
 
 ```typescript
-const { error } = await Typewoo.store.cart.add({ id: 123 });
+const { error } = await sdk.store.cart.add({ id: 123 });
 
 if (error) {
   console.log('Code:', error.code);

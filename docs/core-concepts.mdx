@@ -9,10 +9,10 @@ This page covers the fundamental concepts of the Typewoo SDK architecture.
 
 ## SDK Structure
 
-The SDK is organized as a singleton with three main service groups:
+The SDK is organized with three main service groups:
 
 ```
-Typewoo
+TypewooClient (sdk)
 ├── store    (Store API - public endpoints)
 │   ├── products
 │   ├── cart
@@ -43,43 +43,43 @@ Typewoo
 │   ├── customers
 │   ├── coupons
 │   └── ... (many more)
+├── endpoints (Custom endpoints - optional)
 ├── events   (EventBus instance)
 ├── state    (SDK state)
 └── config   (Resolved configuration)
 ```
 
-## Singleton Pattern
+## Initialization Pattern
 
-The SDK uses a singleton pattern. The `Typewoo` export is a pre-instantiated SDK instance:
+The recommended way to create an SDK instance is using `createTypewoo()`:
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-// Initialize once
-await Typewoo.init({ baseUrl: 'https://your-store.com' });
+// Create the SDK instance
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 // Use anywhere in your application
-const { data } = await Typewoo.store.products.list();
+const { data } = await sdk.store.products.list();
 ```
 
-### Initialization Guard
+### Multiple Stores
 
-Accessing services before initialization throws an error:
+Unlike the deprecated singleton pattern, you can create multiple SDK instances for different stores:
 
 ```typescript
-// This throws: "SDK not initialized. Call `await Typewoo.init()` first."
-const products = await Typewoo.store.products.list();
+const storeA = createTypewoo({ baseUrl: 'https://store-a.com' });
+const storeB = createTypewoo({ baseUrl: 'https://store-b.com' });
+
+// Use independently
+const productsA = await storeA.store.products.list();
+const productsB = await storeB.store.products.list();
 ```
 
-Subsequent `init()` calls are ignored:
-
-```typescript
-await Typewoo.init({ baseUrl: 'https://store-a.com' });
-await Typewoo.init({ baseUrl: 'https://store-b.com' }); // Ignored
-
-// Still uses store-a.com
-console.log(Typewoo.config.baseUrl); // 'https://store-a.com'
-```
+<Note>
+  The legacy `Typewoo.init()` singleton is deprecated and will be removed in a
+  future version.
+</Note>
 
 ## Services
 
@@ -170,7 +170,7 @@ Admin services interact with WooCommerce REST API v3:
 
 ## SDK State
 
-The SDK maintains runtime state accessible via `Typewoo.state`:
+The SDK maintains runtime state accessible via `sdk.state`:
 
 ```typescript
 interface SdkState {
@@ -186,10 +186,10 @@ State is updated automatically by interceptors and service methods:
 
 ```typescript
 // After cart operations
-console.log(Typewoo.state.cartToken);
+console.log(sdk.state.cartToken);
 
 // After authentication
-console.log(Typewoo.state.authenticated);
+console.log(sdk.state.authenticated);
 ```
 
 ## EventBus
@@ -200,12 +200,12 @@ The SDK includes a lightweight, typed EventBus for event-driven architecture.
 
 ```typescript
 // Subscribe to events
-const unsubscribe = Typewoo.events.on('cart:updated', (cart) => {
+const unsubscribe = sdk.events.on('cart:updated', (cart) => {
   console.log('Cart items:', cart?.items_count);
 });
 
 // Emit events (internal use)
-// Typewoo.events.emit('cart:updated', cartData);
+// sdk.events.emit('cart:updated', cartData);
 
 // Unsubscribe
 unsubscribe();
@@ -274,17 +274,17 @@ Wait for specific events with optional predicate:
 
 ```typescript
 // Wait for cart update
-const cart = await Typewoo.events.waitFor('cart:updated');
+const cart = await sdk.events.waitFor('cart:updated');
 
 // Wait with timeout (5 seconds)
 try {
-  const cart = await Typewoo.events.waitFor('cart:updated', undefined, 5000);
+  const cart = await sdk.events.waitFor('cart:updated', undefined, 5000);
 } catch (error) {
   console.error('Timeout waiting for cart update');
 }
 
 // Wait with predicate
-const cart = await Typewoo.events.waitFor(
+const cart = await sdk.events.waitFor(
   'cart:updated',
   (cart) => cart?.items_count > 0
 );
@@ -295,7 +295,7 @@ const cart = await Typewoo.events.waitFor(
 Add middleware to intercept all events:
 
 ```typescript
-const removeMiddleware = Typewoo.events.use((ctx, next) => {
+const removeMiddleware = sdk.events.use((ctx, next) => {
   console.log('Event:', ctx.event, ctx.payload);
   next(); // Call to continue the chain
 });

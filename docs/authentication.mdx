@@ -18,12 +18,14 @@ The SDK supports two authentication models:
 
 ### Obtaining Tokens
 
-Use the `Typewoo.auth.token()` method to authenticate users:
+Use the `sdk.auth.token()` method to authenticate users:
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-const { data, error } = await Typewoo.auth.token({
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
+
+const { data, error } = await sdk.auth.token({
   login: 'username_or_email',
   password: 'user_password',
 });
@@ -63,7 +65,7 @@ interface AuthTokenResponse {
 Control token expiration at login time:
 
 ```typescript
-const { data } = await Typewoo.auth.token({
+const { data } = await sdk.auth.token({
   login: 'user@example.com',
   password: 'password',
   access_ttl: 3600, // 1 hour (in seconds)
@@ -81,7 +83,7 @@ By default, tokens are stored in `localStorage`:
 Configure storage in the SDK initialization:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -123,7 +125,7 @@ When enabled, the SDK automatically refreshes tokens on 401 responses:
 Enable automatic refresh (default behavior):
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -141,7 +143,7 @@ await Typewoo.init({
 Refresh tokens manually when needed:
 
 ```typescript
-const { data, error } = await Typewoo.auth.refreshToken({
+const { data, error } = await sdk.auth.refreshToken({
   refresh_token: 'stored_refresh_token',
 });
 
@@ -159,13 +161,13 @@ if (error) {
 When token refresh fails:
 
 1. Both access and refresh tokens are cleared from storage
-2. `Typewoo.state.authenticated` is set to `false`
+2. `sdk.state.authenticated` is set to `false`
 3. `auth:changed` event is emitted with `false`
 
 Listen for authentication changes:
 
 ```typescript
-Typewoo.events.on('auth:changed', (isAuthenticated) => {
+sdk.events.on('auth:changed', (isAuthenticated) => {
   if (!isAuthenticated) {
     // Redirect to login page
     router.navigate('/login');
@@ -178,7 +180,7 @@ Typewoo.events.on('auth:changed', (isAuthenticated) => {
 Revoke the current token to log out:
 
 ```typescript
-const { data, error } = await Typewoo.auth.revokeToken();
+const { data, error } = await sdk.auth.revokeToken();
 
 if (!error) {
   console.log('Logged out successfully');
@@ -190,7 +192,7 @@ if (!error) {
 You can also revoke a specific token:
 
 ```typescript
-await Typewoo.auth.revokeToken({
+await sdk.auth.revokeToken({
   token: 'specific_token_to_revoke',
 });
 ```
@@ -200,7 +202,7 @@ await Typewoo.auth.revokeToken({
 Check if the current token is valid:
 
 ```typescript
-const { data, error } = await Typewoo.auth.validate();
+const { data, error } = await sdk.auth.validate();
 
 if (data) {
   console.log('Token is valid');
@@ -215,7 +217,7 @@ if (data) {
 Check the current authentication status:
 
 ```typescript
-const { data } = await Typewoo.auth.status();
+const { data } = await sdk.auth.status();
 
 console.log('Authenticated:', data.authenticated);
 console.log('User ID:', data.user_id);
@@ -224,7 +226,7 @@ console.log('User ID:', data.user_id);
 Access the in-memory authentication state:
 
 ```typescript
-console.log('Is authenticated:', Typewoo.state.authenticated);
+console.log('Is authenticated:', sdk.state.authenticated);
 ```
 
 ## One-Time Tokens
@@ -233,12 +235,12 @@ Generate one-time tokens for auto-login URLs:
 
 ```typescript
 // Generate a one-time token
-const { data } = await Typewoo.auth.oneTimeToken({
+const { data } = await sdk.auth.oneTimeToken({
   redirect: '/my-account',
 });
 
 // Build the auto-login URL
-const autoLoginUrl = await Typewoo.auth.getAutoLoginUrl(
+const autoLoginUrl = await sdk.auth.getAutoLoginUrl(
   data.token,
   '/my-account',
   { utm_source: 'email' } // Optional tracking params
@@ -290,7 +292,7 @@ Cart tokens identify guest shopping sessions:
 For WooCommerce REST API v3 (administrative endpoints), use Basic Authentication:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   admin: {
     consumer_key: 'ck_your_consumer_key',
@@ -300,7 +302,7 @@ await Typewoo.init({
 });
 
 // Admin API calls automatically include Basic Auth
-const { data: products } = await Typewoo.admin.products.list();
+const { data: products } = await sdk.admin.products.list();
 ```
 
 Generate API credentials in WooCommerce:
@@ -315,42 +317,42 @@ Subscribe to authentication-related events:
 
 ```typescript
 // Login process events
-Typewoo.events.on('auth:login:start', () => {
+sdk.events.on('auth:login:start', () => {
   console.log('Login started');
 });
 
-Typewoo.events.on('auth:login:success', () => {
+sdk.events.on('auth:login:success', () => {
   console.log('Login successful');
 });
 
-Typewoo.events.on('auth:login:error', (error) => {
+sdk.events.on('auth:login:error', (error) => {
   console.error('Login failed:', error);
 });
 
 // Token refresh events
-Typewoo.events.on('auth:token:refresh:start', () => {
+sdk.events.on('auth:token:refresh:start', () => {
   console.log('Token refresh started');
 });
 
-Typewoo.events.on('auth:token:refresh:success', () => {
+sdk.events.on('auth:token:refresh:success', () => {
   console.log('Token refreshed');
 });
 
-Typewoo.events.on('auth:token:refresh:error', (error) => {
+sdk.events.on('auth:token:refresh:error', (error) => {
   console.error('Token refresh failed:', error);
 });
 
 // Token revocation events
-Typewoo.events.on('auth:token:revoke:start', () => {
+sdk.events.on('auth:token:revoke:start', () => {
   console.log('Logout started');
 });
 
-Typewoo.events.on('auth:token:revoke:success', () => {
+sdk.events.on('auth:token:revoke:success', () => {
   console.log('Logout successful');
 });
 
 // General auth state changes
-Typewoo.events.on('auth:changed', (isAuthenticated) => {
+sdk.events.on('auth:changed', (isAuthenticated) => {
   console.log('Auth state changed:', isAuthenticated);
 });
 ```
@@ -362,7 +364,7 @@ Typewoo.events.on('auth:changed', (isAuthenticated) => {
 Completely disable JWT token handling:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     accessToken: {
@@ -380,7 +382,7 @@ await Typewoo.init({
 Automatically revoke existing tokens before new login:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     revokeTokenBeforeLogin: true,
@@ -393,7 +395,7 @@ await Typewoo.init({
 Automatically fetch the cart after successful login:
 
 ```typescript
-await Typewoo.init({
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
     fetchCartOnLogin: true,

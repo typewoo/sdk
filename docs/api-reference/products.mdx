@@ -10,9 +10,10 @@ The Products API provides access to WooCommerce product data through the Store A
 ## Access
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-const productService = Typewoo.store.products;
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
+const productService = sdk.store.products;
 ```
 
 ## Methods
@@ -22,7 +23,7 @@ const productService = Typewoo.store.products;
 Retrieve a paginated list of products.
 
 ```typescript
-const { data, error, pagination } = await Typewoo.store.products.list({
+const { data, error, pagination } = await sdk.store.products.list({
   per_page: 12,
   page: 1,
   orderby: 'popularity',
@@ -45,10 +46,10 @@ Retrieve a single product by ID or slug.
 
 ```typescript
 // By ID
-const { data, error } = await Typewoo.store.products.single({ id: 123 });
+const { data, error } = await sdk.store.products.single({ id: 123 });
 
 // By slug
-const { data, error } = await Typewoo.store.products.single({
+const { data, error } = await sdk.store.products.single({
   slug: 'blue-t-shirt',
 });
 ```
@@ -139,13 +140,13 @@ Valid operators: `in`, `not_in`, `and`
 
 ```typescript
 // Products in clothing OR accessories
-const { data } = await Typewoo.store.products.list({
+const { data } = await sdk.store.products.list({
   category: 'clothing,accessories',
   category_operator: 'in',
 });
 
 // Products in BOTH clothing AND summer
-const { data } = await Typewoo.store.products.list({
+const { data } = await sdk.store.products.list({
   category: 'clothing,summer',
   category_operator: 'and',
 });
@@ -176,7 +177,7 @@ const { data } = await Typewoo.store.products.list({
 
 ```typescript
 // Products between $10 and $50
-const { data } = await Typewoo.store.products.list({
+const { data } = await sdk.store.products.list({
   min_price: '1000',
   max_price: '5000',
 });
@@ -191,7 +192,7 @@ const { data } = await Typewoo.store.products.list({
 Valid values: `instock`, `outofstock`, `onbackorder`
 
 ```typescript
-const { data } = await Typewoo.store.products.list({
+const { data } = await sdk.store.products.list({
   stock_status: ['instock', 'onbackorder'],
 });
 ```
@@ -289,43 +290,43 @@ interface ProductPriceResponse {
 
 ```typescript
 // List categories
-const { data } = await Typewoo.store.categories.list();
+const { data } = await sdk.store.categories.list();
 
 // Get single category
-const { data } = await Typewoo.store.categories.single({ id: 15 });
+const { data } = await sdk.store.categories.single({ id: 15 });
 ```
 
 ### Tags
 
 ```typescript
-const { data } = await Typewoo.store.tags.list();
-const { data } = await Typewoo.store.tags.single({ id: 5 });
+const { data } = await sdk.store.tags.list();
+const { data } = await sdk.store.tags.single({ id: 5 });
 ```
 
 ### Brands
 
 ```typescript
-const { data } = await Typewoo.store.brands.list();
-const { data } = await Typewoo.store.brands.single({ id: 10 });
+const { data } = await sdk.store.brands.list();
+const { data } = await sdk.store.brands.single({ id: 10 });
 ```
 
 ### Attributes
 
 ```typescript
-const { data } = await Typewoo.store.attributes.list();
-const { data } = await Typewoo.store.attributes.single({ id: 1 });
+const { data } = await sdk.store.attributes.list();
+const { data } = await sdk.store.attributes.single({ id: 1 });
 ```
 
 ### Attribute Terms
 
 ```typescript
-const { data } = await Typewoo.store.attributesTerms.list(attributeId);
+const { data } = await sdk.store.attributesTerms.list(attributeId);
 ```
 
 ### Reviews
 
 ```typescript
-const { data } = await Typewoo.store.reviews.list({ product_id: 123 });
+const { data } = await sdk.store.reviews.list({ product_id: 123 });
 ```
 
 ### Collection Data
@@ -333,7 +334,7 @@ const { data } = await Typewoo.store.reviews.list({ product_id: 123 });
 Get aggregated data for product collections:
 
 ```typescript
-const { data } = await Typewoo.store.collectionData.get({
+const { data } = await sdk.store.collectionData.get({
   calculate_price_range: true,
   calculate_attribute_counts: ['pa_color', 'pa_size'],
   calculate_rating_counts: true,
@@ -346,7 +347,7 @@ const { data } = await Typewoo.store.collectionData.get({
 ### Basic Product Listing
 
 ```typescript
-const { data: products, pagination } = await Typewoo.store.products.list({
+const { data: products, pagination } = await sdk.store.products.list({
   per_page: 12,
 });
 
@@ -357,7 +358,7 @@ console.log(`Page 1 of ${pagination.totalPages}`);
 ### Filtered Product Search
 
 ```typescript
-const { data } = await Typewoo.store.products.list({
+const { data } = await sdk.store.products.list({
   search: 'shirt',
   category: 'clothing',
   min_price: '1000',
@@ -371,7 +372,7 @@ const { data } = await Typewoo.store.products.list({
 ### Product Detail Page
 
 ```typescript
-const { data: product, error } = await Typewoo.store.products.single({
+const { data: product, error } = await sdk.store.products.single({
   slug: 'blue-cotton-shirt',
 });
 
@@ -389,7 +390,7 @@ console.log('In stock:', product.is_in_stock);
 
 ```typescript
 async function loadProducts(page: number) {
-  const { data, pagination } = await Typewoo.store.products.list({
+  const { data, pagination } = await sdk.store.products.list({
     page,
     per_page: 12,
   });
@@ -409,28 +410,28 @@ For full CRUD operations on products, use the Admin API:
 
 ```typescript
 // List products
-const { data } = await Typewoo.admin.products.list();
+const { data } = await sdk.admin.products.list();
 
 // Get single product
-const { data } = await Typewoo.admin.products.getById(123);
+const { data } = await sdk.admin.products.getById(123);
 
 // Create product
-const { data } = await Typewoo.admin.products.create({
+const { data } = await sdk.admin.products.create({
   name: 'New Product',
   type: 'simple',
   regular_price: '19.99',
 });
 
 // Update product
-const { data } = await Typewoo.admin.products.update(123, {
+const { data } = await sdk.admin.products.update(123, {
   regular_price: '24.99',
 });
 
 // Delete product
-const { data } = await Typewoo.admin.products.delete(123, true);
+const { data } = await sdk.admin.products.delete(123, true);
 
 // Batch operations
-const { data } = await Typewoo.admin.products.batch({
+const { data } = await sdk.admin.products.batch({
   create: [{ name: 'Product 1' }],
   update: [{ id: 123, regular_price: '29.99' }],
   delete: [456],

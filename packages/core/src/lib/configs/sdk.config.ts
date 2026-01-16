@@ -6,6 +6,32 @@ import {
   storageProviders,
 } from '../storage/auth.storage.js';
 
+/**
+ * Type for custom endpoint functions.
+ * Each endpoint is a function that can have any parameters and returns a Promise.
+ * Use the exported HTTP helpers (doGet, doPost, etc.) inside your endpoint functions.
+ *
+ * @example
+ * ```typescript
+ * import { doGet, doPost, RequestOptions } from '@typewoo/core';
+ *
+ * const sdk = await Typewoo.init({
+ *   baseUrl: 'https://mystore.com',
+ *   endpoints: {
+ *     getNotifications: (userId: string, options?: RequestOptions) =>
+ *       doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+ *     markAsRead: (id: number) =>
+ *       doPost(`/custom/notifications/${id}/read`),
+ *   },
+ * });
+ *
+ * // Endpoints are fully typed:
+ * const { data } = await sdk.endpoints.getNotifications('user-123');
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CustomEndpoints = Record<string, (...args: any[]) => Promise<any>>;
+
 let resolvedSdkConfig: ResolvedSdkConfig | null = null;
 
 export function setSdkConfig(config: ResolvedSdkConfig): void {
@@ -19,8 +45,11 @@ export function getSdkConfig(): ResolvedSdkConfig | null {
 /**
  * Configuration interface for the SDK.
  * This is the input type - storage can be either a string type or a provider instance.
+ * @template TEndpoints - The type of custom endpoints, inferred from the endpoints object.
  */
-export interface SdkConfig {
+export interface SdkConfig<
+  TEndpoints extends CustomEndpoints = CustomEndpoints
+> {
   baseUrl: string;
   admin?: {
     consumer_key?: string;
@@ -67,6 +96,31 @@ export interface SdkConfig {
     storage?: StorageType | StorageProvider;
   };
   axiosConfig?: AxiosRequestConfig;
+  /**
+   * Custom endpoints object.
+   * Define custom API endpoints that will be accessible via the returned SDK's `endpoints` property.
+   * Use the exported HTTP helpers (doGet, doPost, doPut, doDelete, doHead) in your endpoint functions.
+   * Each endpoint can have any parameters you need.
+   *
+   * @example
+   * ```typescript
+   * import { doGet, doPost, RequestOptions } from '@typewoo/core';
+   *
+   * const sdk = await Typewoo.init({
+   *   baseUrl: 'https://mystore.com',
+   *   endpoints: {
+   *     getNotifications: (userId: string, options?: RequestOptions) =>
+   *       doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+   *     markAsRead: (id: number) =>
+   *       doPost(`/custom/notifications/${id}/read`),
+   *   },
+   * });
+   *
+   * // Endpoints are fully typed from the config:
+   * const { data } = await sdk.endpoints.getNotifications('user-123');
+   * ```
+   */
+  endpoints?: TEndpoints;
   request?: {
     /**
      * Retry configuration for failed requests.
