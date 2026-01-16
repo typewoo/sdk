@@ -13,6 +13,7 @@ For full documentation, guides, and API reference, visit **[typewoo.dev](https:/
 - 🔄 Built-in interceptors for nonce, cart token, and JWT authentication
 - 🛠️ Fully typed responses powered by TypeScript
 - ⚡ Event-driven core with custom EventBus
+- 🔌 Custom endpoints with full type inference
 - ⚙️ Built with modern tooling (Nx, Vitest, Pure ESM)
 
 ## 📦 Installation
@@ -24,16 +25,16 @@ npm install @typewoo/sdk axios qs zod
 ## 🚀 Quick Start
 
 ```typescript
-import { Typewoo } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
-// Initialize the SDK
-const sdk = Typewoo.init({
+// Create your SDK instance
+const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 
 // Access store services
-const products = await sdk.store.products.list();
-const cart = await sdk.store.cart.get();
+const { data: products } = await sdk.store.products.list();
+const { data: cart } = await sdk.store.cart.get();
 ```
 
 ## 📖 Learn More
