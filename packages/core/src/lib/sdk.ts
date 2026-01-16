@@ -29,7 +29,7 @@ import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.j
  * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
  *
  * // Create your typed SDK instance
- * export const typewoo = await createTypewoo({
+ * export const typewoo = createTypewoo({
  *   baseUrl: 'https://mystore.com',
  *   endpoints: {
  *     posts: (options?: RequestOptions) => doGet(`/wp/v2/posts`, options),
@@ -165,7 +165,7 @@ export class TypewooClient<
    * For full type inference on custom endpoints, use `createTypewoo()` instead:
    * @example
    * ```typescript
-   * const typewoo = await createTypewoo({
+   * const typewoo = createTypewoo({
    *   baseUrl: 'https://mystore.com',
    *   endpoints: {
    *     getNotifications: (userId: string) => doGet<Notification[]>(`/notifications/${userId}`),
@@ -317,7 +317,7 @@ export class Sdk {
  *
  * // After (recommended):
  * // Create once at app startup (e.g., in a shared module or context provider)
- * const typewoo = await createTypewoo({ baseUrl: 'https://mystore.com' });
+ * const typewoo = createTypewoo({ baseUrl: 'https://mystore.com' });
  *
  * // Then import and use throughout your app
  * const products = await typewoo.store.products.list();

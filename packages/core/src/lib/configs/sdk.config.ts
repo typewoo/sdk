@@ -13,9 +13,9 @@ import {
  *
  * @example
  * ```typescript
- * import { doGet, doPost, RequestOptions } from '@typewoo/core';
+ * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
  *
- * const sdk = await Typewoo.init({
+ * const sdk = createTypewoo({
  *   baseUrl: 'https://mystore.com',
  *   endpoints: {
  *     getNotifications: (userId: string, options?: RequestOptions) =>
@@ -104,9 +104,9 @@ export interface SdkConfig<
    *
    * @example
    * ```typescript
-   * import { doGet, doPost, RequestOptions } from '@typewoo/core';
+   * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
    *
-   * const sdk = await Typewoo.init({
+   * const sdk = createTypewoo({
    *   baseUrl: 'https://mystore.com',
    *   endpoints: {
    *     getNotifications: (userId: string, options?: RequestOptions) =>
