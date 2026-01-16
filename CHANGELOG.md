@@ -1,3 +1,9 @@
+## 3.5.4-beta.0 (2026-01-16)
+
+### 🚀 Features
+
+- introduce createTypewoo SDK initializer with configurable endpoints ([#141](https://github.com/typewoo/sdk/pull/141))
+
 ## 3.5.3 (2026-01-02)
 
 ### 🩹 Fixes
