@@ -319,7 +319,7 @@ export class Sdk {
  * // Create once at app startup (e.g., in a shared module or context provider)
  * const typewoo = await createTypewoo({ baseUrl: 'https://mystore.com' });
  *
- * // Then import and use throughout your appa
+ * // Then import and use throughout your app
  * const products = await typewoo.store.products.list();
  * ```
  */
