@@ -131,6 +131,14 @@ export class TypewooClient<
   }
 
   /**
+   * Sets the unique identifier for the SDK instance.
+   * Useful when the identifier needs to be set asynchronously after SDK initialization.
+   */
+  setUniqueIdentifier(identifier: string): void {
+    this._config.uniqueIdentifier = identifier;
+  }
+
+  /**
    * Resolved SDK configuration.
    * Storage fields are guaranteed to be StorageProvider instances after initialization.
    */
@@ -254,6 +262,15 @@ export class Sdk {
 
     // TODO: Conditional from config
     // await this._store.cart.get();
+  }
+
+  /**
+   * Sets the unique identifier for the SDK instance.
+   * Useful when the identifier needs to be set asynchronously after SDK initialization.
+   */
+  setUniqueIdentifier(identifier: string): void {
+    this.throwIfNotInitized();
+    this._config.uniqueIdentifier = identifier;
   }
 
   /**

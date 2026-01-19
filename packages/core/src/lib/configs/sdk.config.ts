@@ -51,6 +51,13 @@ export interface SdkConfig<
   TEndpoints extends CustomEndpoints = CustomEndpoints
 > {
   baseUrl: string;
+  /**
+   * Unique identifier for this SDK instance.
+   * Useful for logging, debugging, and telemetry.
+   * Can be a string or a function that returns a string (for lazy/dynamic generation).
+   * If not provided, one will be auto-generated using `crypto.randomUUID()`.
+   */
+  uniqueIdentifier?: string | (() => string);
   admin?: {
     consumer_key?: string;
     consumer_secret?: string;
@@ -183,6 +190,10 @@ interface ResolvedStorageConfig {
  */
 export interface ResolvedSdkConfig {
   baseUrl: string;
+  /**
+   * Unique identifier for this SDK instance.
+   */
+  uniqueIdentifier: string;
   admin?: {
     consumer_key?: string;
     consumer_secret?: string;
@@ -242,8 +253,14 @@ export const resolveStorageProvider = (
  * This ensures all storage fields are StorageProvider instances.
  */
 export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
+  const resolvedIdentifier =
+    typeof config.uniqueIdentifier === 'function'
+      ? config.uniqueIdentifier()
+      : config.uniqueIdentifier ?? crypto.randomUUID();
+
   const resolved: ResolvedSdkConfig = {
     baseUrl: config.baseUrl,
+    uniqueIdentifier: resolvedIdentifier,
     admin: config.admin,
     axiosConfig: config.axiosConfig,
     request: {

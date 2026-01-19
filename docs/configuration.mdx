@@ -32,6 +32,7 @@ The full configuration interface (`SdkConfig`) supports the following options:
 ```typescript
 interface SdkConfig<TEndpoints> {
   baseUrl: string;
+  uniqueIdentifier?: string | (() => string);
   admin?: AdminConfig;
   auth?: AuthConfig;
   nonce?: NonceConfig;
@@ -51,6 +52,45 @@ const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
 });
 ```
+
+## Unique Identifier
+
+Each SDK instance has a unique identifier useful for logging, debugging, and telemetry. If not provided, one is auto-generated using `crypto.randomUUID()`.
+
+```typescript
+// Static string
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  uniqueIdentifier: 'storefront-main',
+});
+
+// Lazy evaluation via function
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  uniqueIdentifier: () => `store-${Date.now()}`,
+});
+```
+
+### Setting Identifier After Initialization
+
+For async scenarios where the identifier isn't available at init time, use `setUniqueIdentifier()`:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+});
+
+// Set later (e.g., after fetching from server)
+const id = await fetchIdentifierFromServer();
+sdk.setUniqueIdentifier(id);
+
+// Access via config
+console.log(sdk.config.uniqueIdentifier);
+```
+
+| Option             | Type                     | Default               | Description                        |
+| ------------------ | ------------------------ | --------------------- | ---------------------------------- |
+| `uniqueIdentifier` | `string \| () => string` | `crypto.randomUUID()` | Unique identifier for the instance |
 
 ## Authentication Configuration
 
