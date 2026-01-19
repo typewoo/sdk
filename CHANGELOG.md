@@ -1,3 +1,13 @@
+## 3.5.4-beta.1 (2026-01-19)
+
+### 🚀 Features
+
+- add uniqueIdentifier option to SDK configuration for enhanced logging and debugging ([b4d65bf](https://github.com/typewoo/sdk/commit/b4d65bf))
+
+### 🧹 Chores
+
+- update readme files ([4b28769](https://github.com/typewoo/sdk/commit/4b28769))
+
 ## 3.5.4-beta.0 (2026-01-16)
 
 ### 🚀 Features
