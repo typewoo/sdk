@@ -1,3 +1,9 @@
+## 3.5.4-beta.2 (2026-01-20)
+
+### 🩹 Fixes
+
+- **loop:** update loop extension to return only the last page's data ([8576aba](https://github.com/typewoo/sdk/commit/8576aba))
+
 ## 3.5.4-beta.1 (2026-01-19)
 
 ### 🚀 Features
