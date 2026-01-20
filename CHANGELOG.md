@@ -1,3 +1,9 @@
+## 3.5.4-beta.3 (2026-01-20)
+
+### 🚀 Features
+
+- **auth:** add first_name and last_name fields to AuthTokenResponseSchema ([d816587](https://github.com/typewoo/sdk/commit/d816587))
+
 ## 3.5.4-beta.2 (2026-01-20)
 
 ### 🩹 Fixes
