@@ -153,21 +153,22 @@ window.addEventListener('scroll', async () => {
 
 ### Load All Pages
 
-For fetching all pages automatically, use the [`.loop()` extension](/extensions#loop-extension):
+For iterating all pages automatically, use the [`.loop()` extension](/extensions#loop-extension):
 
 ```typescript
-// Fetch all products with progress tracking
-const { data: allProducts } = await sdk.store.products
-  .list({ category: 'clothing', per_page: 100 })
-  .loop({
-    onPage: ({ pagination }) => {
-      console.log(
-        `Fetched batch, total: ${pagination.total}/${pagination.totalPages} pages`
-      );
-    },
-  });
+// Iterate all products with progress tracking
+const allProducts: Product[] = [];
 
-console.log('Total products:', allProducts?.length);
+await sdk.store.products.list({ category: 'clothing', per_page: 100 }).loop({
+  onPage: ({ data, pagination }) => {
+    if (data) allProducts.push(...data);
+    console.log(
+      `Fetched batch, total: ${pagination.total}/${pagination.totalPages} pages`
+    );
+  },
+});
+
+console.log('Total products:', allProducts.length);
 ```
 
 <Info>

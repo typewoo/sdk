@@ -21,7 +21,7 @@ export async function loopExtension<T, TParams>(
     signal,
   } = options;
 
-  const allItems: unknown[] = [];
+  let lastItems: unknown[] = [];
   let lastError: ApiError | undefined;
   let totalPages: number | undefined;
   let total: number | undefined;
@@ -64,14 +64,14 @@ export async function loopExtension<T, TParams>(
       if (stopOnError) break;
     }
 
-    // Accumulate items
+    // Store last page's items (replace, don't accumulate)
     if (result.data) {
       if (Array.isArray(result.data)) {
         // Safety: stop if we get an empty array (no more items)
         if (result.data.length === 0) break;
-        allItems.push(...result.data);
+        lastItems = [...result.data];
       } else {
-        allItems.push(result.data);
+        lastItems = [result.data];
       }
     } else {
       // No data returned - stop to prevent infinite loop
@@ -95,7 +95,7 @@ export async function loopExtension<T, TParams>(
   };
 
   return {
-    data: allItems as T,
+    data: lastItems as T,
     error: lastError,
     pagination,
   };

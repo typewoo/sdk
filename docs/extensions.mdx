@@ -9,25 +9,29 @@ The Typewoo SDK provides a set of extensions that enhance core functionality. Ex
 
 ## Available Extensions
 
-| Extension | Description                   | Available On               |
-| --------- | ----------------------------- | -------------------------- |
-| `loop()`  | Fetch all pages automatically | All paginated list methods |
+| Extension | Description                    | Available On               |
+| --------- | ------------------------------ | -------------------------- |
+| `loop()`  | Iterate all pages, return last | All paginated list methods |
 
 ---
 
 ## Loop Extension
 
-The `loop()` extension fetches all pages from a paginated endpoint and returns a single combined result. It's available on any `list()` method that returns paginated data.
+The `loop()` extension iterates through all pages of a paginated endpoint and returns only the **last page's data**. It's available on any `list()` method that returns paginated data. Use the `onPage` callback to process or accumulate items from each page.
 
 ### Basic Usage
 
 ```typescript
-// Fetch all products across all pages
-const { data: allProducts, pagination } = await sdk.admin.products
-  .list({ per_page: 100 })
-  .loop();
+// Iterate all pages, collect items via onPage callback
+const allProducts: Product[] = [];
 
-console.log(`Fetched ${allProducts?.length} products`);
+const { pagination } = await sdk.admin.products.list({ per_page: 100 }).loop({
+  onPage: ({ data }) => {
+    if (data) allProducts.push(...data);
+  },
+});
+
+console.log(`Fetched ${allProducts.length} products`);
 ```
 
 <Note>
@@ -80,7 +84,7 @@ try {
 }
 ```
 
-When aborted, the extension returns items collected so far rather than throwing an error.
+When aborted, the extension returns the last fetched page's data rather than throwing an error.
 
 ### User-Initiated Cancellation
 
