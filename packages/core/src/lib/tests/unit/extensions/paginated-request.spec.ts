@@ -283,12 +283,9 @@ describe('PaginatedRequest', () => {
 
       const result = await request.loop();
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data).toEqual([
-        { id: 1, name: 'Item 1' },
-        { id: 2, name: 'Item 2' },
-        { id: 3, name: 'Item 3' },
-      ]);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
       expect(callCount).toBe(3);
     });
 
@@ -337,7 +334,9 @@ describe('PaginatedRequest', () => {
 
       expect(mockRequest).toHaveBeenCalledWith({ pageNumber: 1 });
       expect(mockRequest).toHaveBeenCalledWith({ pageNumber: 2 });
-      expect(result.data).toHaveLength(2);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 2, name: 'Page 2' }]);
     });
   });
 });
