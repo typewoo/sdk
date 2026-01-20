@@ -66,7 +66,9 @@ describe('loopExtension', () => {
       );
 
       expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(result.data).toHaveLength(5);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 5, name: 'E' }]);
       expect(result.pagination.total).toBe(5);
     });
 
@@ -86,7 +88,9 @@ describe('loopExtension', () => {
       );
 
       expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(result.data).toHaveLength(3);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
     });
 
     it('preserves original params while adding page', async () => {
@@ -199,7 +203,9 @@ describe('loopExtension', () => {
       );
 
       expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(result.data).toHaveLength(3);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
     });
 
     it('respects maxPages of 1', async () => {
@@ -258,7 +264,9 @@ describe('loopExtension', () => {
       expect(mockRequest).toHaveBeenCalledTimes(3);
 
       const result = await promise;
-      expect(result.data).toHaveLength(3);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
     });
 
     it('skips delay on first request', async () => {
@@ -350,7 +358,9 @@ describe('loopExtension', () => {
       );
 
       expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(result.data).toHaveLength(3);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
       expect(result.error).toEqual(mockError); // Last error is preserved
     });
   });
@@ -473,7 +483,9 @@ describe('loopExtension', () => {
 
       // Should stop after page 2 completes but before page 3
       expect(callCount).toBe(2);
-      expect(result.data).toHaveLength(2);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 2, name: 'Item 2' }]);
     });
 
     it('returns items collected before abort', async () => {
@@ -498,12 +510,9 @@ describe('loopExtension', () => {
         { signal: controller.signal }
       );
 
-      expect(result.data).toHaveLength(3);
-      expect(result.data).toEqual([
-        { id: 1, name: 'Item 1' },
-        { id: 2, name: 'Item 2' },
-        { id: 3, name: 'Item 3' },
-      ]);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 3, name: 'Item 3' }]);
     });
 
     it('checks abort after delay', async () => {
@@ -562,7 +571,8 @@ describe('loopExtension', () => {
         'page'
       );
 
-      expect(result.data).toEqual([{ value: 'page-1' }, { value: 'page-2' }]);
+      // loopExtension returns only the last page's data
+      expect(result.data).toEqual([{ value: 'page-2' }]);
     });
   });
 
@@ -677,7 +687,9 @@ describe('loopExtension', () => {
         'page'
       );
 
-      expect(result.data).toHaveLength(2);
+      // loopExtension returns only the last page's data (which is empty when we detect end)
+      expect(result.data).toHaveLength(1);
+      expect(result.data).toEqual([{ id: 2, name: 'Item 2' }]);
       expect(result.pagination.total).toBeUndefined();
       expect(result.pagination.totalPages).toBeUndefined();
     });
@@ -706,7 +718,10 @@ describe('loopExtension', () => {
       );
 
       expect(mockRequest).toHaveBeenCalledTimes(5);
-      expect(result.data).toHaveLength(500);
+      // loopExtension returns only the last page's data
+      expect(result.data).toHaveLength(100);
+      expect(result.data[0]).toEqual({ id: 401, name: 'Item 401' });
+      expect(result.data[99]).toEqual({ id: 500, name: 'Item 500' });
     });
   });
 });
