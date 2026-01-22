@@ -1,3 +1,11 @@
+## 3.5.4-beta.4 (2026-01-22)
+
+### 🩹 Fixes
+
+- **auth:** always clear local tokens on revokeToken ([dc0716b](https://github.com/typewoo/sdk/commit/dc0716b))
+- **loop:** update tests to reflect that loopExtension returns only the last page's data ([def10c0](https://github.com/typewoo/sdk/commit/def10c0))
+- **loop:** update tests to reflect that loopExtension returns only the last page's data ([6b970f1](https://github.com/typewoo/sdk/commit/6b970f1))
+
 ## 3.5.4-beta.3 (2026-01-20)
 
 ### 🚀 Features
