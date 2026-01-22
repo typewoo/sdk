@@ -121,20 +121,18 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!data, 'auth:token:revoke:success');
     this.events.emitIf(!!error, 'auth:token:revoke:error', error);
 
-    if (!error) {
-      const accessTokenStorage = this.config.auth?.accessToken?.storage;
-      const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
+    const accessTokenStorage = this.config.auth?.accessToken?.storage;
+    const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
 
-      if (accessTokenStorage) {
-        await accessTokenStorage.clear();
-      }
-      if (refreshTokenStorage) {
-        await refreshTokenStorage.clear();
-      }
-
-      this.state.authenticated = false;
-      this.events.emit('auth:changed', false);
+    if (accessTokenStorage) {
+      await accessTokenStorage.clear();
     }
+    if (refreshTokenStorage) {
+      await refreshTokenStorage.clear();
+    }
+
+    this.state.authenticated = false;
+    this.events.emit('auth:changed', false);
 
     return { data: data, error };
   }
