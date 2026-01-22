@@ -1,3 +1,10 @@
+## 3.5.4-beta.5 (2026-01-22)
+
+### 🚀 Features
+
+- **auth:** add clearSessionOnAuthChange option and refactor session clearing logic ([2ec262e](https://github.com/typewoo/sdk/commit/2ec262e))
+- **interceptors:** enhance addRefreshTokenInterceptor to accept state and events parameters ([282ef74](https://github.com/typewoo/sdk/commit/282ef74))
+
 ## 3.5.4-beta.4 (2026-01-22)
 
 ### 🩹 Fixes
