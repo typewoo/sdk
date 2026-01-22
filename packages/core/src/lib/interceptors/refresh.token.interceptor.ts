@@ -4,6 +4,7 @@ import { httpClient } from '../http/index.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
+import { clearAuthSession } from '../utils/auth.utils.js';
 
 // Interface for queued request item
 interface QueuedRequest {
@@ -147,19 +148,7 @@ const refreshTokenFailed = async (
   config: ResolvedSdkConfig,
   reason?: unknown
 ) => {
-  // Clear both access and refresh tokens
-  const accessTokenStorage = config.auth?.accessToken?.storage;
-  const refreshTokenStorage = config.auth?.refreshToken?.storage;
-
-  if (accessTokenStorage) {
-    await accessTokenStorage.clear();
-  }
-  if (refreshTokenStorage) {
-    await refreshTokenStorage.clear();
-  }
-
-  Typewoo.state.authenticated = false;
-  Typewoo.events.emit('auth:changed', false);
+  await clearAuthSession(config, Typewoo.state, Typewoo.events);
 
   // Always return a consistent ApiError structure
   let apiError: ApiError;

@@ -78,6 +78,12 @@ export interface SdkConfig<
      * Defaults to `false`.
      */
     revokeTokenBeforeLogin?: boolean;
+    /**
+     * Clear cart token and nonce when authentication state changes (logout or token refresh failure).
+     * This ensures session data doesn't leak between users.
+     * Defaults to `true`.
+     */
+    clearSessionOnAuthChange?: boolean;
 
     accessToken?: {
       key?: string;
@@ -203,6 +209,7 @@ export interface ResolvedSdkConfig {
     autoLoginUrl?: string;
     fetchCartOnLogin?: boolean;
     revokeTokenBeforeLogin?: boolean;
+    clearSessionOnAuthChange?: boolean;
     accessToken?: ResolvedStorageConfig;
     refreshToken?: ResolvedStorageConfig;
   };
@@ -296,6 +303,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       autoLoginUrl: config.auth?.autoLoginUrl,
       fetchCartOnLogin: config.auth?.fetchCartOnLogin,
       revokeTokenBeforeLogin: config.auth?.revokeTokenBeforeLogin,
+      clearSessionOnAuthChange: config.auth?.clearSessionOnAuthChange ?? true,
       accessToken: {
         key: config.auth?.accessToken?.key,
         disabled: config.auth?.accessToken?.disabled,

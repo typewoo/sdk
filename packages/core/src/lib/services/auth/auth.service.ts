@@ -1,8 +1,8 @@
-import { AxiosRequestConfig } from 'axios';
 import { doGet, doPost } from '../../http/http.js';
 import { BaseService } from '../base.service.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
+import { clearAuthSession } from '../../utils/auth.utils.js';
 import {
   AuthTokenRequest,
   AuthTokenResponse,
@@ -121,18 +121,7 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!data, 'auth:token:revoke:success');
     this.events.emitIf(!!error, 'auth:token:revoke:error', error);
 
-    const accessTokenStorage = this.config.auth?.accessToken?.storage;
-    const refreshTokenStorage = this.config.auth?.refreshToken?.storage;
-
-    if (accessTokenStorage) {
-      await accessTokenStorage.clear();
-    }
-    if (refreshTokenStorage) {
-      await refreshTokenStorage.clear();
-    }
-
-    this.state.authenticated = false;
-    this.events.emit('auth:changed', false);
+    await clearAuthSession(this.config, this.state, this.events);
 
     return { data: data, error };
   }
