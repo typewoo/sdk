@@ -1,10 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { Typewoo } from '../sdk.js';
 import { httpClient } from '../http/index.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
 import { clearAuthSession } from '../utils/auth.utils.js';
+import { SdkState } from '../types/sdk.state.js';
+import { EventBus } from '../bus/event.bus.js';
+import { SdkEvent } from '../sdk.events.js';
 
 // Interface for queued request item
 interface QueuedRequest {
@@ -45,7 +47,9 @@ const processQueue = (error: ApiError | null, token: string | null = null) => {
 
 export const addRefreshTokenInterceptor = (
   config: ResolvedSdkConfig,
-  auth: AuthService
+  auth: AuthService,
+  state: SdkState,
+  events: EventBus<SdkEvent>
 ) => {
   httpClient.interceptors.response.use(
     (response) => response,
@@ -79,14 +83,22 @@ export const addRefreshTokenInterceptor = (
         try {
           const refreshTokenStorage = config.auth?.refreshToken?.storage;
           if (!refreshTokenStorage) {
-            const refreshError = await refreshTokenFailed(config);
+            const refreshError = await refreshTokenFailed(
+              config,
+              state,
+              events
+            );
             processQueue(refreshError, null);
             return refreshError;
           }
 
           const refreshToken = await refreshTokenStorage.get();
           if (!refreshToken) {
-            const refreshError = await refreshTokenFailed(config);
+            const refreshError = await refreshTokenFailed(
+              config,
+              state,
+              events
+            );
             processQueue(refreshError, null);
             return refreshError;
           }
@@ -105,6 +117,8 @@ export const addRefreshTokenInterceptor = (
           if (refreshError) {
             const tokenFailedError = await refreshTokenFailed(
               config,
+              state,
+              events,
               refreshError
             );
             processQueue(tokenFailedError, null);
@@ -112,7 +126,11 @@ export const addRefreshTokenInterceptor = (
           }
 
           if (!data) {
-            const tokenFailedError = await refreshTokenFailed(config);
+            const tokenFailedError = await refreshTokenFailed(
+              config,
+              state,
+              events
+            );
             processQueue(tokenFailedError, null);
             return tokenFailedError;
           }
@@ -130,6 +148,8 @@ export const addRefreshTokenInterceptor = (
         } catch (refreshError) {
           const tokenFailedError = await refreshTokenFailed(
             config,
+            state,
+            events,
             refreshError
           );
           processQueue(tokenFailedError, null);
@@ -146,9 +166,11 @@ export const addRefreshTokenInterceptor = (
 
 const refreshTokenFailed = async (
   config: ResolvedSdkConfig,
+  state: SdkState,
+  events: EventBus<SdkEvent>,
   reason?: unknown
 ) => {
-  await clearAuthSession(config, Typewoo.state, Typewoo.events);
+  await clearAuthSession(config, state, events);
 
   // Always return a consistent ApiError structure
   let apiError: ApiError;

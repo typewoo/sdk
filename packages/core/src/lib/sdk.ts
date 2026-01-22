@@ -107,7 +107,12 @@ export class TypewooClient<
       const useRefreshTokenInterceptor =
         this._config.auth?.refreshToken?.useInterceptor ?? true;
       if (useRefreshTokenInterceptor) {
-        addRefreshTokenInterceptor(this._config, this._auth);
+        addRefreshTokenInterceptor(
+          this._config,
+          this._auth,
+          this.state,
+          this.events
+        );
       }
     }
 
@@ -237,7 +242,12 @@ export class Sdk {
       const useRefreshTokenInterceptor =
         this._config.auth?.refreshToken?.useInterceptor ?? true;
       if (useRefreshTokenInterceptor) {
-        addRefreshTokenInterceptor(this._config, this._auth);
+        addRefreshTokenInterceptor(
+          this._config,
+          this._auth,
+          this.state,
+          this.events
+        );
       }
     }
 
