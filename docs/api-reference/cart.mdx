@@ -327,9 +327,18 @@ interface CartResponse {
   items_count: number;
   items_weight: number;
   cross_sells: unknown[];
-  errors: unknown[];
+  errors: CartErrorResponse[];
   payment_methods: string[];
   extensions: unknown;
+}
+```
+
+### CartErrorResponse
+
+```typescript
+interface CartErrorResponse {
+  code: string; // e.g., 'woocommerce_rest_product_out_of_stock'
+  message: string; // Localized error message
 }
 ```
 

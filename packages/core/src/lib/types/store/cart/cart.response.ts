@@ -6,6 +6,13 @@ import { CartShippingRateResponseSchema } from './cart.shipping.rate.response.js
 import { CartShippingResponseSchema } from './cart.shipping.response.js';
 import { CartTotalResponseSchema } from './cart.total.response.js';
 
+export const CartErrorResponseSchema = z.looseObject({
+  code: z.string(),
+  message: z.string(),
+});
+
+export type CartErrorResponse = z.infer<typeof CartErrorResponseSchema>;
+
 export const CartResponseSchema = z.looseObject({
   items: z.array(CartItemResponseSchema),
   coupons: z.array(CartCouponResponseSchema),
@@ -21,7 +28,7 @@ export const CartResponseSchema = z.looseObject({
   items_count: z.number(),
   items_weight: z.number(),
   cross_sells: z.array(z.unknown()),
-  errors: z.array(z.unknown()),
+  errors: z.array(CartErrorResponseSchema),
   payment_methods: z.array(z.string()),
   extensions: z.unknown(),
 });
