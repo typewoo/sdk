@@ -1,3 +1,9 @@
+## 3.5.4-beta.6 (2026-01-26)
+
+### 🚀 Features
+
+- **cart:** define CartErrorResponse schema and update CartResponse to use it ([78bb952](https://github.com/typewoo/sdk/commit/78bb952))
+
 ## 3.5.4-beta.5 (2026-01-22)
 
 ### 🚀 Features
