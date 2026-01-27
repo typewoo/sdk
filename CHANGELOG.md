@@ -1,3 +1,34 @@
+## 3.6.0 (2026-01-27)
+
+### 🚀 Features
+
+- introduce createTypewoo SDK initializer with configurable endpoints ([#141](https://github.com/typewoo/sdk/pull/141))
+- add uniqueIdentifier option to SDK configuration for enhanced logging and debugging ([b4d65bf](https://github.com/typewoo/sdk/commit/b4d65bf))
+- **auth:** add first_name and last_name fields to AuthTokenResponseSchema ([d816587](https://github.com/typewoo/sdk/commit/d816587))
+- **auth:** add clearSessionOnAuthChange option and refactor session clearing logic ([2ec262e](https://github.com/typewoo/sdk/commit/2ec262e))
+- **brands:** update single method to accept both number and string as ID ([b05c6fa](https://github.com/typewoo/sdk/commit/b05c6fa))
+- **cart:** define CartErrorResponse schema and update CartResponse to use it ([78bb952](https://github.com/typewoo/sdk/commit/78bb952))
+- **interceptors:** enhance addRefreshTokenInterceptor to accept state and events parameters ([282ef74](https://github.com/typewoo/sdk/commit/282ef74))
+
+### 🩹 Fixes
+
+- **auth:** always clear local tokens on revokeToken ([dc0716b](https://github.com/typewoo/sdk/commit/dc0716b))
+- **loop:** update loop extension to return only the last page's data ([8576aba](https://github.com/typewoo/sdk/commit/8576aba))
+- **loop:** update tests to reflect that loopExtension returns only the last page's data ([def10c0](https://github.com/typewoo/sdk/commit/def10c0))
+- **loop:** update tests to reflect that loopExtension returns only the last page's data ([6b970f1](https://github.com/typewoo/sdk/commit/6b970f1))
+
+### 🧹 Chores
+
+- update readme files ([4b28769](https://github.com/typewoo/sdk/commit/4b28769))
+- **release:** publish 3.5.4-beta.0 ([ee6c72f](https://github.com/typewoo/sdk/commit/ee6c72f))
+- **release:** publish 3.5.4-beta.1 ([1237d8f](https://github.com/typewoo/sdk/commit/1237d8f))
+- **release:** publish 3.5.4-beta.2 ([5a1c4c6](https://github.com/typewoo/sdk/commit/5a1c4c6))
+- **release:** publish 3.5.4-beta.3 ([8e95d9e](https://github.com/typewoo/sdk/commit/8e95d9e))
+- **release:** publish 3.5.4-beta.4 ([7007a8a](https://github.com/typewoo/sdk/commit/7007a8a))
+- **release:** publish 3.5.4-beta.5 ([426c0a0](https://github.com/typewoo/sdk/commit/426c0a0))
+- **release:** publish 3.5.4-beta.6 ([49272a3](https://github.com/typewoo/sdk/commit/49272a3))
+- **release:** publish 3.5.4-beta.7 ([4c94e84](https://github.com/typewoo/sdk/commit/4c94e84))
+
 ## 3.5.4-beta.7 (2026-01-27)
 
 ### 🚀 Features
