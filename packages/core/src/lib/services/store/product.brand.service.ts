@@ -44,7 +44,7 @@ export class ProductBrandService extends BaseService {
    * @returns
    */
   async single(
-    id: number,
+    id: number | string,
     options?: RequestOptions
   ): Promise<ApiResult<ProductBrandResponse>> {
     const url = `/${this.endpoint}/${id}`;
