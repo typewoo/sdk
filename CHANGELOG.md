@@ -1,3 +1,9 @@
+## 3.5.4-beta.7 (2026-01-27)
+
+### 🚀 Features
+
+- **brands:** update single method to accept both number and string as ID ([b05c6fa](https://github.com/typewoo/sdk/commit/b05c6fa))
+
 ## 3.5.4-beta.6 (2026-01-26)
 
 ### 🚀 Features
