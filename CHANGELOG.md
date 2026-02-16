@@ -1,3 +1,20 @@
+## 3.7.0 (2026-02-16)
+
+### 🚀 Features
+
+- add global request lifecycle callbacks ([#148](https://github.com/typewoo/sdk/pull/148))
+
+### 🩹 Fixes
+
+- **deps:** update dependency qs to v6.14.1 ([40f49f3](https://github.com/typewoo/sdk/commit/40f49f3))
+
+### 🧹 Chores
+
+- **deps:** update dependency angular-eslint to v20.7.0 ([ecdd8a3](https://github.com/typewoo/sdk/commit/ecdd8a3))
+- **deps:** update dependency eslint-plugin-playwright to v2.5.1 ([a921a24](https://github.com/typewoo/sdk/commit/a921a24))
+- **deps:** update dependency @swc/core to v1.15.11 ([46e9ec3](https://github.com/typewoo/sdk/commit/46e9ec3))
+- **deps:** update dependency @types/node to v24.10.9 ([e8b7c44](https://github.com/typewoo/sdk/commit/e8b7c44))
+
 ## 3.6.0 (2026-01-27)
 
 ### 🚀 Features
