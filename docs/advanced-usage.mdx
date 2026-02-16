@@ -145,10 +145,18 @@ interface RequestOptions<T = unknown> {
     context: RequestContext<T>
   ) => void | Promise<void>;
   onError?: (
-    error: ApiError,
+    error: ApiError | undefined,
     context: RequestContext<T>
   ) => void | Promise<void>;
-  onLoading?: (isLoading: boolean) => void | Promise<void>;
+  onRetry?: (
+    attempt: number,
+    error: ApiError | undefined,
+    context: RequestContext<T>
+  ) => void | Promise<void>;
+  onLoading?: (
+    isLoading: boolean,
+    context?: RequestContext<T>
+  ) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
@@ -156,6 +164,12 @@ interface RequestOptions<T = unknown> {
   ) => void | Promise<void>;
 }
 ```
+
+<Note>
+  All of these callbacks are also available globally via the `request` config
+  option. See [Configuration — Global Lifecycle
+  Callbacks](/configuration#global-lifecycle-callbacks).
+</Note>
 
 ### Custom Headers
 
@@ -201,10 +215,10 @@ const { data } = await sdk.store.cart.add(
       analytics.track('add_to_cart_success', { items: cart.items_count });
     },
     onError: (error, context) => {
-      console.error('Failed:', error.message);
-      analytics.track('add_to_cart_error', { code: error.code });
+      console.error('Failed:', error?.message);
+      analytics.track('add_to_cart_error', { code: error?.code });
     },
-    onLoading: (isLoading) => {
+    onLoading: (isLoading, context) => {
       setButtonLoading(isLoading);
     },
     onFinally: (data, error, context) => {

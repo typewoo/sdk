@@ -156,7 +156,7 @@ const { data } = await sdk.store.products.list(
   { per_page: 10 },
   {
     onError: (error, context) => {
-      console.error(`Request to ${context.url} failed:`, error.message);
+      console.error(`Request to ${context.url} failed:`, error?.message);
 
       // Log to error tracking service
       errorTracker.captureException(error);
@@ -164,7 +164,7 @@ const { data } = await sdk.store.products.list(
     onRetry: (attempt, error, context) => {
       console.log(
         `Retry attempt ${attempt} for ${context.url}:`,
-        error.message
+        error?.message
       );
     },
   }
@@ -186,6 +186,30 @@ interface RequestContext<T = unknown> {
 ```
 
 ## Global Error Handling
+
+### Using Global Request Callback
+
+The simplest way to handle errors globally is with the `request.onError` callback:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  request: {
+    onError: (error, context) => {
+      console.error(`Request to ${context.url} failed:`, error?.message);
+      errorTracker.captureException(error);
+    },
+    onRetry: (attempt, error, context) => {
+      console.warn(`Retry #${attempt} for ${context.url}`);
+    },
+  },
+});
+```
+
+<Note>
+  Global `request.onError` fires for every failed request, after any per-request
+  `onError` callback. Both can be used simultaneously.
+</Note>
 
 ### Using Events
 
@@ -253,7 +277,7 @@ const { data } = await sdk.store.products.list(
   { per_page: 10 },
   {
     onRetry: (attempt, error, context) => {
-      console.log(`Retry ${attempt} for ${context.url}:`, error.message);
+      console.log(`Retry ${attempt} for ${context.url}:`, error?.message);
     },
   }
 );
@@ -264,6 +288,11 @@ The `onRetry` callback receives:
 - `attempt`: The retry attempt number (1-based)
 - `error`: The `ApiError` that triggered the retry
 - `context`: The `RequestContext` with URL, method, and payload info
+
+<Note>
+  `onRetry` is also available as a global callback via `request.onRetry` in the
+  SDK configuration. The per-request callback fires first, then the global one.
+</Note>
 
 See [Configuration](/configuration#request-configuration) for full retry options.
 

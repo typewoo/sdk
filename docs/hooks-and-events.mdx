@@ -172,7 +172,10 @@ const { data, error } = await sdk.store.products.list(
     onError: (error, context) => {
       console.error('Request failed:', error);
     },
-    onLoading: (isLoading) => {
+    onRetry: (attempt, error, context) => {
+      console.warn(`Retry #${attempt}:`, error?.message);
+    },
+    onLoading: (isLoading, context) => {
       if (isLoading) {
         showSpinner();
       } else {
@@ -197,10 +200,18 @@ interface RequestOptions<T = unknown> {
     context: RequestContext<T>
   ) => void | Promise<void>;
   onError?: (
-    error: ApiError,
+    error: ApiError | undefined,
     context: RequestContext<T>
   ) => void | Promise<void>;
-  onLoading?: (isLoading: boolean) => void | Promise<void>;
+  onRetry?: (
+    attempt: number,
+    error: ApiError | undefined,
+    context: RequestContext<T>
+  ) => void | Promise<void>;
+  onLoading?: (
+    isLoading: boolean,
+    context?: RequestContext<T>
+  ) => void | Promise<void>;
   onFinally?: (
     response: T | undefined,
     error: ApiError | undefined,
@@ -220,6 +231,34 @@ interface RequestContext<T = unknown> {
   payload?: T; // Request body
 }
 ```
+
+## Global Request Callbacks
+
+You can also define lifecycle callbacks globally in the SDK configuration. These fire for **every** request, after any per-request callbacks:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  request: {
+    onRequest: (context) => {
+      console.log('Any request starting:', context.url);
+    },
+    onError: (error, context) => {
+      errorTracker.captureException(error);
+    },
+    onLoading: (isLoading) => {
+      setGlobalSpinner(isLoading);
+    },
+  },
+});
+```
+
+<Note>
+  Per-request callbacks always fire before global callbacks. Both can be used
+  simultaneously — they complement each other.
+</Note>
+
+See [Configuration — Global Lifecycle Callbacks](/configuration#global-lifecycle-callbacks) for the full reference.
 
 ## Event Middleware
 

@@ -33,10 +33,14 @@ export const doRequest = async <T>(
 
   let responseData: T | undefined;
   let responseError: ApiError | undefined;
+  const globalConfig = getSdkConfig();
 
   try {
-    requestOptions?.onLoading?.(true);
-    requestOptions?.onRequest?.(context);
+    await requestOptions?.onLoading?.(true, context);
+    await globalConfig?.request?.onLoading?.(true, context);
+
+    await requestOptions?.onRequest?.(context);
+    await globalConfig?.request?.onRequest?.(context);
 
     const { response, error } = await doRequestWithRetry<T>(
       instance,
@@ -50,7 +54,8 @@ export const doRequest = async <T>(
     }
 
     responseData = response?.data;
-    requestOptions?.onResponse?.(responseData, context);
+    await requestOptions?.onResponse?.(responseData, context);
+    await globalConfig?.request?.onResponse?.(responseData, context);
 
     return {
       data: responseData,
@@ -68,11 +73,19 @@ export const doRequest = async <T>(
     const axiosError = error as AxiosError<ApiError>;
     const errorResult = createError<T>(axiosError);
     responseError = errorResult.error;
-    requestOptions?.onError?.(responseError, context);
+    await requestOptions?.onError?.(responseError, context);
+    await globalConfig?.request?.onError?.(responseError, context);
+
     return errorResult;
   } finally {
-    requestOptions?.onFinally?.(responseData, responseError, context);
-    requestOptions?.onLoading?.(false);
+    await requestOptions?.onFinally?.(responseData, responseError, context);
+    await globalConfig?.request?.onFinally?.(
+      responseData,
+      responseError,
+      context
+    );
+    await requestOptions?.onLoading?.(false, context);
+    await globalConfig?.request?.onLoading?.(false, context);
   }
 };
 /**
@@ -122,7 +135,8 @@ const doRequestWithRetry = async <T>(
       }
 
       const errorResult = createError<T>(axiosError);
-      requestOptions?.onRetry?.(attempt + 1, errorResult.error, context);
+      await requestOptions?.onRetry?.(attempt + 1, errorResult.error, context);
+      await config?.request?.onRetry?.(attempt + 1, errorResult.error, context);
 
       // Wait before retrying
       const delay = getRetryDelay(retryConfig?.delay, attempt);
