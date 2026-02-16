@@ -145,12 +145,12 @@ interface RequestOptions<T = unknown> {
     context: RequestContext<T>
   ) => void | Promise<void>;
   onError?: (
-    error: ApiError,
+    error: ApiError | undefined,
     context: RequestContext<T>
   ) => void | Promise<void>;
   onRetry?: (
     attempt: number,
-    error: ApiError,
+    error: ApiError | undefined,
     context: RequestContext<T>
   ) => void | Promise<void>;
   onLoading?: (
