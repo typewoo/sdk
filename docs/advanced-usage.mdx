@@ -215,8 +215,8 @@ const { data } = await sdk.store.cart.add(
       analytics.track('add_to_cart_success', { items: cart.items_count });
     },
     onError: (error, context) => {
-      console.error('Failed:', error.message);
-      analytics.track('add_to_cart_error', { code: error.code });
+      console.error('Failed:', error?.message);
+      analytics.track('add_to_cart_error', { code: error?.code });
     },
     onLoading: (isLoading, context) => {
       setButtonLoading(isLoading);

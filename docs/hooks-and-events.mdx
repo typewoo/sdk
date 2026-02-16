@@ -173,7 +173,7 @@ const { data, error } = await sdk.store.products.list(
       console.error('Request failed:', error);
     },
     onRetry: (attempt, error, context) => {
-      console.warn(`Retry #${attempt}:`, error.message);
+      console.warn(`Retry #${attempt}:`, error?.message);
     },
     onLoading: (isLoading, context) => {
       if (isLoading) {
