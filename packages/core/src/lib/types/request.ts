@@ -29,5 +29,8 @@ export interface RequestOptions<T = unknown> {
     error: ApiError | undefined,
     context: RequestContext<T>
   ) => void | Promise<void>;
-  onLoading?: (isLoading: boolean) => void | Promise<void>;
+  onLoading?: (
+    isLoading: boolean,
+    context?: RequestContext<T>
+  ) => void | Promise<void>;
 }

@@ -211,12 +211,34 @@ const sdk = createTypewoo({
 
 ## Request Configuration
 
-Configure request retry behavior:
+Configure global request lifecycle callbacks and retry behavior:
 
 ```typescript
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   request: {
+    // Global lifecycle callbacks — called for every SDK request
+    onRequest: (context) => {
+      console.log('Request starting:', context.method, context.url);
+    },
+    onResponse: (data, context) => {
+      console.log('Response received:', context.url);
+    },
+    onError: (error, context) => {
+      console.error('Request failed:', context.url, error?.message);
+      errorTracker.captureException(error);
+    },
+    onRetry: (attempt, error, context) => {
+      console.warn(`Retry #${attempt} for ${context.url}`);
+    },
+    onFinally: (data, error, context) => {
+      console.log('Request complete:', context.url);
+    },
+    onLoading: (isLoading, context) => {
+      setGlobalSpinner(isLoading);
+    },
+
+    // Retry configuration
     retry: {
       enabled: true,
       maxRetries: 3,
@@ -232,6 +254,24 @@ const sdk = createTypewoo({
 });
 ```
 
+### Global Lifecycle Callbacks
+
+Global callbacks are invoked for **every** SDK request. When a per-request callback is also provided, the per-request callback fires first, then the global one.
+
+| Callback     | Signature                                                | Description                                        |
+| ------------ | -------------------------------------------------------- | -------------------------------------------------- |
+| `onRequest`  | `(context: RequestContext) => void`                      | Called before each request is sent                 |
+| `onResponse` | `(response: unknown, context: RequestContext) => void`   | Called on successful response                      |
+| `onError`    | `(error: ApiError, context: RequestContext) => void`     | Called on request failure                          |
+| `onRetry`    | `(attempt: number, error: ApiError, context) => void`    | Called on each retry attempt                       |
+| `onFinally`  | `(response, error, context: RequestContext) => void`     | Called after every request (success or failure)    |
+| `onLoading`  | `(isLoading: boolean, context?: RequestContext) => void` | Called when loading state changes (`true`/`false`) |
+
+<Note>
+  Global callbacks complement per-request callbacks — they don't replace them.
+  Both can be used simultaneously. Per-request callbacks always fire first.
+</Note>
+
 ### Retry Options
 
 | Option           | Type                            | Default                                       | Description                          |
@@ -244,8 +284,9 @@ const sdk = createTypewoo({
 | `retryCondition` | `(error, attempt) => boolean`   | -                                             | Custom retry condition               |
 
 <Note>
-  To handle retry events, use the `onRetry` callback in
-  [RequestOptions](#per-request-retry-handling) when making individual requests.
+  Global callbacks like `request.onRetry` are also available — see [Global
+  Lifecycle Callbacks](#global-lifecycle-callbacks) above. Per-request `onRetry`
+  fires first, then the global one.
 </Note>
 
 ### Exponential Backoff

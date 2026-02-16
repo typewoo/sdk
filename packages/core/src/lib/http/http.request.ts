@@ -33,10 +33,14 @@ export const doRequest = async <T>(
 
   let responseData: T | undefined;
   let responseError: ApiError | undefined;
+  const globalConfig = getSdkConfig();
 
   try {
-    requestOptions?.onLoading?.(true);
+    requestOptions?.onLoading?.(true, context);
+    globalConfig?.request?.onLoading?.(true, context);
+
     requestOptions?.onRequest?.(context);
+    globalConfig?.request?.onRequest?.(context);
 
     const { response, error } = await doRequestWithRetry<T>(
       instance,
@@ -51,6 +55,7 @@ export const doRequest = async <T>(
 
     responseData = response?.data;
     requestOptions?.onResponse?.(responseData, context);
+    globalConfig?.request?.onResponse?.(responseData, context);
 
     return {
       data: responseData,
@@ -69,10 +74,14 @@ export const doRequest = async <T>(
     const errorResult = createError<T>(axiosError);
     responseError = errorResult.error;
     requestOptions?.onError?.(responseError, context);
+    globalConfig?.request?.onError?.(responseError, context);
+
     return errorResult;
   } finally {
     requestOptions?.onFinally?.(responseData, responseError, context);
-    requestOptions?.onLoading?.(false);
+    globalConfig?.request?.onFinally?.(responseData, responseError, context);
+    requestOptions?.onLoading?.(false, context);
+    globalConfig?.request?.onLoading?.(false, context);
   }
 };
 /**
@@ -123,6 +132,8 @@ const doRequestWithRetry = async <T>(
 
       const errorResult = createError<T>(axiosError);
       requestOptions?.onRetry?.(attempt + 1, errorResult.error, context);
+      const globalCfg = getSdkConfig();
+      globalCfg?.request?.onRetry?.(attempt + 1, errorResult.error, context);
 
       // Wait before retrying
       const delay = getRetryDelay(retryConfig?.delay, attempt);

@@ -5,6 +5,8 @@ import {
   StorageProvider,
   storageProviders,
 } from '../storage/auth.storage.js';
+import { ApiError } from '../types/api.js';
+import { RequestContext } from '../types/request.js';
 
 /**
  * Type for custom endpoint functions.
@@ -136,6 +138,53 @@ export interface SdkConfig<
   endpoints?: TEndpoints;
   request?: {
     /**
+     * Global callback invoked when a request starts retrying.
+     * Called for each retry attempt across all SDK requests.
+     */
+    onRetry?: (
+      attempt: number,
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    /**
+     * Global callback invoked when any SDK request fails.
+     * Called after per-request onError (if any).
+     */
+    onError?: (
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    /**
+     * Global callback invoked just before any SDK request is sent.
+     * Called after per-request onRequest (if any).
+     */
+    onRequest?: (context: RequestContext) => void | Promise<void>;
+    /**
+     * Global callback invoked when any SDK request receives a successful response.
+     * Called after per-request onResponse (if any).
+     */
+    onResponse?: (
+      response: unknown,
+      context: RequestContext
+    ) => void | Promise<void>;
+    /**
+     * Global callback invoked after any SDK request completes (success or failure).
+     * Called after per-request onFinally (if any).
+     */
+    onFinally?: (
+      response: unknown | undefined,
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    /**
+     * Global callback invoked when any SDK request loading state changes.
+     * Called after per-request onLoading (if any).
+     */
+    onLoading?: (
+      isLoading: boolean,
+      context?: RequestContext
+    ) => void | Promise<void>;
+    /**
      * Retry configuration for failed requests.
      * Automatically retries requests that fail due to network issues or specific HTTP status codes.
      */
@@ -225,6 +274,29 @@ export interface ResolvedSdkConfig {
   };
   axiosConfig?: AxiosRequestConfig;
   request: {
+    onRetry?: (
+      attempt: number,
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    onError?: (
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    onRequest?: (context: RequestContext) => void | Promise<void>;
+    onResponse?: (
+      response: unknown,
+      context: RequestContext
+    ) => void | Promise<void>;
+    onFinally?: (
+      response: unknown | undefined,
+      error: ApiError | undefined,
+      context: RequestContext
+    ) => void | Promise<void>;
+    onLoading?: (
+      isLoading: boolean,
+      context?: RequestContext
+    ) => void | Promise<void>;
     retry: {
       enabled: boolean;
       maxRetries?: number | (() => number);
@@ -276,6 +348,25 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       },
     },
   };
+
+  if (config.request?.onRetry) {
+    resolved.request.onRetry = config.request.onRetry;
+  }
+  if (config.request?.onError) {
+    resolved.request.onError = config.request.onError;
+  }
+  if (config.request?.onRequest) {
+    resolved.request.onRequest = config.request.onRequest;
+  }
+  if (config.request?.onResponse) {
+    resolved.request.onResponse = config.request.onResponse;
+  }
+  if (config.request?.onFinally) {
+    resolved.request.onFinally = config.request.onFinally;
+  }
+  if (config.request?.onLoading) {
+    resolved.request.onLoading = config.request.onLoading;
+  }
 
   if (config.request?.retry) {
     resolved.request.retry = {
