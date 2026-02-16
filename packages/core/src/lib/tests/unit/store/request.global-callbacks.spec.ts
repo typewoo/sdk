@@ -415,4 +415,121 @@ describe('Global request callbacks', () => {
       expect(onResponse).toHaveBeenCalledOnce();
     });
   });
+
+  describe('onRetry (global)', () => {
+    /**
+     * Creates a mock AxiosInstance that fails N times with a retryable 500
+     * then succeeds on the next call.
+     */
+    const createRetryableInstance = (
+      failCount: number,
+      successData: unknown = { ok: true }
+    ) => {
+      let calls = 0;
+      return {
+        defaults: { baseURL: 'http://test.local', headers: {} },
+        request: vi.fn().mockImplementation(() => {
+          calls++;
+          if (calls <= failCount) {
+            return Promise.reject({
+              response: {
+                data: { message: `fail-${calls}` },
+                headers: {},
+                status: 500,
+              },
+            });
+          }
+          return Promise.resolve({
+            data: successData,
+            headers: { 'content-type': 'application/json' },
+            status: 200,
+          });
+        }),
+      } as unknown as AxiosInstance;
+    };
+
+    it('should be called on each retry attempt', async () => {
+      const onRetry = vi.fn();
+      setSdkConfig(
+        buildConfig({
+          onRetry,
+          retry: {
+            enabled: true,
+            maxRetries: 3,
+            delay: 0,
+            retryOnStatus: [500],
+            retryOnMethods: ['GET'],
+          },
+        })
+      );
+
+      const instance = createRetryableInstance(2);
+      await doRequest(instance, '/retry-test', {
+        axiosConfig: { method: 'get' },
+      });
+
+      expect(onRetry).toHaveBeenCalledTimes(2);
+      expect(onRetry).toHaveBeenNthCalledWith(
+        1,
+        1,
+        expect.objectContaining({ message: 'fail-1' }),
+        expect.objectContaining({ path: '/retry-test', method: 'get' })
+      );
+      expect(onRetry).toHaveBeenNthCalledWith(
+        2,
+        2,
+        expect.objectContaining({ message: 'fail-2' }),
+        expect.objectContaining({ path: '/retry-test', method: 'get' })
+      );
+    });
+
+    it('should be called after per-request onRetry', async () => {
+      const callOrder: string[] = [];
+      const perRequestOnRetry = vi.fn(() => callOrder.push('per-request'));
+      const globalOnRetry = vi.fn(() => callOrder.push('global'));
+
+      setSdkConfig(
+        buildConfig({
+          onRetry: globalOnRetry,
+          retry: {
+            enabled: true,
+            maxRetries: 2,
+            delay: 0,
+            retryOnStatus: [500],
+            retryOnMethods: ['GET'],
+          },
+        })
+      );
+
+      const instance = createRetryableInstance(1);
+      await doRequest(instance, '/retry-order', {
+        axiosConfig: { method: 'get' },
+        onRetry: perRequestOnRetry,
+      });
+
+      expect(callOrder).toEqual(['per-request', 'global']);
+    });
+
+    it('should not be called when no retries occur', async () => {
+      const onRetry = vi.fn();
+      setSdkConfig(
+        buildConfig({
+          onRetry,
+          retry: {
+            enabled: true,
+            maxRetries: 3,
+            delay: 0,
+            retryOnStatus: [500],
+            retryOnMethods: ['GET'],
+          },
+        })
+      );
+
+      await doRequest(createSuccessInstance(), '/no-retry', {
+        axiosConfig: { method: 'get' },
+      });
+
+      expect(onRetry).not.toHaveBeenCalled();
+    });
+  });
 });
