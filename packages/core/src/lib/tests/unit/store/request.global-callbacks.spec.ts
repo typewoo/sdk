@@ -74,8 +74,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onRequest', async () => {
       const callOrder: string[] = [];
-      const perRequestOnRequest = vi.fn(() => callOrder.push('per-request'));
-      const globalOnRequest = vi.fn(() => callOrder.push('global'));
+      const perRequestOnRequest = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnRequest = vi.fn(() => {
+        callOrder.push('global');
+      });
       setSdkConfig(buildConfig({ onRequest: globalOnRequest }));
 
       await doRequest(createSuccessInstance(), '/test', {
@@ -116,8 +120,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onResponse', async () => {
       const callOrder: string[] = [];
-      const perRequestOnResponse = vi.fn(() => callOrder.push('per-request'));
-      const globalOnResponse = vi.fn(() => callOrder.push('global'));
+      const perRequestOnResponse = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnResponse = vi.fn(() => {
+        callOrder.push('global');
+      });
       setSdkConfig(buildConfig({ onResponse: globalOnResponse }));
 
       await doRequest(createSuccessInstance(), '/test', {
@@ -162,8 +170,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onError', async () => {
       const callOrder: string[] = [];
-      const perRequestOnError = vi.fn(() => callOrder.push('per-request'));
-      const globalOnError = vi.fn(() => callOrder.push('global'));
+      const perRequestOnError = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnError = vi.fn(() => {
+        callOrder.push('global');
+      });
       setSdkConfig(buildConfig({ onError: globalOnError }));
 
       await doRequest(createErrorInstance(), '/fail', {
@@ -210,8 +222,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onFinally', async () => {
       const callOrder: string[] = [];
-      const perRequestOnFinally = vi.fn(() => callOrder.push('per-request'));
-      const globalOnFinally = vi.fn(() => callOrder.push('global'));
+      const perRequestOnFinally = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnFinally = vi.fn(() => {
+        callOrder.push('global');
+      });
       setSdkConfig(buildConfig({ onFinally: globalOnFinally }));
 
       await doRequest(createSuccessInstance(), '/test', {
@@ -277,8 +293,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onLoading', async () => {
       const callOrder: string[] = [];
-      const perRequestOnLoading = vi.fn(() => callOrder.push('per-request'));
-      const globalOnLoading = vi.fn(() => callOrder.push('global'));
+      const perRequestOnLoading = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnLoading = vi.fn(() => {
+        callOrder.push('global');
+      });
       setSdkConfig(buildConfig({ onLoading: globalOnLoading }));
 
       await doRequest(createSuccessInstance(), '/test', {
@@ -298,6 +318,7 @@ describe('Global request callbacks', () => {
     it('should work without context (backward compatible)', async () => {
       // Simulate a consumer that only cares about the boolean
       const onLoading = vi.fn((_isLoading: boolean) => {
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         /* no context usage */
       });
       setSdkConfig(buildConfig({ onLoading }));
@@ -341,11 +362,21 @@ describe('Global request callbacks', () => {
     it('should invoke all global callbacks in correct order on success', async () => {
       const callOrder: string[] = [];
       const config = buildConfig({
-        onLoading: vi.fn((isLoading) => callOrder.push(`loading:${isLoading}`)),
-        onRequest: vi.fn(() => callOrder.push('request')),
-        onResponse: vi.fn(() => callOrder.push('response')),
-        onFinally: vi.fn(() => callOrder.push('finally')),
-        onError: vi.fn(() => callOrder.push('error')),
+        onLoading: vi.fn((isLoading) => {
+          callOrder.push(`loading:${isLoading}`);
+        }),
+        onRequest: vi.fn(() => {
+          callOrder.push('request');
+        }),
+        onResponse: vi.fn(() => {
+          callOrder.push('response');
+        }),
+        onFinally: vi.fn(() => {
+          callOrder.push('finally');
+        }),
+        onError: vi.fn(() => {
+          callOrder.push('error');
+        }),
       });
       setSdkConfig(config);
 
@@ -365,11 +396,21 @@ describe('Global request callbacks', () => {
     it('should invoke all global callbacks in correct order on error', async () => {
       const callOrder: string[] = [];
       const config = buildConfig({
-        onLoading: vi.fn((isLoading) => callOrder.push(`loading:${isLoading}`)),
-        onRequest: vi.fn(() => callOrder.push('request')),
-        onResponse: vi.fn(() => callOrder.push('response')),
-        onError: vi.fn(() => callOrder.push('error')),
-        onFinally: vi.fn(() => callOrder.push('finally')),
+        onLoading: vi.fn((isLoading) => {
+          callOrder.push(`loading:${isLoading}`);
+        }),
+        onRequest: vi.fn(() => {
+          callOrder.push('request');
+        }),
+        onResponse: vi.fn(() => {
+          callOrder.push('response');
+        }),
+        onError: vi.fn(() => {
+          callOrder.push('error');
+        }),
+        onFinally: vi.fn(() => {
+          callOrder.push('finally');
+        }),
       });
       setSdkConfig(config);
 
@@ -485,8 +526,12 @@ describe('Global request callbacks', () => {
 
     it('should be called after per-request onRetry', async () => {
       const callOrder: string[] = [];
-      const perRequestOnRetry = vi.fn(() => callOrder.push('per-request'));
-      const globalOnRetry = vi.fn(() => callOrder.push('global'));
+      const perRequestOnRetry = vi.fn(() => {
+        callOrder.push('per-request');
+      });
+      const globalOnRetry = vi.fn(() => {
+        callOrder.push('global');
+      });
 
       setSdkConfig(
         buildConfig({
