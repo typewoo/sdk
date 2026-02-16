@@ -136,12 +136,7 @@ const doRequestWithRetry = async <T>(
 
       const errorResult = createError<T>(axiosError);
       await requestOptions?.onRetry?.(attempt + 1, errorResult.error, context);
-      const globalCfg = getSdkConfig();
-      await globalCfg?.request?.onRetry?.(
-        attempt + 1,
-        errorResult.error,
-        context
-      );
+      await config?.request?.onRetry?.(attempt + 1, errorResult.error, context);
 
       // Wait before retrying
       const delay = getRetryDelay(retryConfig?.delay, attempt);
