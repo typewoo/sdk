@@ -61,7 +61,7 @@
     "@nx/vite": "22.0.3",
     "@nx/web": "22.0.3",
     "@nx/webpack": "22.0.3",
-    "@playwright/test": "1.57.0",
+    "@playwright/test": "1.58.2",
     "@schematics/angular": "20.3.13",
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.11",
