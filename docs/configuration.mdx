@@ -128,6 +128,43 @@ const sdk = createTypewoo({
 });
 ```
 
+### Auth General Options
+
+| Option                   | Type      | Default     | Description                                                  |
+| ------------------------ | --------- | ----------- | ------------------------------------------------------------ |
+| `autoLoginUrl`           | `string`  | `undefined` | Base URL for auto-login redirects (falls back to `baseUrl`)  |
+| `fetchCartOnLogin`       | `boolean` | `false`     | Automatically fetch the cart after a successful login        |
+| `revokeTokenBeforeLogin` | `boolean` | `false`     | Revoke the existing token before issuing a new login request |
+
+#### Auto-Login URL
+
+By default, `getAutoLoginUrl()` builds the auto-login endpoint using `baseUrl`. Set `autoLoginUrl` when your auto-login endpoint is hosted on a different domain or path than your store API — for example, when your storefront and WordPress backend are on separate domains, or when auto-login traffic is routed through a dedicated gateway.
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://api.your-store.com', // Store API base
+  auth: {
+    autoLoginUrl: 'https://your-store.com', // WordPress frontend URL
+  },
+});
+
+// Uses autoLoginUrl:
+// https://your-store.com/wp-json/typewoo/v1/auth/autologin?token=xxx&redirect=/my-account
+const url = await sdk.auth.getAutoLoginUrl(ott, '/my-account');
+```
+
+When `autoLoginUrl` is omitted or `undefined`, `baseUrl` is used as the fallback:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+});
+
+// Falls back to baseUrl:
+// https://your-store.com/wp-json/typewoo/v1/auth/autologin?token=xxx&redirect=/my-account
+const url = await sdk.auth.getAutoLoginUrl(ott, '/my-account');
+```
+
 ### Access Token Options
 
 | Option           | Type                             | Default                  | Description                            |

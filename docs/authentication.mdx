@@ -250,6 +250,13 @@ const autoLoginUrl = await sdk.auth.getAutoLoginUrl(
 // https://your-store.com/wp-json/typewoo/v1/auth/autologin?token=xxx&redirect=/my-account&utm_source=email
 ```
 
+<Tip>
+  If your auto-login endpoint is on a different domain than your Store API, set
+  `auth.autoLoginUrl` in the SDK configuration. When provided,
+  `getAutoLoginUrl()` uses it instead of `baseUrl`. See the [Configuration
+  docs](/configuration#auto-login-url) for details.
+</Tip>
+
 ## JWT Utilities
 
 The SDK exports utilities for working with JWTs:

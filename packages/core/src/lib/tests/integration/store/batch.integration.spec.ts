@@ -61,7 +61,7 @@ describe('Integration: Batch API Operations', () => {
       requests: [
         {
           method: 'POST',
-          path: '/wp-json/wc/store/v1/cart',
+          path: '/wc/store/v1/cart',
         },
       ],
     };
