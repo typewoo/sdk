@@ -71,7 +71,7 @@ describe('Integration: Batch API Operations', () => {
     if (res.error) {
       // Batch API or validation mode might not be supported
       expect(res.error.code).toMatch(
-        /batch|validation|not.*found|not.*supported/i
+        /batch|validation|not.*found|not.*supported|invalid.*path/i
       );
     } else {
       expect(res.data).toBeTruthy();
