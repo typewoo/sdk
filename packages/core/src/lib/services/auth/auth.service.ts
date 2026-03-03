@@ -30,7 +30,9 @@ export class AuthService extends BaseService {
       ...(trackingParams ?? {}),
     });
 
-    const url = `${this.config.baseUrl}/${this.endpoint}/autologin`;
+    const url = `${this.config.auth?.autoLoginUrl ?? this.config.baseUrl}/${
+      this.endpoint
+    }/autologin`;
     return `${url}?${params}`;
   }
 
