@@ -61,7 +61,7 @@ describe('Integration: Batch API Operations', () => {
       requests: [
         {
           method: 'POST',
-          path: '/wp-json/wc/store/v1/cart',
+          path: '/wc/store/v1/cart',
         },
       ],
     };
@@ -71,7 +71,7 @@ describe('Integration: Batch API Operations', () => {
     if (res.error) {
       // Batch API or validation mode might not be supported
       expect(res.error.code).toMatch(
-        /batch|validation|not.*found|not.*supported|invalid.*path/i
+        /batch|validation|not.*found|not.*supported/i
       );
     } else {
       expect(res.data).toBeTruthy();
