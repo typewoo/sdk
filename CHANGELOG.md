@@ -1,3 +1,9 @@
+## 3.7.1 (2026-03-03)
+
+### 🩹 Fixes
+
+- **auth:** add autoLoginUrl configuration option and related tests ([#149](https://github.com/typewoo/sdk/pull/149))
+
 ## 3.7.0 (2026-02-16)
 
 ### 🚀 Features
