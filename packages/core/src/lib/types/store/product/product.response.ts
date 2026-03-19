@@ -43,8 +43,32 @@ export const ProductResponseSchema = z.looseObject({
       link: z.string(),
     })
   ),
-  attributes: z.array(z.unknown()),
-  variations: z.array(z.unknown()),
+  attributes: z.array(
+    z.looseObject({
+      id: z.number(),
+      name: z.string(),
+      taxonomy: z.string(),
+      has_variations: z.boolean(),
+      terms: z.array(
+        z.looseObject({
+          id: z.number(),
+          name: z.string(),
+          slug: z.string(),
+        })
+      ),
+    })
+  ),
+  variations: z.array(
+    z.looseObject({
+      id: z.number(),
+      attributes: z.array(
+        z.looseObject({
+          name: z.string(),
+          value: z.string(),
+        })
+      ),
+    })
+  ),
   grouped_products: z.array(z.unknown()),
   has_options: z.boolean(),
   is_purchasable: z.boolean(),
