@@ -2,6 +2,38 @@ import { z } from 'zod';
 import { ImageResponseSchema } from '../image.response.js';
 import { ProductPriceResponseSchema } from './product.price.response.js';
 
+export const ProductEmbeddedAttributeResponseSchema = z.looseObject({
+  id: z.number(),
+  name: z.string(),
+  taxonomy: z.string(),
+  has_variations: z.boolean(),
+  terms: z.array(
+    z.looseObject({
+      id: z.number(),
+      name: z.string(),
+      slug: z.string(),
+    })
+  ),
+});
+
+export type ProductEmbeddedAttributeResponse = z.infer<
+  typeof ProductEmbeddedAttributeResponseSchema
+>;
+
+export const ProductEmbeddedVariationResponseSchema = z.looseObject({
+  id: z.number(),
+  attributes: z.array(
+    z.looseObject({
+      name: z.string(),
+      value: z.string(),
+    })
+  ),
+});
+
+export type ProductEmbeddedVariationResponse = z.infer<
+  typeof ProductEmbeddedVariationResponseSchema
+>;
+
 export const ProductResponseSchema = z.looseObject({
   id: z.number(),
   name: z.string(),
@@ -43,32 +75,8 @@ export const ProductResponseSchema = z.looseObject({
       link: z.string(),
     })
   ),
-  attributes: z.array(
-    z.looseObject({
-      id: z.number(),
-      name: z.string(),
-      taxonomy: z.string(),
-      has_variations: z.boolean(),
-      terms: z.array(
-        z.looseObject({
-          id: z.number(),
-          name: z.string(),
-          slug: z.string(),
-        })
-      ),
-    })
-  ),
-  variations: z.array(
-    z.looseObject({
-      id: z.number(),
-      attributes: z.array(
-        z.looseObject({
-          name: z.string(),
-          value: z.string(),
-        })
-      ),
-    })
-  ),
+  attributes: z.array(ProductEmbeddedAttributeResponseSchema),
+  variations: z.array(ProductEmbeddedVariationResponseSchema),
   grouped_products: z.array(z.unknown()),
   has_options: z.boolean(),
   is_purchasable: z.boolean(),
