@@ -1,3 +1,9 @@
+## 3.7.3 (2026-03-19)
+
+### 🩹 Fixes
+
+- refactor product response schema to use embedded attribute and variation types ([d2211eb](https://github.com/typewoo/sdk/commit/d2211eb))
+
 ## 3.7.2 (2026-03-19)
 
 ### 🩹 Fixes
