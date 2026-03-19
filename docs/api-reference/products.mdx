@@ -237,8 +237,24 @@ interface ProductResponse {
   categories: ProductTerm[];
   tags: ProductTerm[];
   brands: ProductTerm[];
-  attributes: unknown[];
-  variations: unknown[];
+  attributes: Array<{
+    id: number;
+    name: string;
+    taxonomy: string;
+    has_variations: boolean;
+    terms: Array<{
+      id: number;
+      name: string;
+      slug: string;
+    }>;
+  }>;
+  variations: Array<{
+    id: number;
+    attributes: Array<{
+      name: string;
+      value: string;
+    }>;
+  }>;
   grouped_products: unknown[];
   has_options: boolean;
   is_purchasable: boolean;
