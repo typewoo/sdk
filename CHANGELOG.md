@@ -1,3 +1,10 @@
+## 3.7.2 (2026-03-19)
+
+### 🩹 Fixes
+
+- update `attributes` and `variations` of product response type ([4b72494](https://github.com/typewoo/sdk/commit/4b72494))
+- update `attributes` and `variations` types in ProductResponse docs ([b686aab](https://github.com/typewoo/sdk/commit/b686aab))
+
 ## 3.7.1 (2026-03-03)
 
 ### 🩹 Fixes
