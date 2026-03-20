@@ -5,6 +5,10 @@ export const ProductPriceRangeResponseSchema = z.looseObject({
   max_amount: z.string(),
 });
 
+export type ProductPriceRangeResponse = z.infer<
+  typeof ProductPriceRangeResponseSchema
+>;
+
 export const ProductPriceResponseSchema = z.looseObject({
   currency_code: z.string(),
   currency_symbol: z.string(),
