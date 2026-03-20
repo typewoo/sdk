@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const ProductPriceRangeResponseSchema = z.looseObject({
+  min_amount: z.string(),
+  max_amount: z.string(),
+});
+
 export const ProductPriceResponseSchema = z.looseObject({
   currency_code: z.string(),
   currency_symbol: z.string(),
@@ -11,7 +16,7 @@ export const ProductPriceResponseSchema = z.looseObject({
   price: z.string(),
   regular_price: z.string(),
   sale_price: z.string(),
-  price_range: z.unknown(),
+  price_range: ProductPriceRangeResponseSchema.nullish(),
 });
 
 export type ProductPriceResponse = z.infer<typeof ProductPriceResponseSchema>;
