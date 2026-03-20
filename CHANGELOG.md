@@ -1,3 +1,10 @@
+## 3.7.4 (2026-03-20)
+
+### 🩹 Fixes
+
+- update price_range schema to use ProductPriceRangeResponseSchema ([166c62c](https://github.com/typewoo/sdk/commit/166c62c))
+- define ProductPriceRangeResponse type for better type inference ([99ce866](https://github.com/typewoo/sdk/commit/99ce866))
+
 ## 3.7.3 (2026-03-19)
 
 ### 🩹 Fixes
