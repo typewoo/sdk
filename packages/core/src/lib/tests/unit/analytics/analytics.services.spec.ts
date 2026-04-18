@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { ResolvedSdkConfig } from '../../../../configs/sdk.config.js';
-import type { SdkState } from '../../../../types/sdk.state.js';
-import { EventBus } from '../../../../bus/event.bus.js';
-import type { SdkEvent } from '../../../../sdk.events.js';
+import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
+import type { SdkState } from '../../../types/sdk.state.js';
+import { EventBus } from '../../../bus/event.bus.js';
+import type { SdkEvent } from '../../../sdk.events.js';
 
 // Mock HTTP helpers
-vi.mock('../../../../http/http.js', () => ({
+vi.mock('../../../http/http.js', () => ({
   doGet: vi.fn(),
 }));
 
-vi.mock('../../../../utilities/common.js', () => ({
+vi.mock('../../../utilities/common.js', () => ({
   extractPagination: vi.fn().mockReturnValue({
     total: 10,
     totalPages: 2,
@@ -18,26 +18,34 @@ vi.mock('../../../../utilities/common.js', () => ({
   }),
 }));
 
-import { doGet } from '../../../../http/http.js';
-import { AnalyticsRevenueService } from '../../../../services/analytics/revenue.service.js';
-import { AnalyticsOrdersService } from '../../../../services/analytics/orders.service.js';
-import { AnalyticsProductsService } from '../../../../services/analytics/products.service.js';
-import { AnalyticsCategoriesService } from '../../../../services/analytics/categories.service.js';
-import { AnalyticsCouponsService } from '../../../../services/analytics/coupons.service.js';
-import { AnalyticsTaxesService } from '../../../../services/analytics/taxes.service.js';
-import { AnalyticsVariationsService } from '../../../../services/analytics/variations.service.js';
-import { AnalyticsCustomersService } from '../../../../services/analytics/customers.service.js';
-import { AnalyticsDownloadsService } from '../../../../services/analytics/downloads.service.js';
-import { AnalyticsStockService } from '../../../../services/analytics/stock.service.js';
-import { AnalyticsPerformanceService } from '../../../../services/analytics/performance.service.js';
-import { AnalyticsLeaderboardsService } from '../../../../services/analytics/leaderboards.service.js';
-import { AnalyticsService } from '../../../../services/analytics.service.js';
+import { doGet } from '../../../http/http.js';
+import { AnalyticsRevenueService } from '../../../services/analytics/revenue.service.js';
+import { AnalyticsOrdersService } from '../../../services/analytics/orders.service.js';
+import { AnalyticsProductsService } from '../../../services/analytics/products.service.js';
+import { AnalyticsCategoriesService } from '../../../services/analytics/categories.service.js';
+import { AnalyticsCouponsService } from '../../../services/analytics/coupons.service.js';
+import { AnalyticsTaxesService } from '../../../services/analytics/taxes.service.js';
+import { AnalyticsVariationsService } from '../../../services/analytics/variations.service.js';
+import { AnalyticsCustomersService } from '../../../services/analytics/customers.service.js';
+import { AnalyticsDownloadsService } from '../../../services/analytics/downloads.service.js';
+import { AnalyticsStockService } from '../../../services/analytics/stock.service.js';
+import { AnalyticsPerformanceService } from '../../../services/analytics/performance.service.js';
+import { AnalyticsLeaderboardsService } from '../../../services/analytics/leaderboards.service.js';
+import { AnalyticsService } from '../../../services/analytics.service.js';
 
 const doGetMock = vi.mocked(doGet);
 
 function makeTestDeps() {
   const state: SdkState = {};
-  const config: ResolvedSdkConfig = { baseUrl: 'https://store.test' };
+  const config: ResolvedSdkConfig = {
+    baseUrl: 'https://store.test',
+    uniqueIdentifier: 'analytics-test-sdk',
+    request: {
+      retry: {
+        enabled: false,
+      },
+    },
+  };
   const events = new EventBus<SdkEvent>();
   return { state, config, events };
 }
@@ -102,7 +110,14 @@ describe('Analytics Services', () => {
       );
       const mockError = {
         data: undefined,
-        error: { code: 'rest_error', message: 'Bad request' },
+        error: {
+          code: 'rest_error',
+          message: 'Bad request',
+          data: {
+            status: 400,
+          },
+          details: {},
+        },
       };
       doGetMock.mockResolvedValueOnce(mockError);
 
@@ -146,7 +161,8 @@ describe('Analytics Services', () => {
       const paginatedRequest = svc.list({ per_page: 10 });
 
       expect(paginatedRequest).toBeDefined();
-      expect(typeof paginatedRequest.send).toBe('function');
+      expect(typeof paginatedRequest.then).toBe('function');
+      expect(typeof paginatedRequest.loop).toBe('function');
     });
 
     it('list.send() calls doGet with list endpoint', async () => {
@@ -161,7 +177,7 @@ describe('Analytics Services', () => {
         headers: {},
       });
 
-      const result = await svc.list({ per_page: 5 }).send();
+      const result = await svc.list({ per_page: 5 });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc-analytics/reports/orders');
@@ -203,7 +219,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list({ products: [1, 2] }).send();
+      await svc.list({ products: [1, 2] });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc-analytics/reports/products?');
@@ -243,7 +259,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list().send();
+      await svc.list();
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toBe('/wp-json/wc-analytics/reports/categories');
@@ -282,7 +298,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      const result = await svc.list({ per_page: 3 }).send();
+      const result = await svc.list({ per_page: 3 });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc-analytics/reports/coupons?');
@@ -322,7 +338,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list().send();
+      await svc.list();
 
       expect(doGetMock).toHaveBeenCalledTimes(1);
       const url = doGetMock.mock.calls[0][0] as string;
@@ -362,7 +378,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list({ products: [42] }).send();
+      await svc.list({ products: [42] });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc-analytics/reports/variations?');
@@ -402,7 +418,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list().send();
+      await svc.list();
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toBe('/wp-json/wc-analytics/reports/customers');
@@ -441,7 +457,7 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list({ product_includes: [10, 20] }).send();
+      await svc.list({ product_includes: [10, 20] });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc-analytics/reports/downloads?');
@@ -482,10 +498,10 @@ describe('Analytics Services', () => {
       );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      await svc.list({ type: 'lowstock' }).send();
+      await svc.list({ type: 'low_stock' });
 
       const url = doGetMock.mock.calls[0][0] as string;
-      expect(url).toContain('type=lowstock');
+      expect(url).toContain('type=low_stock');
     });
   });
 

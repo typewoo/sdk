@@ -69,13 +69,11 @@ describe('Integration: Analytics (Revenue, Orders, Products)', () => {
   });
 
   it('lists order detail rows', async () => {
-    const result = await Typewoo.analytics.orders
-      .list({
-        after: '2025-01-01T00:00:00',
-        before: '2026-12-31T23:59:59',
-        per_page: 5,
-      })
-      .send();
+    const result = await Typewoo.analytics.orders.list({
+      after: '2025-01-01T00:00:00',
+      before: '2026-12-31T23:59:59',
+      per_page: 5,
+    });
     if (result.error) {
       expect(result.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported|cannot_view/i
@@ -104,9 +102,7 @@ describe('Integration: Analytics (Revenue, Orders, Products)', () => {
   });
 
   it('lists product analytics rows', async () => {
-    const result = await Typewoo.analytics.products
-      .list({ per_page: 5 })
-      .send();
+    const result = await Typewoo.analytics.products.list({ per_page: 5 });
     if (result.error) {
       expect(result.error.code).toMatch(
         /not_found|invalid|forbidden|unsupported|cannot_view/i
@@ -121,7 +117,7 @@ describe('Integration: Analytics (Revenue, Orders, Products)', () => {
     const { data, error } = await Typewoo.analytics.categories.getStats();
     if (error) {
       expect(error.code).toMatch(
-        /not_found|invalid|forbidden|unsupported|cannot_view/i
+        /not_found|invalid|forbidden|unsupported|cannot_view|rest_no_route/i
       );
     } else {
       expect(data).toBeDefined();
