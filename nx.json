@@ -80,7 +80,7 @@
   "release": {
     "projects": ["packages/core"],
     "version": {
-      "preVersionCommand": "npx nx run-many -t build",
+      "preVersionCommand": "npx nx run @typewoo/sdk:build",
       "conventionalCommits": true
     },
     "conventionalCommits": {
