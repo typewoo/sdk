@@ -1,3 +1,26 @@
+## 3.7.5 (2026-04-18)
+
+### 🚀 Features
+
+- **analytics:** add comprehensive  woocommerce analytics types and services ([df141d9](https://github.com/typewoo/sdk/commit/df141d9))
+- **analytics:** add documentation for WooCommerce Analytics API and services ([29d2816](https://github.com/typewoo/sdk/commit/29d2816))
+- **analytics:** update analytics types and services to include totals response and links schema ([fa6398b](https://github.com/typewoo/sdk/commit/fa6398b))
+- **interceptors:** enhance admin auth interceptor to support wc analytics endpoints ([03768b8](https://github.com/typewoo/sdk/commit/03768b8))
+
+### 🩹 Fixes
+
+- **release:** update preVersionCommand to use specific build target ([0208d22](https://github.com/typewoo/sdk/commit/0208d22))
+
+### ♻️ Code Refactoring
+
+- **store:** convert StoreService to extend BaseService and implement lazy loading for services ([744941c](https://github.com/typewoo/sdk/commit/744941c))
+
+### 🧹 Chores
+
+- **deps:** update dependency jsonc-eslint-parser to v2.4.2 ([7f656b1](https://github.com/typewoo/sdk/commit/7f656b1))
+- **deps:** update dependency axios to v1.15.0 ([fffc47b](https://github.com/typewoo/sdk/commit/fffc47b))
+- **deps:** update swc monorepo ([4248ab9](https://github.com/typewoo/sdk/commit/4248ab9))
+
 ## 3.7.4 (2026-03-20)
 
 ### 🩹 Fixes
