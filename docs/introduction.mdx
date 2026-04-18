@@ -11,13 +11,14 @@ description: 'Typewoo SDK is a modern, TypeScript-first SDK for integrating with
 
 ## Overview
 
-The SDK provides a comprehensive interface to interact with WooCommerce's Store API and Admin REST API endpoints. It handles authentication, session management, cart tokens, nonces, and provides strongly-typed responses for all API operations.
+The SDK provides a comprehensive interface to interact with WooCommerce's Store API, Admin REST API, and WooCommerce Analytics API endpoints. It handles authentication, session management, cart tokens, nonces, and provides strongly-typed responses for all API operations.
 
 ## Key Features
 
 - **Type Safety**: Full TypeScript support with strongly-typed request parameters and responses powered by Zod schemas
 - **Store API Support**: Complete coverage of WooCommerce Store API endpoints.
 - **Admin REST API Support**: Full access to WooCommerce REST API v3 for administrative operations
+- **Analytics API Support**: Access to WooCommerce Analytics reports, interval-based stats, performance indicators, and leaderboards
 - **Authentication**: Built-in support for JWT authentication with automatic token refresh
 - **Session Management**: Automatic handling of nonces and cart tokens via Axios interceptors
 - **Event-Driven Architecture**: Custom EventBus for reactive state management
@@ -27,7 +28,7 @@ The SDK provides a comprehensive interface to interact with WooCommerce's Store 
 
 ## Architecture
 
-Typewoo SDK is organized into three main service layers:
+Typewoo SDK is organized into four main service layers:
 
 ### Store API (`sdk.store`)
 
@@ -55,6 +56,17 @@ The Admin API provides access to WooCommerce REST API v3 endpoints:
 - **Customers**: Customer data management
 - **Settings**: Store configuration
 - **Reports**: Sales and analytics data
+
+### Analytics API (`sdk.analytics`)
+
+The Analytics API provides access to WooCommerce Analytics endpoints:
+
+- **Revenue**: Revenue totals and interval-based sales trends
+- **Orders and Products**: Performance reporting for orders, products, categories, coupons, taxes, and variations
+- **Customers and Downloads**: Customer and downloadable product reporting
+- **Inventory Insights**: Stock reports, performance indicators, and leaderboards
+
+When analytics endpoints are protected, the SDK can reuse admin credentials through the existing admin auth interceptor.
 
 ### Custom Endpoints (`sdk.endpoints`)
 
