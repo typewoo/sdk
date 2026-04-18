@@ -16,6 +16,7 @@ import { addTokenInterceptor } from './interceptors/token.interceptor.js';
 import { AuthService } from './services/auth/auth.service.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
 import { AdminService } from './services/admin.service.js';
+import { AnalyticsService } from './services/analytics.service.js';
 import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.js';
 
 /**
@@ -63,6 +64,7 @@ export class TypewooClient<
   private _auth!: AuthService;
   private _store!: StoreService;
   private _admin!: AdminService;
+  private _analytics!: AnalyticsService;
   private _config!: ResolvedSdkConfig;
 
   private _endpoints!: TEndpoints;
@@ -83,6 +85,11 @@ export class TypewooClient<
     this._auth = new AuthService(this.state, this._config, this.events);
     this._store = new StoreService(this.state, this._config, this.events);
     this._admin = new AdminService(this.state, this._config, this.events);
+    this._analytics = new AnalyticsService(
+      this.state,
+      this._config,
+      this.events
+    );
 
     createHttpClient({
       baseURL: this._config.baseUrl,
@@ -173,6 +180,13 @@ export class TypewooClient<
   }
 
   /**
+   * Analytics API (WooCommerce Analytics)
+   */
+  get analytics() {
+    return this._analytics;
+  }
+
+  /**
    * Custom endpoints defined in the SDK configuration.
    *
    * For full type inference on custom endpoints, use `createTypewoo()` instead:
@@ -201,6 +215,7 @@ export class Sdk {
   private _auth!: AuthService;
   private _store!: StoreService;
   private _admin!: AdminService;
+  private _analytics!: AnalyticsService;
 
   private _initialized = false;
 
@@ -218,6 +233,11 @@ export class Sdk {
     this._auth = new AuthService(this.state, this._config, this.events);
     this._store = new StoreService(this.state, this._config, this.events);
     this._admin = new AdminService(this.state, this._config, this.events);
+    this._analytics = new AnalyticsService(
+      this.state,
+      this._config,
+      this.events
+    );
 
     createHttpClient({
       baseURL: this._config.baseUrl,
@@ -314,6 +334,14 @@ export class Sdk {
   get admin() {
     this.throwIfNotInitized();
     return this._admin;
+  }
+
+  /**
+   * Analytics API (WooCommerce Analytics)
+   */
+  get analytics() {
+    this.throwIfNotInitized();
+    return this._analytics;
   }
 
   private throwIfNotInitized() {

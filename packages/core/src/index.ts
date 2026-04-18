@@ -29,6 +29,21 @@ export * from './lib/utilities/common.js';
 // REST API Services
 export { AdminService } from './lib/services/admin.service.js';
 
+// Analytics API Services
+export { AnalyticsService } from './lib/services/analytics.service.js';
+export { AnalyticsRevenueService } from './lib/services/analytics/revenue.service.js';
+export { AnalyticsOrdersService } from './lib/services/analytics/orders.service.js';
+export { AnalyticsProductsService } from './lib/services/analytics/products.service.js';
+export { AnalyticsCategoriesService } from './lib/services/analytics/categories.service.js';
+export { AnalyticsCouponsService } from './lib/services/analytics/coupons.service.js';
+export { AnalyticsTaxesService } from './lib/services/analytics/taxes.service.js';
+export { AnalyticsVariationsService } from './lib/services/analytics/variations.service.js';
+export { AnalyticsCustomersService } from './lib/services/analytics/customers.service.js';
+export { AnalyticsDownloadsService } from './lib/services/analytics/downloads.service.js';
+export { AnalyticsStockService } from './lib/services/analytics/stock.service.js';
+export { AnalyticsPerformanceService } from './lib/services/analytics/performance.service.js';
+export { AnalyticsLeaderboardsService } from './lib/services/analytics/leaderboards.service.js';
+
 // Store API Services
 export { BatchService } from './lib/services/store/batch.service.js';
 export { CartExtensionsService } from './lib/services/store/cart.extensions.service.js';
