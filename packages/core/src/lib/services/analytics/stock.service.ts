@@ -7,6 +7,7 @@ import {
   AnalyticsStockItem,
   AnalyticsStockStats,
   AnalyticsStockListQueryParams,
+  AnalyticsTotalsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -51,10 +52,12 @@ export class AnalyticsStockService extends BaseService {
    */
   async getStats(
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStockStats>> {
+  ): Promise<ApiResult<AnalyticsTotalsResponse<AnalyticsStockStats>>> {
     const url = `/${this.endpoint}/stats`;
 
-    const { data, error } = await doGet<AnalyticsStockStats>(url, options);
+    const { data, error } = await doGet<
+      AnalyticsTotalsResponse<AnalyticsStockStats>
+    >(url, options);
     return { data, error };
   }
 }

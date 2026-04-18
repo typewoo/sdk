@@ -2,12 +2,14 @@ import { z } from 'zod';
 import {
   AnalyticsStatsQueryParamsSchema,
   AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
 } from './common.types.js';
 
 /**
  * Tax stats totals/subtotals shape
  */
 export const AnalyticsTaxStatsSchema = z.object({
+  tax_codes: z.number().optional(),
   total_tax: z.number(),
   order_tax: z.number(),
   shipping_tax: z.number(),
@@ -44,6 +46,7 @@ export const AnalyticsTaxSchema = z.object({
   shipping_tax: z.number(),
   orders_count: z.number(),
   extended_info: AnalyticsTaxExtendedInfoSchema.optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsTax = z.infer<typeof AnalyticsTaxSchema>;
 

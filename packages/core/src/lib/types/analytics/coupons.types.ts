@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   AnalyticsStatsQueryParamsSchema,
   AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
 } from './common.types.js';
 
 /**
@@ -37,6 +38,7 @@ export const AnalyticsCouponSchema = z.object({
   amount: z.number(),
   orders_count: z.number(),
   extended_info: AnalyticsCouponExtendedInfoSchema.optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCoupon = z.infer<typeof AnalyticsCouponSchema>;
 

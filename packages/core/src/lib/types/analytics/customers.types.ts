@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   AnalyticsStatsQueryParamsSchema,
   AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
 } from './common.types.js';
 
 /**
@@ -25,6 +26,8 @@ export const AnalyticsCustomerSchema = z.object({
   user_id: z.number(),
   name: z.string(),
   username: z.string(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
   country: z.string(),
   city: z.string(),
   state: z.string(),
@@ -33,10 +36,12 @@ export const AnalyticsCustomerSchema = z.object({
   date_registered_gmt: z.string().nullable().optional(),
   date_last_active: z.string().nullable().optional(),
   date_last_active_gmt: z.string().nullable().optional(),
+  date_last_order: z.string().nullable().optional(),
   orders_count: z.number(),
   total_spend: z.number(),
   avg_order_value: z.number(),
   email: z.string().optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCustomer = z.infer<typeof AnalyticsCustomerSchema>;
 

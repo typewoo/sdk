@@ -2,16 +2,25 @@ import { z } from 'zod';
 import { AnalyticsListQueryParamsSchema } from './common.types.js';
 
 /**
- * A single row in a leaderboard
+ * A single leaderboard header cell
  */
-export const AnalyticsLeaderboardRowSchema = z.object({
-  id: z.number().optional(),
+export const AnalyticsLeaderboardHeaderSchema = z.object({
   label: z.string(),
-  value: z.union([z.number(), z.string()]),
-  href: z.string().optional(),
 });
-export type AnalyticsLeaderboardRow = z.infer<
-  typeof AnalyticsLeaderboardRowSchema
+export type AnalyticsLeaderboardHeader = z.infer<
+  typeof AnalyticsLeaderboardHeaderSchema
+>;
+
+/**
+ * A single value cell in a leaderboard row
+ */
+export const AnalyticsLeaderboardCellSchema = z.object({
+  display: z.string(),
+  value: z.union([z.number(), z.string()]),
+  format: z.string().optional(),
+});
+export type AnalyticsLeaderboardCell = z.infer<
+  typeof AnalyticsLeaderboardCellSchema
 >;
 
 /**
@@ -20,12 +29,8 @@ export type AnalyticsLeaderboardRow = z.infer<
 export const AnalyticsLeaderboardSchema = z.object({
   id: z.string(),
   label: z.string(),
-  headers: z.array(
-    z.object({
-      label: z.string(),
-    })
-  ),
-  rows: z.array(z.array(AnalyticsLeaderboardRowSchema)),
+  headers: z.array(AnalyticsLeaderboardHeaderSchema),
+  rows: z.array(z.array(AnalyticsLeaderboardCellSchema)),
 });
 export type AnalyticsLeaderboard = z.infer<typeof AnalyticsLeaderboardSchema>;
 
@@ -35,6 +40,7 @@ export type AnalyticsLeaderboard = z.infer<typeof AnalyticsLeaderboardSchema>;
 export const AnalyticsLeaderboardAllowedSchema = z.object({
   id: z.string(),
   label: z.string(),
+  headers: z.array(AnalyticsLeaderboardHeaderSchema),
 });
 export type AnalyticsLeaderboardAllowed = z.infer<
   typeof AnalyticsLeaderboardAllowedSchema

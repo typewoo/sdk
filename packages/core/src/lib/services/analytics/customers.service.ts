@@ -8,7 +8,7 @@ import {
   AnalyticsCustomerStats,
   AnalyticsCustomersStatsQueryParams,
   AnalyticsCustomersListQueryParams,
-  AnalyticsStatsResponse,
+  AnalyticsTotalsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -54,12 +54,12 @@ export class AnalyticsCustomersService extends BaseService {
   async getStats(
     params?: AnalyticsCustomersStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsCustomerStats>>> {
+  ): Promise<ApiResult<AnalyticsTotalsResponse<AnalyticsCustomerStats>>> {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
     const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsCustomerStats>
+      AnalyticsTotalsResponse<AnalyticsCustomerStats>
     >(url, options);
     return { data, error };
   }

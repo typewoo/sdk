@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   AnalyticsStatsQueryParamsSchema,
   AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
 } from './common.types.js';
 
 /**
@@ -29,6 +30,15 @@ export const AnalyticsVariationExtendedInfoSchema = z.object({
   stock_status: z.string().optional(),
   stock_quantity: z.number().nullable().optional(),
   low_stock_amount: z.number().nullable().optional(),
+  attributes: z
+    .array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        option: z.string(),
+      })
+    )
+    .optional(),
 });
 export type AnalyticsVariationExtendedInfo = z.infer<
   typeof AnalyticsVariationExtendedInfoSchema
@@ -44,6 +54,7 @@ export const AnalyticsVariationSchema = z.object({
   net_revenue: z.number(),
   orders_count: z.number(),
   extended_info: AnalyticsVariationExtendedInfoSchema.optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsVariation = z.infer<typeof AnalyticsVariationSchema>;
 

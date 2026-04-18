@@ -1,15 +1,18 @@
 import { z } from 'zod';
-import { AnalyticsListQueryParamsSchema } from './common.types.js';
+import {
+  AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
+} from './common.types.js';
 
 /**
  * Stock stats totals shape
  */
 export const AnalyticsStockStatsSchema = z.object({
+  lowstock: z.number(),
+  instock: z.number(),
+  outofstock: z.number(),
+  onbackorder: z.number(),
   products: z.number(),
-  out_of_stock: z.number(),
-  low_stock: z.number(),
-  in_stock: z.number(),
-  on_backorder: z.number(),
 });
 export type AnalyticsStockStats = z.infer<typeof AnalyticsStockStatsSchema>;
 
@@ -25,6 +28,7 @@ export const AnalyticsStockItemSchema = z.object({
   stock_quantity: z.number().nullable(),
   manage_stock: z.boolean().optional(),
   low_stock_amount: z.number().nullable().optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsStockItem = z.infer<typeof AnalyticsStockItemSchema>;
 

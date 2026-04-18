@@ -2,19 +2,25 @@ import { z } from 'zod';
 import {
   AnalyticsStatsQueryParamsSchema,
   AnalyticsListQueryParamsSchema,
+  AnalyticsLinksSchema,
 } from './common.types.js';
 
 /**
  * Order stats totals/subtotals shape
  */
 export const AnalyticsOrderStatsSchema = z.object({
-  net_revenue: z.number(),
   orders_count: z.number(),
-  avg_order_value: z.number(),
-  avg_items_per_order: z.number(),
   num_items_sold: z.number(),
+  gross_sales: z.number(),
+  total_sales: z.number(),
   coupons: z.number(),
   coupons_count: z.number(),
+  refunds: z.number(),
+  taxes: z.number(),
+  shipping: z.number(),
+  net_revenue: z.number(),
+  avg_items_per_order: z.number(),
+  avg_order_value: z.number(),
   total_customers: z.number(),
   products: z.number().optional(),
 });
@@ -58,7 +64,9 @@ export type AnalyticsOrderExtendedInfo = z.infer<
  */
 export const AnalyticsOrderSchema = z.object({
   order_id: z.number(),
-  order_number: z.string().optional(),
+  parent_id: z.number().optional(),
+  date: z.string().optional(),
+  order_number: z.union([z.string(), z.number()]).optional(),
   date_created: z.string(),
   date_created_gmt: z.string().optional(),
   status: z.string(),
@@ -67,7 +75,9 @@ export const AnalyticsOrderSchema = z.object({
   total_sales: z.number().optional(),
   num_items_sold: z.number(),
   customer_type: z.string().optional(),
+  total_formatted: z.string().optional(),
   extended_info: AnalyticsOrderExtendedInfoSchema.optional(),
+  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsOrder = z.infer<typeof AnalyticsOrderSchema>;
 

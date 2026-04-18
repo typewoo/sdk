@@ -58,6 +58,25 @@ export const AnalyticsSegmentSchema = z.object({
 });
 export type AnalyticsSegment = z.infer<typeof AnalyticsSegmentSchema>;
 
+export const AnalyticsLinkSchema = z.object({
+  href: z.string(),
+});
+export type AnalyticsLink = z.infer<typeof AnalyticsLinkSchema>;
+
+export const AnalyticsLinksSchema = z.record(
+  z.string(),
+  z.array(AnalyticsLinkSchema)
+);
+export type AnalyticsLinks = z.infer<typeof AnalyticsLinksSchema>;
+
+export type AnalyticsSegmentedTotals<T> = T & {
+  segments?: AnalyticsSegment[];
+};
+
+export interface AnalyticsTotalsResponse<T> {
+  totals: T;
+}
+
 /**
  * A single time interval in a stats response
  */
@@ -67,13 +86,13 @@ export interface AnalyticsStatsInterval<T> {
   date_start_gmt: string;
   date_end: string;
   date_end_gmt: string;
-  subtotals: T & { segments?: AnalyticsSegment[] };
+  subtotals: AnalyticsSegmentedTotals<T>;
 }
 
 /**
  * Top-level shape returned by all /stats endpoints
  */
-export interface AnalyticsStatsResponse<T> {
-  totals: T & { segments?: AnalyticsSegment[] };
-  intervals: AnalyticsStatsInterval<T>[];
+export interface AnalyticsStatsResponse<T>
+  extends AnalyticsTotalsResponse<AnalyticsSegmentedTotals<T>> {
+  intervals?: AnalyticsStatsInterval<T>[];
 }
