@@ -1,7 +1,4 @@
-import { EventBus } from '../bus/event.bus.js';
-import { ResolvedSdkConfig } from '../configs/sdk.config.js';
-import { SdkEvent } from '../sdk.events.js';
-import { SdkState } from '../types/sdk.state.js';
+import { BaseService } from './base.service.js';
 import { CartCouponService } from './store/cart.coupon.service.js';
 import { CartItemService } from './store/cart.item.service.js';
 import { CartService } from './store/cart.service.js';
@@ -19,168 +16,227 @@ import { ProductReviewService } from './store/product.review.service.js';
 import { ProductService } from './store/product.service.js';
 import { ProductTagService } from './store/product.tag.service.js';
 
-export class StoreService {
-  private _tags!: ProductTagService;
-  private _orders!: OrderService;
-  private _brands!: ProductBrandService;
-  private _checkout!: CheckoutService;
-  private _checkoutOrder!: CheckoutOrderService;
-  private _products!: ProductService;
-  private _reviews!: ProductReviewService;
-  private _categories!: ProductCategoryService;
-  private _attributes!: ProductAttributeService;
-  private _attributesTerms!: ProductAttributeTermService;
-  private _collectionData!: ProductCollectionDataService;
+export class StoreService extends BaseService {
+  private _tags?: ProductTagService;
+  private _orders?: OrderService;
+  private _brands?: ProductBrandService;
+  private _checkout?: CheckoutService;
+  private _checkoutOrder?: CheckoutOrderService;
+  private _products?: ProductService;
+  private _reviews?: ProductReviewService;
+  private _categories?: ProductCategoryService;
+  private _attributes?: ProductAttributeService;
+  private _attributesTerms?: ProductAttributeTermService;
+  private _collectionData?: ProductCollectionDataService;
 
-  private _cart!: CartService;
-  private _cartItems!: CartItemService;
-  private _cartCoupons!: CartCouponService;
-  private _cartExtensions!: CartExtensionsService;
+  private _cart?: CartService;
+  private _cartItems?: CartItemService;
+  private _cartCoupons?: CartCouponService;
+  private _cartExtensions?: CartExtensionsService;
 
-  private _batch!: BatchService;
-
-  constructor(
-    state: SdkState,
-    config: ResolvedSdkConfig,
-    events: EventBus<SdkEvent>
-  ) {
-    this._tags = new ProductTagService(state, config, events);
-    this._orders = new OrderService(state, config, events);
-    this._brands = new ProductBrandService(state, config, events);
-    this._checkout = new CheckoutService(state, config, events);
-    this._checkoutOrder = new CheckoutOrderService(state, config, events);
-    this._reviews = new ProductReviewService(state, config, events);
-    this._products = new ProductService(state, config, events);
-    this._categories = new ProductCategoryService(state, config, events);
-    this._attributes = new ProductAttributeService(state, config, events);
-    this._attributesTerms = new ProductAttributeTermService(
-      state,
-      config,
-      events
-    );
-    this._collectionData = new ProductCollectionDataService(
-      state,
-      config,
-      events
-    );
-
-    this._cart = new CartService(state, config, events);
-    this._cartItems = new CartItemService(state, config, events);
-    this._cartCoupons = new CartCouponService(state, config, events);
-    this._cartExtensions = new CartExtensionsService(state, config, events);
-
-    this._batch = new BatchService(state, config, events);
-  }
+  private _batch?: BatchService;
 
   /**
    * Product Tags API
    */
-  get tags() {
+  get tags(): ProductTagService {
+    if (!this._tags) {
+      this._tags = new ProductTagService(this.state, this.config, this.events);
+    }
     return this._tags;
   }
 
   /**
    * Order API
    */
-  get orders() {
+  get orders(): OrderService {
+    if (!this._orders) {
+      this._orders = new OrderService(this.state, this.config, this.events);
+    }
     return this._orders;
   }
 
   /**
    * Product Brands API
    */
-  get brands() {
+  get brands(): ProductBrandService {
+    if (!this._brands) {
+      this._brands = new ProductBrandService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._brands;
   }
 
   /**
    * Checkout API
    */
-  get checkout() {
+  get checkout(): CheckoutService {
+    if (!this._checkout) {
+      this._checkout = new CheckoutService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._checkout;
   }
 
   /**
    * Checkout Order API
    */
-  get checkoutOrder() {
+  get checkoutOrder(): CheckoutOrderService {
+    if (!this._checkoutOrder) {
+      this._checkoutOrder = new CheckoutOrderService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._checkoutOrder;
   }
 
   /**
    * Product Reviews API
    */
-  get reviews() {
+  get reviews(): ProductReviewService {
+    if (!this._reviews) {
+      this._reviews = new ProductReviewService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._reviews;
   }
 
   /**
    * Products API
    */
-  get products() {
+  get products(): ProductService {
+    if (!this._products) {
+      this._products = new ProductService(this.state, this.config, this.events);
+    }
     return this._products;
   }
 
   /**
    * Product Categories API
    */
-  get categories() {
+  get categories(): ProductCategoryService {
+    if (!this._categories) {
+      this._categories = new ProductCategoryService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._categories;
   }
 
   /**
    * Product Attributes API
    */
-  get attributes() {
+  get attributes(): ProductAttributeService {
+    if (!this._attributes) {
+      this._attributes = new ProductAttributeService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._attributes;
   }
 
   /**
    * Product Attribute Terms API
    */
-  get attributesTerms() {
+  get attributesTerms(): ProductAttributeTermService {
+    if (!this._attributesTerms) {
+      this._attributesTerms = new ProductAttributeTermService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._attributesTerms;
   }
 
   /**
    * Product Collection Data API
    */
-  get collectionData() {
+  get collectionData(): ProductCollectionDataService {
+    if (!this._collectionData) {
+      this._collectionData = new ProductCollectionDataService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._collectionData;
   }
 
   /**
    * Cart API
    */
-  get cart() {
+  get cart(): CartService {
+    if (!this._cart) {
+      this._cart = new CartService(this.state, this.config, this.events);
+    }
     return this._cart;
   }
 
   /**
    * Cart Items API
    */
-  get cartItems() {
+  get cartItems(): CartItemService {
+    if (!this._cartItems) {
+      this._cartItems = new CartItemService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._cartItems;
   }
 
   /**
    * Cart Coupons API
    */
-  get cartCoupons() {
+  get cartCoupons(): CartCouponService {
+    if (!this._cartCoupons) {
+      this._cartCoupons = new CartCouponService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._cartCoupons;
   }
 
   /**
    * Cart Extensions API
    */
-  get cartExtensions() {
+  get cartExtensions(): CartExtensionsService {
+    if (!this._cartExtensions) {
+      this._cartExtensions = new CartExtensionsService(
+        this.state,
+        this.config,
+        this.events
+      );
+    }
     return this._cartExtensions;
   }
 
   /**
    * Batch API
    */
-  get batch() {
+  get batch(): BatchService {
+    if (!this._batch) {
+      this._batch = new BatchService(this.state, this.config, this.events);
+    }
     return this._batch;
   }
 }

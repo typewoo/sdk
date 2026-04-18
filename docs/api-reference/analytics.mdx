@@ -1,0 +1,165 @@
+---
+title: Analytics API
+description: WooCommerce Analytics reports, stats, performance indicators, and leaderboards
+---
+
+# Analytics API
+
+The Analytics API provides access to WooCommerce Analytics endpoints through `sdk.analytics`. These endpoints expose time-series report data, aggregate totals, performance indicators, and leaderboard-style views for commerce reporting.
+
+## Access
+
+```typescript
+import { createTypewoo } from '@typewoo/sdk';
+
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  admin: {
+    consumer_key: 'ck_xxx',
+    consumer_secret: 'cs_xxx',
+    useAuthInterceptor: true,
+  },
+});
+
+const analytics = sdk.analytics;
+```
+
+<Note>
+  Analytics uses WooCommerce Analytics endpoints under
+  `/wp-json/wc-analytics/...`. If those routes are protected on your store, the
+  SDK can reuse the same admin credentials used by `sdk.admin`.
+</Note>
+
+## Available Services
+
+| Property       | Service                        | Description                                 |
+| -------------- | ------------------------------ | ------------------------------------------- |
+| `revenue`      | `AnalyticsRevenueService`      | Revenue totals and interval-based stats     |
+| `orders`       | `AnalyticsOrdersService`       | Order detail rows and aggregate stats       |
+| `products`     | `AnalyticsProductsService`     | Product performance analytics               |
+| `categories`   | `AnalyticsCategoriesService`   | Category performance analytics              |
+| `coupons`      | `AnalyticsCouponsService`      | Coupon usage analytics                      |
+| `taxes`        | `AnalyticsTaxesService`        | Tax collection analytics                    |
+| `variations`   | `AnalyticsVariationsService`   | Variation-level analytics                   |
+| `customers`    | `AnalyticsCustomersService`    | Customer reporting and spend analytics      |
+| `downloads`    | `AnalyticsDownloadsService`    | Download activity reporting                 |
+| `stock`        | `AnalyticsStockService`        | Inventory and stock status analytics        |
+| `performance`  | `AnalyticsPerformanceService`  | Performance indicators and allowed metrics  |
+| `leaderboards` | `AnalyticsLeaderboardsService` | Leaderboards for top customers and products |
+
+## Common Patterns
+
+### Stats Endpoints
+
+Stats endpoints return aggregate totals plus intervals.
+
+```typescript
+const { data, error } = await sdk.analytics.revenue.getStats({
+  after: '2026-01-01',
+  before: '2026-01-31',
+  interval: 'day',
+});
+
+console.log(data?.totals);
+console.log(data?.intervals);
+```
+
+Typical stats services:
+
+- `revenue.getStats()`
+- `orders.getStats()`
+- `products.getStats()`
+- `categories.getStats()`
+- `coupons.getStats()`
+- `taxes.getStats()`
+- `variations.getStats()`
+- `customers.getStats()`
+- `downloads.getStats()`
+- `stock.getStats()`
+
+### Paginated Report Rows
+
+List-style analytics services return an awaitable paginated request.
+
+```typescript
+const { data, error, pagination } = await sdk.analytics.orders.list({
+  after: '2026-01-01',
+  before: '2026-01-31',
+  per_page: 25,
+  page: 1,
+});
+
+console.log(data);
+console.log(pagination?.totalPages);
+```
+
+To fetch all pages, use the loop extension:
+
+```typescript
+const { data: allOrders } = await sdk.analytics.orders
+  .list({
+    after: '2026-01-01',
+    before: '2026-01-31',
+    per_page: 100,
+  })
+  .loop();
+```
+
+### Performance Indicators
+
+Performance indicators provide a compact way to retrieve key metrics from multiple analytics domains.
+
+```typescript
+const { data } = await sdk.analytics.performance.getIndicators({
+  stats: 'revenue/total_sales,orders/orders_count,products/items_sold',
+});
+
+const { data: allowed } = await sdk.analytics.performance.getAllowed();
+```
+
+### Leaderboards
+
+Leaderboards return ranked report sets such as top products or customers.
+
+```typescript
+const { data } = await sdk.analytics.leaderboards.list({
+  after: '2026-01-01',
+  before: '2026-01-31',
+});
+
+const { data: allowed } = await sdk.analytics.leaderboards.getAllowed();
+```
+
+## Common Query Parameters
+
+Most analytics services support a shared set of filters.
+
+| Parameter             | Type      | Description                                      |
+| --------------------- | --------- | ------------------------------------------------ |
+| `after`               | `string`  | Start of reporting range                         |
+| `before`              | `string`  | End of reporting range                           |
+| `interval`            | `string`  | Time bucket for stats endpoints                  |
+| `page`                | `number`  | Page number for list endpoints                   |
+| `per_page`            | `number`  | Items per page for list endpoints                |
+| `orderby`             | `string`  | Sort field                                       |
+| `order`               | `string`  | Sort direction                                   |
+| `force_cache_refresh` | `boolean` | Refresh analytics caches before serving the data |
+
+Some services add domain-specific filters such as products, categories, coupon IDs, customer types, or segment selections.
+
+## Authentication
+
+Analytics endpoints are read-only, but some stores still protect them. When that happens, configure admin credentials on the SDK:
+
+```typescript
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  admin: {
+    consumer_key: 'ck_xxx',
+    consumer_secret: 'cs_xxx',
+    useAuthInterceptor: true,
+  },
+});
+```
+
+The SDK applies the same admin Basic-auth flow used by `sdk.admin` to protected analytics routes.

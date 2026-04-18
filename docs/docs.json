@@ -45,6 +45,7 @@
             "group": "API Reference",
             "pages": [
               "api-reference/client",
+              "api-reference/analytics",
               "api-reference/products",
               "api-reference/cart",
               "api-reference/orders",

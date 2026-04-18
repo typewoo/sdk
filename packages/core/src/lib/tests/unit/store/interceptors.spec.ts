@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { addAdminAuthInterceptor } from '../../../interceptors/admin-auth.interceptor.js';
 import { addCartTokenInterceptors } from '../../../interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from '../../../interceptors/nonce.interceptor.js';
 import { EventBus } from '../../../bus/event.bus.js';
@@ -113,5 +114,71 @@ describe('Interceptors', () => {
     const reqHandler = handlers[handlers.length - 1];
     const config = await reqHandler.fulfilled({ headers: {} });
     expect(config.headers['nonce']).toBeUndefined();
+  });
+
+  it('admin auth interceptor adds Basic auth for wc/v3 routes', async () => {
+    const cfg: ResolvedSdkConfig = {
+      baseUrl: '',
+      admin: {
+        consumer_key: 'ck_test',
+        consumer_secret: 'cs_test',
+        useAuthInterceptor: true,
+      },
+    };
+
+    addAdminAuthInterceptor(cfg);
+
+    const handlers = castClient().interceptors.request.handlers;
+    const reqHandler = handlers[handlers.length - 1];
+    const config = await reqHandler.fulfilled({
+      url: '/wp-json/wc/v3/orders',
+      headers: {},
+    });
+
+    expect(config.headers['Authorization']).toBe('Basic Y2tfdGVzdDpjc190ZXN0');
+  });
+
+  it('admin auth interceptor adds Basic auth for wc-analytics routes', async () => {
+    const cfg: ResolvedSdkConfig = {
+      baseUrl: '',
+      admin: {
+        consumer_key: 'ck_test',
+        consumer_secret: 'cs_test',
+        useAuthInterceptor: true,
+      },
+    };
+
+    addAdminAuthInterceptor(cfg);
+
+    const handlers = castClient().interceptors.request.handlers;
+    const reqHandler = handlers[handlers.length - 1];
+    const config = await reqHandler.fulfilled({
+      url: '/wp-json/wc-analytics/reports/revenue/stats',
+      headers: {},
+    });
+
+    expect(config.headers['Authorization']).toBe('Basic Y2tfdGVzdDpjc190ZXN0');
+  });
+
+  it('admin auth interceptor skips unrelated routes', async () => {
+    const cfg: ResolvedSdkConfig = {
+      baseUrl: '',
+      admin: {
+        consumer_key: 'ck_test',
+        consumer_secret: 'cs_test',
+        useAuthInterceptor: true,
+      },
+    };
+
+    addAdminAuthInterceptor(cfg);
+
+    const handlers = castClient().interceptors.request.handlers;
+    const reqHandler = handlers[handlers.length - 1];
+    const config = await reqHandler.fulfilled({
+      url: '/wp-json/wp/v2/posts',
+      headers: {},
+    });
+
+    expect(config.headers['Authorization']).toBeUndefined();
   });
 });

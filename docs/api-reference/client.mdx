@@ -171,6 +171,47 @@ const order = await sdk.admin.orders.getById(123);
 | `systemStatus`      | `AdminSystemStatusService`         | System status         |
 | `data`              | `AdminDataService`                 | Countries, currencies |
 
+### `analytics`
+
+Access WooCommerce Analytics API services.
+
+```typescript
+const revenue = await sdk.analytics.revenue.getStats({
+  after: '2026-01-01',
+  before: '2026-01-31',
+  interval: 'day',
+});
+
+const { data: orders, pagination } = await sdk.analytics.orders.list({
+  per_page: 25,
+  after: '2026-01-01',
+  before: '2026-01-31',
+});
+```
+
+**Available Services:**
+
+| Property       | Service                        | Description                              |
+| -------------- | ------------------------------ | ---------------------------------------- |
+| `revenue`      | `AnalyticsRevenueService`      | Revenue totals and interval-based stats  |
+| `orders`       | `AnalyticsOrdersService`       | Order analytics rows and stats           |
+| `products`     | `AnalyticsProductsService`     | Product performance analytics            |
+| `categories`   | `AnalyticsCategoriesService`   | Category performance analytics           |
+| `coupons`      | `AnalyticsCouponsService`      | Coupon usage analytics                   |
+| `taxes`        | `AnalyticsTaxesService`        | Tax collection analytics                 |
+| `variations`   | `AnalyticsVariationsService`   | Variation-level performance analytics    |
+| `customers`    | `AnalyticsCustomersService`    | Customer analytics and spend reporting   |
+| `downloads`    | `AnalyticsDownloadsService`    | Download activity analytics              |
+| `stock`        | `AnalyticsStockService`        | Inventory status and stock analytics     |
+| `performance`  | `AnalyticsPerformanceService`  | Performance indicators and allowed stats |
+| `leaderboards` | `AnalyticsLeaderboardsService` | Leaderboard reports                      |
+
+**Notes:**
+
+- Analytics uses WooCommerce Analytics endpoints under `/wp-json/wc-analytics/...`
+- List-style analytics methods return an awaitable paginated request, so `await sdk.analytics.orders.list()` works directly
+- If analytics routes are protected, the SDK can reuse admin credentials when `admin.useAuthInterceptor` is enabled
+
 ### `events`
 
 Access the EventBus for subscribing to SDK events.

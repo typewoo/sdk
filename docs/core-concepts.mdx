@@ -9,7 +9,7 @@ This page covers the fundamental concepts of the Typewoo SDK architecture.
 
 ## SDK Structure
 
-The SDK is organized with three main service groups:
+The SDK is organized with four main service groups:
 
 ```
 TypewooClient (sdk)
@@ -43,6 +43,19 @@ TypewooClient (sdk)
 │   ├── customers
 │   ├── coupons
 │   └── ... (many more)
+├── analytics (WooCommerce Analytics API)
+│   ├── revenue
+│   ├── orders
+│   ├── products
+│   ├── categories
+│   ├── coupons
+│   ├── taxes
+│   ├── variations
+│   ├── customers
+│   ├── downloads
+│   ├── stock
+│   ├── performance
+│   └── leaderboards
 ├── endpoints (Custom endpoints - optional)
 ├── events   (EventBus instance)
 ├── state    (SDK state)
@@ -167,6 +180,27 @@ Admin services interact with WooCommerce REST API v3:
 | `AdminPaymentGatewayService`   | `admin.paymentGateways`   | `/wp-json/wc/v3/payment_gateways`          |
 | `AdminSystemStatusService`     | `admin.systemStatus`      | `/wp-json/wc/v3/system_status`             |
 | `AdminDataService`             | `admin.data`              | `/wp-json/wc/v3/data`                      |
+
+### Analytics Services
+
+Analytics services interact with WooCommerce Analytics endpoints:
+
+| Service                        | Property                 | Endpoint Base                                          |
+| ------------------------------ | ------------------------ | ------------------------------------------------------ |
+| `AnalyticsRevenueService`      | `analytics.revenue`      | `/wp-json/wc-analytics/reports/revenue/stats`          |
+| `AnalyticsOrdersService`       | `analytics.orders`       | `/wp-json/wc-analytics/reports/orders`                 |
+| `AnalyticsProductsService`     | `analytics.products`     | `/wp-json/wc-analytics/reports/products`               |
+| `AnalyticsCategoriesService`   | `analytics.categories`   | `/wp-json/wc-analytics/reports/categories`             |
+| `AnalyticsCouponsService`      | `analytics.coupons`      | `/wp-json/wc-analytics/reports/coupons`                |
+| `AnalyticsTaxesService`        | `analytics.taxes`        | `/wp-json/wc-analytics/reports/taxes`                  |
+| `AnalyticsVariationsService`   | `analytics.variations`   | `/wp-json/wc-analytics/reports/variations`             |
+| `AnalyticsCustomersService`    | `analytics.customers`    | `/wp-json/wc-analytics/reports/customers`              |
+| `AnalyticsDownloadsService`    | `analytics.downloads`    | `/wp-json/wc-analytics/reports/downloads`              |
+| `AnalyticsStockService`        | `analytics.stock`        | `/wp-json/wc-analytics/reports/stock`                  |
+| `AnalyticsPerformanceService`  | `analytics.performance`  | `/wp-json/wc-analytics/reports/performance-indicators` |
+| `AnalyticsLeaderboardsService` | `analytics.leaderboards` | `/wp-json/wc-analytics/leaderboards`                   |
+
+If the store protects analytics endpoints, these requests can reuse the same admin credentials configured for `sdk.admin`.
 
 ## SDK State
 
