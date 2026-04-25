@@ -112,6 +112,14 @@ export interface SdkConfig<
   };
   axiosConfig?: AxiosRequestConfig;
   /**
+   * Suppress storage unavailability warnings (e.g. localStorage/sessionStorage not available in SSR).
+   * When `true`, no warnings will be emitted when falling back to in-memory storage.
+   * Set this to `true` when using the SDK exclusively with the Admin REST API, or in any
+   * server-side context where browser storage is intentionally not used.
+   * Defaults to `false`.
+   */
+  suppressStorageWarnings?: boolean;
+  /**
    * Custom endpoints object.
    * Define custom API endpoints that will be accessible via the returned SDK's `endpoints` property.
    * Use the exported HTTP helpers (doGet, doPost, doPut, doDelete, doHead) in your endpoint functions.
@@ -273,6 +281,7 @@ export interface ResolvedSdkConfig {
     storage: StorageProvider;
   };
   axiosConfig?: AxiosRequestConfig;
+  suppressStorageWarnings?: boolean;
   request: {
     onRetry?: (
       attempt: number,
@@ -312,17 +321,19 @@ export interface ResolvedSdkConfig {
  * Resolves a storage configuration to a StorageProvider instance.
  * If a string is provided, it creates the appropriate provider with the given key.
  * If a StorageProvider is provided, it returns it as-is.
+ * @param silent - When true, suppresses the fallback warning for unavailable browser storage.
  */
 export const resolveStorageProvider = (
   storage: StorageType | StorageProvider | undefined,
   key: string,
-  defaultType: StorageType = 'localstorage'
+  defaultType: StorageType = 'localstorage',
+  silent?: boolean
 ): StorageProvider => {
   if (!storage) {
-    return storageProviders[defaultType](key);
+    return storageProviders[defaultType](key, silent);
   }
   if (typeof storage === 'string') {
-    return storageProviders[storage](key);
+    return storageProviders[storage](key, silent);
   }
   return storage;
 };
@@ -342,6 +353,7 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
     uniqueIdentifier: resolvedIdentifier,
     admin: config.admin,
     axiosConfig: config.axiosConfig,
+    suppressStorageWarnings: config.suppressStorageWarnings,
     request: {
       retry: {
         enabled: false,
@@ -401,7 +413,9 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         useInterceptor: config.auth?.accessToken?.useInterceptor,
         storage: resolveStorageProvider(
           config.auth?.accessToken?.storage,
-          config.auth?.accessToken?.key ?? 'typewoo_access_token'
+          config.auth?.accessToken?.key ?? 'typewoo_access_token',
+          'localstorage',
+          config.suppressStorageWarnings
         ),
       },
     };
@@ -413,7 +427,9 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
         useInterceptor: config.auth?.refreshToken?.useInterceptor,
         storage: resolveStorageProvider(
           config.auth?.refreshToken?.storage,
-          config.auth?.refreshToken?.key ?? 'typewoo_refresh_token'
+          config.auth?.refreshToken?.key ?? 'typewoo_refresh_token',
+          'localstorage',
+          config.suppressStorageWarnings
         ),
       };
     }
@@ -426,7 +442,9 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       disabled: config.cartToken?.disabled,
       storage: resolveStorageProvider(
         config.cartToken?.storage,
-        config.cartToken?.key ?? 'typewoo_cart_token'
+        config.cartToken?.key ?? 'typewoo_cart_token',
+        'localstorage',
+        config.suppressStorageWarnings
       ),
     };
   }
@@ -438,7 +456,9 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
       disabled: config.nonce?.disabled,
       storage: resolveStorageProvider(
         config.nonce?.storage,
-        config.nonce?.key ?? 'typewoo_nonce'
+        config.nonce?.key ?? 'typewoo_nonce',
+        'localstorage',
+        config.suppressStorageWarnings
       ),
     };
   }

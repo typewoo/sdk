@@ -80,6 +80,18 @@ describe('Storage Providers', () => {
       );
     });
 
+    it('should not warn when silent is true', () => {
+      localStorageProvider('my-token-key', true);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should warn when silent is explicitly false', () => {
+      localStorageProvider('my-token-key', false);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('localStorage is not available')
+      );
+    });
+
     it('should function correctly with memory fallback', async () => {
       const provider = localStorageProvider('test-key');
       await provider.set('fallback-value');
@@ -182,6 +194,18 @@ describe('Storage Providers', () => {
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining('session-key')
+      );
+    });
+
+    it('should not warn when silent is true', () => {
+      sessionStorageProvider('session-key', true);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should warn when silent is explicitly false', () => {
+      sessionStorageProvider('session-key', false);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('sessionStorage is not available')
       );
     });
 
@@ -373,6 +397,30 @@ describe('resolveStorageProvider', () => {
       // Memory providers are isolated per instance
       expect(await provider1.get()).toBe('value1');
       expect(await provider2.get()).toBe('value2');
+    });
+  });
+
+  describe('silent parameter', () => {
+    it('should suppress localStorage fallback warning when silent is true', () => {
+      resolveStorageProvider('localstorage', 'my-key', 'localstorage', true);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should suppress sessionStorage fallback warning when silent is true', () => {
+      resolveStorageProvider('sessionstorage', 'my-key', 'localstorage', true);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it('should still warn when silent is false (default)', () => {
+      resolveStorageProvider('localstorage', 'my-key', 'localstorage', false);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('localStorage is not available')
+      );
+    });
+
+    it('should not warn for memory provider regardless of silent flag', () => {
+      resolveStorageProvider('memory', 'my-key', 'memory', false);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
   });
 });

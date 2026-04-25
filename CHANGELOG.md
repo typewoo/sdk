@@ -2,7 +2,7 @@
 
 ### 🚀 Features
 
-- **analytics:** add comprehensive  woocommerce analytics types and services ([df141d9](https://github.com/typewoo/sdk/commit/df141d9))
+- **analytics:** add comprehensive woocommerce analytics types and services ([df141d9](https://github.com/typewoo/sdk/commit/df141d9))
 - **analytics:** add documentation for WooCommerce Analytics API and services ([29d2816](https://github.com/typewoo/sdk/commit/29d2816))
 - **analytics:** update analytics types and services to include totals response and links schema ([fa6398b](https://github.com/typewoo/sdk/commit/fa6398b))
 - **interceptors:** enhance admin auth interceptor to support wc analytics endpoints ([03768b8](https://github.com/typewoo/sdk/commit/03768b8))

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { resolveConfig } from '../../../configs/sdk.config.js';
 import type { SdkConfig } from '../../../configs/sdk.config.js';
 
@@ -113,5 +113,56 @@ describe('resolveConfig() – global request callbacks', () => {
     expect(resolved.request.onRequest).toBe(onRequest);
     expect(resolved.request.retry.enabled).toBe(true);
     expect(resolved.request.retry.maxRetries).toBe(2);
+  });
+});
+
+describe('resolveConfig() – suppressStorageWarnings', () => {
+  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+  });
+
+  afterEach(() => {
+    consoleWarnSpy.mockRestore();
+  });
+
+  it('should not suppress warnings automatically for admin-only config (requires explicit flag)', () => {
+    resolveConfig({
+      baseUrl: 'https://example.com',
+      admin: { consumer_key: 'ck_test', consumer_secret: 'cs_test' },
+    });
+    // Warnings fire because storage is resolved with defaults — user must explicitly suppress
+    expect(consoleWarnSpy).toHaveBeenCalled();
+  });
+
+  it('should suppress storage warnings when suppressStorageWarnings is true', () => {
+    resolveConfig({
+      baseUrl: 'https://example.com',
+      suppressStorageWarnings: true,
+      auth: {},
+    });
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit storage warnings for store config without suppressStorageWarnings', () => {
+    resolveConfig({
+      baseUrl: 'https://example.com',
+      auth: {},
+    });
+    expect(consoleWarnSpy).toHaveBeenCalled();
+  });
+
+  it('should store suppressStorageWarnings in resolved config', () => {
+    const resolved = resolveConfig({
+      baseUrl: 'https://example.com',
+      suppressStorageWarnings: true,
+    });
+    expect(resolved.suppressStorageWarnings).toBe(true);
+  });
+
+  it('should have suppressStorageWarnings undefined when not set', () => {
+    const resolved = resolveConfig({ baseUrl: 'https://example.com' });
+    expect(resolved.suppressStorageWarnings).toBeUndefined();
   });
 });
