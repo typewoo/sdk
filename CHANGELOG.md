@@ -1,3 +1,13 @@
+## 3.7.6 (2026-04-25)
+
+### 🚀 Features
+
+- **config:** add suppressStorageWarnings option to SDK configuration and storage providers ([48059d8](https://github.com/typewoo/sdk/commit/48059d8))
+
+### 🩹 Fixes
+
+- **changelog:** correct formatting of analytics feature entry ([68de454](https://github.com/typewoo/sdk/commit/68de454))
+
 ## 3.7.5 (2026-04-18)
 
 ### 🚀 Features
