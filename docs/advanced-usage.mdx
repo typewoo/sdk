@@ -336,9 +336,10 @@ httpClient.interceptors.response.use((response) => {
 
 ### Memory Storage
 
-For server-side rendering, use memory storage:
+In server-side environments, `localStorage` and `sessionStorage` are unavailable. The SDK falls back to memory storage automatically, but emits a console warning. To avoid the warning, either set storage explicitly to `'memory'` or set `suppressStorageWarnings: true`:
 
 ```typescript
+// Explicit memory storage — recommended for SSR (no warning, no fallback)
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
@@ -355,6 +356,12 @@ const sdk = createTypewoo({
   cartToken: {
     storage: 'memory',
   },
+});
+
+// Or suppress the warning when using the automatic fallback
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  suppressStorageWarnings: true,
 });
 ```
 

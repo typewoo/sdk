@@ -38,6 +38,7 @@ interface SdkConfig<TEndpoints> {
   nonce?: NonceConfig;
   cartToken?: CartTokenConfig;
   axiosConfig?: AxiosRequestConfig;
+  suppressStorageWarnings?: boolean;
   request?: RequestConfig;
   endpoints?: TEndpoints; // Custom API endpoints
 }
@@ -237,8 +238,16 @@ const sdk = createTypewoo({
     consumer_secret: 'cs_xxxxxxxxxxxxx',
     useAuthInterceptor: true,
   },
+  suppressStorageWarnings: true, // Suppress SSR storage warnings when not using Store API
 });
 ```
+
+<Note>
+  When using the SDK exclusively with the Admin REST API in a server-side
+  environment, set `suppressStorageWarnings: true` to prevent spurious warnings
+  about `localStorage` being unavailable. The Admin API uses HTTP Basic Auth and
+  does not rely on browser storage.
+</Note>
 
 | Option               | Type      | Default | Description                          |
 | -------------------- | --------- | ------- | ------------------------------------ |
@@ -433,24 +442,30 @@ const sdk = createTypewoo({
 
 ### SSR/Node.js Environments
 
-In server-side environments where `localStorage` and `sessionStorage` are unavailable, the SDK automatically falls back to memory storage with a warning. For explicit SSR support:
+In server-side environments where `localStorage` and `sessionStorage` are unavailable, the SDK automatically falls back to memory storage with a console warning. To silence this warning, either set storage explicitly to `'memory'` or use the `suppressStorageWarnings` flag:
 
 ```typescript
+// Option 1: Explicitly use memory storage (recommended — no warning, no fallback)
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
   auth: {
-    accessToken: {
-      storage: 'memory',
-    },
+    accessToken: { storage: 'memory' },
+    refreshToken: { storage: 'memory' },
   },
-  nonce: {
-    storage: 'memory',
-  },
-  cartToken: {
-    storage: 'memory',
-  },
+  nonce: { storage: 'memory' },
+  cartToken: { storage: 'memory' },
+});
+
+// Option 2: Suppress the warning while still using the automatic fallback
+const sdk = createTypewoo({
+  baseUrl: 'https://your-store.com',
+  suppressStorageWarnings: true,
 });
 ```
+
+| Option                    | Type      | Default | Description                                                                       |
+| ------------------------- | --------- | ------- | --------------------------------------------------------------------------------- |
+| `suppressStorageWarnings` | `boolean` | `false` | Silence warnings when `localStorage`/`sessionStorage` fall back to memory storage |
 
 ## Accessing Configuration
 

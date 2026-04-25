@@ -38,8 +38,12 @@ const hasSessionStorage = (): boolean => {
  * In-memory storage provider. Useful for SSR/Node.js environments
  * or when browser storage is not available.
  * @param _key - Unused, but kept for API consistency with other providers.
+ * @param _silent - Unused, but kept for API consistency with other providers.
  */
-export const memoryStorageProvider = (_key?: string): StorageProvider => {
+export const memoryStorageProvider = (
+  _key?: string,
+  _silent?: boolean
+): StorageProvider => {
   let value: string | null = null;
   return {
     type: 'memory',
@@ -57,12 +61,18 @@ export const memoryStorageProvider = (_key?: string): StorageProvider => {
 
 /**
  * localStorage provider with SSR fallback to in-memory storage.
+ * @param silent - When true, suppresses the fallback warning (e.g. for admin-only or server-side usage).
  */
-export const localStorageProvider = (key: string): StorageProvider => {
+export const localStorageProvider = (
+  key: string,
+  silent?: boolean
+): StorageProvider => {
   if (!hasLocalStorage()) {
-    console.warn(
-      `[Typewoo] localStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
-    );
+    if (!silent) {
+      console.warn(
+        `[Typewoo] localStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
+      );
+    }
     return memoryStorageProvider();
   }
   return {
@@ -89,12 +99,18 @@ export const localStorageProvider = (key: string): StorageProvider => {
 
 /**
  * sessionStorage provider with SSR fallback to in-memory storage.
+ * @param silent - When true, suppresses the fallback warning (e.g. for admin-only or server-side usage).
  */
-export const sessionStorageProvider = (key: string): StorageProvider => {
+export const sessionStorageProvider = (
+  key: string,
+  silent?: boolean
+): StorageProvider => {
   if (!hasSessionStorage()) {
-    console.warn(
-      `[Typewoo] sessionStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
-    );
+    if (!silent) {
+      console.warn(
+        `[Typewoo] sessionStorage is not available (SSR/Node.js environment). Falling back to in-memory storage for key "${key}". Data will not persist across page reloads.`
+      );
+    }
     return memoryStorageProvider();
   }
   return {
