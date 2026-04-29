@@ -4,7 +4,7 @@ import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
-  ProductQueryParams,
+  AdminProductQueryParams,
   AdminProduct,
   AdminProductRequest,
   AdminProductVariation,
@@ -25,11 +25,11 @@ export class AdminProductService extends BaseService {
    * List products
    */
   list(
-    params?: ProductQueryParams,
+    params?: AdminProductQueryParams,
     options?: RequestOptions
-  ): PaginatedRequest<AdminProduct[], ProductQueryParams> {
+  ): PaginatedRequest<AdminProduct[], AdminProductQueryParams> {
     const request = async (
-      pageParams?: ProductQueryParams
+      pageParams?: AdminProductQueryParams
     ): Promise<ApiPaginationResult<AdminProduct[]>> => {
       const query = pageParams
         ? qs.stringify(pageParams, { encode: false })
@@ -167,11 +167,11 @@ export class AdminProductService extends BaseService {
    */
   listVariations(
     productId: number,
-    params?: ProductQueryParams,
+    params?: AdminProductQueryParams,
     options?: RequestOptions
-  ): PaginatedRequest<AdminProductVariation[], ProductQueryParams> {
+  ): PaginatedRequest<AdminProductVariation[], AdminProductQueryParams> {
     const request = async (
-      pageParams?: ProductQueryParams
+      pageParams?: AdminProductQueryParams
     ): Promise<ApiPaginationResult<AdminProductVariation[]>> => {
       const query = pageParams
         ? qs.stringify(pageParams, { encode: false })
