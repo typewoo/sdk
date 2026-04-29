@@ -306,7 +306,9 @@ export const AdminProductQueryParamsSchema = z.looseObject({
   exclude_meta: z.array(z.string()).optional(),
 });
 
-export type ProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;
+export type AdminProductQueryParams = z.infer<
+  typeof AdminProductQueryParamsSchema
+>;
 
 /**
  * Query params for listing product custom-field names
