@@ -144,6 +144,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TITLE: 'Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
+          gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
+          gh label create "schema-drift"  --color "e4e669" --description "WooCommerce schema drift detected" --force
+
           existing=$(gh issue list \
             --label "types-sync" --label "schema-drift" \
             --state open \
