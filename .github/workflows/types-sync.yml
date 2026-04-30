@@ -140,11 +140,25 @@ jobs:
 
       - name: Open / update tracking issue on drift
         if: steps.check.outcome == 'failure'
-        uses: peter-evans/create-or-update-issue@v6
-        with:
-          title: 'Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
-          content-filepath: scripts/types-sync/out/drift.md
-          labels: types-sync, schema-drift
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: 'Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
+        run: |
+          existing=$(gh issue list \
+            --label "types-sync" --label "schema-drift" \
+            --state open \
+            --json number,title \
+            --jq ".[] | select(.title==\"$TITLE\") | .number" \
+            | head -1)
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file scripts/types-sync/out/drift.md
+            echo "Updated issue #$existing"
+          else
+            gh issue create \
+              --title "$TITLE" \
+              --body-file scripts/types-sync/out/drift.md \
+              --label "types-sync" --label "schema-drift"
+          fi
 
       - name: Fail job if drift was detected
         if: steps.check.outcome == 'failure'
