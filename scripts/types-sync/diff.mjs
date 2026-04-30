@@ -13,22 +13,30 @@
 
 const SEVERITY = {
   // [response, request, query]
-  'missing-in-sdk':    { response: 'error', request: 'error', query: 'warn'  },
-  'extra-in-sdk':      { response: 'error', request: 'error', query: 'error' },
-  'type-mismatch':     { response: 'error', request: 'error', query: 'error' },
-  'enum-drift':        { response: 'error', request: 'error', query: 'error' },
-  'items-enum-drift':  { response: 'error', request: 'error', query: 'error' },
-  'nullable-mismatch': { response: 'warn',  request: 'warn',  query: 'warn'  },
-  'optional-mismatch': { response: 'warn',  request: 'error', query: 'info'  },
+  'missing-in-sdk': { response: 'error', request: 'error', query: 'warn' },
+  'extra-in-sdk': { response: 'error', request: 'error', query: 'error' },
+  'type-mismatch': { response: 'error', request: 'error', query: 'error' },
+  'enum-drift': { response: 'error', request: 'error', query: 'error' },
+  'items-enum-drift': { response: 'error', request: 'error', query: 'error' },
+  'nullable-mismatch': { response: 'warn', request: 'warn', query: 'warn' },
+  'optional-mismatch': { response: 'warn', request: 'error', query: 'info' },
   // Defaults drive behaviour when a caller omits the field, so divergence
   // matters for request/query. Response defaults rarely have user impact.
-  'default-mismatch':  { response: 'info',  request: 'warn',  query: 'warn'  },
+  'default-mismatch': { response: 'info', request: 'warn', query: 'warn' },
   // Documentation drift — flagged at info severity. These kinds depend on
   // the SDK using `.describe(...)` (Zod runtime metadata); plain JSDoc is
   // stripped before runtime and won't be visible to the diff.
-  'description-missing-in-sdk':    { response: 'info', request: 'info', query: 'info' },
-  'description-missing-upstream':  { response: 'info', request: 'info', query: 'info' },
-  'description-mismatch':          { response: 'info', request: 'info', query: 'info' },
+  'description-missing-in-sdk': {
+    response: 'info',
+    request: 'info',
+    query: 'info',
+  },
+  'description-missing-upstream': {
+    response: 'info',
+    request: 'info',
+    query: 'info',
+  },
+  'description-mismatch': { response: 'info', request: 'info', query: 'info' },
 };
 
 /**
@@ -51,10 +59,7 @@ const SURFACE_CONTEXT = {
   analytics: ['view', 'edit'],
 };
 
-function severityFor(driftKind, schemaKind /* , isLoose */) {
-  // Runtime tolerance (z.looseObject) is intentionally not considered here —
-  // WC's schema is the source of truth, so any extra in the SDK is a
-  // correctness bug regardless of whether validation would pass at runtime.
+function severityFor(driftKind, schemaKind) {
   return SEVERITY[driftKind]?.[schemaKind] ?? 'warn';
 }
 
@@ -142,7 +147,15 @@ function arrayDiff(a, b) {
  *   options?: { checkDescriptions?: boolean },
  * }} args
  */
-export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options }) {
+export function diffPair({
+  sdk,
+  upstream,
+  surface,
+  route,
+  kind,
+  isLoose,
+  options,
+}) {
   const checkDescriptions = options?.checkDescriptions !== false;
   const drifts = [];
   if (!sdk || !upstream) return drifts;
@@ -195,7 +208,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
         kind,
         field: path,
         driftKind: 'extra-in-sdk',
-        severity: severityFor('extra-in-sdk', kind, isLoose),
+        severity: severityFor('extra-in-sdk', kind),
         sdk: brief(s),
         upstream: null,
       });
@@ -218,7 +231,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
         driftKind: 'type-mismatch',
         severity: isNumberIntegerPair
           ? 'info'
-          : severityFor('type-mismatch', kind, isLoose),
+          : severityFor('type-mismatch', kind),
         sdk: typeBrief(s),
         upstream: typeBrief(u),
       });
@@ -237,7 +250,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
           kind,
           field: path,
           driftKind: 'enum-drift',
-          severity: severityFor('enum-drift', kind, isLoose),
+          severity: severityFor('enum-drift', kind),
           sdk: { enum: s.enum ?? null, extraInSdk },
           upstream: { enum: u.enum ?? null, missingInSdk },
         });
@@ -260,7 +273,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
           kind,
           field: path,
           driftKind: 'items-enum-drift',
-          severity: severityFor('enum-drift', kind, isLoose),
+          severity: severityFor('enum-drift', kind),
           sdk: { items: { enum: sItemEnum ?? null }, extraInSdk },
           upstream: { items: { enum: uItemEnum ?? null }, missingInSdk },
         });
@@ -274,7 +287,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
         kind,
         field: path,
         driftKind: 'nullable-mismatch',
-        severity: severityFor('nullable-mismatch', kind, isLoose),
+        severity: severityFor('nullable-mismatch', kind),
         sdk: { nullable: s.nullable },
         upstream: { nullable: u.nullable },
       });
@@ -287,7 +300,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
         kind,
         field: path,
         driftKind: 'optional-mismatch',
-        severity: severityFor('optional-mismatch', kind, isLoose),
+        severity: severityFor('optional-mismatch', kind),
         sdk: { optional: s.optional },
         upstream: { optional: u.optional },
       });
@@ -300,7 +313,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
         kind,
         field: path,
         driftKind: 'default-mismatch',
-        severity: severityFor('default-mismatch', kind, isLoose),
+        severity: severityFor('default-mismatch', kind),
         sdk: { default: s.default ?? null },
         upstream: { default: u.default ?? null },
       });
@@ -315,7 +328,7 @@ export function diffPair({ sdk, upstream, surface, route, kind, isLoose, options
           kind,
           field: path,
           driftKind: descDrift.kind,
-          severity: severityFor(descDrift.kind, kind, isLoose),
+          severity: severityFor(descDrift.kind, kind),
           sdk: { description: s.description ?? null },
           upstream: { description: u.description ?? null },
         });
