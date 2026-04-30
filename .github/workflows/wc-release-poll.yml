@@ -1,0 +1,128 @@
+name: wc-release-poll
+
+# Polls woocommerce/woocommerce for new GA releases. When a new tag appears,
+# this workflow:
+#   1. Boots WP+WC pinned to that tag.
+#   2. Captures a fresh snapshot to scripts/types-sync/snapshots/wc-<tag>.json.
+#   3. Appends <tag> to scripts/types-sync/support-window.json `versions[]`
+#      and rewrites `latest` to <tag>. Never drops older versions —
+#      window pruning is a deliberate manual PR.
+#   4. Updates .github/cache/last-wc-tag so we don't re-fire next hour.
+#   5. Opens a PR with all of the above for human review.
+
+on:
+  schedule:
+    - cron: '17 * * * *' # hourly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: wc-release-poll
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest WC tag
+        id: latest
+        run: |
+          tag=$(gh api repos/woocommerce/woocommerce/releases/latest --jq .tag_name | sed 's/^v//')
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Read previously seen tag
+        id: prev
+        run: |
+          file=.github/cache/last-wc-tag
+          if [ -f "$file" ]; then
+            echo "tag=$(cat $file)" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Skip everything below when we've already seen this tag.
+      - name: Bail out if no new release
+        if: steps.latest.outputs.tag == steps.prev.outputs.tag
+        run: |
+          echo "Already saw WC ${{ steps.latest.outputs.tag }}. Nothing to do."
+
+      - uses: pnpm/action-setup@v4
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        with:
+          version: 10.20.0
+      - uses: actions/setup-node@v4
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        with:
+          node-version: 20
+          cache: pnpm
+      - if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        run: pnpm install --frozen-lockfile
+
+      - name: Boot WP + WC ${{ steps.latest.outputs.tag }}
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        env:
+          WOO_COMMERCE_VERSION: ${{ steps.latest.outputs.tag }}
+        run: pnpm wp:env:up:minimal
+
+      - name: Read provisioned REST keys
+        id: keys
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        run: |
+          file=infra/wordpress/scripts/generated-app-passwords.txt
+          pwd=$(grep -m1 -i 'WP_ADMIN_APP_PASSWORD' "$file" | sed 's/.*= *//')
+          echo "::add-mask::$pwd"
+          echo "pwd=$pwd" >> "$GITHUB_OUTPUT"
+
+      - name: Capture snapshot
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        env:
+          WC_VERSION: ${{ steps.latest.outputs.tag }}
+          WP_CONSUMER_KEY: admin
+          WP_CONSUMER_SECRET: ${{ steps.keys.outputs.pwd }}
+        run: pnpm types:sync:capture --wc-version ${{ steps.latest.outputs.tag }}
+
+      - name: Update support-window.json + cache
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        run: |
+          file=scripts/types-sync/support-window.json
+          tag='${{ steps.latest.outputs.tag }}'
+          # Append the new tag if not already present, then set latest to it.
+          jq --arg v "$tag" '
+            (.versions |= (. + [$v] | unique))
+            | .latest = $v
+          ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+          mkdir -p .github/cache
+          echo "$tag" > .github/cache/last-wc-tag
+
+      - name: Open PR with new snapshot + window bump
+        if: steps.latest.outputs.tag != steps.prev.outputs.tag
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: types-sync/wc-${{ steps.latest.outputs.tag }}
+          commit-message: |
+            chore(types-sync): add WooCommerce ${{ steps.latest.outputs.tag }} to support window
+          title: 'types-sync: add WooCommerce ${{ steps.latest.outputs.tag }} to support window'
+          body: |
+            Detected new WooCommerce release `${{ steps.latest.outputs.tag }}`.
+
+            This PR:
+            - Adds `scripts/types-sync/snapshots/wc-${{ steps.latest.outputs.tag }}.json`
+            - Appends `${{ steps.latest.outputs.tag }}` to `scripts/types-sync/support-window.json` `versions[]`
+            - Rewrites `latest` to `${{ steps.latest.outputs.tag }}`
+            - Bumps the seen-tag cache
+
+            No older snapshot is dropped. CI will run the diff job against
+            the full support window and surface any drift the SDK needs to
+            address for the new version.
+          labels: types-sync, automated
+          add-paths: |
+            scripts/types-sync/snapshots/wc-${{ steps.latest.outputs.tag }}.json
+            scripts/types-sync/support-window.json
+            .github/cache/last-wc-tag
