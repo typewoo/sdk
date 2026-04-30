@@ -1,0 +1,196 @@
+name: types-sync
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Weekly Monday 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      wc_version:
+        description: 'Specific WC version to (re)capture before diffing. Omit to use committed snapshots only.'
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - 'packages/core/src/lib/types/**'
+      - 'scripts/types-sync/**'
+      - '.github/workflows/types-sync.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: types-sync-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  # Read the committed support window so downstream jobs can fan out across versions.
+  window:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.read.outputs.versions }}
+      latest: ${{ steps.read.outputs.latest }}
+      versions_json: ${{ steps.read.outputs.versions_json }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: read
+        run: |
+          file=scripts/types-sync/support-window.json
+          versions=$(jq -r '.versions | join(",")' "$file")
+          versions_json=$(jq -c '.versions' "$file")
+          latest=$(jq -r '.latest' "$file")
+          echo "versions=$versions" >> "$GITHUB_OUTPUT"
+          echo "versions_json=$versions_json" >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+
+  # Optionally re-capture one version on workflow_dispatch — used when you want
+  # to refresh a snapshot that changed upstream without waiting for a release.
+  capture:
+    needs: window
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.wc_version != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Boot WP + WC (pinned to ${{ github.event.inputs.wc_version }})
+        env:
+          WOO_COMMERCE_VERSION: ${{ github.event.inputs.wc_version }}
+        run: pnpm wp:env:up:minimal
+
+      - name: Read provisioned REST keys
+        id: keys
+        run: |
+          file=infra/wordpress/scripts/generated-app-passwords.txt
+          if [ ! -f "$file" ]; then
+            echo "::warning::No REST key file at $file — capture will fail for admin/analytics surfaces"
+            exit 0
+          fi
+          pwd=$(grep -m1 -i 'WP_ADMIN_APP_PASSWORD' "$file" | sed 's/.*= *//')
+          echo "::add-mask::$pwd"
+          echo "pwd=$pwd" >> "$GITHUB_OUTPUT"
+
+      - name: Capture
+        env:
+          WC_VERSION: ${{ github.event.inputs.wc_version }}
+          WP_CONSUMER_KEY: admin
+          WP_CONSUMER_SECRET: ${{ steps.keys.outputs.pwd }}
+        run: pnpm types:sync:capture --wc-version ${{ github.event.inputs.wc_version }}
+
+      - name: Upload snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-${{ github.event.inputs.wc_version }}
+          path: scripts/types-sync/snapshots/wc-${{ github.event.inputs.wc_version }}.json
+
+  # The diff job consumes the committed snapshots (and any freshly-captured
+  # one from the `capture` step) and produces a report. Always runs against
+  # the full support window — the reconciler downgrades drift covered by
+  # older supported versions.
+  diff:
+    needs: [window, capture]
+    if: ${{ always() && needs.window.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.20.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Pull any freshly-captured snapshot back into the snapshots dir so the
+      # diff sees the latest data even before it's been committed.
+      - name: Restore freshly-captured snapshot (if any)
+        if: ${{ needs.capture.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          path: scripts/types-sync/snapshots
+          merge-multiple: true
+
+      - name: Diff against SDK types (full support window)
+        id: check
+        run: pnpm types:sync:check
+        continue-on-error: true
+
+      - name: Run registry-completeness test (strict)
+        env:
+          TYPES_SYNC_REGISTRY: strict
+        run: pnpm types:sync:test
+        continue-on-error: true
+
+      - name: Upload drift report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-${{ needs.window.outputs.latest }}
+          path: scripts/types-sync/out/
+
+      - name: Open / update tracking issue on drift
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_GIST_TOKEN: ${{ secrets.GH_GIST_TOKEN }}
+          TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
+        run: |
+          gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
+          gh label create "schema-drift"  --color "e4e669" --description "WooCommerce schema drift detected" --force
+
+          # GitHub caps issue bodies at 65536 chars.
+          # If the report fits, include it in full; otherwise upload it as a gist
+          # (permanent, human-readable) and link to it — artifacts expire and require
+          # downloading a zip, making them a poor experience for issue reviewers.
+          # Gist creation requires a PAT with the `gist` scope stored as GH_GIST_TOKEN;
+          # GITHUB_TOKEN is repo-scoped and cannot create gists.
+          LIMIT=65536
+          body=$(cat scripts/types-sync/out/drift.md)
+          body_file=$(mktemp)
+          if [ ${#body} -gt $LIMIT ]; then
+            if [ -n "$GH_GIST_TOKEN" ]; then
+              gist_url=$(GH_TOKEN="$GH_GIST_TOKEN" gh gist create scripts/types-sync/out/drift.md \
+                --desc "Schema drift report: WooCommerce ${{ needs.window.outputs.latest }}" \
+                --filename "drift-${{ needs.window.outputs.latest }}.md")
+              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> The full report has been uploaded as a gist: **[drift-%s.md](%s)**\n' \
+                "${{ needs.window.outputs.latest }}" "$gist_url" > "$body_file"
+            else
+              RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> Download the full report from the **[`drift-${{ needs.window.outputs.latest }}` CI artifact](%s)**.\n> To enable automatic gist uploads, add a PAT with the `gist` scope as the `GH_GIST_TOKEN` repository secret.\n' \
+                "$RUN_URL" > "$body_file"
+            fi
+          else
+            printf '%s' "$body" > "$body_file"
+          fi
+
+          existing=$(gh issue list \
+            --label "types-sync" --label "schema-drift" \
+            --state open \
+            --json number,title \
+            --jq ".[] | select(.title==\"$TITLE\") | .number" \
+            | head -1)
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file "$body_file"
+            echo "Updated issue #$existing"
+          else
+            gh issue create \
+              --title "$TITLE" \
+              --body-file "$body_file" \
+              --label "types-sync" --label "schema-drift"
+          fi
+
+      - name: Fail job if drift was detected
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::error::Schema drift detected against support window [${{ needs.window.outputs.versions }}]. See drift.md artifact and tracking issue."
+          exit 1
