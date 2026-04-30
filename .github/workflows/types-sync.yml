@@ -18,7 +18,6 @@ on:
 permissions:
   contents: read
   issues: write
-  gists: write
 
 concurrency:
   group: types-sync-${{ github.event_name }}
@@ -143,6 +142,7 @@ jobs:
         if: steps.check.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_GIST_TOKEN: ${{ secrets.GH_GIST_TOKEN }}
           TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
           gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
@@ -152,15 +152,23 @@ jobs:
           # If the report fits, include it in full; otherwise upload it as a gist
           # (permanent, human-readable) and link to it — artifacts expire and require
           # downloading a zip, making them a poor experience for issue reviewers.
+          # Gist creation requires a PAT with the `gist` scope stored as GH_GIST_TOKEN;
+          # GITHUB_TOKEN is repo-scoped and cannot create gists.
           LIMIT=65536
           body=$(cat scripts/types-sync/out/drift.md)
           body_file=$(mktemp)
           if [ ${#body} -gt $LIMIT ]; then
-            gist_url=$(gh gist create scripts/types-sync/out/drift.md \
-              --desc "Schema drift report: WooCommerce ${{ needs.window.outputs.latest }}" \
-              --filename "drift-${{ needs.window.outputs.latest }}.md")
-            printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> The full report has been uploaded as a gist: **[drift-%s.md](%s)**\n' \
-              "${{ needs.window.outputs.latest }}" "$gist_url" > "$body_file"
+            if [ -n "$GH_GIST_TOKEN" ]; then
+              gist_url=$(GH_TOKEN="$GH_GIST_TOKEN" gh gist create scripts/types-sync/out/drift.md \
+                --desc "Schema drift report: WooCommerce ${{ needs.window.outputs.latest }}" \
+                --filename "drift-${{ needs.window.outputs.latest }}.md")
+              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> The full report has been uploaded as a gist: **[drift-%s.md](%s)**\n' \
+                "${{ needs.window.outputs.latest }}" "$gist_url" > "$body_file"
+            else
+              RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> Download the full report from the **[`drift-${{ needs.window.outputs.latest }}` CI artifact](%s)**.\n> To enable automatic gist uploads, add a PAT with the `gist` scope as the `GH_GIST_TOKEN` repository secret.\n' \
+                "$RUN_URL" > "$body_file"
+            fi
           else
             printf '%s' "$body" > "$body_file"
           fi
