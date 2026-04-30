@@ -18,6 +18,7 @@ on:
 permissions:
   contents: read
   issues: write
+  gists: write
 
 concurrency:
   group: types-sync-${{ github.event_name }}
@@ -142,20 +143,24 @@ jobs:
         if: steps.check.outcome == 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TITLE: 'Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
+          TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
           gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
           gh label create "schema-drift"  --color "e4e669" --description "WooCommerce schema drift detected" --force
 
           # GitHub caps issue bodies at 65536 chars.
-          # If the report fits, include it in full; otherwise replace the body with
-          # a link to the CI artifact (the only reliable way to read the full report).
+          # If the report fits, include it in full; otherwise upload it as a gist
+          # (permanent, human-readable) and link to it — artifacts expire and require
+          # downloading a zip, making them a poor experience for issue reviewers.
           LIMIT=65536
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           body=$(cat scripts/types-sync/out/drift.md)
           body_file=$(mktemp)
           if [ ${#body} -gt $LIMIT ]; then
-            printf '> [!NOTE]\n> The drift report exceeded the GitHub issue body limit of 65 536 characters and cannot be displayed inline.\n> Download the full report from the **[`drift-${{ needs.window.outputs.latest }}` artifact](%s)**.\n' "$RUN_URL" > "$body_file"
+            gist_url=$(gh gist create scripts/types-sync/out/drift.md \
+              --desc "Schema drift report: WooCommerce ${{ needs.window.outputs.latest }}" \
+              --filename "drift-${{ needs.window.outputs.latest }}.md")
+            printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> The full report has been uploaded as a gist: **[drift-%s.md](%s)**\n' \
+              "${{ needs.window.outputs.latest }}" "$gist_url" > "$body_file"
           else
             printf '%s' "$body" > "$body_file"
           fi
