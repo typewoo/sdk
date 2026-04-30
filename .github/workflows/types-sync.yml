@@ -147,6 +147,19 @@ jobs:
           gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
           gh label create "schema-drift"  --color "e4e669" --description "WooCommerce schema drift detected" --force
 
+          # GitHub caps issue bodies at 65536 chars.
+          # If the report fits, include it in full; otherwise replace the body with
+          # a link to the CI artifact (the only reliable way to read the full report).
+          LIMIT=65536
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body=$(cat scripts/types-sync/out/drift.md)
+          body_file=$(mktemp)
+          if [ ${#body} -gt $LIMIT ]; then
+            printf '> [!NOTE]\n> The drift report exceeded the GitHub issue body limit of 65 536 characters and cannot be displayed inline.\n> Download the full report from the **[`drift-${{ needs.window.outputs.latest }}` artifact](%s)**.\n' "$RUN_URL" > "$body_file"
+          else
+            printf '%s' "$body" > "$body_file"
+          fi
+
           existing=$(gh issue list \
             --label "types-sync" --label "schema-drift" \
             --state open \
@@ -154,12 +167,12 @@ jobs:
             --jq ".[] | select(.title==\"$TITLE\") | .number" \
             | head -1)
           if [ -n "$existing" ]; then
-            gh issue edit "$existing" --body-file scripts/types-sync/out/drift.md
+            gh issue edit "$existing" --body-file "$body_file"
             echo "Updated issue #$existing"
           else
             gh issue create \
               --title "$TITLE" \
-              --body-file scripts/types-sync/out/drift.md \
+              --body-file "$body_file" \
               --label "types-sync" --label "schema-drift"
           fi
 
