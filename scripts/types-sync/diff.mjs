@@ -195,7 +195,7 @@ export function diffPair({
         kind,
         field: path,
         driftKind: 'missing-in-sdk',
-        severity: severityFor('missing-in-sdk', kind, isLoose),
+        severity: severityFor('missing-in-sdk', kind),
         sdk: null,
         upstream: brief(u),
       });
