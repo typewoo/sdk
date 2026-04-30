@@ -93,10 +93,13 @@ async function pMap(items, mapper, concurrency = CONCURRENCY) {
     while (true) {
       const idx = i++;
       if (idx >= items.length) return;
-      out[idx] = await mapper(items[idx], idx);
+      out[idx] = await mapper(items[idx]);
     }
   }
-  const workers = Array.from({ length: Math.min(concurrency, items.length) }, worker);
+  const workers = Array.from(
+    { length: Math.min(concurrency, items.length) },
+    worker
+  );
   await Promise.all(workers);
   return out;
 }
@@ -127,7 +130,11 @@ function shapeRouteEntry(routeDef) {
       for (const method of methods) {
         if (method === 'GET') {
           entry.query[method] = normArgs;
-        } else if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+        } else if (
+          method === 'POST' ||
+          method === 'PUT' ||
+          method === 'PATCH'
+        ) {
           entry.request[method] = normArgs;
         }
       }
@@ -139,7 +146,11 @@ function shapeRouteEntry(routeDef) {
 
 async function captureSurface(baseUrl, surface, headers, log) {
   const discoveryUrl = `${baseUrl}${SURFACES[surface].discovery}`;
-  const { ok, status, body: discovery } = await fetchJson(discoveryUrl, headers);
+  const {
+    ok,
+    status,
+    body: discovery,
+  } = await fetchJson(discoveryUrl, headers);
   if (!ok || !discovery?.routes) {
     throw new Error(
       `Discovery failed for ${surface} (${discoveryUrl}): HTTP ${status}`
@@ -166,7 +177,12 @@ async function captureSurface(baseUrl, surface, headers, log) {
   return out;
 }
 
-export async function captureUpstream({ baseUrl, wcVersion, creds, log = () => {} }) {
+export async function captureUpstream({
+  baseUrl,
+  wcVersion,
+  creds,
+  log = () => {},
+}) {
   const headers = buildHeaders(creds);
   const surfaces = {};
   for (const surface of Object.keys(SURFACES)) {

@@ -25,7 +25,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 
 import { createJiti } from 'jiti';
@@ -167,11 +167,15 @@ function loadSupportWindow() {
   try {
     const raw = JSON.parse(readFileSync(SUPPORT_WINDOW_PATH, 'utf8'));
     if (!Array.isArray(raw.versions) || raw.versions.length === 0) {
-      throw new Error('support-window.json: `versions` must be a non-empty array');
+      throw new Error(
+        'support-window.json: `versions` must be a non-empty array'
+      );
     }
     if (typeof raw.latest !== 'string' || !raw.versions.includes(raw.latest)) {
       throw new Error(
-        `support-window.json: \`latest\` (${raw.latest}) must be one of \`versions\` (${raw.versions.join(', ')})`
+        `support-window.json: \`latest\` (${
+          raw.latest
+        }) must be one of \`versions\` (${raw.versions.join(', ')})`
       );
     }
     return raw;
@@ -280,7 +284,9 @@ async function runCheck(args) {
 
   if (useWindow) {
     console.log(
-      `[check] support window: ${window.versions.join(', ')} (latest=${window.latest})`
+      `[check] support window: ${window.versions.join(', ')} (latest=${
+        window.latest
+      })`
     );
 
     /** @type {Map<string, object>} version → snapshot */
@@ -321,8 +327,8 @@ async function runCheck(args) {
       (args['wc-version']
         ? join(SNAPSHOTS_DIR, `wc-${args['wc-version']}.json`)
         : window
-          ? join(SNAPSHOTS_DIR, `wc-${window.latest}.json`)
-          : findLatestSnapshot());
+        ? join(SNAPSHOTS_DIR, `wc-${window.latest}.json`)
+        : findLatestSnapshot());
 
     if (!snapshotPath) {
       console.error(
@@ -449,7 +455,9 @@ async function runCaptureWindow(args) {
   for (const v of versions) {
     if (!window.versions.includes(v)) {
       console.error(
-        `[capture-window] ${v} is not in support-window.json (${window.versions.join(', ')})`
+        `[capture-window] ${v} is not in support-window.json (${window.versions.join(
+          ', '
+        )})`
       );
       process.exit(2);
     }
