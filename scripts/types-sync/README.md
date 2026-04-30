@@ -56,17 +56,17 @@ isn't mapped.
 
 ## Files
 
-| File | Role |
-|---|---|
-| `cli.mjs` | Entry point. Subcommands: `capture`, `check`, `list-routes`. |
+| File                   | Role                                                              |
+| ---------------------- | ----------------------------------------------------------------- |
+| `cli.mjs`              | Entry point. Subcommands: `capture`, `check`, `list-routes`.      |
 | `capture-upstream.mjs` | Fetches per-surface discovery JSON from a running WP+WC instance. |
-| `introspect-zod.mjs` | `z.toJSONSchema` → normalised shape. |
-| `normalise.mjs` | Shared normaliser used by both sides + `sortKeysDeep`. |
-| `diff.mjs` | Pure diff engine + severity matrix. |
-| `report.mjs` | JSON + Markdown writers. |
-| `schema-map.ts` | The registry — only manual seam. |
-| `snapshots/wc-*.json` | Committed upstream snapshots, one per WC version. |
-| `out/drift.{json,md}` | Generated report (gitignored). |
+| `introspect-zod.mjs`   | `z.toJSONSchema` → normalised shape.                              |
+| `normalise.mjs`        | Shared normaliser used by both sides + `sortKeysDeep`.            |
+| `diff.mjs`             | Pure diff engine + severity matrix.                               |
+| `report.mjs`           | JSON + Markdown writers.                                          |
+| `schema-map.ts`        | The registry — only manual seam.                                  |
+| `snapshots/wc-*.json`  | Committed upstream snapshots, one per WC version.                 |
+| `out/drift.{json,md}`  | Generated report (gitignored).                                    |
 
 ## Why not codegen?
 

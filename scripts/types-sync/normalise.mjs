@@ -56,20 +56,24 @@ function coerceType(rawType) {
   // JSON Schema `type` may be a string, an array (union), or undefined.
   if (Array.isArray(rawType)) {
     const aliased = rawType.map((t) => aliasType(t));
-    const nullable = rawType.includes('null') || aliased.some((a) => a.type === 'null');
-    const nonNull = aliased
-      .filter((a) => a.type !== 'null')
-      .map((a) => a.type);
+    const nullable =
+      rawType.includes('null') || aliased.some((a) => a.type === 'null');
+    const nonNull = aliased.filter((a) => a.type !== 'null').map((a) => a.type);
     const unique = [...new Set(nonNull)].sort();
     return {
-      type: unique.length === 1 ? unique[0] : (unique[0] ?? 'any'),
+      type: unique.length === 1 ? unique[0] : unique[0] ?? 'any',
       types: unique,
       nullable,
     };
   }
   if (typeof rawType === 'string') {
     const aliased = aliasType(rawType);
-    return { type: aliased.type, types: [aliased.type], nullable: false, format: aliased.format };
+    return {
+      type: aliased.type,
+      types: [aliased.type],
+      nullable: false,
+      format: aliased.format,
+    };
   }
   return { type: 'any', types: ['any'], nullable: false };
 }
@@ -128,7 +132,9 @@ function describeNode(node, requiredSet, fieldName) {
       const itemEnum = Array.isArray(collapsed.items.enum)
         ? [...collapsed.items.enum].map(String).sort()
         : undefined;
-      items = itemEnum ? { type: inner.type, enum: itemEnum } : { type: inner.type };
+      items = itemEnum
+        ? { type: inner.type, enum: itemEnum }
+        : { type: inner.type };
     } else {
       items = { type: 'any' };
     }
@@ -187,9 +193,7 @@ export function normaliseJsonSchema(root) {
     if (!node || typeof node !== 'object') return;
     const props = node.properties;
     if (!props || typeof props !== 'object') return;
-    const required = new Set(
-      Array.isArray(node.required) ? node.required : []
-    );
+    const required = new Set(Array.isArray(node.required) ? node.required : []);
 
     for (const [name, child] of Object.entries(props)) {
       const path = prefix ? `${prefix}.${name}` : name;

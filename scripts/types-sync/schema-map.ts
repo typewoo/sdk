@@ -117,9 +117,29 @@ function trio(
   surface: Surface = 'admin'
 ): SchemaMapEntry[] {
   return [
-    { name: responseName, zod: responseSchema, surface, route: base, kind: 'response' },
-    { name: requestName, zod: requestSchema, surface, route: base, kind: 'request', method: 'POST' },
-    { name: queryName, zod: querySchema, surface, route: base, kind: 'query', method: 'GET' },
+    {
+      name: responseName,
+      zod: responseSchema,
+      surface,
+      route: base,
+      kind: 'response',
+    },
+    {
+      name: requestName,
+      zod: requestSchema,
+      surface,
+      route: base,
+      kind: 'request',
+      method: 'POST',
+    },
+    {
+      name: queryName,
+      zod: querySchema,
+      surface,
+      route: base,
+      kind: 'query',
+      method: 'GET',
+    },
   ];
 }
 
@@ -128,123 +148,287 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
 
   ...trio(
     '/wc/v3/coupons',
-    AdminCouponSchema, 'AdminCouponSchema',
-    AdminCouponRequestSchema, 'AdminCouponRequestSchema',
-    AdminCouponQueryParamsSchema, 'AdminCouponQueryParamsSchema'
+    AdminCouponSchema,
+    'AdminCouponSchema',
+    AdminCouponRequestSchema,
+    'AdminCouponRequestSchema',
+    AdminCouponQueryParamsSchema,
+    'AdminCouponQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/customers',
-    AdminCustomerSchema, 'AdminCustomerSchema',
-    AdminCustomerRequestSchema, 'AdminCustomerRequestSchema',
-    AdminCustomerQueryParamsSchema, 'AdminCustomerQueryParamsSchema'
+    AdminCustomerSchema,
+    'AdminCustomerSchema',
+    AdminCustomerRequestSchema,
+    'AdminCustomerRequestSchema',
+    AdminCustomerQueryParamsSchema,
+    'AdminCustomerQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/products',
-    AdminProductSchema, 'AdminProductSchema',
-    AdminProductRequestSchema, 'AdminProductRequestSchema',
-    AdminProductQueryParamsSchema, 'AdminProductQueryParamsSchema'
+    AdminProductSchema,
+    'AdminProductSchema',
+    AdminProductRequestSchema,
+    'AdminProductRequestSchema',
+    AdminProductQueryParamsSchema,
+    'AdminProductQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/products/reviews',
-    AdminProductReviewSchema, 'AdminProductReviewSchema',
-    AdminProductReviewRequestSchema, 'AdminProductReviewRequestSchema',
-    AdminProductReviewQueryParamsSchema, 'AdminProductReviewQueryParamsSchema'
+    AdminProductReviewSchema,
+    'AdminProductReviewSchema',
+    AdminProductReviewRequestSchema,
+    'AdminProductReviewRequestSchema',
+    AdminProductReviewQueryParamsSchema,
+    'AdminProductReviewQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/orders',
-    AdminOrderSchema, 'AdminOrderSchema',
-    AdminOrderRequestSchema, 'AdminOrderRequestSchema',
-    AdminOrderQueryParamsSchema, 'AdminOrderQueryParamsSchema'
+    AdminOrderSchema,
+    'AdminOrderSchema',
+    AdminOrderRequestSchema,
+    'AdminOrderRequestSchema',
+    AdminOrderQueryParamsSchema,
+    'AdminOrderQueryParamsSchema'
   ),
 
   // Order notes — child route, no list query
-  { name: 'AdminOrderNoteSchema', zod: AdminOrderNoteSchema, surface: 'admin', route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes', kind: 'response' },
-  { name: 'AdminOrderNoteRequestSchema', zod: AdminOrderNoteRequestSchema, surface: 'admin', route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes', kind: 'request', method: 'POST' },
+  {
+    name: 'AdminOrderNoteSchema',
+    zod: AdminOrderNoteSchema,
+    surface: 'admin',
+    route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes',
+    kind: 'response',
+  },
+  {
+    name: 'AdminOrderNoteRequestSchema',
+    zod: AdminOrderNoteRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes',
+    kind: 'request',
+    method: 'POST',
+  },
 
   // Refunds — child route under orders
-  { name: 'AdminRefundSchema', zod: AdminRefundSchema, surface: 'admin', route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds', kind: 'response' },
-  { name: 'AdminRefundCreateRequestSchema', zod: AdminRefundCreateRequestSchema, surface: 'admin', route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds', kind: 'request', method: 'POST' },
-  { name: 'AdminRefundQueryParamsSchema', zod: AdminRefundQueryParamsSchema, surface: 'admin', route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds', kind: 'query', method: 'GET' },
+  {
+    name: 'AdminRefundSchema',
+    zod: AdminRefundSchema,
+    surface: 'admin',
+    route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds',
+    kind: 'response',
+  },
+  {
+    name: 'AdminRefundCreateRequestSchema',
+    zod: AdminRefundCreateRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds',
+    kind: 'request',
+    method: 'POST',
+  },
+  {
+    name: 'AdminRefundQueryParamsSchema',
+    zod: AdminRefundQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds',
+    kind: 'query',
+    method: 'GET',
+  },
 
   ...trio(
     '/wc/v3/taxes',
-    AdminTaxSchema, 'AdminTaxSchema',
-    AdminTaxRequestSchema, 'AdminTaxRequestSchema',
-    AdminTaxQueryParamsSchema, 'AdminTaxQueryParamsSchema'
+    AdminTaxSchema,
+    'AdminTaxSchema',
+    AdminTaxRequestSchema,
+    'AdminTaxRequestSchema',
+    AdminTaxQueryParamsSchema,
+    'AdminTaxQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/taxes/classes',
-    AdminTaxClassSchema, 'AdminTaxClassSchema',
-    AdminTaxClassRequestSchema, 'AdminTaxClassRequestSchema',
-    AdminTaxClassQueryParamsSchema, 'AdminTaxClassQueryParamsSchema'
+    AdminTaxClassSchema,
+    'AdminTaxClassSchema',
+    AdminTaxClassRequestSchema,
+    'AdminTaxClassRequestSchema',
+    AdminTaxClassQueryParamsSchema,
+    'AdminTaxClassQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/shipping/zones',
-    AdminShippingZoneSchema, 'AdminShippingZoneSchema',
-    AdminShippingZoneRequestSchema, 'AdminShippingZoneRequestSchema',
-    AdminShippingZoneQueryParamsSchema, 'AdminShippingZoneQueryParamsSchema'
+    AdminShippingZoneSchema,
+    'AdminShippingZoneSchema',
+    AdminShippingZoneRequestSchema,
+    'AdminShippingZoneRequestSchema',
+    AdminShippingZoneQueryParamsSchema,
+    'AdminShippingZoneQueryParamsSchema'
   ),
 
   // Shipping zone methods — child route
-  { name: 'AdminShippingZoneMethodSchema', zod: AdminShippingZoneMethodSchema, surface: 'admin', route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods', kind: 'response' },
-  { name: 'AdminShippingZoneMethodRequestSchema', zod: AdminShippingZoneMethodRequestSchema, surface: 'admin', route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods', kind: 'request', method: 'POST' },
-  { name: 'AdminShippingZoneMethodQueryParamsSchema', zod: AdminShippingZoneMethodQueryParamsSchema, surface: 'admin', route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods', kind: 'query', method: 'GET' },
+  {
+    name: 'AdminShippingZoneMethodSchema',
+    zod: AdminShippingZoneMethodSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
+    kind: 'response',
+  },
+  {
+    name: 'AdminShippingZoneMethodRequestSchema',
+    zod: AdminShippingZoneMethodRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
+    kind: 'request',
+    method: 'POST',
+  },
+  {
+    name: 'AdminShippingZoneMethodQueryParamsSchema',
+    zod: AdminShippingZoneMethodQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
+    kind: 'query',
+    method: 'GET',
+  },
 
-  { name: 'AdminShippingMethodSchema', zod: AdminShippingMethodSchema, surface: 'admin', route: '/wc/v3/shipping_methods', kind: 'response' },
-  { name: 'AdminShippingMethodQueryParamsSchema', zod: AdminShippingMethodQueryParamsSchema, surface: 'admin', route: '/wc/v3/shipping_methods', kind: 'query', method: 'GET' },
+  {
+    name: 'AdminShippingMethodSchema',
+    zod: AdminShippingMethodSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping_methods',
+    kind: 'response',
+  },
+  {
+    name: 'AdminShippingMethodQueryParamsSchema',
+    zod: AdminShippingMethodQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping_methods',
+    kind: 'query',
+    method: 'GET',
+  },
 
   ...trio(
     '/wc/v3/payment_gateways',
-    AdminPaymentGatewaySchema, 'AdminPaymentGatewaySchema',
-    AdminPaymentGatewayRequestSchema, 'AdminPaymentGatewayRequestSchema',
-    AdminPaymentGatewayQueryParamsSchema, 'AdminPaymentGatewayQueryParamsSchema'
+    AdminPaymentGatewaySchema,
+    'AdminPaymentGatewaySchema',
+    AdminPaymentGatewayRequestSchema,
+    'AdminPaymentGatewayRequestSchema',
+    AdminPaymentGatewayQueryParamsSchema,
+    'AdminPaymentGatewayQueryParamsSchema'
   ),
 
   ...trio(
     '/wc/v3/webhooks',
-    AdminWebhookSchema, 'AdminWebhookSchema',
-    AdminWebhookRequestSchema, 'AdminWebhookRequestSchema',
-    AdminWebhookQueryParamsSchema, 'AdminWebhookQueryParamsSchema'
+    AdminWebhookSchema,
+    'AdminWebhookSchema',
+    AdminWebhookRequestSchema,
+    'AdminWebhookRequestSchema',
+    AdminWebhookQueryParamsSchema,
+    'AdminWebhookQueryParamsSchema'
   ),
 
   // Settings — group + individual setting
-  { name: 'AdminSettingGroupSchema', zod: AdminSettingGroupSchema, surface: 'admin', route: '/wc/v3/settings', kind: 'response' },
-  { name: 'AdminSettingSchema', zod: AdminSettingSchema, surface: 'admin', route: '/wc/v3/settings/(?P<group_id>[\\w-]+)', kind: 'response' },
-  { name: 'AdminSettingRequestSchema', zod: AdminSettingRequestSchema, surface: 'admin', route: '/wc/v3/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)', kind: 'request', method: 'PUT' },
+  {
+    name: 'AdminSettingGroupSchema',
+    zod: AdminSettingGroupSchema,
+    surface: 'admin',
+    route: '/wc/v3/settings',
+    kind: 'response',
+  },
+  {
+    name: 'AdminSettingSchema',
+    zod: AdminSettingSchema,
+    surface: 'admin',
+    route: '/wc/v3/settings/(?P<group_id>[\\w-]+)',
+    kind: 'response',
+  },
+  {
+    name: 'AdminSettingRequestSchema',
+    zod: AdminSettingRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)',
+    kind: 'request',
+    method: 'PUT',
+  },
 
   // Categories / tags / shipping classes — taxonomy routes
   ...trio(
     '/wc/v3/products/categories',
-    AdminTaxonomyCategorySchema, 'AdminTaxonomyCategorySchema',
-    AdminTaxonomyCategoryRequestSchema, 'AdminTaxonomyCategoryRequestSchema',
-    AdminTaxonomyCategoryQueryParamsSchema, 'AdminTaxonomyCategoryQueryParamsSchema'
+    AdminTaxonomyCategorySchema,
+    'AdminTaxonomyCategorySchema',
+    AdminTaxonomyCategoryRequestSchema,
+    'AdminTaxonomyCategoryRequestSchema',
+    AdminTaxonomyCategoryQueryParamsSchema,
+    'AdminTaxonomyCategoryQueryParamsSchema'
   ),
   ...trio(
     '/wc/v3/products/tags',
-    AdminTaxonomyTagSchema, 'AdminTaxonomyTagSchema',
-    AdminTaxonomyTagRequestSchema, 'AdminTaxonomyTagRequestSchema',
-    AdminTaxonomyTagQueryParamsSchema, 'AdminTaxonomyTagQueryParamsSchema'
+    AdminTaxonomyTagSchema,
+    'AdminTaxonomyTagSchema',
+    AdminTaxonomyTagRequestSchema,
+    'AdminTaxonomyTagRequestSchema',
+    AdminTaxonomyTagQueryParamsSchema,
+    'AdminTaxonomyTagQueryParamsSchema'
   ),
   ...trio(
     '/wc/v3/products/shipping_classes',
-    AdminShippingClassSchema, 'AdminShippingClassSchema',
-    AdminShippingClassRequestSchema, 'AdminShippingClassRequestSchema',
-    AdminShippingClassQueryParamsSchema, 'AdminShippingClassQueryParamsSchema'
+    AdminShippingClassSchema,
+    'AdminShippingClassSchema',
+    AdminShippingClassRequestSchema,
+    'AdminShippingClassRequestSchema',
+    AdminShippingClassQueryParamsSchema,
+    'AdminShippingClassQueryParamsSchema'
   ),
 
   // Product attributes (and terms — child route)
-  { name: 'AdminProductAttributeEntitySchema', zod: AdminProductAttributeEntitySchema, surface: 'admin', route: '/wc/v3/products/attributes', kind: 'response' },
-  { name: 'AdminProductAttributeRequestSchema', zod: AdminProductAttributeRequestSchema, surface: 'admin', route: '/wc/v3/products/attributes', kind: 'request', method: 'POST' },
-  { name: 'AdminProductAttributeQueryParamsSchema', zod: AdminProductAttributeQueryParamsSchema, surface: 'admin', route: '/wc/v3/products/attributes', kind: 'query', method: 'GET' },
-  { name: 'AdminProductAttributeTermSchema', zod: AdminProductAttributeTermSchema, surface: 'admin', route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms', kind: 'response' },
-  { name: 'AdminProductAttributeTermRequestSchema', zod: AdminProductAttributeTermRequestSchema, surface: 'admin', route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms', kind: 'request', method: 'POST' },
-  { name: 'AdminProductAttributeTermQueryParamsSchema', zod: AdminProductAttributeTermQueryParamsSchema, surface: 'admin', route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms', kind: 'query', method: 'GET' },
+  {
+    name: 'AdminProductAttributeEntitySchema',
+    zod: AdminProductAttributeEntitySchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes',
+    kind: 'response',
+  },
+  {
+    name: 'AdminProductAttributeRequestSchema',
+    zod: AdminProductAttributeRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes',
+    kind: 'request',
+    method: 'POST',
+  },
+  {
+    name: 'AdminProductAttributeQueryParamsSchema',
+    zod: AdminProductAttributeQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes',
+    kind: 'query',
+    method: 'GET',
+  },
+  {
+    name: 'AdminProductAttributeTermSchema',
+    zod: AdminProductAttributeTermSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
+    kind: 'response',
+  },
+  {
+    name: 'AdminProductAttributeTermRequestSchema',
+    zod: AdminProductAttributeTermRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
+    kind: 'request',
+    method: 'POST',
+  },
+  {
+    name: 'AdminProductAttributeTermQueryParamsSchema',
+    zod: AdminProductAttributeTermQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
+    kind: 'query',
+    method: 'GET',
+  },
 
   // ---------------- Store (wc/store/v1) ----------------
   // TODO: populate from packages/core/src/lib/types/store/**. The store

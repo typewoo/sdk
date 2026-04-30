@@ -30,7 +30,8 @@ function parseArgs(argv) {
     else if (a === '--only') args.only = argv[++i];
     else if (a === '--no-check') args.noCheck = true;
     else if (a === '--no-clean') args.noClean = true;
-    else if (a.startsWith('--')) console.warn(`[sync-all] ignoring unknown flag ${a}`);
+    else if (a.startsWith('--'))
+      console.warn(`[sync-all] ignoring unknown flag ${a}`);
   }
   return args;
 }
@@ -46,7 +47,13 @@ function loadWindow() {
 
 function readAdminPassword() {
   // The wpcli setup writes the password into infra/wordpress/scripts/generated-app-passwords.txt.
-  const f = join(REPO_ROOT, 'infra', 'wordpress', 'scripts', 'generated-app-passwords.txt');
+  const f = join(
+    REPO_ROOT,
+    'infra',
+    'wordpress',
+    'scripts',
+    'generated-app-passwords.txt'
+  );
   const text = readFileSync(f, 'utf8');
   const m = text.match(/WP_ADMIN_APP_PASSWORD=([^\s#]+)/);
   if (!m) throw new Error(`No WP_ADMIN_APP_PASSWORD in ${f}`);
@@ -84,7 +91,9 @@ async function captureOne(version, opts) {
       });
       break;
     } catch {
-      execSync(process.platform === 'win32' ? 'timeout /t 2 /nobreak >nul' : 'sleep 2');
+      execSync(
+        process.platform === 'win32' ? 'timeout /t 2 /nobreak >nul' : 'sleep 2'
+      );
     }
   }
 

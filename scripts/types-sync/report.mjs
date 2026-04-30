@@ -25,8 +25,7 @@ export function assignDriftIds(drifts) {
     (a, b) =>
       a.surface.localeCompare(b.surface) ||
       a.route.localeCompare(b.route) ||
-      (SEVERITY_ORDER[a.severity] ?? 9) -
-        (SEVERITY_ORDER[b.severity] ?? 9) ||
+      (SEVERITY_ORDER[a.severity] ?? 9) - (SEVERITY_ORDER[b.severity] ?? 9) ||
       a.field.localeCompare(b.field) ||
       a.kind.localeCompare(b.kind) ||
       a.driftKind.localeCompare(b.driftKind)
@@ -128,7 +127,9 @@ export function writeMarkdown(filePath, drifts, meta, opts = {}) {
   lines.push(`- WooCommerce version: \`${meta.wcVersion ?? 'unknown'}\``);
   if (meta.supportWindow) {
     lines.push(
-      `- Support window: \`${meta.supportWindow.versions.join(', ')}\` (latest: \`${meta.supportWindow.latest}\`)`
+      `- Support window: \`${meta.supportWindow.versions.join(
+        ', '
+      )}\` (latest: \`${meta.supportWindow.latest}\`)`
     );
   }
   lines.push(`- SDK ref: \`${meta.sdkRef ?? 'local'}\``);
@@ -206,7 +207,9 @@ export function writeMarkdown(filePath, drifts, meta, opts = {}) {
       '> Fields the SDK keeps for back-compat with supported older WC versions, plus fields that have aged out (`safeToRemove`).'
     );
     lines.push('');
-    lines.push('| id | surface | route | field | kind | last seen in | status |');
+    lines.push(
+      '| id | surface | route | field | kind | last seen in | status |'
+    );
     lines.push('|---|---|---|---|---|---|---|');
     timeline
       .slice()
@@ -221,10 +224,12 @@ export function writeMarkdown(filePath, drifts, meta, opts = {}) {
         const status = r.provenance?.safeToRemove
           ? 'safeToRemove'
           : r.provenance?.acked
-            ? 'acked (deprecated)'
-            : 'removed-in-window';
+          ? 'acked (deprecated)'
+          : 'removed-in-window';
         lines.push(
-          `| ${r.id ?? ''} | ${r.surface} | \`${r.route}\` | \`${r.field}\` | ${r.kind} | \`${lastSeen}\` | ${status} |`
+          `| ${r.id ?? ''} | ${r.surface} | \`${r.route}\` | \`${r.field}\` | ${
+            r.kind
+          } | \`${lastSeen}\` | ${status} |`
         );
       });
     lines.push('');

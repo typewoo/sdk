@@ -44,7 +44,9 @@ describe('types-sync registry completeness', () => {
 
       if (unmapped.length === 0) return;
 
-      const msg = `[${surface}] ${unmapped.length} unmapped schema(s):\n  - ${unmapped.join('\n  - ')}`;
+      const msg = `[${surface}] ${
+        unmapped.length
+      } unmapped schema(s):\n  - ${unmapped.join('\n  - ')}`;
 
       if (MODE === 'strict') {
         expect.fail(msg);

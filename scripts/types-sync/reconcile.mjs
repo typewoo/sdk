@@ -36,7 +36,11 @@
  * @param {ReconcileInput} input
  * @returns {DriftRecord[]}
  */
-export function reconcileAcrossVersions({ perVersionDrifts, window, registryEntry }) {
+export function reconcileAcrossVersions({
+  perVersionDrifts,
+  window,
+  registryEntry,
+}) {
   const latest = window.latest;
   const olderVersions = window.versions.filter((v) => v !== latest);
   const latestDrifts = perVersionDrifts.get(latest) ?? [];
