@@ -39,10 +39,7 @@ import { writeJson, writeMarkdown, assignDriftIds } from './report.mjs';
 import { sortKeysDeep } from './normalise.mjs';
 import { buildSdkSourceIndex } from './sdk-source-index.mjs';
 import { reconcileAcrossVersions } from './reconcile.mjs';
-import {
-  loadRouteAllowlist,
-  computeRouteCoverage,
-} from './route-coverage.mjs';
+import { loadRouteAllowlist, computeRouteCoverage } from './route-coverage.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SNAPSHOTS_DIR = join(HERE, 'snapshots');

@@ -33,10 +33,7 @@ const AnalyticsListQueryParamsSchema = z.object({
 });
 
 const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(
-  z.string(),
-  z.array(AnalyticsLinkSchema)
-);
+const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
 
 /**
  * Customer stats totals/subtotals shape

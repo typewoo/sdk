@@ -41,10 +41,7 @@ export function loadRouteAllowlist(filePath) {
         `route-allowlist.json: ${entry.surface} entry is missing \`route\``
       );
     }
-    if (
-      typeof entry.reason !== 'string' ||
-      entry.reason.trim() === ''
-    ) {
+    if (typeof entry.reason !== 'string' || entry.reason.trim() === '') {
       throw new Error(
         `route-allowlist.json: ${entry.surface}|${entry.route} needs a non-empty \`reason\``
       );
@@ -70,9 +67,7 @@ export function loadRouteAllowlist(filePath) {
  * @returns {Array<object>} Drift records
  */
 export function computeRouteCoverage(snapshot, registry, allowlist) {
-  const mappedRoutes = new Set(
-    registry.map((e) => `${e.surface}|${e.route}`)
-  );
+  const mappedRoutes = new Set(registry.map((e) => `${e.surface}|${e.route}`));
   const drifts = [];
   const surfaces = snapshot?.surfaces ?? {};
   for (const surface of Object.keys(surfaces).sort()) {
