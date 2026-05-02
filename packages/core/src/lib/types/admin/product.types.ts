@@ -1,5 +1,33 @@
 import { z } from 'zod';
-import { AdminMetaData, AdminImage, AdminDimensions } from './common.types.js';
+
+const AdminProductMetaData = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
+
+const AdminProductImage = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  src: z.string(),
+  name: z.string(),
+  alt: z.string(),
+});
+
+const AdminProductDimensions = z.object({
+  length: z.string(),
+  width: z.string(),
+  height: z.string(),
+});
 
 /**
  * Product category reference in product
@@ -121,7 +149,7 @@ export const AdminProductSchema = z.looseObject({
   low_stock_amount: z.number().nullable(),
   sold_individually: z.boolean(),
   weight: z.string(),
-  dimensions: AdminDimensions,
+  dimensions: AdminProductDimensions,
   shipping_required: z.boolean(),
   shipping_taxable: z.boolean(),
   shipping_class: z.string(),
@@ -136,14 +164,14 @@ export const AdminProductSchema = z.looseObject({
   categories: z.array(AdminProductCategorySchema),
   tags: z.array(AdminProductTagSchema),
   brands: z.array(AdminProductBrandSchema).optional(), // Optional, depends on plugins
-  images: z.array(AdminImage),
+  images: z.array(AdminProductImage),
   attributes: z.array(AdminProductAttributeSchema),
   default_attributes: z.array(AdminProductDefaultAttributeSchema),
   variations: z.array(z.number()),
   grouped_products: z.array(z.number()),
   menu_order: z.number(),
   price_range: z.string().nullable(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminProductMetaData),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -191,13 +219,13 @@ export const AdminProductVariationSchema = z.looseObject({
   backordered: z.boolean(),
   low_stock_amount: z.number().nullable(),
   weight: z.string(),
-  dimensions: AdminDimensions,
+  dimensions: AdminProductDimensions,
   shipping_class: z.string(),
   shipping_class_id: z.number(),
-  image: AdminImage,
+  image: AdminProductImage,
   attributes: z.array(AdminProductDefaultAttributeSchema),
   menu_order: z.number(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminProductMetaData),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -245,7 +273,7 @@ export const AdminProductRequestSchema = z.looseObject({
   low_stock_amount: z.number().optional(),
   sold_individually: z.boolean().optional(),
   weight: z.string().optional(),
-  dimensions: AdminDimensions.optional(),
+  dimensions: AdminProductDimensions.optional(),
   shipping_class: z.string().optional(),
   reviews_allowed: z.boolean().optional(),
   upsell_ids: z.array(z.number()).optional(),
@@ -255,11 +283,11 @@ export const AdminProductRequestSchema = z.looseObject({
   categories: z.array(z.object({ id: z.number() })).optional(),
   tags: z.array(z.object({ id: z.number() })).optional(),
   brands: z.array(z.object({ id: z.number() })).optional(),
-  images: z.array(AdminImage).optional(),
+  images: z.array(AdminProductImage).optional(),
   attributes: z.array(AdminProductAttributeSchema).optional(),
   default_attributes: z.array(AdminProductDefaultAttributeSchema).optional(),
   menu_order: z.number().optional(),
-  meta_data: z.array(AdminMetaData).optional(),
+  meta_data: z.array(AdminProductMetaData).optional(),
 });
 
 export type AdminProductRequest = z.infer<typeof AdminProductRequestSchema>;

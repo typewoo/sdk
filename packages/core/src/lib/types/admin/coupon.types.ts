@@ -1,5 +1,16 @@
 import { z } from 'zod';
-import { AdminMetaData } from './common.types.js';
+
+const AdminCouponMetaData = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
 
 /**
  * Coupon discount type
@@ -117,7 +128,7 @@ export const AdminCouponSchema = z.looseObject({
    * List of user IDs (or guest email addresses) that have used the coupon.rea
    */
   used_by: z.array(z.string()),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminCouponMetaData),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -151,7 +162,7 @@ export const AdminCouponRequestSchema = z.looseObject({
   minimum_amount: z.string().optional(),
   maximum_amount: z.string().optional(),
   email_restrictions: z.array(z.string()).optional(),
-  meta_data: z.array(AdminMetaData).optional(),
+  meta_data: z.array(AdminCouponMetaData).optional(),
 });
 
 export type AdminCouponRequest = z.infer<typeof AdminCouponRequestSchema>;

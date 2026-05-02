@@ -1,9 +1,42 @@
 import { z } from 'zod';
-import {
-  AnalyticsStatsQueryParamsSchema,
-  AnalyticsListQueryParamsSchema,
-  AnalyticsLinksSchema,
-} from './common.types.js';
+
+const AnalyticsIntervalEnum = z.enum([
+  'hour',
+  'day',
+  'week',
+  'month',
+  'quarter',
+  'year',
+]);
+
+const AnalyticsStatsQueryParamsSchema = z.object({
+  before: z.string().optional(),
+  after: z.string().optional(),
+  interval: AnalyticsIntervalEnum.optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  orderby: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  force_cache_refresh: z.boolean().optional(),
+  fields: z.array(z.string()).optional(),
+});
+
+const AnalyticsListQueryParamsSchema = z.object({
+  before: z.string().optional(),
+  after: z.string().optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  orderby: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  extended_info: z.boolean().optional(),
+  force_cache_refresh: z.boolean().optional(),
+});
+
+const AnalyticsLinkSchema = z.object({ href: z.string() });
+const AnalyticsLinksSchema = z.record(
+  z.string(),
+  z.array(AnalyticsLinkSchema)
+);
 
 /**
  * Tax stats totals/subtotals shape

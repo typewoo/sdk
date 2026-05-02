@@ -1,5 +1,15 @@
 import { z } from 'zod';
-import { AdminImage } from './common.types.js';
+
+const AdminTaxonomyCategoryImage = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  src: z.string(),
+  name: z.string(),
+  alt: z.string(),
+});
 
 /**
  * Category display type
@@ -23,7 +33,7 @@ export const AdminTaxonomyCategorySchema = z.looseObject({
   parent: z.number(),
   description: z.string(),
   display: AdminCategoryDisplaySchema,
-  image: AdminImage.nullable(),
+  image: AdminTaxonomyCategoryImage.nullable(),
   menu_order: z.number(),
   count: z.number(),
   _links: z
@@ -46,7 +56,7 @@ export const AdminTaxonomyCategoryRequestSchema = z.looseObject({
   parent: z.number().optional(),
   description: z.string().optional(),
   display: AdminCategoryDisplaySchema.optional(),
-  image: AdminImage.optional(),
+  image: AdminTaxonomyCategoryImage.optional(),
   menu_order: z.number().optional(),
 });
 

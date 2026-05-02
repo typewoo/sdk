@@ -1,5 +1,16 @@
 import { z } from 'zod';
-import { AdminMetaData } from './common.types.js';
+
+const AdminRefundMetaData = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
 
 export const AdminRefundLineItemSchema = z.looseObject({
   id: z.number(),
@@ -19,7 +30,7 @@ export const AdminRefundLineItemSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminRefundMetaData),
   sku: z.string(),
   price: z.number(),
 });
@@ -39,7 +50,7 @@ export const AdminRefundShippingLineSchema = z.looseObject({
       total: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminRefundMetaData),
 });
 
 export type AdminRefundShippingLine = z.infer<
@@ -55,7 +66,7 @@ export const AdminRefundTaxLineSchema = z.looseObject({
   tax_total: z.string(),
   shipping_tax_total: z.string(),
   rate_percent: z.number(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminRefundMetaData),
 });
 
 export type AdminRefundTaxLine = z.infer<typeof AdminRefundTaxLineSchema>;
@@ -74,7 +85,7 @@ export const AdminRefundFeeLineSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminRefundMetaData),
 });
 
 export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
@@ -87,7 +98,7 @@ export const AdminRefundSchema = z.looseObject({
   reason: z.string(),
   refunded_by: z.number(),
   refunded_payment: z.boolean(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminRefundMetaData),
   line_items: z.array(AdminRefundLineItemSchema),
   shipping_lines: z.array(AdminRefundShippingLineSchema),
   tax_lines: z.array(AdminRefundTaxLineSchema),

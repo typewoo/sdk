@@ -1,8 +1,21 @@
 import { z } from 'zod';
-import {
-  AnalyticsListQueryParamsSchema,
-  AnalyticsLinksSchema,
-} from './common.types.js';
+
+const AnalyticsListQueryParamsSchema = z.object({
+  before: z.string().optional(),
+  after: z.string().optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  orderby: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  extended_info: z.boolean().optional(),
+  force_cache_refresh: z.boolean().optional(),
+});
+
+const AnalyticsLinkSchema = z.object({ href: z.string() });
+const AnalyticsLinksSchema = z.record(
+  z.string(),
+  z.array(AnalyticsLinkSchema)
+);
 
 /**
  * A single performance indicator value

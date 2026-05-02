@@ -13,9 +13,9 @@ function ensureDir(filePath) {
 }
 
 /**
- * Assign a stable per-severity sequential id (ERROR-001, warn-001, info-001)
- * to every drift in the order they will appear in the markdown table. Mutates
- * the drifts array. Returns the same array for fluent use.
+ * Assign a stable sequential id (1, 2, 3, …) to every drift in the order
+ * they will appear in the markdown table. Mutates the drifts array. Returns
+ * the same array for fluent use.
  *
  * Display order: surface → route → severity → field → kind → driftKind.
  * (Mirrors the markdown writer's sort exactly.)
@@ -30,19 +30,12 @@ export function assignDriftIds(drifts) {
       a.kind.localeCompare(b.kind) ||
       a.driftKind.localeCompare(b.driftKind)
   );
-  const counters = { error: 0, warn: 0, info: 0 };
-  const pad = (n) => String(n).padStart(3, '0');
+  let counter = 0;
   for (const d of sorted) {
-    counters[d.severity] = (counters[d.severity] ?? 0) + 1;
-    d.id = `${idLabel(d.severity)}-${pad(counters[d.severity])}`;
+    counter += 1;
+    d.id = String(counter);
   }
   return drifts;
-}
-
-function idLabel(severity) {
-  if (severity === 'error') return 'ERROR';
-  if (severity === 'warn') return 'WARN';
-  return 'INFO';
 }
 
 export function writeJson(filePath, drifts, meta) {

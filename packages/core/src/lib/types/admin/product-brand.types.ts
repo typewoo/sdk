@@ -1,5 +1,15 @@
 import { z } from 'zod';
-import { AdminImage } from './common.types.js';
+
+const AdminBrandImage = z.object({
+  id: z.number(),
+  date_created: z.string(),
+  date_created_gmt: z.string(),
+  date_modified: z.string(),
+  date_modified_gmt: z.string(),
+  src: z.string(),
+  name: z.string(),
+  alt: z.string(),
+});
 
 export const AdminBrandSchema = z.looseObject({
   id: z.number(),
@@ -8,7 +18,7 @@ export const AdminBrandSchema = z.looseObject({
   parent: z.number(),
   description: z.string(),
   display: z.enum(['default', 'products', 'subcategories', 'both']),
-  image: AdminImage.nullable(),
+  image: AdminBrandImage.nullable(),
   menu_order: z.number(),
   count: z.number(),
   _links: z.object({
@@ -26,7 +36,7 @@ export const AdminBrandRequestSchema = z.looseObject({
   parent: z.number().optional(),
   description: z.string().optional(),
   display: z.enum(['default', 'products', 'subcategories', 'both']).optional(),
-  image: AdminImage.optional(),
+  image: AdminBrandImage.optional(),
   menu_order: z.number().optional(),
 });
 

@@ -1,5 +1,15 @@
 import { z } from 'zod';
-import { AnalyticsListQueryParamsSchema } from './common.types.js';
+
+const AnalyticsListQueryParamsSchema = z.object({
+  before: z.string().optional(),
+  after: z.string().optional(),
+  page: z.number().optional(),
+  per_page: z.number().optional(),
+  orderby: z.string().optional(),
+  order: z.enum(['asc', 'desc']).optional(),
+  extended_info: z.boolean().optional(),
+  force_cache_refresh: z.boolean().optional(),
+});
 
 /**
  * A single leaderboard header cell

@@ -1,5 +1,30 @@
 import { z } from 'zod';
-import { AdminMetaData, AdminAddress } from './common.types.js';
+
+const AdminOrderMetaData = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
+
+const AdminOrderAddress = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+});
 
 /**
  * Line item in an order
@@ -22,7 +47,7 @@ export const AdminOrderLineItemSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
   sku: z.string(),
   price: z.string(),
   image: z.object({
@@ -46,7 +71,7 @@ export const AdminOrderTaxLineSchema = z.looseObject({
   tax_total: z.string(),
   shipping_tax_total: z.string(),
   rate_percent: z.number(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
 });
 
 export type AdminOrderTaxLine = z.infer<typeof AdminOrderTaxLineSchema>;
@@ -67,7 +92,7 @@ export const AdminOrderShippingLineSchema = z.looseObject({
       total: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
 });
 
 export type AdminOrderShippingLine = z.infer<
@@ -91,7 +116,7 @@ export const AdminOrderFeeLineSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
 });
 
 export type AdminOrderFeeLine = z.infer<typeof AdminOrderFeeLineSchema>;
@@ -104,7 +129,7 @@ export const AdminOrderCouponLineSchema = z.looseObject({
   code: z.string(),
   discount: z.string(),
   discount_tax: z.string(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
 });
 
 export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
@@ -120,7 +145,7 @@ export const AdminOrderRefundSchema = z.looseObject({
   reason: z.string(),
   refunded_by: z.number(),
   refunded_payment: z.boolean(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
   line_items: z.array(AdminOrderLineItemSchema),
   api_refund: z.boolean(),
   api_restock: z.boolean(),
@@ -160,8 +185,8 @@ export const AdminOrderSchema = z.looseObject({
   total_tax: z.string(),
   customer_id: z.number(),
   order_key: z.string(),
-  billing: AdminAddress,
-  shipping: AdminAddress.omit({ email: true, phone: true }),
+  billing: AdminOrderAddress,
+  shipping: AdminOrderAddress.omit({ email: true, phone: true }),
   payment_method: z.string(),
   payment_method_title: z.string(),
   transaction_id: z.string(),
@@ -173,7 +198,7 @@ export const AdminOrderSchema = z.looseObject({
   date_paid: z.string().nullable(),
   cart_hash: z.string(),
   number: z.string(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminOrderMetaData),
   line_items: z.array(AdminOrderLineItemSchema),
   tax_lines: z.array(AdminOrderTaxLineSchema),
   shipping_lines: z.array(AdminOrderShippingLineSchema),
@@ -221,12 +246,12 @@ export const AdminOrderRequestSchema = z.looseObject({
   currency: z.string().optional(),
   customer_id: z.number().optional(),
   customer_note: z.string().optional(),
-  billing: AdminAddress.optional(),
-  shipping: AdminAddress.omit({ email: true, phone: true }).optional(),
+  billing: AdminOrderAddress.optional(),
+  shipping: AdminOrderAddress.omit({ email: true, phone: true }).optional(),
   payment_method: z.string().optional(),
   payment_method_title: z.string().optional(),
   transaction_id: z.string().optional(),
-  meta_data: z.array(AdminMetaData).optional(),
+  meta_data: z.array(AdminOrderMetaData).optional(),
   line_items: z.array(AdminOrderLineItemSchema.partial()).optional(),
   shipping_lines: z.array(AdminOrderShippingLineSchema.partial()).optional(),
   fee_lines: z.array(AdminOrderFeeLineSchema.partial()).optional(),

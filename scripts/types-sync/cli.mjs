@@ -21,6 +21,8 @@
  *   --snapshot <path>     Override snapshot path on `check`
  *   --allow-warn          Treat warns as non-fatal (errors still fail)
  *   --json                Emit JSON to stdout instead of writing files (check)
+ *   --no-coverage-check   Skip the route-coverage check (allowlist-backed
+ *                         enforcement that every upstream route is mapped)
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
@@ -37,11 +39,16 @@ import { writeJson, writeMarkdown, assignDriftIds } from './report.mjs';
 import { sortKeysDeep } from './normalise.mjs';
 import { buildSdkSourceIndex } from './sdk-source-index.mjs';
 import { reconcileAcrossVersions } from './reconcile.mjs';
+import {
+  loadRouteAllowlist,
+  computeRouteCoverage,
+} from './route-coverage.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SNAPSHOTS_DIR = join(HERE, 'snapshots');
 const OUT_DIR = join(HERE, 'out');
 const SUPPORT_WINDOW_PATH = join(HERE, 'support-window.json');
+const ROUTE_ALLOWLIST_PATH = join(HERE, 'route-allowlist.json');
 
 function parseArgs(argv) {
   const args = { _: [] };
@@ -368,6 +375,20 @@ async function runCheck(args) {
   // Read the latest snapshot for capturedAt/version metadata. We re-read here
   // (cheap) rather than thread the snapshot object through both code paths.
   const latestSnapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
+
+  // Route-coverage check: every upstream route in the latest snapshot must be
+  // either registered or explicitly allowlisted. Runs against `latest` only —
+  // older versions are about shape stability, not coverage.
+  if (args['no-coverage-check'] !== true) {
+    const allowlist = loadRouteAllowlist(ROUTE_ALLOWLIST_PATH);
+    const coverageDrifts = computeRouteCoverage(
+      latestSnapshot,
+      registry,
+      allowlist
+    );
+    drifts.push(...coverageDrifts);
+  }
+
   const meta = {
     wcVersion: latestSnapshot.wcVersion,
     capturedAt: latestSnapshot.capturedAt,

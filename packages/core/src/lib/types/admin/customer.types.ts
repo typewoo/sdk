@@ -1,5 +1,30 @@
 import { z } from 'zod';
-import { AdminMetaData, AdminAddress } from './common.types.js';
+
+const AdminCustomerMetaData = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.record(z.string(), z.unknown()),
+    z.null(),
+  ]),
+});
+
+const AdminCustomerAddress = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  company: z.string(),
+  address_1: z.string(),
+  address_2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postcode: z.string(),
+  country: z.string(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+});
 
 /**
  * WooCommerce REST API Customer Response
@@ -47,11 +72,11 @@ export const AdminCustomerSchema = z.looseObject({
    * Customer login name.
    */
   username: z.string(),
-  billing: AdminAddress,
-  shipping: AdminAddress.omit({ email: true, phone: true }),
+  billing: AdminCustomerAddress,
+  shipping: AdminCustomerAddress.omit({ email: true, phone: true }),
   is_paying_customer: z.boolean(),
   avatar_url: z.string(),
-  meta_data: z.array(AdminMetaData),
+  meta_data: z.array(AdminCustomerMetaData),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -71,9 +96,9 @@ export const AdminCustomerRequestSchema = z.looseObject({
   last_name: z.string().optional(),
   username: z.string().optional(),
   password: z.string().optional(),
-  billing: AdminAddress.optional(),
-  shipping: AdminAddress.omit({ email: true, phone: true }).optional(),
-  meta_data: z.array(AdminMetaData).optional(),
+  billing: AdminCustomerAddress.optional(),
+  shipping: AdminCustomerAddress.omit({ email: true, phone: true }).optional(),
+  meta_data: z.array(AdminCustomerMetaData).optional(),
 });
 
 export type AdminCustomerRequest = z.infer<typeof AdminCustomerRequestSchema>;
