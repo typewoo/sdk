@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { AdminCustomerRequest, Typewoo } from '../../../../index.js';
+import {
+  AdminCustomerCreateRequest,
+  AdminCustomerUpdateRequest,
+  Typewoo,
+} from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -63,7 +67,7 @@ describe('Integration: Admin Customer Service', () => {
 
   it('creates, retrieves, updates, and deletes a customer', async () => {
     const ts = Date.now();
-    const testCustomerData: AdminCustomerRequest = {
+    const testCustomerData: AdminCustomerCreateRequest = {
       email: `itest-${ts}@example.com`,
       username: `itest-user-${ts}`,
       password: `P@ss-${ts}-Aa!`,
@@ -90,7 +94,7 @@ describe('Integration: Admin Customer Service', () => {
     expect(getResult.data?.email).toBe(testCustomerData.email);
 
     // Update the customer
-    const updateData: AdminCustomerRequest = {
+    const updateData: AdminCustomerUpdateRequest = {
       first_name: 'Updated',
       last_name: 'Customer',
     };
@@ -139,7 +143,7 @@ describe('Integration: Admin Customer Service', () => {
           first_name: 'Batch',
           last_name: 'Two',
         },
-      ] as AdminCustomerRequest[],
+      ] as AdminCustomerCreateRequest[],
     };
 
     const batchResult = await Typewoo.admin.customers.batch(batchData);

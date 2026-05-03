@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminProductAttributeTermQueryParams,
   AdminProductAttributeTerm,
-  AdminProductAttributeTermRequest,
+  AdminProductAttributeTermCreateRequest,
+  AdminProductAttributeTermUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -74,14 +75,14 @@ export class AdminProductAttributeTermService extends BaseService {
    */
   async create(
     attributeId: number,
-    term: AdminProductAttributeTermRequest,
+    term: AdminProductAttributeTermCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}`;
     const { data, error } = await doPost<
       AdminProductAttributeTerm,
-      AdminProductAttributeTermRequest
+      AdminProductAttributeTermCreateRequest
     >(url, term, options);
 
     return { data, error };
@@ -93,14 +94,14 @@ export class AdminProductAttributeTermService extends BaseService {
   async update(
     attributeId: number,
     termId: number,
-    term: AdminProductAttributeTermRequest,
+    term: AdminProductAttributeTermUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/${termId}`;
     const { data, error } = await doPut<
       AdminProductAttributeTerm,
-      AdminProductAttributeTermRequest
+      AdminProductAttributeTermUpdateRequest
     >(url, term, options);
 
     return { data, error };
@@ -132,8 +133,8 @@ export class AdminProductAttributeTermService extends BaseService {
   async batch(
     attributeId: number,
     operations: {
-      create?: AdminProductAttributeTermRequest[];
-      update?: Array<AdminProductAttributeTermRequest & { id: number }>;
+      create?: AdminProductAttributeTermCreateRequest[];
+      update?: Array<AdminProductAttributeTermUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

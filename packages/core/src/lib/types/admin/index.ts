@@ -22,17 +22,21 @@ export * from './product-brand.types.js';
 
 export {
   AdminProductAttributeSchema as AdminProductAttributeEntitySchema,
-  AdminProductAttributeRequestSchema,
+  AdminProductAttributeCreateRequestSchema,
+  AdminProductAttributeUpdateRequestSchema,
   AdminProductAttributeQueryParamsSchema,
   AdminProductAttributeTermSchema,
-  AdminProductAttributeTermRequestSchema,
+  AdminProductAttributeTermCreateRequestSchema,
+  AdminProductAttributeTermUpdateRequestSchema,
   AdminProductAttributeTermQueryParamsSchema,
 } from './attribute.types.js';
 
 export type {
-  AdminProductAttributeRequest,
+  AdminProductAttributeCreateRequest,
+  AdminProductAttributeUpdateRequest,
   AdminProductAttributeQueryParams,
   AdminProductAttributeTerm,
-  AdminProductAttributeTermRequest,
+  AdminProductAttributeTermCreateRequest,
+  AdminProductAttributeTermUpdateRequest,
   AdminProductAttributeTermQueryParams,
 } from './attribute.types.js';

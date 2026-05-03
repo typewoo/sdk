@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const AdminShippingZoneSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  order: z.number(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Shipping zone name.'),
+  order: z.number().describe('Shipping zone order.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),
@@ -13,13 +13,29 @@ export const AdminShippingZoneSchema = z.looseObject({
 
 export type AdminShippingZone = z.infer<typeof AdminShippingZoneSchema>;
 
-export const AdminShippingZoneRequestSchema = z.looseObject({
+/**
+ * Shipping zone request parameters for POST /shipping/zones (create).
+ * `name` is required by upstream WooCommerce.
+ */
+export const AdminShippingZoneCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Shipping zone name.'),
+  order: z.number().optional(),
+});
+
+export type AdminShippingZoneCreateRequest = z.input<
+  typeof AdminShippingZoneCreateRequestSchema
+>;
+
+/**
+ * Shipping zone request parameters for PUT /shipping/zones/{id} (update).
+ */
+export const AdminShippingZoneUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   order: z.number().optional(),
 });
 
-export type AdminShippingZoneRequest = z.infer<
-  typeof AdminShippingZoneRequestSchema
+export type AdminShippingZoneUpdateRequest = z.input<
+  typeof AdminShippingZoneUpdateRequestSchema
 >;
 
 export const AdminShippingZoneQueryParamsSchema = z.looseObject({
@@ -53,13 +69,13 @@ export type AdminShippingZoneLocationRequest = z.infer<
 >;
 
 export const AdminShippingZoneMethodSchema = z.looseObject({
-  instance_id: z.number(),
-  title: z.string(),
-  order: z.number(),
-  enabled: z.boolean(),
-  method_id: z.string(),
-  method_title: z.string(),
-  method_description: z.string(),
+  instance_id: z.number().describe('Shipping method instance ID.'),
+  title: z.string().describe('Shipping method customer facing title.'),
+  order: z.number().describe('Shipping method sort order.'),
+  enabled: z.boolean().describe('Shipping method enabled status.'),
+  method_id: z.string().describe('Shipping method ID.'),
+  method_title: z.string().describe('Shipping method title.'),
+  method_description: z.string().describe('Shipping method description.'),
   settings: z.record(
     z.string(),
     z.object({
@@ -72,7 +88,7 @@ export const AdminShippingZoneMethodSchema = z.looseObject({
       tip: z.string(),
       placeholder: z.string(),
     })
-  ),
+  ).describe('Shipping method settings.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),
@@ -84,14 +100,32 @@ export type AdminShippingZoneMethod = z.infer<
   typeof AdminShippingZoneMethodSchema
 >;
 
-export const AdminShippingZoneMethodRequestSchema = z.looseObject({
+/**
+ * Zone method request parameters for POST /shipping/zones/{zone}/methods.
+ * WooCommerce requires `method_id` to register a method on a zone.
+ */
+export const AdminShippingZoneMethodCreateRequestSchema = z.looseObject({
+  method_id: z.string().describe('Shipping method ID.'),
   order: z.number().optional(),
   enabled: z.boolean().optional(),
   settings: z.record(z.string(), z.string()).optional(),
 });
 
-export type AdminShippingZoneMethodRequest = z.infer<
-  typeof AdminShippingZoneMethodRequestSchema
+export type AdminShippingZoneMethodCreateRequest = z.input<
+  typeof AdminShippingZoneMethodCreateRequestSchema
+>;
+
+/**
+ * Zone method request parameters for PUT /shipping/zones/{zone}/methods/{id}.
+ */
+export const AdminShippingZoneMethodUpdateRequestSchema = z.looseObject({
+  order: z.number().optional(),
+  enabled: z.boolean().optional(),
+  settings: z.record(z.string(), z.string()).optional(),
+});
+
+export type AdminShippingZoneMethodUpdateRequest = z.input<
+  typeof AdminShippingZoneMethodUpdateRequestSchema
 >;
 
 export const AdminShippingZoneMethodQueryParamsSchema = z.looseObject({

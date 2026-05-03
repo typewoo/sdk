@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 const AdminTaxonomyCategoryImage = z.object({
-  id: z.number(),
-  date_created: z.string(),
-  date_created_gmt: z.string(),
-  date_modified: z.string(),
-  date_modified_gmt: z.string(),
-  src: z.string(),
-  name: z.string(),
-  alt: z.string(),
+  id: z.number().describe('Image ID.'),
+  date_created: z.string().describe('The date the image was created, in the site\'s timezone.'),
+  date_created_gmt: z.string().describe('The date the image was created, as GMT.'),
+  date_modified: z.string().describe('The date the image was last modified, in the site\'s timezone.'),
+  date_modified_gmt: z.string().describe('The date the image was last modified, as GMT.'),
+  src: z.string().describe('Image URL.'),
+  name: z.string().describe('Image name.'),
+  alt: z.string().describe('Image alternative text.'),
 });
 
 /**
@@ -27,15 +27,15 @@ export type AdminCategoryDisplay = z.infer<typeof AdminCategoryDisplaySchema>;
  * WooCommerce REST API Product Category Response
  */
 export const AdminTaxonomyCategorySchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  parent: z.number(),
-  description: z.string(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Category name.'),
+  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  parent: z.number().describe('The ID for the parent of the resource.'),
+  description: z.string().describe('HTML description of the resource.'),
   display: AdminCategoryDisplaySchema,
-  image: AdminTaxonomyCategoryImage.nullable(),
-  menu_order: z.number(),
-  count: z.number(),
+  image: AdminTaxonomyCategoryImage.nullable().describe('Category archive display type.'),
+  menu_order: z.number().describe('Menu order, used to custom sort the term.'),
+  count: z.number().describe('Number of published products for the resource.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -48,9 +48,27 @@ export const AdminTaxonomyCategorySchema = z.looseObject({
 export type AdminTaxonomyCategory = z.infer<typeof AdminTaxonomyCategorySchema>;
 
 /**
- * Product category request parameters for creating/updating
+ * Product category request parameters for POST /products/categories.
+ * `name` is required by upstream WooCommerce.
  */
-export const AdminTaxonomyCategoryRequestSchema = z.looseObject({
+export const AdminTaxonomyCategoryCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Category name.'),
+  slug: z.string().optional(),
+  parent: z.number().optional(),
+  description: z.string().optional(),
+  display: AdminCategoryDisplaySchema.optional(),
+  image: AdminTaxonomyCategoryImage.optional(),
+  menu_order: z.number().optional(),
+});
+
+export type AdminTaxonomyCategoryCreateRequest = z.input<
+  typeof AdminTaxonomyCategoryCreateRequestSchema
+>;
+
+/**
+ * Product category request parameters for PUT /products/categories/{id}.
+ */
+export const AdminTaxonomyCategoryUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   parent: z.number().optional(),
@@ -60,8 +78,8 @@ export const AdminTaxonomyCategoryRequestSchema = z.looseObject({
   menu_order: z.number().optional(),
 });
 
-export type AdminTaxonomyCategoryRequest = z.infer<
-  typeof AdminTaxonomyCategoryRequestSchema
+export type AdminTaxonomyCategoryUpdateRequest = z.input<
+  typeof AdminTaxonomyCategoryUpdateRequestSchema
 >;
 
 /**
@@ -101,11 +119,11 @@ export type AdminTaxonomyCategoryQueryParams = z.infer<
  * WooCommerce REST API Product Tag Response
  */
 export const AdminTaxonomyTagSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  description: z.string(),
-  count: z.number(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Tag name.'),
+  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  description: z.string().describe('HTML description of the resource.'),
+  count: z.number().describe('Number of published products for the resource.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -117,16 +135,29 @@ export const AdminTaxonomyTagSchema = z.looseObject({
 export type AdminTaxonomyTag = z.infer<typeof AdminTaxonomyTagSchema>;
 
 /**
- * Product tag request parameters for creating/updating
+ * Product tag request parameters for POST /products/tags. `name` is required.
  */
-export const AdminTaxonomyTagRequestSchema = z.looseObject({
+export const AdminTaxonomyTagCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Tag name.'),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type AdminTaxonomyTagCreateRequest = z.input<
+  typeof AdminTaxonomyTagCreateRequestSchema
+>;
+
+/**
+ * Product tag request parameters for PUT /products/tags/{id}.
+ */
+export const AdminTaxonomyTagUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
 });
 
-export type AdminTaxonomyTagRequest = z.infer<
-  typeof AdminTaxonomyTagRequestSchema
+export type AdminTaxonomyTagUpdateRequest = z.input<
+  typeof AdminTaxonomyTagUpdateRequestSchema
 >;
 
 /**
@@ -165,11 +196,11 @@ export type AdminTaxonomyTagQueryParams = z.infer<
  * WooCommerce REST API Shipping Class Response
  */
 export const AdminShippingClassSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  description: z.string(),
-  count: z.number(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Shipping class name.'),
+  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  description: z.string().describe('HTML description of the resource.'),
+  count: z.number().describe('Number of published products for the resource.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -181,16 +212,29 @@ export const AdminShippingClassSchema = z.looseObject({
 export type AdminShippingClass = z.infer<typeof AdminShippingClassSchema>;
 
 /**
- * Shipping class request parameters for creating/updating
+ * Shipping class request parameters for POST /products/shipping_classes.
  */
-export const AdminShippingClassRequestSchema = z.looseObject({
+export const AdminShippingClassCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Shipping class name.'),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type AdminShippingClassCreateRequest = z.input<
+  typeof AdminShippingClassCreateRequestSchema
+>;
+
+/**
+ * Shipping class request parameters for PUT /products/shipping_classes/{id}.
+ */
+export const AdminShippingClassUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
 });
 
-export type AdminShippingClassRequest = z.infer<
-  typeof AdminShippingClassRequestSchema
+export type AdminShippingClassUpdateRequest = z.input<
+  typeof AdminShippingClassUpdateRequestSchema
 >;
 
 /**

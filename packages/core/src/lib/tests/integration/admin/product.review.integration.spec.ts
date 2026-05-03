@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { AdminProductReviewRequest, Typewoo } from '../../../../index.js';
+import {
+  AdminProductReviewCreateRequest,
+  Typewoo,
+} from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -61,7 +64,7 @@ describe('Integration: Admin Product Reviews', () => {
     const productId = products.data[0].id;
 
     const ts = Date.now();
-    const req: AdminProductReviewRequest = {
+    const req: AdminProductReviewCreateRequest = {
       product_id: productId,
       reviewer: `itest-reviewer-${ts}`,
       reviewer_email: `itest-${ts}@example.com`,

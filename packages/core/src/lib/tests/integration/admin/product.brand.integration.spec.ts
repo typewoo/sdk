@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { AdminBrandRequest, Typewoo } from '../../../../index.js';
+import { AdminBrandCreateRequest, Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -53,7 +53,7 @@ describe('Integration: Admin Product Brands', () => {
 
   it('creates, retrieves, updates, and deletes a brand', async () => {
     const ts = Date.now();
-    const req: AdminBrandRequest = {
+    const req: AdminBrandCreateRequest = {
       name: `itest-brand-${ts}`,
       description: 'Integration brand',
       display: 'default',

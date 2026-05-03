@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { AdminCouponRequest, Typewoo } from '../../../../index.js';
+import {
+  AdminCouponCreateRequest,
+  AdminCouponUpdateRequest,
+  Typewoo,
+} from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,
@@ -56,7 +60,7 @@ describe('Integration: Admin Coupon Service', () => {
   });
 
   it('creates, retrieves, updates, and deletes a coupon', async () => {
-    const testCouponData: AdminCouponRequest = {
+    const testCouponData: AdminCouponCreateRequest = {
       code: `test-coupon-${Date.now()}`,
       discount_type: 'percent',
       amount: '10.00',
@@ -87,7 +91,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(getResult.data?.code).toBe(testCouponData.code);
 
     // Update the coupon
-    const updateData: AdminCouponRequest = {
+    const updateData: AdminCouponUpdateRequest = {
       amount: '15.00',
       description: 'Updated test coupon description',
     };
@@ -167,7 +171,7 @@ describe('Integration: Admin Coupon Service', () => {
     expect(nonExistentResult.error?.code).toMatch(/not_found|invalid/i);
 
     // Test creating coupon with invalid data
-    const invalidCouponData: AdminCouponRequest = {
+    const invalidCouponData: AdminCouponCreateRequest = {
       code: '', // Empty code should be invalid
       discount_type: 'percent',
       amount: 'invalid_amount', // Invalid amount

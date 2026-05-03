@@ -4,12 +4,12 @@ import { z } from 'zod';
  * WooCommerce REST API Product Attribute Response
  */
 export const AdminProductAttributeSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  type: z.enum(['select']),
-  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']),
-  has_archives: z.boolean(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Attribute name.'),
+  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  type: z.enum(['select']).describe('Type of attribute.'),
+  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']).describe('Default sort order.'),
+  has_archives: z.boolean().describe('Enable/Disable attribute archives.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -20,9 +20,25 @@ export const AdminProductAttributeSchema = z.looseObject({
 export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
 
 /**
- * Product attribute request parameters for creating/updating
+ * Product attribute request parameters for POST /products/attributes (create).
+ * `name` is required by upstream WooCommerce.
  */
-export const AdminProductAttributeRequestSchema = z.looseObject({
+export const AdminProductAttributeCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Attribute name.'),
+  slug: z.string().optional(),
+  type: z.enum(['select']).optional(),
+  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']).optional(),
+  has_archives: z.boolean().optional(),
+});
+
+export type AdminProductAttributeCreateRequest = z.input<
+  typeof AdminProductAttributeCreateRequestSchema
+>;
+
+/**
+ * Product attribute request parameters for PUT /products/attributes/{id}.
+ */
+export const AdminProductAttributeUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   type: z.enum(['select']).optional(),
@@ -30,8 +46,8 @@ export const AdminProductAttributeRequestSchema = z.looseObject({
   has_archives: z.boolean().optional(),
 });
 
-export type AdminProductAttributeRequest = z.infer<
-  typeof AdminProductAttributeRequestSchema
+export type AdminProductAttributeUpdateRequest = z.input<
+  typeof AdminProductAttributeUpdateRequestSchema
 >;
 
 /**
@@ -52,12 +68,12 @@ export type AdminProductAttributeQueryParams = z.infer<
  * WooCommerce REST API Product Attribute Term Response
  */
 export const AdminProductAttributeTermSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  slug: z.string(),
-  description: z.string(),
-  menu_order: z.number(),
-  count: z.number(),
+  id: z.number().describe('Unique identifier for the resource.'),
+  name: z.string().describe('Term name.'),
+  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  description: z.string().describe('HTML description of the resource.'),
+  menu_order: z.number().describe('Menu order, used to custom sort the resource.'),
+  count: z.number().describe('Number of published products for the resource.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -72,17 +88,32 @@ export type AdminProductAttributeTerm = z.infer<
 >;
 
 /**
- * Product attribute term request parameters for creating/updating
+ * Product attribute term request parameters for POST .../terms (create).
+ * `name` is required by upstream WooCommerce.
  */
-export const AdminProductAttributeTermRequestSchema = z.looseObject({
+export const AdminProductAttributeTermCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Term name.'),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  menu_order: z.number().optional(),
+});
+
+export type AdminProductAttributeTermCreateRequest = z.input<
+  typeof AdminProductAttributeTermCreateRequestSchema
+>;
+
+/**
+ * Product attribute term request parameters for PUT .../terms/{id}.
+ */
+export const AdminProductAttributeTermUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
   menu_order: z.number().optional(),
 });
 
-export type AdminProductAttributeTermRequest = z.infer<
-  typeof AdminProductAttributeTermRequestSchema
+export type AdminProductAttributeTermUpdateRequest = z.input<
+  typeof AdminProductAttributeTermUpdateRequestSchema
 >;
 
 /**

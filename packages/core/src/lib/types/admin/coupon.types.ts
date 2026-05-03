@@ -24,111 +24,96 @@ export type AdminCouponDiscountType =
  * WooCommerce REST API Coupon Response
  */
 export const AdminCouponSchema = z.looseObject({
-  /**
-   * Unique identifier for the object.
-   */
-  id: z.number(),
-  /**
-   * Coupon code.
-   */
-  code: z.string(),
-  /**
-   * The amount of discount. Should always be numeric, even if setting a percentage.
-   */
-  amount: z.string(),
-  /**
-   * The date the coupon was created, in the site's timezone.
-   */
-  date_created: z.string(),
-  /**
-   * The date the coupon was created, as GMT.
-   */
-  date_created_gmt: z.string(),
-  /**
-   * The date the coupon was last modified, in the site's timezone.
-   */
-  date_modified: z.string(),
-  /**
-   * The date the coupon was last modified, as GMT.
-   */
-  date_modified_gmt: z.string(),
-  /**
-   * Determines the type of discount that will be applied. Options: `percent`, `fixed_cart` and `fixed_product`. Default is `fixed_cart`.
-   */
-  discount_type: z.enum(['percent', 'fixed_cart', 'fixed_product']),
-  /**
-   * Coupon description.
-   */
-  description: z.string(),
-  /**
-   * The date the coupon expires, in the site's timezone.
-   */
-  date_expires: z.string().nullable(),
-  /**
-   * The date the coupon expires, as GMT.
-   */
-  date_expires_gmt: z.string().nullable(),
-  /**
-   * Number of times the coupon has been used already.
-   */
-  usage_count: z.number(),
-  /**
-   * 	If `true`, the coupon can only be used individually. Other applied coupons will be removed from the cart. Default is `false`.
-   */
-  individual_use: z.boolean(),
-  /**
-   * List of product IDs the coupon can be used on.
-   */
-  product_ids: z.array(z.number()),
-  /**
-   * List of product IDs the coupon cannot be used on.
-   */
-  excluded_product_ids: z.array(z.number()),
-  /**
-   * How many times the coupon can be used in total.
-   */
-  usage_limit: z.number().nullable(),
-  /**
-   * How many times the coupon can be used per customer.
-   */
-  usage_limit_per_user: z.number().nullable(),
-  /**
-   * Max number of items in the cart the coupon can be applied to.
-   */
-  limit_usage_to_x_items: z.number().nullable(),
-  /**
-   * 	If `true` and if the free shipping method requires a coupon, this coupon will enable free shipping. Default is `false`.
-   */
-  free_shipping: z.boolean(),
-  /**
-   * List of category IDs the coupon applies to.
-   */
-  product_categories: z.array(z.number()),
-  /**
-   * List of category IDs the coupon does not apply to.
-   */
-  excluded_product_categories: z.array(z.number()),
-  /**
-   * If `true`, this coupon will not be applied to items that have sale prices. Default is `false`.
-   */
-  exclude_sale_items: z.boolean(),
-  /**
-   * Minimum order amount that needs to be in the cart before coupon applies.
-   */
-  minimum_amount: z.string(),
-  /**
-   * Maximum order amount allowed when using the coupon.
-   */
-  maximum_amount: z.string(),
-  /**
-   * List of email addresses that can use this coupon.
-   */
-  email_restrictions: z.array(z.string()),
-  /**
-   * List of user IDs (or guest email addresses) that have used the coupon.rea
-   */
-  used_by: z.array(z.string()),
-  meta_data: z.array(AdminCouponMetaData),
+  id: z.number().describe('Unique identifier for the object.'),
+  code: z.string().describe('Coupon code.'),
+  amount: z
+    .string()
+    .describe(
+      'The amount of discount. Should always be numeric, even if setting a percentage.'
+    ),
+  date_created: z
+    .string()
+    .describe("The date the coupon was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the coupon was created, as GMT.'),
+  date_modified: z
+    .string()
+    .describe("The date the coupon was last modified, in the site's timezone."),
+  date_modified_gmt: z
+    .string()
+    .describe('The date the coupon was last modified, as GMT.'),
+  discount_type: z
+    .enum(['percent', 'fixed_cart', 'fixed_product'])
+    .describe('Determines the type of discount that will be applied.'),
+  description: z.string().describe('Coupon description.'),
+  date_expires: z
+    .string()
+    .nullable()
+    .describe("The date the coupon expires, in the site's timezone."),
+  date_expires_gmt: z
+    .string()
+    .nullable()
+    .describe('The date the coupon expires, as GMT.'),
+  usage_count: z
+    .number()
+    .describe('Number of times the coupon has been used already.'),
+  individual_use: z
+    .boolean()
+    .describe(
+      'If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.'
+    ),
+  product_ids: z
+    .array(z.number())
+    .describe('List of product IDs the coupon can be used on.'),
+  excluded_product_ids: z
+    .array(z.number())
+    .describe('List of product IDs the coupon cannot be used on.'),
+  usage_limit: z
+    .number()
+    .nullable()
+    .describe('How many times the coupon can be used in total.'),
+  usage_limit_per_user: z
+    .number()
+    .nullable()
+    .describe('How many times the coupon can be used per customer.'),
+  limit_usage_to_x_items: z
+    .number()
+    .nullable()
+    .describe('Max number of items in the cart the coupon can be applied to.'),
+  free_shipping: z
+    .boolean()
+    .describe(
+      'If true and if the free shipping method requires a coupon, this coupon will enable free shipping.'
+    ),
+  product_categories: z
+    .array(z.number())
+    .describe('List of category IDs the coupon applies to.'),
+  excluded_product_categories: z
+    .array(z.number())
+    .describe('List of category IDs the coupon does not apply to.'),
+  exclude_sale_items: z
+    .boolean()
+    .describe(
+      'If true, this coupon will not be applied to items that have sale prices.'
+    ),
+  minimum_amount: z
+    .string()
+    .describe(
+      'Minimum order amount that needs to be in the cart before coupon applies.'
+    ),
+  maximum_amount: z
+    .string()
+    .describe('Maximum order amount allowed when using the coupon.'),
+  email_restrictions: z
+    .array(z.string())
+    .describe('List of email addresses that can use this coupon.'),
+  used_by: z
+    .array(z.string())
+    .describe(
+      'List of user IDs (or guest email addresses) that have used the coupon.'
+    ),
+  meta_data: z.array(AdminCouponMetaData).describe('Meta data.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -140,99 +125,266 @@ export const AdminCouponSchema = z.looseObject({
 export type AdminCoupon = z.infer<typeof AdminCouponSchema>;
 
 /**
- * Coupon request parameters for creating/updating
+ * Coupon request parameters for POST /coupons (create).
+ *
+ * `code` is the only field WooCommerce requires on create. Defaults declared
+ * here mirror upstream POST behaviour so hand-constructed payloads parse to
+ * the same shape WC would persist.
  */
-export const AdminCouponRequestSchema = z.looseObject({
-  code: z.string().optional(),
-  amount: z.string().optional(),
-  discount_type: z.enum(['percent', 'fixed_cart', 'fixed_product']).optional(),
-  description: z.string().optional(),
-  date_expires: z.string().optional(),
-  date_expires_gmt: z.string().optional(),
-  individual_use: z.boolean().optional(),
-  product_ids: z.array(z.number()).optional(),
-  excluded_product_ids: z.array(z.number()).optional(),
-  usage_limit: z.number().optional(),
-  usage_limit_per_user: z.number().optional(),
-  limit_usage_to_x_items: z.number().optional(),
-  free_shipping: z.boolean().optional(),
-  product_categories: z.array(z.number()).optional(),
+export const AdminCouponCreateRequestSchema = z.looseObject({
+  code: z.string().describe('Coupon code.'),
+  amount: z
+    .string()
+    .optional()
+    .describe(
+      'The amount of discount. Should always be numeric, even if setting a percentage.'
+    ),
+  discount_type: z
+    .enum(['percent', 'fixed_cart', 'fixed_product'])
+    .optional()
+    .default('fixed_cart')
+    .describe('Determines the type of discount that will be applied.'),
+  description: z.string().optional().describe('Coupon description.'),
+  date_expires: z
+    .string()
+    .optional()
+    .describe("The date the coupon expires, in the site's timezone."),
+  date_expires_gmt: z
+    .string()
+    .optional()
+    .describe('The date the coupon expires, as GMT.'),
+  individual_use: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.'
+    ),
+  product_ids: z
+    .array(z.number())
+    .optional()
+    .describe('List of product IDs the coupon can be used on.'),
+  excluded_product_ids: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon does not apply to.'),
+  usage_limit: z
+    .number()
+    .optional()
+    .describe('How many times the coupon can be used in total.'),
+  usage_limit_per_user: z
+    .number()
+    .optional()
+    .describe('How many times the coupon can be used per customer.'),
+  limit_usage_to_x_items: z
+    .number()
+    .optional()
+    .describe('Max number of items in the cart the coupon can be applied to.'),
+  free_shipping: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'If true and if the free shipping method requires a coupon, this coupon will enable free shipping.'
+    ),
+  product_categories: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon applies to.'),
   excluded_product_categories: z.array(z.number()).optional(),
-  exclude_sale_items: z.boolean().optional(),
-  minimum_amount: z.string().optional(),
-  maximum_amount: z.string().optional(),
-  email_restrictions: z.array(z.string()).optional(),
-  meta_data: z.array(AdminCouponMetaData).optional(),
+  exclude_sale_items: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'If true, this coupon will not be applied to items that have sale prices.'
+    ),
+  minimum_amount: z
+    .string()
+    .optional()
+    .describe(
+      'Minimum order amount that needs to be in the cart before coupon applies.'
+    ),
+  maximum_amount: z
+    .string()
+    .optional()
+    .describe('Maximum order amount allowed when using the coupon.'),
+  email_restrictions: z
+    .array(z.string())
+    .optional()
+    .describe('List of email addresses that can use this coupon.'),
+  meta_data: z.array(AdminCouponMetaData).optional().describe('Meta data.'),
 });
 
-export type AdminCouponRequest = z.infer<typeof AdminCouponRequestSchema>;
+export type AdminCouponCreateRequest = z.input<
+  typeof AdminCouponCreateRequestSchema
+>;
+
+/**
+ * Coupon request parameters for PUT /coupons/{id} (update). Every field is
+ * optional — omitted fields keep their current value on the resource.
+ */
+export const AdminCouponUpdateRequestSchema = z.looseObject({
+  code: z.string().optional().describe('Coupon code.'),
+  amount: z
+    .string()
+    .optional()
+    .describe(
+      'The amount of discount. Should always be numeric, even if setting a percentage.'
+    ),
+  discount_type: z
+    .enum(['percent', 'fixed_cart', 'fixed_product'])
+    .optional()
+    .describe('Determines the type of discount that will be applied.'),
+  description: z.string().optional().describe('Coupon description.'),
+  date_expires: z
+    .string()
+    .optional()
+    .describe("The date the coupon expires, in the site's timezone."),
+  date_expires_gmt: z
+    .string()
+    .optional()
+    .describe('The date the coupon expires, as GMT.'),
+  individual_use: z
+    .boolean()
+    .optional()
+    .describe(
+      'If true, the coupon can only be used individually. Other applied coupons will be removed from the cart.'
+    ),
+  product_ids: z
+    .array(z.number())
+    .optional()
+    .describe('List of product IDs the coupon can be used on.'),
+  excluded_product_ids: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon does not apply to.'),
+  usage_limit: z
+    .number()
+    .optional()
+    .describe('How many times the coupon can be used in total.'),
+  usage_limit_per_user: z
+    .number()
+    .optional()
+    .describe('How many times the coupon can be used per customer.'),
+  limit_usage_to_x_items: z
+    .number()
+    .optional()
+    .describe('Max number of items in the cart the coupon can be applied to.'),
+  free_shipping: z
+    .boolean()
+    .optional()
+    .describe(
+      'If true and if the free shipping method requires a coupon, this coupon will enable free shipping.'
+    ),
+  product_categories: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon applies to.'),
+  excluded_product_categories: z.array(z.number()).optional(),
+  exclude_sale_items: z
+    .boolean()
+    .optional()
+    .describe(
+      'If true, this coupon will not be applied to items that have sale prices.'
+    ),
+  minimum_amount: z
+    .string()
+    .optional()
+    .describe(
+      'Minimum order amount that needs to be in the cart before coupon applies.'
+    ),
+  maximum_amount: z
+    .string()
+    .optional()
+    .describe('Maximum order amount allowed when using the coupon.'),
+  email_restrictions: z
+    .array(z.string())
+    .optional()
+    .describe('List of email addresses that can use this coupon.'),
+  meta_data: z.array(AdminCouponMetaData).optional().describe('Meta data.'),
+});
+
+export type AdminCouponUpdateRequest = z.input<
+  typeof AdminCouponUpdateRequestSchema
+>;
 
 /**
  * Coupon query parameters for listing
  */
 export const AdminCouponQueryParamsSchema = z.looseObject({
-  /**
-   * Scope under which the request is made; determines fields present in response. Options: `view` and `edit`. Default is `view`.
-   */
-  context: z.enum(['view', 'edit']).optional(),
-  /**
-   * Current page of the collection. Default is 1.
-   */
-  page: z.number().optional(),
-  /**
-   * Maximum number of items to be returned in result set. Default is 10.
-   */
-  per_page: z.number().optional(),
-  /**
-   * Limit results to those matching a string.
-   */
-  search: z.string().optional(),
-  /**
-   * Limit response to resources published after a given ISO8601 compliant date.
-   */
-  after: z.string().optional(),
-  /**
-   * Limit response to resources published before a given ISO8601 compliant date.
-   */
-  before: z.string().optional(),
-  /**
-   * Limit response to resources modified after a given ISO8601 compliant date.
-   */
-  modified_after: z.string().optional(),
-  /**
-   * Limit response to resources modified after a given ISO8601 compliant date.
-   */
-  modified_before: z.string().optional(),
-  /**
-   * Whether to interpret dates as GMT when limiting response by published or modified date.
-   */
-  dates_are_gmt: z.boolean().optional(),
-  /**
-   * Ensure result set excludes specific IDs.
-   */
-  exclude: z.array(z.number()).optional(),
-  /**
-   * Limit result set to specific ids.
-   */
-  include: z.array(z.number()).optional(),
-  /**
-   * Offset the result set by a specific number of items.
-   */
-  offset: z.number().optional(),
-  /**
-   * Order sort attribute ascending or descending. Options: `asc` and `desc`. Default is `desc`.
-   */
-  order: z.enum(['asc', 'desc']).optional(),
-  /**
-   * Sort collection by object attribute. Options: `date`, `modified`, `id`, `include`, `title` and `slug`. Default is `date`.
-   */
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z
+    .number()
+    .optional()
+    .describe('Current page of the collection. Default is 1.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  modified_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified after a given ISO8601 compliant date.'
+    ),
+  modified_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified before a given ISO8601 compliant date.'
+    ),
+  dates_are_gmt: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to consider GMT post dates when limiting response by published or modified date.'
+    ),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum(['date', 'id', 'include', 'title', 'slug', 'modified'])
-    .optional(),
-  /**
-   * Limit result set to resources with a specific code.
-   */
-  code: z.string().optional(),
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  code: z
+    .string()
+    .optional()
+    .describe('Limit result set to resources with a specific code.'),
 });
 
 export type AdminCouponQueryParams = z.infer<

@@ -73,6 +73,7 @@ function argsToSchema(args) {
     if (!def || typeof def !== 'object') continue;
     const node = {
       type: def.type ?? 'any',
+      description: def.description,
       enum: def.enum,
       items: def.items,
       format: def.format,

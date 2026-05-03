@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminProductQueryParams,
   AdminProduct,
-  AdminProductRequest,
+  AdminProductCreateRequest,
+  AdminProductUpdateRequest,
   AdminProductVariation,
   ProductCustomFieldNameQueryParams,
 } from '../../types/index.js';
@@ -68,15 +69,14 @@ export class AdminProductService extends BaseService {
    * Create a new product
    */
   async create(
-    product: AdminProductRequest,
+    product: AdminProductCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminProduct, AdminProductRequest>(
-      url,
-      product,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminProduct,
+      AdminProductCreateRequest
+    >(url, product, options);
 
     return { data, error };
   }
@@ -86,15 +86,14 @@ export class AdminProductService extends BaseService {
    */
   async update(
     id: number,
-    product: AdminProductRequest,
+    product: AdminProductUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminProduct, AdminProductRequest>(
-      url,
-      product,
-      options
-    );
+    const { data, error } = await doPut<
+      AdminProduct,
+      AdminProductUpdateRequest
+    >(url, product, options);
 
     return { data, error };
   }
@@ -119,8 +118,8 @@ export class AdminProductService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminProductRequest[];
-      update?: Array<AdminProductRequest & { id: number }>;
+      create?: AdminProductCreateRequest[];
+      update?: Array<AdminProductUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -149,15 +148,14 @@ export class AdminProductService extends BaseService {
    */
   async duplicate(
     id: number,
-    product?: Partial<AdminProductRequest>,
+    product?: AdminProductUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}/duplicate`;
-    const { data, error } = await doPost<AdminProduct, AdminProductRequest>(
-      url,
-      product || {},
-      options
-    );
+    const { data, error } = await doPost<
+      AdminProduct,
+      AdminProductUpdateRequest
+    >(url, product || {}, options);
 
     return { data, error };
   }

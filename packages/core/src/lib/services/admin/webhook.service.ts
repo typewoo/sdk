@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminWebhookQueryParams,
   AdminWebhook,
-  AdminWebhookRequest,
+  AdminWebhookCreateRequest,
+  AdminWebhookUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,15 +66,14 @@ export class AdminWebhookService extends BaseService {
    * Create a new webhook
    */
   async create(
-    webhook: AdminWebhookRequest,
+    webhook: AdminWebhookCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminWebhook, AdminWebhookRequest>(
-      url,
-      webhook,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminWebhook,
+      AdminWebhookCreateRequest
+    >(url, webhook, options);
 
     return { data, error };
   }
@@ -83,15 +83,14 @@ export class AdminWebhookService extends BaseService {
    */
   async update(
     id: number,
-    webhook: AdminWebhookRequest,
+    webhook: AdminWebhookUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminWebhook, AdminWebhookRequest>(
-      url,
-      webhook,
-      options
-    );
+    const { data, error } = await doPut<
+      AdminWebhook,
+      AdminWebhookUpdateRequest
+    >(url, webhook, options);
 
     return { data, error };
   }
@@ -116,8 +115,8 @@ export class AdminWebhookService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminWebhookRequest[];
-      update?: Array<AdminWebhookRequest & { id: number }>;
+      create?: AdminWebhookCreateRequest[];
+      update?: Array<AdminWebhookUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

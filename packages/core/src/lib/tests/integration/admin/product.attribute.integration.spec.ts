@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
-  AdminProductAttributeRequest,
-  AdminProductAttributeTermRequest,
+  AdminProductAttributeCreateRequest,
+  AdminProductAttributeTermCreateRequest,
   Typewoo,
 } from '../../../../index.js';
 import {
@@ -39,7 +39,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
 
   it('creates, retrieves, updates, and deletes a product attribute', async () => {
     const ts = Date.now();
-    const req: AdminProductAttributeRequest = {
+    const req: AdminProductAttributeCreateRequest = {
       name: `Material ${ts}`,
       order_by: 'menu_order',
       has_archives: false,
@@ -149,7 +149,7 @@ describe('Integration: Admin Product Attributes & Terms', () => {
       expect(list0.error).toBeFalsy();
 
       // Create a term
-      const termReq: AdminProductAttributeTermRequest = {
+      const termReq: AdminProductAttributeTermCreateRequest = {
         name: 'Red',
         description: 'A red color',
         menu_order: 0,

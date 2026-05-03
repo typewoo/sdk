@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
+  AdminOrderCreateRequest,
   AdminOrderEmailTemplateId,
-  AdminOrderRequest,
+  AdminOrderUpdateRequest,
   Typewoo,
 } from '../../../../index.js';
 import {
@@ -52,7 +53,7 @@ describe('Integration: Admin Order Service', () => {
 
     const productId = prodList.data[0].id;
 
-    const orderData: AdminOrderRequest = {
+    const orderData: AdminOrderCreateRequest = {
       status: 'pending',
       line_items: [
         {
@@ -102,7 +103,7 @@ describe('Integration: Admin Order Service', () => {
     expect(getResult.data?.id).toBe(orderId);
 
     // Update the order status and note
-    const updateData: AdminOrderRequest = {
+    const updateData: AdminOrderUpdateRequest = {
       status: 'processing',
       customer_note: 'Updated via integration test',
     };
@@ -160,7 +161,7 @@ describe('Integration: Admin Order Service', () => {
             },
           ],
         },
-      ] as AdminOrderRequest[],
+      ] as AdminOrderCreateRequest[],
     };
 
     const batchResult = await Typewoo.admin.orders.batch(batchData);

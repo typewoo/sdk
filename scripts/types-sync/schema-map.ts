@@ -14,61 +14,79 @@ import type { ZodType } from 'zod';
 
 import {
   AdminCouponSchema,
-  AdminCouponRequestSchema,
+  AdminCouponCreateRequestSchema,
+  AdminCouponUpdateRequestSchema,
   AdminCouponQueryParamsSchema,
   AdminCustomerSchema,
-  AdminCustomerRequestSchema,
+  AdminCustomerCreateRequestSchema,
+  AdminCustomerUpdateRequestSchema,
   AdminCustomerQueryParamsSchema,
   AdminProductSchema,
-  AdminProductRequestSchema,
+  AdminProductCreateRequestSchema,
+  AdminProductUpdateRequestSchema,
   AdminProductQueryParamsSchema,
   AdminProductReviewSchema,
-  AdminProductReviewRequestSchema,
+  AdminProductReviewCreateRequestSchema,
+  AdminProductReviewUpdateRequestSchema,
   AdminProductReviewQueryParamsSchema,
   AdminOrderSchema,
-  AdminOrderRequestSchema,
+  AdminOrderCreateRequestSchema,
+  AdminOrderUpdateRequestSchema,
   AdminOrderQueryParamsSchema,
   AdminOrderNoteSchema,
-  AdminOrderNoteRequestSchema,
+  AdminOrderNoteCreateRequestSchema,
   AdminRefundSchema,
   AdminRefundCreateRequestSchema,
   AdminRefundQueryParamsSchema,
   AdminTaxSchema,
-  AdminTaxRequestSchema,
+  AdminTaxCreateRequestSchema,
+  AdminTaxUpdateRequestSchema,
   AdminTaxQueryParamsSchema,
   AdminTaxClassSchema,
-  AdminTaxClassRequestSchema,
+  AdminTaxClassCreateRequestSchema,
   AdminTaxClassQueryParamsSchema,
   AdminShippingZoneSchema,
-  AdminShippingZoneRequestSchema,
+  AdminShippingZoneCreateRequestSchema,
+  AdminShippingZoneUpdateRequestSchema,
   AdminShippingZoneQueryParamsSchema,
   AdminShippingZoneMethodSchema,
-  AdminShippingZoneMethodRequestSchema,
+  AdminShippingZoneMethodCreateRequestSchema,
+  AdminShippingZoneMethodUpdateRequestSchema,
   AdminShippingZoneMethodQueryParamsSchema,
   AdminShippingMethodSchema,
   AdminShippingMethodQueryParamsSchema,
   AdminPaymentGatewaySchema,
-  AdminPaymentGatewayRequestSchema,
+  AdminPaymentGatewayUpdateRequestSchema,
   AdminPaymentGatewayQueryParamsSchema,
   AdminWebhookSchema,
-  AdminWebhookRequestSchema,
+  AdminWebhookCreateRequestSchema,
+  AdminWebhookUpdateRequestSchema,
   AdminWebhookQueryParamsSchema,
   AdminSettingGroupSchema,
   AdminSettingSchema,
-  AdminSettingRequestSchema,
+  AdminSettingUpdateRequestSchema,
   AdminTaxonomyCategorySchema,
-  AdminTaxonomyCategoryRequestSchema,
+  AdminTaxonomyCategoryCreateRequestSchema,
+  AdminTaxonomyCategoryUpdateRequestSchema,
   AdminTaxonomyCategoryQueryParamsSchema,
   AdminTaxonomyTagSchema,
-  AdminTaxonomyTagRequestSchema,
+  AdminTaxonomyTagCreateRequestSchema,
+  AdminTaxonomyTagUpdateRequestSchema,
   AdminTaxonomyTagQueryParamsSchema,
   AdminShippingClassSchema,
-  AdminShippingClassRequestSchema,
+  AdminShippingClassCreateRequestSchema,
+  AdminShippingClassUpdateRequestSchema,
   AdminShippingClassQueryParamsSchema,
-  AdminProductAttributeRequestSchema,
+  AdminBrandSchema,
+  AdminBrandCreateRequestSchema,
+  AdminBrandUpdateRequestSchema,
+  AdminBrandQueryParamsSchema,
+  AdminProductAttributeCreateRequestSchema,
+  AdminProductAttributeUpdateRequestSchema,
   AdminProductAttributeQueryParamsSchema,
   AdminProductAttributeTermSchema,
-  AdminProductAttributeTermRequestSchema,
+  AdminProductAttributeTermCreateRequestSchema,
+  AdminProductAttributeTermUpdateRequestSchema,
   AdminProductAttributeTermQueryParamsSchema,
   AdminProductAttributeEntitySchema,
 } from '../../packages/core/src/lib/types/admin/index.js';
@@ -143,55 +161,117 @@ function trio(
   ];
 }
 
+/**
+ * Like {@link trio} but emits separate POST and PUT request rows so each
+ * upstream method can be diffed against its own SDK schema. Use when the
+ * resource exposes both create and update endpoints with their own schemas.
+ */
+function quartet(
+  base: string,
+  responseSchema: ZodType,
+  responseName: string,
+  createRequestSchema: ZodType,
+  createRequestName: string,
+  updateRequestSchema: ZodType,
+  updateRequestName: string,
+  querySchema: ZodType,
+  queryName: string,
+  surface: Surface = 'admin'
+): SchemaMapEntry[] {
+  return [
+    {
+      name: responseName,
+      zod: responseSchema,
+      surface,
+      route: base,
+      kind: 'response',
+    },
+    {
+      name: createRequestName,
+      zod: createRequestSchema,
+      surface,
+      route: base,
+      kind: 'request',
+      method: 'POST',
+    },
+    {
+      name: updateRequestName,
+      zod: updateRequestSchema,
+      surface,
+      route: base,
+      kind: 'request',
+      method: 'PUT',
+    },
+    {
+      name: queryName,
+      zod: querySchema,
+      surface,
+      route: base,
+      kind: 'query',
+      method: 'GET',
+    },
+  ];
+}
+
 export const SCHEMA_MAP: SchemaMapEntry[] = [
   // ---------------- Admin (wc/v3) ----------------
 
-  ...trio(
+  ...quartet(
     '/wc/v3/coupons',
     AdminCouponSchema,
     'AdminCouponSchema',
-    AdminCouponRequestSchema,
-    'AdminCouponRequestSchema',
+    AdminCouponCreateRequestSchema,
+    'AdminCouponCreateRequestSchema',
+    AdminCouponUpdateRequestSchema,
+    'AdminCouponUpdateRequestSchema',
     AdminCouponQueryParamsSchema,
     'AdminCouponQueryParamsSchema'
   ),
 
-  ...trio(
+  ...quartet(
     '/wc/v3/customers',
     AdminCustomerSchema,
     'AdminCustomerSchema',
-    AdminCustomerRequestSchema,
-    'AdminCustomerRequestSchema',
+    AdminCustomerCreateRequestSchema,
+    'AdminCustomerCreateRequestSchema',
+    AdminCustomerUpdateRequestSchema,
+    'AdminCustomerUpdateRequestSchema',
     AdminCustomerQueryParamsSchema,
     'AdminCustomerQueryParamsSchema'
   ),
 
-  ...trio(
+  ...quartet(
     '/wc/v3/products',
     AdminProductSchema,
     'AdminProductSchema',
-    AdminProductRequestSchema,
-    'AdminProductRequestSchema',
+    AdminProductCreateRequestSchema,
+    'AdminProductCreateRequestSchema',
+    AdminProductUpdateRequestSchema,
+    'AdminProductUpdateRequestSchema',
     AdminProductQueryParamsSchema,
     'AdminProductQueryParamsSchema'
   ),
 
-  ...trio(
+  ...quartet(
     '/wc/v3/products/reviews',
     AdminProductReviewSchema,
     'AdminProductReviewSchema',
-    AdminProductReviewRequestSchema,
-    'AdminProductReviewRequestSchema',
+    AdminProductReviewCreateRequestSchema,
+    'AdminProductReviewCreateRequestSchema',
+    AdminProductReviewUpdateRequestSchema,
+    'AdminProductReviewUpdateRequestSchema',
     AdminProductReviewQueryParamsSchema,
     'AdminProductReviewQueryParamsSchema'
   ),
 
-  ...trio(
+  ...quartet(
     '/wc/v3/orders',
     AdminOrderSchema,
     'AdminOrderSchema',
-    AdminOrderRequestSchema,
-    'AdminOrderRequestSchema',
+    AdminOrderCreateRequestSchema,
+    'AdminOrderCreateRequestSchema',
+    AdminOrderUpdateRequestSchema,
+    'AdminOrderUpdateRequestSchema',
     AdminOrderQueryParamsSchema,
     'AdminOrderQueryParamsSchema'
   ),
@@ -205,8 +285,8 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     kind: 'response',
   },
   {
-    name: 'AdminOrderNoteRequestSchema',
-    zod: AdminOrderNoteRequestSchema,
+    name: 'AdminOrderNoteCreateRequestSchema',
+    zod: AdminOrderNoteCreateRequestSchema,
     surface: 'admin',
     route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes',
     kind: 'request',
@@ -238,12 +318,14 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     method: 'GET',
   },
 
-  ...trio(
+  ...quartet(
     '/wc/v3/taxes',
     AdminTaxSchema,
     'AdminTaxSchema',
-    AdminTaxRequestSchema,
-    'AdminTaxRequestSchema',
+    AdminTaxCreateRequestSchema,
+    'AdminTaxCreateRequestSchema',
+    AdminTaxUpdateRequestSchema,
+    'AdminTaxUpdateRequestSchema',
     AdminTaxQueryParamsSchema,
     'AdminTaxQueryParamsSchema'
   ),
@@ -252,18 +334,20 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     '/wc/v3/taxes/classes',
     AdminTaxClassSchema,
     'AdminTaxClassSchema',
-    AdminTaxClassRequestSchema,
-    'AdminTaxClassRequestSchema',
+    AdminTaxClassCreateRequestSchema,
+    'AdminTaxClassCreateRequestSchema',
     AdminTaxClassQueryParamsSchema,
     'AdminTaxClassQueryParamsSchema'
   ),
 
-  ...trio(
+  ...quartet(
     '/wc/v3/shipping/zones',
     AdminShippingZoneSchema,
     'AdminShippingZoneSchema',
-    AdminShippingZoneRequestSchema,
-    'AdminShippingZoneRequestSchema',
+    AdminShippingZoneCreateRequestSchema,
+    'AdminShippingZoneCreateRequestSchema',
+    AdminShippingZoneUpdateRequestSchema,
+    'AdminShippingZoneUpdateRequestSchema',
     AdminShippingZoneQueryParamsSchema,
     'AdminShippingZoneQueryParamsSchema'
   ),
@@ -277,12 +361,20 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     kind: 'response',
   },
   {
-    name: 'AdminShippingZoneMethodRequestSchema',
-    zod: AdminShippingZoneMethodRequestSchema,
+    name: 'AdminShippingZoneMethodCreateRequestSchema',
+    zod: AdminShippingZoneMethodCreateRequestSchema,
     surface: 'admin',
     route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
     kind: 'request',
     method: 'POST',
+  },
+  {
+    name: 'AdminShippingZoneMethodUpdateRequestSchema',
+    zod: AdminShippingZoneMethodUpdateRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
+    kind: 'request',
+    method: 'PUT',
   },
   {
     name: 'AdminShippingZoneMethodQueryParamsSchema',
@@ -309,22 +401,39 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     method: 'GET',
   },
 
-  ...trio(
-    '/wc/v3/payment_gateways',
-    AdminPaymentGatewaySchema,
-    'AdminPaymentGatewaySchema',
-    AdminPaymentGatewayRequestSchema,
-    'AdminPaymentGatewayRequestSchema',
-    AdminPaymentGatewayQueryParamsSchema,
-    'AdminPaymentGatewayQueryParamsSchema'
-  ),
+  // Payment gateways — PUT only upstream (registration is plugin-driven).
+  {
+    name: 'AdminPaymentGatewaySchema',
+    zod: AdminPaymentGatewaySchema,
+    surface: 'admin',
+    route: '/wc/v3/payment_gateways',
+    kind: 'response',
+  },
+  {
+    name: 'AdminPaymentGatewayUpdateRequestSchema',
+    zod: AdminPaymentGatewayUpdateRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/payment_gateways',
+    kind: 'request',
+    method: 'PUT',
+  },
+  {
+    name: 'AdminPaymentGatewayQueryParamsSchema',
+    zod: AdminPaymentGatewayQueryParamsSchema,
+    surface: 'admin',
+    route: '/wc/v3/payment_gateways',
+    kind: 'query',
+    method: 'GET',
+  },
 
-  ...trio(
+  ...quartet(
     '/wc/v3/webhooks',
     AdminWebhookSchema,
     'AdminWebhookSchema',
-    AdminWebhookRequestSchema,
-    'AdminWebhookRequestSchema',
+    AdminWebhookCreateRequestSchema,
+    'AdminWebhookCreateRequestSchema',
+    AdminWebhookUpdateRequestSchema,
+    'AdminWebhookUpdateRequestSchema',
     AdminWebhookQueryParamsSchema,
     'AdminWebhookQueryParamsSchema'
   ),
@@ -345,8 +454,8 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     kind: 'response',
   },
   {
-    name: 'AdminSettingRequestSchema',
-    zod: AdminSettingRequestSchema,
+    name: 'AdminSettingUpdateRequestSchema',
+    zod: AdminSettingUpdateRequestSchema,
     surface: 'admin',
     route: '/wc/v3/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)',
     kind: 'request',
@@ -354,30 +463,47 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
   },
 
   // Categories / tags / shipping classes — taxonomy routes
-  ...trio(
+  ...quartet(
     '/wc/v3/products/categories',
     AdminTaxonomyCategorySchema,
     'AdminTaxonomyCategorySchema',
-    AdminTaxonomyCategoryRequestSchema,
-    'AdminTaxonomyCategoryRequestSchema',
+    AdminTaxonomyCategoryCreateRequestSchema,
+    'AdminTaxonomyCategoryCreateRequestSchema',
+    AdminTaxonomyCategoryUpdateRequestSchema,
+    'AdminTaxonomyCategoryUpdateRequestSchema',
     AdminTaxonomyCategoryQueryParamsSchema,
     'AdminTaxonomyCategoryQueryParamsSchema'
   ),
-  ...trio(
+  ...quartet(
     '/wc/v3/products/tags',
     AdminTaxonomyTagSchema,
     'AdminTaxonomyTagSchema',
-    AdminTaxonomyTagRequestSchema,
-    'AdminTaxonomyTagRequestSchema',
+    AdminTaxonomyTagCreateRequestSchema,
+    'AdminTaxonomyTagCreateRequestSchema',
+    AdminTaxonomyTagUpdateRequestSchema,
+    'AdminTaxonomyTagUpdateRequestSchema',
     AdminTaxonomyTagQueryParamsSchema,
     'AdminTaxonomyTagQueryParamsSchema'
   ),
-  ...trio(
+  ...quartet(
+    '/wc/v3/products/brands',
+    AdminBrandSchema,
+    'AdminBrandSchema',
+    AdminBrandCreateRequestSchema,
+    'AdminBrandCreateRequestSchema',
+    AdminBrandUpdateRequestSchema,
+    'AdminBrandUpdateRequestSchema',
+    AdminBrandQueryParamsSchema,
+    'AdminBrandQueryParamsSchema'
+  ),
+  ...quartet(
     '/wc/v3/products/shipping_classes',
     AdminShippingClassSchema,
     'AdminShippingClassSchema',
-    AdminShippingClassRequestSchema,
-    'AdminShippingClassRequestSchema',
+    AdminShippingClassCreateRequestSchema,
+    'AdminShippingClassCreateRequestSchema',
+    AdminShippingClassUpdateRequestSchema,
+    'AdminShippingClassUpdateRequestSchema',
     AdminShippingClassQueryParamsSchema,
     'AdminShippingClassQueryParamsSchema'
   ),
@@ -391,12 +517,20 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     kind: 'response',
   },
   {
-    name: 'AdminProductAttributeRequestSchema',
-    zod: AdminProductAttributeRequestSchema,
+    name: 'AdminProductAttributeCreateRequestSchema',
+    zod: AdminProductAttributeCreateRequestSchema,
     surface: 'admin',
     route: '/wc/v3/products/attributes',
     kind: 'request',
     method: 'POST',
+  },
+  {
+    name: 'AdminProductAttributeUpdateRequestSchema',
+    zod: AdminProductAttributeUpdateRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes',
+    kind: 'request',
+    method: 'PUT',
   },
   {
     name: 'AdminProductAttributeQueryParamsSchema',
@@ -414,12 +548,20 @@ export const SCHEMA_MAP: SchemaMapEntry[] = [
     kind: 'response',
   },
   {
-    name: 'AdminProductAttributeTermRequestSchema',
-    zod: AdminProductAttributeTermRequestSchema,
+    name: 'AdminProductAttributeTermCreateRequestSchema',
+    zod: AdminProductAttributeTermCreateRequestSchema,
     surface: 'admin',
     route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
     kind: 'request',
     method: 'POST',
+  },
+  {
+    name: 'AdminProductAttributeTermUpdateRequestSchema',
+    zod: AdminProductAttributeTermUpdateRequestSchema,
+    surface: 'admin',
+    route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
+    kind: 'request',
+    method: 'PUT',
   },
   {
     name: 'AdminProductAttributeTermQueryParamsSchema',

@@ -30,7 +30,27 @@ export const AdminBrandSchema = z.looseObject({
 
 export type AdminBrand = z.infer<typeof AdminBrandSchema>;
 
-export const AdminBrandRequestSchema = z.looseObject({
+/**
+ * Brand request parameters for POST /products/brands. `name` is required.
+ */
+export const AdminBrandCreateRequestSchema = z.looseObject({
+  name: z.string().describe('Brand name.'),
+  slug: z.string().optional(),
+  parent: z.number().optional(),
+  description: z.string().optional(),
+  display: z.enum(['default', 'products', 'subcategories', 'both']).optional(),
+  image: AdminBrandImage.optional(),
+  menu_order: z.number().optional(),
+});
+
+export type AdminBrandCreateRequest = z.input<
+  typeof AdminBrandCreateRequestSchema
+>;
+
+/**
+ * Brand request parameters for PUT /products/brands/{id}.
+ */
+export const AdminBrandUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
   slug: z.string().optional(),
   parent: z.number().optional(),
@@ -40,7 +60,9 @@ export const AdminBrandRequestSchema = z.looseObject({
   menu_order: z.number().optional(),
 });
 
-export type AdminBrandRequest = z.infer<typeof AdminBrandRequestSchema>;
+export type AdminBrandUpdateRequest = z.input<
+  typeof AdminBrandUpdateRequestSchema
+>;
 
 export const AdminBrandQueryParamsSchema = z.looseObject({
   /**

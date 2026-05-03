@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminTaxonomyCategoryQueryParams,
   AdminTaxonomyCategory,
-  AdminTaxonomyCategoryRequest,
+  AdminTaxonomyCategoryCreateRequest,
+  AdminTaxonomyCategoryUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -68,13 +69,13 @@ export class AdminProductCategoryService extends BaseService {
    * Create a new product category
    */
   async create(
-    category: AdminTaxonomyCategoryRequest,
+    category: AdminTaxonomyCategoryCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminTaxonomyCategory,
-      AdminTaxonomyCategoryRequest
+      AdminTaxonomyCategoryCreateRequest
     >(url, category, options);
 
     return { data, error };
@@ -85,13 +86,13 @@ export class AdminProductCategoryService extends BaseService {
    */
   async update(
     id: number,
-    category: AdminTaxonomyCategoryRequest,
+    category: AdminTaxonomyCategoryUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminTaxonomyCategory,
-      AdminTaxonomyCategoryRequest
+      AdminTaxonomyCategoryUpdateRequest
     >(url, category, options);
 
     return { data, error };
@@ -117,8 +118,8 @@ export class AdminProductCategoryService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminTaxonomyCategoryRequest[];
-      update?: Array<AdminTaxonomyCategoryRequest & { id: number }>;
+      create?: AdminTaxonomyCategoryCreateRequest[];
+      update?: Array<AdminTaxonomyCategoryUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

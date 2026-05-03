@@ -1,3 +1,10 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "surface": "admin",
+      "route": "/wc/v3",
+      "reason": "Root path, not user-facing SDK target",
+      "addedAt": "2026-05-02"
+    }
+  ]
 }

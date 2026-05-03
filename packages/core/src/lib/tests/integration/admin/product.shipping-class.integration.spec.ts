@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
+  AdminShippingClassCreateRequest,
   AdminShippingClassQueryParams,
-  AdminShippingClassRequest,
   Typewoo,
 } from '../../../../index.js';
 import {
@@ -51,7 +51,7 @@ describe('Integration: Admin Product Shipping Classes', () => {
 
   it('creates, retrieves, updates, and deletes a shipping class', async () => {
     const ts = Date.now();
-    const req: AdminShippingClassRequest = {
+    const req: AdminShippingClassCreateRequest = {
       name: `ship-class-${ts}`,
       slug: `ship-class-${ts}`,
       description: 'Integration test shipping class',

@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminTaxonomyTagQueryParams,
   AdminTaxonomyTag,
-  AdminTaxonomyTagRequest,
+  AdminTaxonomyTagCreateRequest,
+  AdminTaxonomyTagUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,13 +66,13 @@ export class AdminProductTagService extends BaseService {
    * Create a new product tag
    */
   async create(
-    tag: AdminTaxonomyTagRequest,
+    tag: AdminTaxonomyTagCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminTaxonomyTag,
-      AdminTaxonomyTagRequest
+      AdminTaxonomyTagCreateRequest
     >(url, tag, options);
 
     return { data, error };
@@ -82,13 +83,13 @@ export class AdminProductTagService extends BaseService {
    */
   async update(
     id: number,
-    tag: AdminTaxonomyTagRequest,
+    tag: AdminTaxonomyTagUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminTaxonomyTag,
-      AdminTaxonomyTagRequest
+      AdminTaxonomyTagUpdateRequest
     >(url, tag, options);
 
     return { data, error };
@@ -114,8 +115,8 @@ export class AdminProductTagService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminTaxonomyTagRequest[];
-      update?: Array<AdminTaxonomyTagRequest & { id: number }>;
+      create?: AdminTaxonomyTagCreateRequest[];
+      update?: Array<AdminTaxonomyTagUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
