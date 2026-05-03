@@ -76,19 +76,21 @@ export const AdminShippingZoneMethodSchema = z.looseObject({
   method_id: z.string().describe('Shipping method ID.'),
   method_title: z.string().describe('Shipping method title.'),
   method_description: z.string().describe('Shipping method description.'),
-  settings: z.record(
-    z.string(),
-    z.object({
-      id: z.string(),
-      label: z.string(),
-      description: z.string(),
-      type: z.string(),
-      value: z.string(),
-      default: z.string(),
-      tip: z.string(),
-      placeholder: z.string(),
-    })
-  ).describe('Shipping method settings.'),
+  settings: z
+    .record(
+      z.string(),
+      z.object({
+        id: z.string(),
+        label: z.string(),
+        description: z.string(),
+        type: z.string(),
+        value: z.string(),
+        default: z.string(),
+        tip: z.string(),
+        placeholder: z.string(),
+      })
+    )
+    .describe('Shipping method settings.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),

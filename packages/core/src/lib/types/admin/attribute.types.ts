@@ -6,9 +6,15 @@ import { z } from 'zod';
 export const AdminProductAttributeSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   name: z.string().describe('Attribute name.'),
-  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  slug: z
+    .string()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
   type: z.enum(['select']).describe('Type of attribute.'),
-  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']).describe('Default sort order.'),
+  order_by: z
+    .enum(['menu_order', 'name', 'name_num', 'id'])
+    .describe('Default sort order.'),
   has_archives: z.boolean().describe('Enable/Disable attribute archives.'),
   _links: z
     .object({
@@ -70,9 +76,15 @@ export type AdminProductAttributeQueryParams = z.infer<
 export const AdminProductAttributeTermSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   name: z.string().describe('Term name.'),
-  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  slug: z
+    .string()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
   description: z.string().describe('HTML description of the resource.'),
-  menu_order: z.number().describe('Menu order, used to custom sort the resource.'),
+  menu_order: z
+    .number()
+    .describe('Menu order, used to custom sort the resource.'),
   count: z.number().describe('Number of published products for the resource.'),
   _links: z
     .object({

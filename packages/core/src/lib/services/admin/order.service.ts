@@ -190,11 +190,10 @@ export class AdminOrderService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes`;
-    const { data, error } = await doPost<AdminOrderNote, AdminOrderNoteCreateRequest>(
-      url,
-      note,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminOrderNote,
+      AdminOrderNoteCreateRequest
+    >(url, note, options);
 
     return { data, error };
   }

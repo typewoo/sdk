@@ -7,21 +7,27 @@ export const AdminPaymentGatewaySchema = z.looseObject({
   order: z.number().describe('Payment gateway sort order.'),
   enabled: z.boolean().describe('Payment gateway enabled status.'),
   method_title: z.string().describe('Payment gateway method title.'),
-  method_description: z.string().describe('Payment gateway method description.'),
-  method_supports: z.array(z.string()).describe('Supported features for this payment gateway.'),
-  settings: z.record(
-    z.string(),
-    z.object({
-      id: z.string(),
-      label: z.string(),
-      description: z.string(),
-      type: z.string(),
-      value: z.string(),
-      default: z.string(),
-      tip: z.string(),
-      placeholder: z.string(),
-    })
-  ).describe('Payment gateway settings.'),
+  method_description: z
+    .string()
+    .describe('Payment gateway method description.'),
+  method_supports: z
+    .array(z.string())
+    .describe('Supported features for this payment gateway.'),
+  settings: z
+    .record(
+      z.string(),
+      z.object({
+        id: z.string(),
+        label: z.string(),
+        description: z.string(),
+        type: z.string(),
+        value: z.string(),
+        default: z.string(),
+        tip: z.string(),
+        placeholder: z.string(),
+      })
+    )
+    .describe('Payment gateway settings.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),

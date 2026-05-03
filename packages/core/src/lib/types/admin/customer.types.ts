@@ -19,7 +19,9 @@ const AdminCustomerAddress = z.object({
   address_1: z.string().describe('Address line 1'),
   address_2: z.string().describe('Address line 2'),
   city: z.string().describe('City name.'),
-  state: z.string().describe('ISO code or name of the state, province or district.'),
+  state: z
+    .string()
+    .describe('ISO code or name of the state, province or district.'),
   postcode: z.string().describe('Postal code.'),
   country: z.string().describe('ISO code of the country.'),
   email: z.string().optional().describe('Email address.'),
@@ -31,10 +33,22 @@ const AdminCustomerAddress = z.object({
  */
 export const AdminCustomerSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
-  date_created: z.string().describe('The date the customer was created, in the site\'s timezone.'),
-  date_created_gmt: z.string().describe('The date the customer was created, as GMT.'),
-  date_modified: z.string().nullable().describe('The date the customer was last modified, in the site\'s timezone.'),
-  date_modified_gmt: z.string().nullable().describe('The date the customer was last modified, as GMT.'),
+  date_created: z
+    .string()
+    .describe("The date the customer was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the customer was created, as GMT.'),
+  date_modified: z
+    .string()
+    .nullable()
+    .describe(
+      "The date the customer was last modified, in the site's timezone."
+    ),
+  date_modified_gmt: z
+    .string()
+    .nullable()
+    .describe('The date the customer was last modified, as GMT.'),
   email: z.string().describe('The email address for the customer.'),
   /**
    * Customer first name.
@@ -53,8 +67,12 @@ export const AdminCustomerSchema = z.looseObject({
    */
   username: z.string().describe('Customer login name.'),
   billing: AdminCustomerAddress,
-  shipping: AdminCustomerAddress.omit({ email: true, phone: true }).describe('List of billing address data.'),
-  is_paying_customer: z.boolean().describe('Is the customer a paying customer?'),
+  shipping: AdminCustomerAddress.omit({ email: true, phone: true }).describe(
+    'List of billing address data.'
+  ),
+  is_paying_customer: z
+    .boolean()
+    .describe('Is the customer a paying customer?'),
   avatar_url: z.string().describe('Avatar URL.'),
   meta_data: z.array(AdminCustomerMetaData).describe('Meta data.'),
   _links: z

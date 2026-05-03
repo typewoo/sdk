@@ -65,11 +65,10 @@ export class AdminSettingService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
-    const { data, error } = await doPut<AdminSetting, AdminSettingUpdateRequest>(
-      url,
-      setting,
-      options
-    );
+    const { data, error } = await doPut<
+      AdminSetting,
+      AdminSettingUpdateRequest
+    >(url, setting, options);
 
     return { data, error };
   }

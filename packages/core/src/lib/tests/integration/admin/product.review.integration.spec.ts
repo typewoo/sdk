@@ -1,8 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import {
-  AdminProductReviewCreateRequest,
-  Typewoo,
-} from '../../../../index.js';
+import { AdminProductReviewCreateRequest, Typewoo } from '../../../../index.js';
 import {
   GET_WP_ADMIN_APP_PASSWORD,
   GET_WP_ADMIN_USER,

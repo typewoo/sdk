@@ -92,18 +92,30 @@ export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
 
 export const AdminRefundSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
-  date_created: z.string().describe('The date the order refund was created, in the site\'s timezone.'),
-  date_created_gmt: z.string().describe('The date the order refund was created, as GMT.'),
+  date_created: z
+    .string()
+    .describe("The date the order refund was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the order refund was created, as GMT.'),
   amount: z.string().describe('Refund amount.'),
   reason: z.string().describe('Reason for refund.'),
   refunded_by: z.number().describe('User ID of user who created the refund.'),
-  refunded_payment: z.boolean().describe('If the payment was refunded via the API.'),
+  refunded_payment: z
+    .boolean()
+    .describe('If the payment was refunded via the API.'),
   meta_data: z.array(AdminRefundMetaData).describe('Meta data.'),
   line_items: z.array(AdminRefundLineItemSchema).describe('Line items data.'),
-  shipping_lines: z.array(AdminRefundShippingLineSchema).describe('Shipping lines data.'),
+  shipping_lines: z
+    .array(AdminRefundShippingLineSchema)
+    .describe('Shipping lines data.'),
   tax_lines: z.array(AdminRefundTaxLineSchema).describe('Tax lines data.'),
   fee_lines: z.array(AdminRefundFeeLineSchema).describe('Fee lines data.'),
-  api_refund: z.boolean().describe('When true, the payment gateway API is used to generate the refund.'),
+  api_refund: z
+    .boolean()
+    .describe(
+      'When true, the payment gateway API is used to generate the refund.'
+    ),
   api_restock: z.boolean().describe('When true, refunded items are restocked.'),
   order_id: z.number(),
   _links: z.object({

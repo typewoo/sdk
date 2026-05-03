@@ -2,10 +2,18 @@ import { z } from 'zod';
 
 const AdminTaxonomyCategoryImage = z.object({
   id: z.number().describe('Image ID.'),
-  date_created: z.string().describe('The date the image was created, in the site\'s timezone.'),
-  date_created_gmt: z.string().describe('The date the image was created, as GMT.'),
-  date_modified: z.string().describe('The date the image was last modified, in the site\'s timezone.'),
-  date_modified_gmt: z.string().describe('The date the image was last modified, as GMT.'),
+  date_created: z
+    .string()
+    .describe("The date the image was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the image was created, as GMT.'),
+  date_modified: z
+    .string()
+    .describe("The date the image was last modified, in the site's timezone."),
+  date_modified_gmt: z
+    .string()
+    .describe('The date the image was last modified, as GMT.'),
   src: z.string().describe('Image URL.'),
   name: z.string().describe('Image name.'),
   alt: z.string().describe('Image alternative text.'),
@@ -29,11 +37,17 @@ export type AdminCategoryDisplay = z.infer<typeof AdminCategoryDisplaySchema>;
 export const AdminTaxonomyCategorySchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   name: z.string().describe('Category name.'),
-  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  slug: z
+    .string()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
   parent: z.number().describe('The ID for the parent of the resource.'),
   description: z.string().describe('HTML description of the resource.'),
   display: AdminCategoryDisplaySchema,
-  image: AdminTaxonomyCategoryImage.nullable().describe('Category archive display type.'),
+  image: AdminTaxonomyCategoryImage.nullable().describe(
+    'Category archive display type.'
+  ),
   menu_order: z.number().describe('Menu order, used to custom sort the term.'),
   count: z.number().describe('Number of published products for the resource.'),
   _links: z
@@ -121,7 +135,11 @@ export type AdminTaxonomyCategoryQueryParams = z.infer<
 export const AdminTaxonomyTagSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   name: z.string().describe('Tag name.'),
-  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  slug: z
+    .string()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
   description: z.string().describe('HTML description of the resource.'),
   count: z.number().describe('Number of published products for the resource.'),
   _links: z
@@ -198,7 +216,11 @@ export type AdminTaxonomyTagQueryParams = z.infer<
 export const AdminShippingClassSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   name: z.string().describe('Shipping class name.'),
-  slug: z.string().describe('An alphanumeric identifier for the resource unique to its type.'),
+  slug: z
+    .string()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
   description: z.string().describe('HTML description of the resource.'),
   count: z.number().describe('Number of published products for the resource.'),
   _links: z

@@ -19,7 +19,9 @@ const AdminOrderAddress = z.object({
   address_1: z.string().describe('Address line 1'),
   address_2: z.string().describe('Address line 2'),
   city: z.string().describe('City name.'),
-  state: z.string().describe('ISO code or name of the state, province or district.'),
+  state: z
+    .string()
+    .describe('ISO code or name of the state, province or district.'),
   postcode: z.string().describe('Postal code.'),
   country: z.string().describe('Country code in ISO 3166-1 alpha-2 format.'),
   email: z.string().optional().describe('Email address.'),
@@ -159,23 +161,39 @@ export type AdminOrderRefund = z.infer<typeof AdminOrderRefundSchema>;
 export const AdminOrderSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   parent_id: z.number().describe('Parent order ID.'),
-  status: z.enum([
-    'pending',
-    'processing',
-    'on-hold',
-    'completed',
-    'cancelled',
-    'refunded',
-    'failed',
-    'checkout-draft',
-  ]).describe('Order status.'),
-  currency: z.string().describe('Currency the order was created with, in ISO format.'),
-  version: z.string().describe('Version of WooCommerce which last updated the order.'),
-  prices_include_tax: z.boolean().describe('True the prices included tax during checkout.'),
-  date_created: z.string().describe('The date the order was created, in the site\'s timezone.'),
-  date_created_gmt: z.string().describe('The date the order was created, as GMT.'),
-  date_modified: z.string().describe('The date the order was last modified, in the site\'s timezone.'),
-  date_modified_gmt: z.string().describe('The date the order was last modified, as GMT.'),
+  status: z
+    .enum([
+      'pending',
+      'processing',
+      'on-hold',
+      'completed',
+      'cancelled',
+      'refunded',
+      'failed',
+      'checkout-draft',
+    ])
+    .describe('Order status.'),
+  currency: z
+    .string()
+    .describe('Currency the order was created with, in ISO format.'),
+  version: z
+    .string()
+    .describe('Version of WooCommerce which last updated the order.'),
+  prices_include_tax: z
+    .boolean()
+    .describe('True the prices included tax during checkout.'),
+  date_created: z
+    .string()
+    .describe("The date the order was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the order was created, as GMT.'),
+  date_modified: z
+    .string()
+    .describe("The date the order was last modified, in the site's timezone."),
+  date_modified_gmt: z
+    .string()
+    .describe('The date the order was last modified, as GMT.'),
   discount_total: z.string().describe('Total discount amount for the order.'),
   discount_tax: z.string().describe('Total discount tax amount for the order.'),
   shipping_total: z.string().describe('Total shipping amount for the order.'),
@@ -186,29 +204,49 @@ export const AdminOrderSchema = z.looseObject({
   customer_id: z.number().describe('User ID who owns the order. 0 for guests.'),
   order_key: z.string().describe('Order key.'),
   billing: AdminOrderAddress,
-  shipping: AdminOrderAddress.omit({ email: true, phone: true }).describe('Billing address.'),
+  shipping: AdminOrderAddress.omit({ email: true, phone: true }).describe(
+    'Billing address.'
+  ),
   payment_method: z.string().describe('Payment method ID.'),
   payment_method_title: z.string().describe('Payment method title.'),
   transaction_id: z.string().describe('Unique transaction ID.'),
-  customer_ip_address: z.string().describe('Customer\'s IP address.'),
+  customer_ip_address: z.string().describe("Customer's IP address."),
   customer_user_agent: z.string().describe('User agent of the customer.'),
   created_via: z.string().describe('Shows where the order was created.'),
   customer_note: z.string().describe('Note left by customer during checkout.'),
-  date_completed: z.string().nullable().describe('The date the order was completed, in the site\'s timezone.'),
-  date_paid: z.string().nullable().describe('The date the order was paid, in the site\'s timezone.'),
-  cart_hash: z.string().describe('MD5 hash of cart items to ensure orders are not modified.'),
+  date_completed: z
+    .string()
+    .nullable()
+    .describe("The date the order was completed, in the site's timezone."),
+  date_paid: z
+    .string()
+    .nullable()
+    .describe("The date the order was paid, in the site's timezone."),
+  cart_hash: z
+    .string()
+    .describe('MD5 hash of cart items to ensure orders are not modified.'),
   number: z.string().describe('Order number.'),
   meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
   line_items: z.array(AdminOrderLineItemSchema).describe('Line items data.'),
   tax_lines: z.array(AdminOrderTaxLineSchema).describe('Tax lines data.'),
-  shipping_lines: z.array(AdminOrderShippingLineSchema).describe('Shipping lines data.'),
+  shipping_lines: z
+    .array(AdminOrderShippingLineSchema)
+    .describe('Shipping lines data.'),
   fee_lines: z.array(AdminOrderFeeLineSchema).describe('Fee lines data.'),
-  coupon_lines: z.array(AdminOrderCouponLineSchema).describe('Coupons line data.'),
+  coupon_lines: z
+    .array(AdminOrderCouponLineSchema)
+    .describe('Coupons line data.'),
   refunds: z.array(AdminOrderRefundSchema).describe('List of refunds.'),
   payment_url: z.string().describe('Order payment URL.'),
   is_editable: z.boolean().describe('Whether an order can be edited.'),
-  needs_payment: z.boolean().describe('Whether an order needs payment, based on status and order total.'),
-  needs_processing: z.boolean().describe('Whether an order needs processing before it can be completed.'),
+  needs_payment: z
+    .boolean()
+    .describe(
+      'Whether an order needs payment, based on status and order total.'
+    ),
+  needs_processing: z
+    .boolean()
+    .describe('Whether an order needs processing before it can be completed.'),
   date_created_formatted: z.string(),
   status_transition: z.object({
     note: z.string(),
@@ -352,11 +390,23 @@ export type AdminOrderQueryParams = z.infer<typeof AdminOrderQueryParamsSchema>;
 export const AdminOrderNoteSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   author: z.string().describe('Order note author.'),
-  date_created: z.string().describe('The date the order note was created, in the site\'s timezone.'),
-  date_created_gmt: z.string().describe('The date the order note was created, as GMT.'),
+  date_created: z
+    .string()
+    .describe("The date the order note was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .describe('The date the order note was created, as GMT.'),
   note: z.string().describe('Order note content.'),
-  customer_note: z.boolean().describe('If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.'),
-  added_by_user: z.boolean().describe('If true, this note will be attributed to the current user. If false, the note will be attributed to the system.'),
+  customer_note: z
+    .boolean()
+    .describe(
+      'If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.'
+    ),
+  added_by_user: z
+    .boolean()
+    .describe(
+      'If true, this note will be attributed to the current user. If false, the note will be attributed to the system.'
+    ),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
