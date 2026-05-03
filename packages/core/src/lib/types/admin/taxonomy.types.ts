@@ -44,7 +44,9 @@ export const AdminTaxonomyCategorySchema = z.looseObject({
     ),
   parent: z.number().describe('The ID for the parent of the resource.'),
   description: z.string().describe('HTML description of the resource.'),
-  display: AdminCategoryDisplaySchema,
+  display: AdminCategoryDisplaySchema.describe(
+    'Category archive display type.'
+  ),
   image: AdminTaxonomyCategoryImage.nullable().describe(
     'Category archive display type.'
   ),
@@ -67,11 +69,26 @@ export type AdminTaxonomyCategory = z.infer<typeof AdminTaxonomyCategorySchema>;
  */
 export const AdminTaxonomyCategoryCreateRequestSchema = z.looseObject({
   name: z.string().describe('Category name.'),
-  slug: z.string().optional(),
-  parent: z.number().optional(),
-  description: z.string().optional(),
-  display: AdminCategoryDisplaySchema.optional(),
-  image: AdminTaxonomyCategoryImage.optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
+  display: AdminCategoryDisplaySchema.optional().describe(
+    'Category archive display type.'
+  ),
+  image: AdminTaxonomyCategoryImage.optional().describe('Image data.'),
   menu_order: z.number().optional(),
 });
 
@@ -84,11 +101,26 @@ export type AdminTaxonomyCategoryCreateRequest = z.input<
  */
 export const AdminTaxonomyCategoryUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  slug: z.string().optional(),
-  parent: z.number().optional(),
-  description: z.string().optional(),
-  display: AdminCategoryDisplaySchema.optional(),
-  image: AdminTaxonomyCategoryImage.optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
+  display: AdminCategoryDisplaySchema.optional().describe(
+    'Category archive display type.'
+  ),
+  image: AdminTaxonomyCategoryImage.optional().describe('Image data.'),
   menu_order: z.number().optional(),
 });
 
@@ -100,14 +132,39 @@ export type AdminTaxonomyCategoryUpdateRequest = z.input<
  * Product category query parameters for listing
  */
 export const AdminTaxonomyCategoryQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe(
+      'Offset the result set by a specific number of items. Applies to hierarchical taxonomies only.'
+    ),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum([
       'id',
@@ -118,11 +175,28 @@ export const AdminTaxonomyCategoryQueryParamsSchema = z.looseObject({
       'description',
       'count',
     ])
-    .optional(),
-  hide_empty: z.boolean().optional(),
-  parent: z.number().optional(),
-  product: z.number().optional(),
-  slug: z.string().optional(),
+    .optional()
+    .describe('Sort collection by resource attribute.'),
+  hide_empty: z
+    .boolean()
+    .optional()
+    .describe('Whether to hide resources not assigned to any products.'),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  product: z
+    .number()
+    .optional()
+    .describe('Limit result set to resources assigned to a specific product.'),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
 });
 
 export type AdminTaxonomyCategoryQueryParams = z.infer<
@@ -157,8 +231,16 @@ export type AdminTaxonomyTag = z.infer<typeof AdminTaxonomyTagSchema>;
  */
 export const AdminTaxonomyTagCreateRequestSchema = z.looseObject({
   name: z.string().describe('Tag name.'),
-  slug: z.string().optional(),
-  description: z.string().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
 });
 
 export type AdminTaxonomyTagCreateRequest = z.input<
@@ -170,8 +252,16 @@ export type AdminTaxonomyTagCreateRequest = z.input<
  */
 export const AdminTaxonomyTagUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  slug: z.string().optional(),
-  description: z.string().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
 });
 
 export type AdminTaxonomyTagUpdateRequest = z.input<
@@ -182,14 +272,39 @@ export type AdminTaxonomyTagUpdateRequest = z.input<
  * Product tag query parameters for listing
  */
 export const AdminTaxonomyTagQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe(
+      'Offset the result set by a specific number of items. Applies to hierarchical taxonomies only.'
+    ),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum([
       'id',
@@ -200,11 +315,28 @@ export const AdminTaxonomyTagQueryParamsSchema = z.looseObject({
       'description',
       'count',
     ])
-    .optional(),
-  hide_empty: z.boolean().optional(),
-  parent: z.number().optional(),
-  product: z.number().optional(),
-  slug: z.string().optional(),
+    .optional()
+    .describe('Sort collection by resource attribute.'),
+  hide_empty: z
+    .boolean()
+    .optional()
+    .describe('Whether to hide resources not assigned to any products.'),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  product: z
+    .number()
+    .optional()
+    .describe('Limit result set to resources assigned to a specific product.'),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
 });
 
 export type AdminTaxonomyTagQueryParams = z.infer<
@@ -238,8 +370,16 @@ export type AdminShippingClass = z.infer<typeof AdminShippingClassSchema>;
  */
 export const AdminShippingClassCreateRequestSchema = z.looseObject({
   name: z.string().describe('Shipping class name.'),
-  slug: z.string().optional(),
-  description: z.string().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
 });
 
 export type AdminShippingClassCreateRequest = z.input<
@@ -251,8 +391,16 @@ export type AdminShippingClassCreateRequest = z.input<
  */
 export const AdminShippingClassUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  slug: z.string().optional(),
-  description: z.string().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
 });
 
 export type AdminShippingClassUpdateRequest = z.input<
@@ -263,14 +411,39 @@ export type AdminShippingClassUpdateRequest = z.input<
  * Shipping class query parameters for listing
  */
 export const AdminShippingClassQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe(
+      'Offset the result set by a specific number of items. Applies to hierarchical taxonomies only.'
+    ),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum([
       'id',
@@ -281,11 +454,28 @@ export const AdminShippingClassQueryParamsSchema = z.looseObject({
       'description',
       'count',
     ])
-    .optional(),
-  hide_empty: z.boolean().optional(),
-  parent: z.number().optional(),
-  product: z.number().optional(),
-  slug: z.string().optional(),
+    .optional()
+    .describe('Sort collection by resource attribute.'),
+  hide_empty: z
+    .boolean()
+    .optional()
+    .describe('Whether to hide resources not assigned to any products.'),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  product: z
+    .number()
+    .optional()
+    .describe('Limit result set to resources assigned to a specific product.'),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
 });
 
 export type AdminShippingClassQueryParams = z.infer<

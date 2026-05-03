@@ -49,7 +49,7 @@ export const AdminOrderLineItemSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
   sku: z.string(),
   price: z.string(),
   image: z.object({
@@ -73,7 +73,7 @@ export const AdminOrderTaxLineSchema = z.looseObject({
   tax_total: z.string(),
   shipping_tax_total: z.string(),
   rate_percent: z.number(),
-  meta_data: z.array(AdminOrderMetaData),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
 });
 
 export type AdminOrderTaxLine = z.infer<typeof AdminOrderTaxLineSchema>;
@@ -94,7 +94,7 @@ export const AdminOrderShippingLineSchema = z.looseObject({
       total: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
 });
 
 export type AdminOrderShippingLine = z.infer<
@@ -118,7 +118,7 @@ export const AdminOrderFeeLineSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
 });
 
 export type AdminOrderFeeLine = z.infer<typeof AdminOrderFeeLineSchema>;
@@ -131,7 +131,7 @@ export const AdminOrderCouponLineSchema = z.looseObject({
   code: z.string(),
   discount: z.string(),
   discount_tax: z.string(),
-  meta_data: z.array(AdminOrderMetaData),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
 });
 
 export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
@@ -147,8 +147,8 @@ export const AdminOrderRefundSchema = z.looseObject({
   reason: z.string(),
   refunded_by: z.number(),
   refunded_payment: z.boolean(),
-  meta_data: z.array(AdminOrderMetaData),
-  line_items: z.array(AdminOrderLineItemSchema),
+  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  line_items: z.array(AdminOrderLineItemSchema).describe('Line items data.'),
   api_refund: z.boolean(),
   api_restock: z.boolean(),
 });
@@ -203,7 +203,7 @@ export const AdminOrderSchema = z.looseObject({
   total_tax: z.string().describe('Sum of all taxes.'),
   customer_id: z.number().describe('User ID who owns the order. 0 for guests.'),
   order_key: z.string().describe('Order key.'),
-  billing: AdminOrderAddress,
+  billing: AdminOrderAddress.describe('Billing address.'),
   shipping: AdminOrderAddress.omit({ email: true, phone: true }).describe(
     'Billing address.'
   ),
@@ -269,7 +269,7 @@ export type AdminOrder = z.infer<typeof AdminOrderSchema>;
  * an empty body to create a draft order, so all fields are optional.
  */
 export const AdminOrderCreateRequestSchema = z.looseObject({
-  parent_id: z.number().optional(),
+  parent_id: z.number().optional().describe('Parent order ID.'),
   status: z
     .enum([
       'pending',
@@ -281,21 +281,50 @@ export const AdminOrderCreateRequestSchema = z.looseObject({
       'failed',
       'checkout-draft',
     ])
-    .optional(),
-  currency: z.string().optional(),
-  customer_id: z.number().optional(),
-  customer_note: z.string().optional(),
-  billing: AdminOrderAddress.optional(),
-  shipping: AdminOrderAddress.omit({ email: true, phone: true }).optional(),
-  payment_method: z.string().optional(),
-  payment_method_title: z.string().optional(),
-  transaction_id: z.string().optional(),
-  meta_data: z.array(AdminOrderMetaData).optional(),
-  line_items: z.array(AdminOrderLineItemSchema.partial()).optional(),
-  shipping_lines: z.array(AdminOrderShippingLineSchema.partial()).optional(),
-  fee_lines: z.array(AdminOrderFeeLineSchema.partial()).optional(),
-  coupon_lines: z.array(AdminOrderCouponLineSchema.partial()).optional(),
-  set_paid: z.boolean().optional(),
+    .optional()
+    .describe('Order status.'),
+  currency: z
+    .string()
+    .optional()
+    .describe('Currency the order was created with, in ISO format.'),
+  customer_id: z
+    .number()
+    .optional()
+    .describe('User ID who owns the order. 0 for guests.'),
+  customer_note: z
+    .string()
+    .optional()
+    .describe('Note left by customer during checkout.'),
+  billing: AdminOrderAddress.optional().describe('Billing address.'),
+  shipping: AdminOrderAddress.omit({ email: true, phone: true })
+    .optional()
+    .describe('Shipping address.'),
+  payment_method: z.string().optional().describe('Payment method ID.'),
+  payment_method_title: z.string().optional().describe('Payment method title.'),
+  transaction_id: z.string().optional().describe('Unique transaction ID.'),
+  meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
+  line_items: z
+    .array(AdminOrderLineItemSchema.partial())
+    .optional()
+    .describe('Line items data.'),
+  shipping_lines: z
+    .array(AdminOrderShippingLineSchema.partial())
+    .optional()
+    .describe('Shipping lines data.'),
+  fee_lines: z
+    .array(AdminOrderFeeLineSchema.partial())
+    .optional()
+    .describe('Fee lines data.'),
+  coupon_lines: z
+    .array(AdminOrderCouponLineSchema.partial())
+    .optional()
+    .describe('Coupons line data.'),
+  set_paid: z
+    .boolean()
+    .optional()
+    .describe(
+      'Define if the order is paid. It will set the status to processing and reduce stock items.'
+    ),
 });
 
 export type AdminOrderCreateRequest = z.input<
@@ -306,7 +335,7 @@ export type AdminOrderCreateRequest = z.input<
  * Order request parameters for PUT /orders/{id} (update).
  */
 export const AdminOrderUpdateRequestSchema = z.looseObject({
-  parent_id: z.number().optional(),
+  parent_id: z.number().optional().describe('Parent order ID.'),
   status: z
     .enum([
       'pending',
@@ -318,21 +347,50 @@ export const AdminOrderUpdateRequestSchema = z.looseObject({
       'failed',
       'checkout-draft',
     ])
-    .optional(),
-  currency: z.string().optional(),
-  customer_id: z.number().optional(),
-  customer_note: z.string().optional(),
-  billing: AdminOrderAddress.optional(),
-  shipping: AdminOrderAddress.omit({ email: true, phone: true }).optional(),
-  payment_method: z.string().optional(),
-  payment_method_title: z.string().optional(),
-  transaction_id: z.string().optional(),
-  meta_data: z.array(AdminOrderMetaData).optional(),
-  line_items: z.array(AdminOrderLineItemSchema.partial()).optional(),
-  shipping_lines: z.array(AdminOrderShippingLineSchema.partial()).optional(),
-  fee_lines: z.array(AdminOrderFeeLineSchema.partial()).optional(),
-  coupon_lines: z.array(AdminOrderCouponLineSchema.partial()).optional(),
-  set_paid: z.boolean().optional(),
+    .optional()
+    .describe('Order status.'),
+  currency: z
+    .string()
+    .optional()
+    .describe('Currency the order was created with, in ISO format.'),
+  customer_id: z
+    .number()
+    .optional()
+    .describe('User ID who owns the order. 0 for guests.'),
+  customer_note: z
+    .string()
+    .optional()
+    .describe('Note left by customer during checkout.'),
+  billing: AdminOrderAddress.optional().describe('Billing address.'),
+  shipping: AdminOrderAddress.omit({ email: true, phone: true })
+    .optional()
+    .describe('Shipping address.'),
+  payment_method: z.string().optional().describe('Payment method ID.'),
+  payment_method_title: z.string().optional().describe('Payment method title.'),
+  transaction_id: z.string().optional().describe('Unique transaction ID.'),
+  meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
+  line_items: z
+    .array(AdminOrderLineItemSchema.partial())
+    .optional()
+    .describe('Line items data.'),
+  shipping_lines: z
+    .array(AdminOrderShippingLineSchema.partial())
+    .optional()
+    .describe('Shipping lines data.'),
+  fee_lines: z
+    .array(AdminOrderFeeLineSchema.partial())
+    .optional()
+    .describe('Fee lines data.'),
+  coupon_lines: z
+    .array(AdminOrderCouponLineSchema.partial())
+    .optional()
+    .describe('Coupons line data.'),
+  set_paid: z
+    .boolean()
+    .optional()
+    .describe(
+      'Define if the order is paid. It will set the status to processing and reduce stock items.'
+    ),
 });
 
 export type AdminOrderUpdateRequest = z.input<
@@ -343,24 +401,81 @@ export type AdminOrderUpdateRequest = z.input<
  * Order query parameters for listing
  */
 export const AdminOrderQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  after: z.string().optional(),
-  before: z.string().optional(),
-  modified_after: z.string().optional(),
-  modified_before: z.string().optional(),
-  dates_are_gmt: z.boolean().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  modified_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified after a given ISO8601 compliant date.'
+    ),
+  modified_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified before a given ISO8601 compliant date.'
+    ),
+  dates_are_gmt: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether to consider GMT post dates when limiting response by published or modified date.'
+    ),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum(['date', 'id', 'include', 'title', 'slug', 'modified'])
-    .optional(),
-  parent: z.array(z.number()).optional(),
-  parent_exclude: z.array(z.number()).optional(),
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  parent: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to those of particular parent IDs.'),
+  parent_exclude: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Limit result set to all items except those of a particular parent ID.'
+    ),
   status: z
     .enum([
       'pending',
@@ -374,12 +489,28 @@ export const AdminOrderQueryParamsSchema = z.looseObject({
       'any',
       'trash',
     ])
-    .optional(),
-  customer: z.number().optional(),
-  product: z.number().optional(),
-  dp: z.number().optional(),
-  include_meta: z.array(z.string()).optional(),
-  exclude_meta: z.array(z.string()).optional(),
+    .optional()
+    .describe('Order status.'),
+  customer: z
+    .number()
+    .optional()
+    .describe('Limit result set to orders assigned a specific customer.'),
+  product: z
+    .number()
+    .optional()
+    .describe('Limit result set to orders assigned a specific product.'),
+  dp: z
+    .number()
+    .optional()
+    .describe('Number of decimal points to use in each resource.'),
+  include_meta: z
+    .array(z.string())
+    .optional()
+    .describe('Limit meta_data to specific keys.'),
+  exclude_meta: z
+    .array(z.string())
+    .optional()
+    .describe('Ensure meta_data excludes specific keys.'),
 });
 
 export type AdminOrderQueryParams = z.infer<typeof AdminOrderQueryParamsSchema>;
@@ -424,8 +555,18 @@ export type AdminOrderNote = z.infer<typeof AdminOrderNoteSchema>;
  */
 export const AdminOrderNoteCreateRequestSchema = z.looseObject({
   note: z.string().describe('Order note content.'),
-  customer_note: z.boolean().optional(),
-  added_by_user: z.boolean().optional(),
+  customer_note: z
+    .boolean()
+    .optional()
+    .describe(
+      'If true, the note will be shown to customers and they will be notified. If false, the note will be for admin reference only.'
+    ),
+  added_by_user: z
+    .boolean()
+    .optional()
+    .describe(
+      'If true, this note will be attributed to the current user. If false, the note will be attributed to the system.'
+    ),
 });
 
 export type AdminOrderNoteCreateRequest = z.input<

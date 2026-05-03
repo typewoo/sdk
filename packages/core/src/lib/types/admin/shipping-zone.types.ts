@@ -19,7 +19,7 @@ export type AdminShippingZone = z.infer<typeof AdminShippingZoneSchema>;
  */
 export const AdminShippingZoneCreateRequestSchema = z.looseObject({
   name: z.string().describe('Shipping zone name.'),
-  order: z.number().optional(),
+  order: z.number().optional().describe('Shipping method sort order.'),
 });
 
 export type AdminShippingZoneCreateRequest = z.input<
@@ -31,7 +31,7 @@ export type AdminShippingZoneCreateRequest = z.input<
  */
 export const AdminShippingZoneUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  order: z.number().optional(),
+  order: z.number().optional().describe('Shipping method sort order.'),
 });
 
 export type AdminShippingZoneUpdateRequest = z.input<
@@ -108,9 +108,12 @@ export type AdminShippingZoneMethod = z.infer<
  */
 export const AdminShippingZoneMethodCreateRequestSchema = z.looseObject({
   method_id: z.string().describe('Shipping method ID.'),
-  order: z.number().optional(),
-  enabled: z.boolean().optional(),
-  settings: z.record(z.string(), z.string()).optional(),
+  order: z.number().optional().describe('Shipping method sort order.'),
+  enabled: z.boolean().optional().describe('Shipping method enabled status.'),
+  settings: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe('Shipping method settings.'),
 });
 
 export type AdminShippingZoneMethodCreateRequest = z.input<
@@ -121,9 +124,12 @@ export type AdminShippingZoneMethodCreateRequest = z.input<
  * Zone method request parameters for PUT /shipping/zones/{zone}/methods/{id}.
  */
 export const AdminShippingZoneMethodUpdateRequestSchema = z.looseObject({
-  order: z.number().optional(),
-  enabled: z.boolean().optional(),
-  settings: z.record(z.string(), z.string()).optional(),
+  order: z.number().optional().describe('Shipping method sort order.'),
+  enabled: z.boolean().optional().describe('Shipping method enabled status.'),
+  settings: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe('Shipping method settings.'),
 });
 
 export type AdminShippingZoneMethodUpdateRequest = z.input<

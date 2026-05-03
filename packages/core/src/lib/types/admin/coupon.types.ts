@@ -191,7 +191,10 @@ export const AdminCouponCreateRequestSchema = z.looseObject({
     .array(z.number())
     .optional()
     .describe('List of category IDs the coupon applies to.'),
-  excluded_product_categories: z.array(z.number()).optional(),
+  excluded_product_categories: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon does not apply to.'),
   exclude_sale_items: z
     .boolean()
     .optional()
@@ -281,7 +284,10 @@ export const AdminCouponUpdateRequestSchema = z.looseObject({
     .array(z.number())
     .optional()
     .describe('List of category IDs the coupon applies to.'),
-  excluded_product_categories: z.array(z.number()).optional(),
+  excluded_product_categories: z
+    .array(z.number())
+    .optional()
+    .describe('List of category IDs the coupon does not apply to.'),
   exclude_sale_items: z
     .boolean()
     .optional()

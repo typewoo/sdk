@@ -128,22 +128,67 @@ export const AdminRefundSchema = z.looseObject({
 export type AdminRefund = z.infer<typeof AdminRefundSchema>;
 
 export const AdminRefundQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  after: z.string().optional(),
-  before: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum(['date', 'id', 'include', 'title', 'slug', 'modified'])
-    .optional(),
-  parent: z.array(z.number()).optional(),
-  parent_exclude: z.array(z.number()).optional(),
-  dp: z.number().optional(),
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  parent: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to those of particular parent IDs.'),
+  parent_exclude: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Limit result set to all items except those of a particular parent ID.'
+    ),
+  dp: z
+    .number()
+    .optional()
+    .describe('Number of decimal points to use in each resource.'),
 });
 
 export type AdminRefundQueryParams = z.infer<
@@ -156,16 +201,33 @@ export type AdminRefundQueryParams = z.infer<
  * Note: line_items/shipping_lines/tax_lines/fee_lines shapes vary; use loose records.
  */
 export const AdminRefundCreateRequestSchema = z.looseObject({
-  amount: z.string(),
-  reason: z.string().optional(),
-  refunded_by: z.number().optional(),
+  amount: z.string().describe('Refund amount.'),
+  reason: z.string().optional().describe('Reason for refund.'),
+  refunded_by: z
+    .number()
+    .optional()
+    .describe('User ID of user who created the refund.'),
   refunded_payment: z.boolean().optional(),
-  api_refund: z.boolean().optional(),
-  api_restock: z.boolean().optional(),
+  api_refund: z
+    .boolean()
+    .optional()
+    .describe(
+      'When true, the payment gateway API is used to generate the refund.'
+    ),
+  api_restock: z
+    .boolean()
+    .optional()
+    .describe('When true, refunded items are restocked.'),
   line_items: z.array(z.record(z.string(), z.unknown())).optional(),
-  shipping_lines: z.array(z.record(z.string(), z.unknown())).optional(),
+  shipping_lines: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe('Shipping lines data.'),
   tax_lines: z.array(z.record(z.string(), z.unknown())).optional(),
-  fee_lines: z.array(z.record(z.string(), z.unknown())).optional(),
+  fee_lines: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe('Fee lines data.'),
 });
 
 export type AdminRefundCreateRequest = z.infer<

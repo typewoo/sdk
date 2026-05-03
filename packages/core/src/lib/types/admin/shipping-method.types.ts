@@ -13,7 +13,12 @@ export const AdminShippingMethodSchema = z.looseObject({
 export type AdminShippingMethod = z.infer<typeof AdminShippingMethodSchema>;
 
 export const AdminShippingMethodQueryParamsSchema = z.looseObject({
-  context: z.enum(['view']).optional(),
+  context: z
+    .enum(['view'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
 });
 
 export type AdminShippingMethodQueryParams = z.infer<

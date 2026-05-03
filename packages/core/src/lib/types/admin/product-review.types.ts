@@ -48,14 +48,15 @@ export const AdminProductReviewCreateRequestSchema = z.looseObject({
   product_id: z
     .number()
     .describe('Unique identifier for the product that the review belongs to.'),
-  product_name: z.string().optional(),
+  product_name: z.string().optional().describe('Product name.'),
   status: z
     .enum(['approved', 'hold', 'spam', 'unspam', 'trash', 'untrash'])
-    .optional(),
+    .optional()
+    .describe('Status of the review.'),
   reviewer: z.string().describe('Reviewer name.'),
   reviewer_email: z.string().describe('Reviewer email.'),
   review: z.string().describe('The content of the review.'),
-  rating: z.number().optional(),
+  rating: z.number().optional().describe('Review rating (0 to 5).'),
 });
 
 export type AdminProductReviewCreateRequest = z.input<
@@ -67,14 +68,21 @@ export type AdminProductReviewCreateRequest = z.input<
  */
 export const AdminProductReviewUpdateRequestSchema = z.looseObject({
   product_id: z.number().optional(),
-  product_name: z.string().optional(),
+  product_name: z.string().optional().describe('Product name.'),
   status: z
     .enum(['approved', 'hold', 'spam', 'unspam', 'trash', 'untrash'])
-    .optional(),
-  reviewer: z.string().optional(),
-  reviewer_email: z.string().optional(),
+    .optional()
+    .describe('Status of the review.'),
+  reviewer: z
+    .string()
+    .optional()
+    .describe('Limit result set to reviews assigned to specific user IDs.'),
+  reviewer_email: z
+    .string()
+    .optional()
+    .describe('Limit result set to that from a specific author email.'),
   review: z.string().optional(),
-  rating: z.number().optional(),
+  rating: z.number().optional().describe('Review rating (0 to 5).'),
 });
 
 export type AdminProductReviewUpdateRequest = z.input<
@@ -82,22 +90,72 @@ export type AdminProductReviewUpdateRequest = z.input<
 >;
 
 export const AdminProductReviewQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  after: z.string().optional(),
-  before: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  orderby: z.enum(['date', 'date_gmt', 'id', 'include', 'product']).optional(),
-  reviewer: z.array(z.string()).optional(),
-  reviewer_exclude: z.array(z.number()).optional(),
-  reviewer_email: z.string().optional(),
-  product: z.array(z.number()).optional(),
-  status: z.string().optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to reviews published before a given ISO8601 compliant date.'
+    ),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific IDs.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
+  orderby: z
+    .enum(['date', 'date_gmt', 'id', 'include', 'product'])
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  reviewer: z
+    .array(z.string())
+    .optional()
+    .describe('Limit result set to reviews assigned to specific user IDs.'),
+  reviewer_exclude: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Ensure result set excludes reviews assigned to specific user IDs.'
+    ),
+  reviewer_email: z
+    .string()
+    .optional()
+    .describe('Limit result set to that from a specific author email.'),
+  product: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to reviews assigned to specific product IDs.'),
+  status: z.string().optional().describe('Status of the review.'),
 });
 
 export type AdminProductReviewQueryParams = z.infer<

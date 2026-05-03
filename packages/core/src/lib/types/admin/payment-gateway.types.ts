@@ -52,7 +52,12 @@ export type AdminPaymentGatewayUpdateRequest = z.input<
 >;
 
 export const AdminPaymentGatewayQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
 });
 
 export type AdminPaymentGatewayQueryParams = z.infer<

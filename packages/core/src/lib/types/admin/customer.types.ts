@@ -50,23 +50,11 @@ export const AdminCustomerSchema = z.looseObject({
     .nullable()
     .describe('The date the customer was last modified, as GMT.'),
   email: z.string().describe('The email address for the customer.'),
-  /**
-   * Customer first name.
-   */
   first_name: z.string().describe('Customer first name.'),
-  /**
-   * Customer last name.
-   */
   last_name: z.string().describe('Customer last name.'),
-  /**
-   * Customer role.
-   */
   role: z.string().describe('Customer role.'),
-  /**
-   * Customer login name.
-   */
   username: z.string().describe('Customer login name.'),
-  billing: AdminCustomerAddress,
+  billing: AdminCustomerAddress.describe('List of billing address data.'),
   shipping: AdminCustomerAddress.omit({ email: true, phone: true }).describe(
     'List of billing address data.'
   ),
@@ -91,13 +79,17 @@ export type AdminCustomer = z.infer<typeof AdminCustomerSchema>;
  */
 export const AdminCustomerCreateRequestSchema = z.looseObject({
   email: z.string().describe('The email address for the customer.'),
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-  username: z.string().optional(),
-  password: z.string().optional(),
-  billing: AdminCustomerAddress.optional(),
-  shipping: AdminCustomerAddress.omit({ email: true, phone: true }).optional(),
-  meta_data: z.array(AdminCustomerMetaData).optional(),
+  first_name: z.string().optional().describe('Customer first name.'),
+  last_name: z.string().optional().describe('Customer last name.'),
+  username: z.string().optional().describe('New user username.'),
+  password: z.string().optional().describe('New user password.'),
+  billing: AdminCustomerAddress.optional().describe(
+    'List of billing address data.'
+  ),
+  shipping: AdminCustomerAddress.omit({ email: true, phone: true })
+    .optional()
+    .describe('List of shipping address data.'),
+  meta_data: z.array(AdminCustomerMetaData).optional().describe('Meta data.'),
 });
 
 export type AdminCustomerCreateRequest = z.input<
@@ -109,13 +101,17 @@ export type AdminCustomerCreateRequest = z.input<
  * optional; `username` is omitted because WooCommerce ignores it on update.
  */
 export const AdminCustomerUpdateRequestSchema = z.looseObject({
-  email: z.string().optional(),
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-  password: z.string().optional(),
-  billing: AdminCustomerAddress.optional(),
-  shipping: AdminCustomerAddress.omit({ email: true, phone: true }).optional(),
-  meta_data: z.array(AdminCustomerMetaData).optional(),
+  email: z.string().optional().describe('The email address for the customer.'),
+  first_name: z.string().optional().describe('Customer first name.'),
+  last_name: z.string().optional().describe('Customer last name.'),
+  password: z.string().optional().describe('New user password.'),
+  billing: AdminCustomerAddress.optional().describe(
+    'List of billing address data.'
+  ),
+  shipping: AdminCustomerAddress.omit({ email: true, phone: true })
+    .optional()
+    .describe('List of shipping address data.'),
+  meta_data: z.array(AdminCustomerMetaData).optional().describe('Meta data.'),
 });
 
 export type AdminCustomerUpdateRequest = z.input<
@@ -126,16 +122,45 @@ export type AdminCustomerUpdateRequest = z.input<
  * Customer query parameters for listing
  */
 export const AdminCustomerQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  orderby: z.enum(['id', 'include', 'name', 'registered_date']).optional(),
-  email: z.string().optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific IDs.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
+  orderby: z
+    .enum(['id', 'include', 'name', 'registered_date'])
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  email: z
+    .string()
+    .optional()
+    .describe('Limit result set to resources with a specific email.'),
   role: z
     .enum([
       'all',
@@ -147,7 +172,8 @@ export const AdminCustomerQueryParamsSchema = z.looseObject({
       'customer',
       'shop_manager',
     ])
-    .optional(),
+    .optional()
+    .describe('Limit result set to resources with a specific role.'),
 });
 
 export type AdminCustomerQueryParams = z.infer<

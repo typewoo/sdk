@@ -31,10 +31,21 @@ export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
  */
 export const AdminProductAttributeCreateRequestSchema = z.looseObject({
   name: z.string().describe('Attribute name.'),
-  slug: z.string().optional(),
-  type: z.enum(['select']).optional(),
-  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']).optional(),
-  has_archives: z.boolean().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  type: z.enum(['select']).optional().describe('Type of attribute.'),
+  order_by: z
+    .enum(['menu_order', 'name', 'name_num', 'id'])
+    .optional()
+    .describe('Default sort order.'),
+  has_archives: z
+    .boolean()
+    .optional()
+    .describe('Enable/Disable attribute archives.'),
 });
 
 export type AdminProductAttributeCreateRequest = z.input<
@@ -46,10 +57,21 @@ export type AdminProductAttributeCreateRequest = z.input<
  */
 export const AdminProductAttributeUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  slug: z.string().optional(),
-  type: z.enum(['select']).optional(),
-  order_by: z.enum(['menu_order', 'name', 'name_num', 'id']).optional(),
-  has_archives: z.boolean().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  type: z.enum(['select']).optional().describe('Type of attribute.'),
+  order_by: z
+    .enum(['menu_order', 'name', 'name_num', 'id'])
+    .optional()
+    .describe('Default sort order.'),
+  has_archives: z
+    .boolean()
+    .optional()
+    .describe('Enable/Disable attribute archives.'),
 });
 
 export type AdminProductAttributeUpdateRequest = z.input<
@@ -60,10 +82,12 @@ export type AdminProductAttributeUpdateRequest = z.input<
  * Product attribute query parameters for listing
  */
 export const AdminProductAttributeQueryParamsSchema = z.looseObject({
-  /**
-   * Scope under which the request is made; determines fields present in response. Options: `view` and `edit`. Default is `view`.
-   */
-  context: z.enum(['view', 'edit']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
 });
 
 export type AdminProductAttributeQueryParams = z.infer<
@@ -105,9 +129,20 @@ export type AdminProductAttributeTerm = z.infer<
  */
 export const AdminProductAttributeTermCreateRequestSchema = z.looseObject({
   name: z.string().describe('Term name.'),
-  slug: z.string().optional(),
-  description: z.string().optional(),
-  menu_order: z.number().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
+  menu_order: z
+    .number()
+    .optional()
+    .describe('Menu order, used to custom sort the resource.'),
 });
 
 export type AdminProductAttributeTermCreateRequest = z.input<
@@ -119,9 +154,20 @@ export type AdminProductAttributeTermCreateRequest = z.input<
  */
 export const AdminProductAttributeTermUpdateRequestSchema = z.looseObject({
   name: z.string().optional(),
-  slug: z.string().optional(),
-  description: z.string().optional(),
-  menu_order: z.number().optional(),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
+  description: z
+    .string()
+    .optional()
+    .describe('HTML description of the resource.'),
+  menu_order: z
+    .number()
+    .optional()
+    .describe('Menu order, used to custom sort the resource.'),
 });
 
 export type AdminProductAttributeTermUpdateRequest = z.input<
@@ -132,14 +178,39 @@ export type AdminProductAttributeTermUpdateRequest = z.input<
  * Product attribute term query parameters for listing
  */
 export const AdminProductAttributeTermQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe(
+      'Offset the result set by a specific number of items. Applies to hierarchical taxonomies only.'
+    ),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
   orderby: z
     .enum([
       'id',
@@ -150,11 +221,28 @@ export const AdminProductAttributeTermQueryParamsSchema = z.looseObject({
       'description',
       'count',
     ])
-    .optional(),
-  hide_empty: z.boolean().optional(),
-  parent: z.number().optional(),
-  product: z.number().optional(),
-  slug: z.string().optional(),
+    .optional()
+    .describe('Sort collection by resource attribute.'),
+  hide_empty: z
+    .boolean()
+    .optional()
+    .describe('Whether to hide resources not assigned to any products.'),
+  parent: z
+    .number()
+    .optional()
+    .describe(
+      'Limit result set to resources assigned to a specific parent. Applies to hierarchical taxonomies only.'
+    ),
+  product: z
+    .number()
+    .optional()
+    .describe('Limit result set to resources assigned to a specific product.'),
+  slug: z
+    .string()
+    .optional()
+    .describe(
+      'An alphanumeric identifier for the resource unique to its type.'
+    ),
 });
 
 export type AdminProductAttributeTermQueryParams = z.infer<

@@ -45,10 +45,18 @@ export type AdminWebhook = z.infer<typeof AdminWebhookSchema>;
  * requires `topic` and `delivery_url` to register a webhook.
  */
 export const AdminWebhookCreateRequestSchema = z.looseObject({
-  name: z.string().optional(),
-  status: z.enum(['active', 'paused', 'disabled']).optional(),
+  name: z.string().optional().describe('A friendly name for the webhook.'),
+  status: z
+    .enum(['active', 'paused', 'disabled'])
+    .optional()
+    .describe('Webhook status.'),
   topic: z.string().describe('Webhook topic.'),
-  secret: z.string().optional(),
+  secret: z
+    .string()
+    .optional()
+    .describe(
+      "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided."
+    ),
   delivery_url: z
     .string()
     .describe('The URL where the webhook payload is delivered.'),
@@ -62,10 +70,18 @@ export type AdminWebhookCreateRequest = z.input<
  * Webhook request parameters for PUT /webhooks/{id} (update).
  */
 export const AdminWebhookUpdateRequestSchema = z.looseObject({
-  name: z.string().optional(),
-  status: z.enum(['active', 'paused', 'disabled']).optional(),
+  name: z.string().optional().describe('A friendly name for the webhook.'),
+  status: z
+    .enum(['active', 'paused', 'disabled'])
+    .optional()
+    .describe('Webhook status.'),
   topic: z.string().optional(),
-  secret: z.string().optional(),
+  secret: z
+    .string()
+    .optional()
+    .describe(
+      "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided."
+    ),
   delivery_url: z.string().optional(),
 });
 
@@ -74,18 +90,57 @@ export type AdminWebhookUpdateRequest = z.input<
 >;
 
 export const AdminWebhookQueryParamsSchema = z.looseObject({
-  context: z.enum(['view', 'edit']).optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  search: z.string().optional(),
-  after: z.string().optional(),
-  before: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  orderby: z.enum(['date', 'id', 'title']).optional(),
-  status: z.enum(['all', 'active', 'paused', 'disabled']).optional(),
+  context: z
+    .enum(['view', 'edit'])
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  search: z
+    .string()
+    .optional()
+    .describe('Limit results to those matching a string.'),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
+  orderby: z
+    .enum(['date', 'id', 'title'])
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  status: z
+    .enum(['all', 'active', 'paused', 'disabled'])
+    .optional()
+    .describe('Webhook status.'),
 });
 
 export type AdminWebhookQueryParams = z.infer<

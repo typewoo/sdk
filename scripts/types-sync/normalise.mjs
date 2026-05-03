@@ -80,13 +80,24 @@ function coerceType(rawType) {
 
 function unwrapOneOfNull(node) {
   // Some schemas express nullability via oneOf/anyOf with a {type:"null"} branch.
+  // Zod 4 emits `.describe(...)` on the parent node alongside an `anyOf`
+  // branch list — preserve parent-level metadata (description, default,
+  // readonly) when collapsing so the diff sees it.
   for (const key of ['oneOf', 'anyOf']) {
     const arr = node?.[key];
     if (Array.isArray(arr)) {
       const nullBranch = arr.find((b) => b?.type === 'null');
       const valBranch = arr.find((b) => b?.type && b.type !== 'null');
       if (nullBranch && valBranch) {
-        return { ...valBranch, _nullable: true };
+        const merged = { ...valBranch, _nullable: true };
+        if (typeof node.description === 'string' && !merged.description) {
+          merged.description = node.description;
+        }
+        if ('default' in node && !('default' in merged)) {
+          merged.default = node.default;
+        }
+        if (node.readonly === true) merged.readonly = true;
+        return merged;
       }
     }
   }
