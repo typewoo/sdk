@@ -2,8 +2,8 @@
  * Registry-completeness test.
  *
  * Asserts that every Zod schema exported from `packages/core/src/lib/types/`
- * is mapped in `schema-map.ts`. Prevents drift from hiding behind a missing
- * registry row.
+ * is registered in `schemaRegistry` (via the domain barrel index.ts files).
+ * Prevents drift from hiding behind a missing registration.
  *
  * Mode is controlled by env var:
  *   TYPES_SYNC_REGISTRY=warn   → log unmapped names, don't fail the suite (default)
@@ -17,36 +17,33 @@ import * as adminTypes from '../../../packages/core/src/lib/types/admin/index.js
 import * as storeTypes from '../../../packages/core/src/lib/types/store/index.js';
 import * as analyticsTypes from '../../../packages/core/src/lib/types/analytics/index.js';
 
+// Importing the barrels above triggers all schemaRegistry.add() calls.
+import { schemaRegistry } from '../../../packages/core/src/lib/types/schema-registry.js';
 import { SCHEMA_MAP } from '../schema-map.js';
 
 const MODE = process.env['TYPES_SYNC_REGISTRY'] ?? 'warn';
 
-function collectExportedSchemas(mod: Record<string, unknown>): string[] {
-  const out: string[] = [];
-  for (const [name, value] of Object.entries(mod)) {
-    if (!name.endsWith('Schema')) continue;
-    if (value instanceof ZodType) out.push(name);
-  }
-  return out.sort();
-}
-
 describe('types-sync registry completeness', () => {
-  const mappedNames = new Set(SCHEMA_MAP.map((e) => e.name));
-
   for (const [surface, mod] of [
     ['admin', adminTypes],
     ['store', storeTypes],
     ['analytics', analyticsTypes],
   ] as const) {
-    it(`every exported ${surface} schema is in SCHEMA_MAP`, () => {
-      const exported = collectExportedSchemas(mod as Record<string, unknown>);
-      const unmapped = exported.filter((n) => !mappedNames.has(n));
+    it(`every exported ${surface} schema is in schemaRegistry`, () => {
+      const unmapped: string[] = [];
+      for (const [name, value] of Object.entries(
+        mod as Record<string, unknown>
+      )) {
+        if (!name.endsWith('Schema')) continue;
+        if (!(value instanceof ZodType)) continue;
+        if (!schemaRegistry.has(value)) unmapped.push(name);
+      }
 
       if (unmapped.length === 0) return;
 
       const msg = `[${surface}] ${
         unmapped.length
-      } unmapped schema(s):\n  - ${unmapped.join('\n  - ')}`;
+      } unmapped schema(s):\n  - ${unmapped.sort().join('\n  - ')}`;
 
       if (MODE === 'strict') {
         expect.fail(msg);

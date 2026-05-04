@@ -31,7 +31,10 @@ export const BatchRequestSchema = z.looseObject({
    * - 'require-all-validate': All requests must validate before any are processed
    * - 'normal': Process requests individually
    */
-  validation: z.enum(['require-all-validate', 'normal']).optional(),
+  validation: z
+    .enum(['require-all-validate', 'normal'])
+    .default('normal')
+    .optional(),
 
   /**
    * Array of individual requests to process

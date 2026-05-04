@@ -172,7 +172,12 @@ function describeNode(node, requiredSet, fieldName) {
   return {
     type,
     types: types.length > 1 ? types : undefined,
-    optional: requiredSet ? !requiredSet.has(fieldName) : true,
+    optional:
+      collapsed.readonly === true
+        ? false
+        : requiredSet
+        ? !requiredSet.has(fieldName)
+        : true,
     nullable,
     enum: enumValues,
     items,

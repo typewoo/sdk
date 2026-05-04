@@ -79,6 +79,7 @@ function argsToSchema(args) {
       format: def.format,
       readonly: def.readonly,
       context: def.context,
+      default: def.default,
     };
     if (def.properties) node.properties = def.properties;
     properties[name] = node;

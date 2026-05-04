@@ -71,10 +71,18 @@ function contextOverlaps(field, allowed) {
 /**
  * Two field type-shapes are compatible if either side is `any`, the primary
  * types match, or one side's type is contained in the other's union (`types`).
+ * `number` and `integer` are treated as interchangeable: the SDK uses
+ * z.number() for all numeric fields while WC declares many as `integer`.
  */
 function typesCompatible(s, u) {
   if (s.type === u.type) return true;
   if (s.type === 'any' || u.type === 'any') return true;
+  // integer ⊂ number — SDK uses z.number() which emits "number"; WC declares
+  // IDs/counts as "integer". Treat as fully compatible, no drift record.
+  const numericPair =
+    (s.type === 'number' || s.type === 'integer') &&
+    (u.type === 'number' || u.type === 'integer');
+  if (numericPair) return true;
   const sTypes = s.types ?? [s.type];
   const uTypes = u.types ?? [u.type];
   if (sTypes.includes(u.type)) return true;
@@ -85,12 +93,14 @@ function typesCompatible(s, u) {
 /**
  * Value-equality for default comparison. Primitives compare directly; arrays
  * and plain objects compare by deterministic JSON. We treat `undefined` and
- * the literal absence of a default as equivalent.
+ * `null` as equivalent for the purposes of default comparison: both represent
+ * "no effective default" (the upstream API sometimes records `null` explicitly
+ * while Zod emits `undefined` for an unset default — the behaviour is the same).
  */
 function defaultsEqual(a, b) {
-  if (a === undefined && b === undefined) return true;
-  if (a === b) return true;
+  if (a == null && b == null) return true;
   if (a == null || b == null) return false;
+  if (a === b) return true;
   if (typeof a !== typeof b) return false;
   if (typeof a === 'object') {
     return JSON.stringify(a) === JSON.stringify(b);
@@ -217,21 +227,13 @@ export function diffPair({
 
     // Both present — compare attributes.
     if (!typesCompatible(s, u)) {
-      // integer ⊂ number — Zod's z.number() emits "number" while WC declares
-      // many ID fields as "integer". They're numerically compatible; flag as
-      // info so the channel stays usable for genuine type drift.
-      const isNumberIntegerPair =
-        (s.type === 'number' && u.type === 'integer') ||
-        (s.type === 'integer' && u.type === 'number');
       drifts.push({
         surface,
         route,
         kind,
         field: path,
         driftKind: 'type-mismatch',
-        severity: isNumberIntegerPair
-          ? 'info'
-          : severityFor('type-mismatch', kind),
+        severity: severityFor('type-mismatch', kind),
         sdk: typeBrief(s),
         upstream: typeBrief(u),
       });
@@ -293,7 +295,7 @@ export function diffPair({
       });
     }
 
-    if (s.optional !== u.optional) {
+    if (s.optional !== u.optional && !u.readonly) {
       drifts.push({
         surface,
         route,

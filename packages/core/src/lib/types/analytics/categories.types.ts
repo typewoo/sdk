@@ -10,26 +10,87 @@ const AnalyticsIntervalEnum = z.enum([
 ]);
 
 const AnalyticsStatsQueryParamsSchema = z.object({
-  before: z.string().optional(),
-  after: z.string().optional(),
-  interval: AnalyticsIntervalEnum.optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  orderby: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  force_cache_refresh: z.boolean().optional(),
-  fields: z.array(z.string()).optional(),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  interval: AnalyticsIntervalEnum.optional().describe(
+    'Time interval to use for buckets in the returned data.'
+  ),
+  page: z.number().optional().describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  orderby: z
+    .string()
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
+  force_cache_refresh: z
+    .boolean()
+    .optional()
+    .describe('Force retrieval of fresh data instead of from the cache.'),
+  fields: z
+    .array(z.string())
+    .optional()
+    .describe('Limit stats fields to the specified items.'),
 });
 
 const AnalyticsListQueryParamsSchema = z.object({
-  before: z.string().optional(),
-  after: z.string().optional(),
-  page: z.number().optional(),
-  per_page: z.number().optional(),
-  orderby: z.string().optional(),
-  order: z.enum(['asc', 'desc']).optional(),
-  extended_info: z.boolean().optional(),
-  force_cache_refresh: z.boolean().optional(),
+  before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published before a given ISO8601 compliant date.'
+    ),
+  after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources published after a given ISO8601 compliant date.'
+    ),
+  page: z
+    .number()
+    .default(1)
+    .optional()
+    .describe('Current page of the collection.'),
+  per_page: z
+    .number()
+    .default(10)
+    .optional()
+    .describe('Maximum number of items to be returned in result set.'),
+  orderby: z
+    .string()
+    .optional()
+    .describe('Sort collection by object attribute.'),
+  order: z
+    .enum(['asc', 'desc'])
+    .default('desc')
+    .optional()
+    .describe('Order sort attribute ascending or descending.'),
+  extended_info: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      'Add additional piece of info about each category to the report.'
+    ),
+  force_cache_refresh: z
+    .boolean()
+    .optional()
+    .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
 const AnalyticsLinkSchema = z.object({ href: z.string() });
@@ -62,12 +123,12 @@ export type AnalyticsCategoryExtendedInfo = z.infer<
  * Single category row from the categories detail endpoint
  */
 export const AnalyticsCategorySchema = z.object({
-  category_id: z.number(),
-  items_sold: z.number(),
-  net_revenue: z.number(),
-  orders_count: z.number(),
-  products_count: z.number(),
-  extended_info: AnalyticsCategoryExtendedInfoSchema.optional(),
+  category_id: z.number().describe('Category ID.'),
+  items_sold: z.number().describe('Amount of items sold.'),
+  net_revenue: z.number().describe('Total sales.'),
+  orders_count: z.number().describe('Number of orders.'),
+  products_count: z.number().describe('Amount of products.'),
+  extended_info: z.record(z.unknown()).optional(),
   _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCategory = z.infer<typeof AnalyticsCategorySchema>;
@@ -77,9 +138,24 @@ export type AnalyticsCategory = z.infer<typeof AnalyticsCategorySchema>;
  */
 export const AnalyticsCategoriesStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.extend({
-    categories: z.array(z.number()).optional(),
-    status_is: z.array(z.string()).optional(),
-    status_is_not: z.array(z.string()).optional(),
+    categories: z
+      .array(z.number())
+      .optional()
+      .describe(
+        'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
+      ),
+    status_is: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Limit result set to items that have the specified order status.'
+      ),
+    status_is_not: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Limit result set to items that don't have the specified order status."
+      ),
   });
 export type AnalyticsCategoriesStatsQueryParams = z.infer<
   typeof AnalyticsCategoriesStatsQueryParamsSchema
@@ -90,9 +166,29 @@ export type AnalyticsCategoriesStatsQueryParams = z.infer<
  */
 export const AnalyticsCategoriesListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.extend({
-    categories: z.array(z.number()).optional(),
-    status_is: z.array(z.string()).optional(),
-    status_is_not: z.array(z.string()).optional(),
+    categories: z
+      .array(z.number())
+      .optional()
+      .describe(
+        'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
+      ),
+    status_is: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Limit result set to items that have the specified order status.'
+      ),
+    status_is_not: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Limit result set to items that don't have the specified order status."
+      ),
+    orderby: z
+      .string()
+      .default('category_id')
+      .optional()
+      .describe('Sort collection by object attribute.'),
   });
 export type AnalyticsCategoriesListQueryParams = z.infer<
   typeof AnalyticsCategoriesListQueryParamsSchema

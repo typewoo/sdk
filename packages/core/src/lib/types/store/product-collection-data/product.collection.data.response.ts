@@ -5,10 +5,22 @@ import { ProductCollectionDataRatingCountsResponseSchema } from './product.colle
 import { ProductCollectionDataTaxonomyCountsResponseSchema } from './product.collection.data.taxonomy.counts.response.js';
 
 export const ProductCollectionDataResponseSchema = z.looseObject({
-  price_range: ProductCollectionDataPriceRangeResponseSchema,
-  attribute_counts: z.array(ProductCollectionDataAttributeCountsResponseSchema),
-  rating_counts: z.array(ProductCollectionDataRatingCountsResponseSchema),
-  taxonomy_counts: z.array(ProductCollectionDataTaxonomyCountsResponseSchema),
+  price_range:
+    ProductCollectionDataPriceRangeResponseSchema.nullable().describe(
+      'Min and max prices found in collection of products, provided using the smallest unit of the currency.'
+    ),
+  attribute_counts: z
+    .array(ProductCollectionDataAttributeCountsResponseSchema)
+    .nullable()
+    .describe('Returns number of products within attribute terms.'),
+  rating_counts: z
+    .array(ProductCollectionDataRatingCountsResponseSchema)
+    .nullable()
+    .describe('Returns number of products with each average rating.'),
+  taxonomy_counts: z
+    .array(ProductCollectionDataTaxonomyCountsResponseSchema)
+    .nullable()
+    .describe('Returns number of products within taxonomy terms.'),
 });
 
 export type ProductCollectionDataResponse = z.infer<
