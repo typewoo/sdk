@@ -69,7 +69,7 @@ jobs:
         if: steps.latest.outputs.tag != steps.prev.outputs.tag
         env:
           WOO_COMMERCE_VERSION: ${{ steps.latest.outputs.tag }}
-        run: pnpm wp:env:up:minimal
+        run: pnpm wp:env:rebuild
 
       - name: Read provisioned REST keys
         id: keys

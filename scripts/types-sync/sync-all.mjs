@@ -2,7 +2,7 @@
 /**
  * One-command end-to-end sync. For every version in support-window.json:
  *   1. Tear down any running WP+WC.
- *   2. Boot WP+WC pinned to that version (via existing pnpm wp:env:up:minimal).
+ *   2. Boot WP+WC pinned to that version (pnpm wp:env:rebuild, or wp:env:up with --no-clean).
  *   3. Capture the upstream snapshot.
  * Once all snapshots are fresh, run the diff against the full support window.
  *

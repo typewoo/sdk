@@ -43,11 +43,12 @@ jobs:
           echo "versions_json=$versions_json" >> "$GITHUB_OUTPUT"
           echo "latest=$latest" >> "$GITHUB_OUTPUT"
 
-  # Optionally re-capture one version on workflow_dispatch — used when you want
-  # to refresh a snapshot that changed upstream without waiting for a release.
+  # Always capture a fresh upstream snapshot before diffing.
+  # On workflow_dispatch, uses the explicit wc_version input; otherwise falls
+  # back to the latest version from support-window.json (used by schedule runs).
   capture:
     needs: window
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.wc_version != ''
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -61,10 +62,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
-      - name: Boot WP + WC (pinned to ${{ github.event.inputs.wc_version }})
+      - name: Boot WP + WC (pinned to ${{ github.event.inputs.wc_version || needs.window.outputs.latest }})
         env:
-          WOO_COMMERCE_VERSION: ${{ github.event.inputs.wc_version }}
-        run: pnpm wp:env:up:minimal
+          WOO_COMMERCE_VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
+        run: pnpm wp:env:rebuild
 
       - name: Read provisioned REST keys
         id: keys
@@ -80,16 +81,16 @@ jobs:
 
       - name: Capture
         env:
-          WC_VERSION: ${{ github.event.inputs.wc_version }}
+          WC_VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
           WP_CONSUMER_KEY: admin
           WP_CONSUMER_SECRET: ${{ steps.keys.outputs.pwd }}
-        run: pnpm types:sync:capture --wc-version ${{ github.event.inputs.wc_version }}
+        run: pnpm types:sync:capture --wc-version ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
 
       - name: Upload snapshot artifact
         uses: actions/upload-artifact@v4
         with:
-          name: snapshot-${{ github.event.inputs.wc_version }}
-          path: scripts/types-sync/snapshots/wc-${{ github.event.inputs.wc_version }}.json
+          name: snapshot-${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
+          path: scripts/types-sync/snapshots/wc-${{ github.event.inputs.wc_version || needs.window.outputs.latest }}.json
 
   # The diff job consumes the committed snapshots (and any freshly-captured
   # one from the `capture` step) and produces a report. Always runs against
