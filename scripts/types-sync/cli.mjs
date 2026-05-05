@@ -258,14 +258,12 @@ function diffEntryAgainstSnapshot(entry, snapshot, options) {
     return drifts;
   }
 
-  const isLoose = sdk.additionalProperties === true;
   return diffPair({
     sdk,
     upstream,
     surface: entry.surface,
     route: entry.route,
     kind: entry.kind,
-    isLoose,
     options,
   });
 }

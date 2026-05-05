@@ -11,6 +11,8 @@
  * is surface-agnostic.
  */
 
+import { sortKeysDeep } from './normalise.mjs';
+
 const SEVERITY = {
   // [response, request, query]
   'missing-in-sdk': { response: 'error', request: 'error', query: 'warn' },
@@ -103,7 +105,8 @@ function defaultsEqual(a, b) {
   if (a === b) return true;
   if (typeof a !== typeof b) return false;
   if (typeof a === 'object') {
-    return JSON.stringify(a) === JSON.stringify(b);
+    // Use sortKeysDeep for deterministic key-order-independent comparison.
+    return JSON.stringify(sortKeysDeep(a)) === JSON.stringify(sortKeysDeep(b));
   }
   return false;
 }
@@ -153,19 +156,10 @@ function arrayDiff(a, b) {
  *   surface: 'admin'|'store'|'analytics',
  *   route: string,
  *   kind: 'response'|'request'|'query',
- *   isLoose: boolean,
  *   options?: { checkDescriptions?: boolean },
  * }} args
  */
-export function diffPair({
-  sdk,
-  upstream,
-  surface,
-  route,
-  kind,
-  isLoose,
-  options,
-}) {
+export function diffPair({ sdk, upstream, surface, route, kind, options }) {
   const checkDescriptions = options?.checkDescriptions !== false;
   const drifts = [];
   if (!sdk || !upstream) return drifts;
@@ -275,7 +269,7 @@ export function diffPair({
           kind,
           field: path,
           driftKind: 'items-enum-drift',
-          severity: severityFor('enum-drift', kind),
+          severity: severityFor('items-enum-drift', kind),
           sdk: { items: { enum: sItemEnum ?? null }, extraInSdk },
           upstream: { items: { enum: uItemEnum ?? null }, missingInSdk },
         });

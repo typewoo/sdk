@@ -44,7 +44,6 @@ const BASE_ARGS = {
   surface: 'admin',
   route: '/wc/v3/coupons',
   kind: 'response',
-  isLoose: true,
   options: { checkDescriptions: false },
 } as const;
 
@@ -138,5 +137,73 @@ describe('diffPair – number/integer type compatibility', () => {
     );
     expect(typeDrift).toHaveLength(1);
     expect(typeDrift[0].severity).toBe('error');
+  });
+});
+
+describe('diffPair – items-enum-drift severity', () => {
+  function makeArraySchema(itemEnum: string[] | undefined) {
+    return {
+      additionalProperties: true,
+      fields: {
+        status: {
+          type: 'array',
+          optional: true,
+          nullable: false,
+          readonly: false,
+          additionalProperties: false,
+          items: itemEnum
+            ? { type: 'string', enum: itemEnum }
+            : { type: 'string' },
+        },
+      },
+    };
+  }
+
+  it('emits items-enum-drift with error severity (own severity row, not enum-drift)', () => {
+    const sdk = makeArraySchema(['completed', 'processing']);
+    const upstream = makeArraySchema(['cancelled', 'completed', 'processing']);
+
+    const drifts = diffPair({ ...BASE_ARGS, sdk, upstream });
+    const itemsDrift = drifts.filter(
+      (d: { driftKind: string }) => d.driftKind === 'items-enum-drift'
+    );
+    expect(itemsDrift).toHaveLength(1);
+    // Severity must come from the items-enum-drift row in SEVERITY, not enum-drift.
+    expect(itemsDrift[0].severity).toBe('error');
+  });
+});
+
+describe('diffPair – default-mismatch with object defaults', () => {
+  it('treats object defaults with different key ordering as equal', () => {
+    // Both sides declare the same default object but with different key order.
+    // JSON.stringify without sorting would report a false mismatch.
+    const sdkFields = {
+      meta: {
+        type: 'object' as const,
+        optional: true,
+        nullable: false,
+        readonly: false,
+        additionalProperties: false,
+        default: { b: 2, a: 1 },
+      },
+    };
+    const upstreamFields = {
+      meta: {
+        type: 'object' as const,
+        optional: true,
+        nullable: false,
+        readonly: false,
+        additionalProperties: false,
+        default: { a: 1, b: 2 },
+      },
+    };
+    const sdk = { additionalProperties: true, fields: sdkFields };
+    const upstream = { additionalProperties: true, fields: upstreamFields };
+
+    const drifts = diffPair({ ...BASE_ARGS, sdk, upstream });
+    const defaultDrift = drifts.filter(
+      (d: { driftKind: string }) => d.driftKind === 'default-mismatch'
+    );
+    expect(defaultDrift).toHaveLength(0);
   });
 });
