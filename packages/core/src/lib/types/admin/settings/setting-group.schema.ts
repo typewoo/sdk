@@ -18,10 +18,7 @@ export const AdminSettingGroupSchema = z.looseObject({
       'A human readable description for the setting used in interfaces.'
     ),
   parent_id: z.string().optional().describe('ID of parent grouping.'),
-  sub_groups: z
-    .array(z.string())
-    .optional()
-    .describe('IDs for settings sub groups.'),
+  sub_groups: z.string().optional().describe('IDs for settings sub groups.'),
   _links: z.object({
     options: z.array(z.object({ href: z.string() })),
   }),

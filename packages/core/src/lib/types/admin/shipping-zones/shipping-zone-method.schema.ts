@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const AdminShippingZoneMethodSchema = z.looseObject({
   instance_id: z.number().describe('Shipping method instance ID.'),
+  id: z.number().optional().describe('Shipping method instance ID.'),
   title: z.string().describe('Shipping method customer facing title.'),
   order: z.number().optional().describe('Shipping method sort order.'),
   enabled: z.boolean().optional().describe('Shipping method enabled status.'),
@@ -9,19 +10,50 @@ export const AdminShippingZoneMethodSchema = z.looseObject({
   method_title: z.string().describe('Shipping method title.'),
   method_description: z.string().describe('Shipping method description.'),
   settings: z
-    .record(
-      z.string(),
-      z.object({
-        id: z.string(),
-        label: z.string(),
-        description: z.string(),
-        type: z.string(),
-        value: z.string(),
-        default: z.string(),
-        tip: z.string(),
-        placeholder: z.string(),
-      })
-    )
+    .looseObject({
+      id: z
+        .string()
+        .optional()
+        .describe('A unique identifier for the setting.'),
+      label: z
+        .string()
+        .optional()
+        .describe('A human readable label for the setting used in interfaces.'),
+      description: z
+        .string()
+        .optional()
+        .describe(
+          'A human readable description for the setting used in interfaces.'
+        ),
+      type: z
+        .enum([
+          'checkbox',
+          'class',
+          'color',
+          'email',
+          'image_width',
+          'multiselect',
+          'number',
+          'order',
+          'password',
+          'radio',
+          'select',
+          'text',
+          'textarea',
+        ])
+        .optional()
+        .describe('Type of setting.'),
+      value: z.string().optional().describe('Setting value.'),
+      default: z.string().optional().describe('Default value for the setting.'),
+      tip: z
+        .string()
+        .optional()
+        .describe('Additional help text shown to the user about the setting.'),
+      placeholder: z
+        .string()
+        .optional()
+        .describe('Placeholder text to be displayed in text inputs.'),
+    })
     .optional()
     .describe('Shipping method settings.'),
   _links: z.object({

@@ -58,6 +58,7 @@ export const AdminOrderNoteCreateRequestSchema = z.looseObject({
     .describe(
       'If true, this note will be attributed to the current user. If false, the note will be attributed to the system.'
     ),
+  order_id: z.number().optional().describe('The order ID.'),
 });
 
 export type AdminOrderNoteCreateRequest = z.input<

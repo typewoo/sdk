@@ -126,7 +126,7 @@ export const AnalyticsCustomerSchema = z.object({
   date_registered_gmt: z.string().optional().describe('Date registered GMT.'),
   date_last_active: z.string().optional().describe('Date last active.'),
   date_last_active_gmt: z.string().optional().describe('Date last active GMT.'),
-  orders_count: z.number().describe('Number of orders.'),
+  orders_count: z.number().describe('Order count.'),
   total_spend: z.number().describe('Total spend.'),
   avg_order_value: z.number().describe('Avg order value.'),
   email: z.string().optional().describe('Email address.'),
@@ -143,16 +143,16 @@ export const AnalyticsCustomersStatsQueryParamsSchema = z.object({
     .default('all')
     .optional()
     .describe(
-      'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient.'
+      'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories'
     ),
   search: z
     .string()
     .optional()
     .describe(
-      'Limit response to objects with a customer field containing the search term.'
+      'Limit response to objects with a customer field containing the search term. Searches the field provided by `searchby`.'
     ),
   searchby: z
-    .enum(['name', 'username', 'email'])
+    .enum(['all', 'email', 'name', 'username'])
     .default('name')
     .optional()
     .describe(
@@ -162,35 +162,159 @@ export const AnalyticsCustomersStatsQueryParamsSchema = z.object({
     .array(z.number())
     .optional()
     .describe('Limit result to items with specified customer ids.'),
-  customers_exclude: z.array(z.number()).optional(),
-  name_includes: z.string().optional(),
-  name_excludes: z.string().optional(),
-  username_includes: z.string().optional(),
-  username_excludes: z.string().optional(),
-  email_includes: z.string().optional(),
-  email_excludes: z.string().optional(),
-  country_includes: z.string().optional(),
-  country_excludes: z.string().optional(),
-  registered_before: z.string().optional(),
-  registered_after: z.string().optional(),
-  registered_between: z.string().optional(),
-  last_active_before: z.string().optional(),
-  last_active_after: z.string().optional(),
-  last_active_between: z.string().optional(),
-  last_order_before: z.string().optional(),
-  last_order_after: z.string().optional(),
-  orders_count_min: z.number().optional(),
-  orders_count_max: z.number().optional(),
-  orders_count_between: z.string().optional(),
-  total_spend_min: z.number().optional(),
-  total_spend_max: z.number().optional(),
-  total_spend_between: z.string().optional(),
-  avg_order_value_min: z.number().optional(),
-  avg_order_value_max: z.number().optional(),
-  avg_order_value_between: z.string().optional(),
-  fields: z.array(z.string()).optional(),
-  force_cache_refresh: z.boolean().optional(),
-  context: z.string().optional(),
+  customers_exclude: z
+    .array(z.number())
+    .optional()
+    .describe('Limit result to exclude items with specified customer ids.'),
+  name_includes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects with specific names.'),
+  name_excludes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects excluding specific names.'),
+  username_includes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects with specific usernames.'),
+  username_excludes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects excluding specific usernames.'),
+  email_includes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects including emails.'),
+  email_excludes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects excluding emails.'),
+  country_includes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects with specific countries.'),
+  country_excludes: z
+    .string()
+    .optional()
+    .describe('Limit response to objects excluding specific countries.'),
+  registered_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects registered before (or at) a given ISO8601 compliant datetime.'
+    ),
+  registered_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects registered after (or at) a given ISO8601 compliant datetime.'
+    ),
+  registered_between: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Limit response to objects last active between two given ISO8601 compliant datetime.'
+    ),
+  last_active_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects last active before (or at) a given ISO8601 compliant datetime.'
+    ),
+  last_active_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects last active after (or at) a given ISO8601 compliant datetime.'
+    ),
+  last_active_between: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Limit response to objects last active between two given ISO8601 compliant datetime.'
+    ),
+  last_order_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects with last order before (or at) a given ISO8601 compliant datetime.'
+    ),
+  last_order_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to objects with last order after (or at) a given ISO8601 compliant datetime.'
+    ),
+  orders_count_min: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with an order count greater than or equal to given integer.'
+    ),
+  orders_count_max: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with an order count less than or equal to given integer.'
+    ),
+  orders_count_between: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Limit response to objects with an order count between two given integers.'
+    ),
+  total_spend_min: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with a total order spend greater than or equal to given number.'
+    ),
+  total_spend_max: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with a total order spend less than or equal to given number.'
+    ),
+  total_spend_between: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Limit response to objects with a total order spend between two given numbers.'
+    ),
+  avg_order_value_min: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with an average order spend greater than or equal to given number.'
+    ),
+  avg_order_value_max: z
+    .number()
+    .optional()
+    .describe(
+      'Limit response to objects with an average order spend less than or equal to given number.'
+    ),
+  avg_order_value_between: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Limit response to objects with an average order spend between two given numbers.'
+    ),
+  fields: z
+    .array(z.string())
+    .optional()
+    .describe('Limit stats fields to the specified items.'),
+  force_cache_refresh: z
+    .boolean()
+    .optional()
+    .describe('Force retrieval of fresh data instead of from the cache.'),
+  context: z
+    .enum(['edit', 'view'])
+    .default('view')
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
 });
 export type AnalyticsCustomersStatsQueryParams = z.infer<
   typeof AnalyticsCustomersStatsQueryParamsSchema
@@ -200,22 +324,22 @@ export type AnalyticsCustomersStatsQueryParams = z.infer<
  * Query parameters for customers list (detail) endpoint
  */
 export const AnalyticsCustomersListQueryParamsSchema =
-  AnalyticsListQueryParamsSchema.extend({
+  AnalyticsListQueryParamsSchema.omit({ extended_info: true }).extend({
     match: z
       .enum(['all', 'any'])
       .default('all')
       .optional()
       .describe(
-        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient.'
+        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories'
       ),
     search: z
       .string()
       .optional()
       .describe(
-        'Limit response to objects with a customer field containing the search term.'
+        'Limit response to objects with a customer field containing the search term. Searches the field provided by `searchby`.'
       ),
     searchby: z
-      .enum(['name', 'username', 'email'])
+      .enum(['all', 'email', 'name', 'username'])
       .default('name')
       .optional()
       .describe(
@@ -226,16 +350,196 @@ export const AnalyticsCustomersListQueryParamsSchema =
       .optional()
       .describe('Limit result to items with specified customer ids.'),
     orderby: z
-      .string()
+      .enum([
+        'avg_order_value',
+        'city',
+        'country',
+        'date_last_active',
+        'date_registered',
+        'email',
+        'first_name',
+        'last_name',
+        'location',
+        'name',
+        'orders_count',
+        'postcode',
+        'state',
+        'total_spend',
+        'username',
+      ])
       .default('date_registered')
       .optional()
       .describe('Sort collection by object attribute.'),
-    name_includes: z.string().optional(),
-    name_excludes: z.string().optional(),
-    email_includes: z.string().optional(),
-    email_excludes: z.string().optional(),
-    country_includes: z.string().optional(),
-    country_excludes: z.string().optional(),
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    customers_exclude: z
+      .array(z.number())
+      .optional()
+      .describe('Limit result to exclude items with specified customer ids.'),
+    filter_empty: z
+      .array(z.enum(['city', 'country', 'email', 'name', 'postcode', 'state']))
+      .optional()
+      .describe('Filter out results where any of the passed fields are empty'),
+    last_active_after: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects last active after (or at) a given ISO8601 compliant datetime.'
+      ),
+    last_active_before: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects last active before (or at) a given ISO8601 compliant datetime.'
+      ),
+    last_active_between: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Limit response to objects last active between two given ISO8601 compliant datetime.'
+      ),
+    last_order_after: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects with last order after (or at) a given ISO8601 compliant datetime.'
+      ),
+    last_order_before: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects with last order before (or at) a given ISO8601 compliant datetime.'
+      ),
+    location_excludes: z
+      .string()
+      .optional()
+      .describe(
+        'Excludes customers by location (state, country). Provide a comma-separated list of locations. Each location can be a country code (e.g. GB) or combination of country and state (e.g. US:CA).'
+      ),
+    location_includes: z
+      .string()
+      .optional()
+      .describe(
+        'Includes customers by location (state, country). Provide a comma-separated list of locations. Each location can be a country code (e.g. GB) or combination of country and state (e.g. US:CA).'
+      ),
+    name_includes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects with specific names.'),
+    name_excludes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects excluding specific names.'),
+    email_includes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects including emails.'),
+    email_excludes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects excluding emails.'),
+    country_includes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects with specific countries.'),
+    country_excludes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects excluding specific countries.'),
+    orders_count_between: z
+      .array(z.number())
+      .optional()
+      .describe(
+        'Limit response to objects with an order count between two given integers.'
+      ),
+    orders_count_max: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with an order count less than or equal to given integer.'
+      ),
+    orders_count_min: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with an order count greater than or equal to given integer.'
+      ),
+    registered_after: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects registered after (or at) a given ISO8601 compliant datetime.'
+      ),
+    registered_before: z
+      .string()
+      .optional()
+      .describe(
+        'Limit response to objects registered before (or at) a given ISO8601 compliant datetime.'
+      ),
+    registered_between: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Limit response to objects last active between two given ISO8601 compliant datetime.'
+      ),
+    total_spend_between: z
+      .array(z.number())
+      .optional()
+      .describe(
+        'Limit response to objects with a total order spend between two given numbers.'
+      ),
+    total_spend_max: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with a total order spend less than or equal to given number.'
+      ),
+    total_spend_min: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with a total order spend greater than or equal to given number.'
+      ),
+    avg_order_value_between: z
+      .array(z.number())
+      .optional()
+      .describe(
+        'Limit response to objects with an average order spend between two given numbers.'
+      ),
+    avg_order_value_max: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with an average order spend less than or equal to given number.'
+      ),
+    avg_order_value_min: z
+      .number()
+      .optional()
+      .describe(
+        'Limit response to objects with an average order spend greater than or equal to given number.'
+      ),
+    user_type: z
+      .enum(['all', 'guest', 'registered'])
+      .default('all')
+      .optional()
+      .describe('Limit result to items with specified user type.'),
+    username_excludes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects excluding specific usernames.'),
+    username_includes: z
+      .string()
+      .optional()
+      .describe('Limit response to objects with specific usernames.'),
+    users: z
+      .array(z.number())
+      .optional()
+      .describe('Limit result to items with specified user ids.'),
   });
 export type AnalyticsCustomersListQueryParams = z.infer<
   typeof AnalyticsCustomersListQueryParamsSchema

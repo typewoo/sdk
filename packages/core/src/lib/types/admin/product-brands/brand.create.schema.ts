@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AdminBrandImage } from './brand.js';
+import { AdminBrandImageRequest } from './brand.js';
 
 /**
  * Brand request parameters for POST /products/brands. `name` is required.
@@ -25,7 +25,7 @@ export const AdminBrandCreateRequestSchema = z.looseObject({
     .default('default')
     .optional()
     .describe('Category archive display type.'),
-  image: AdminBrandImage.optional().describe('Image data.'),
+  image: AdminBrandImageRequest.optional().describe('Image data.'),
   menu_order: z
     .number()
     .optional()

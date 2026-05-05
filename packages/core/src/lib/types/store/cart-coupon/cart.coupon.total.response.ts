@@ -12,7 +12,7 @@ export const CartCouponTotalResponseSchema = z.looseObject({
   currency_minor_unit: z
     .number()
     .describe(
-      'Currency minor unit (number of digits after the decimal separator).'
+      'Currency minor unit (number of digits after the decimal separator) for returned prices.'
     ),
   currency_decimal_separator: z
     .string()

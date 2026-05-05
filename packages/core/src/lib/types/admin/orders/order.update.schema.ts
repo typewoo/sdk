@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { AdminOrderAddress, AdminOrderMetaData } from './order.js';
+import {
+  AdminOrderAddress,
+  AdminOrderMetaData,
+  WC_CURRENCIES,
+} from './order.js';
 import {
   AdminOrderLineItemSchema,
   AdminOrderShippingLineSchema,
@@ -14,19 +18,20 @@ export const AdminOrderUpdateRequestSchema = z.looseObject({
   parent_id: z.number().optional().describe('Parent order ID.'),
   status: z
     .enum([
+      'auto-draft',
+      'cancelled',
+      'checkout-draft',
+      'completed',
+      'failed',
+      'on-hold',
       'pending',
       'processing',
-      'on-hold',
-      'completed',
-      'cancelled',
       'refunded',
-      'failed',
-      'checkout-draft',
     ])
     .optional()
     .describe('Order status.'),
   currency: z
-    .string()
+    .enum(WC_CURRENCIES)
     .optional()
     .describe('Currency the order was created with, in ISO format.'),
   customer_id: z
@@ -66,6 +71,17 @@ export const AdminOrderUpdateRequestSchema = z.looseObject({
     .optional()
     .describe(
       'Define if the order is paid. It will set the status to processing and reduce stock items.'
+    ),
+  created_via: z
+    .string()
+    .optional()
+    .describe('Shows where the order was created.'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
+  manual_update: z
+    .boolean()
+    .optional()
+    .describe(
+      'Set the action as manual so that the order note registers as "added by user".'
     ),
 });
 

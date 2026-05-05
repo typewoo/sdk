@@ -41,6 +41,14 @@ export const AdminSettingSchema = z.looseObject({
     .describe(
       'Array of options (key value pairs) for inputs such as select, multiselect, and radio buttons.'
     ),
+  group_id: z
+    .string()
+    .optional()
+    .describe('An identifier for the group this setting belongs to.'),
+  placeholder: z
+    .string()
+    .optional()
+    .describe('Placeholder text to be displayed in text inputs.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),

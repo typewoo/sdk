@@ -75,6 +75,41 @@ export const AdminRefundQueryParamsSchema = z.looseObject({
     .default(2)
     .optional()
     .describe('Number of decimal points to use in each resource.'),
+  dates_are_gmt: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      'Whether to consider GMT post dates when limiting response by published or modified date.'
+    ),
+  exclude_meta: z
+    .array(z.string())
+    .default([])
+    .optional()
+    .describe('Ensure meta_data excludes specific keys.'),
+  include_meta: z
+    .array(z.string())
+    .default([])
+    .optional()
+    .describe('Limit meta_data to specific keys.'),
+  modified_after: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified after a given ISO8601 compliant date.'
+    ),
+  modified_before: z
+    .string()
+    .optional()
+    .describe(
+      'Limit response to resources modified before a given ISO8601 compliant date.'
+    ),
+  order_id: z.number().optional().describe('The order ID.'),
+  order_item_display_meta: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe('Only show meta which is meant to be displayed for an order.'),
 });
 
 export type AdminRefundQueryParams = z.infer<

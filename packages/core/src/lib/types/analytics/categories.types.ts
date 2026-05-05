@@ -128,7 +128,7 @@ export const AnalyticsCategorySchema = z.object({
   net_revenue: z.number().describe('Total sales.'),
   orders_count: z.number().describe('Number of orders.'),
   products_count: z.number().describe('Amount of products.'),
-  extended_info: z.record(z.unknown()).optional(),
+  extended_info: z.record(z.string(), z.unknown()).optional(),
   _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCategory = z.infer<typeof AnalyticsCategorySchema>;
@@ -145,13 +145,39 @@ export const AnalyticsCategoriesStatsQueryParamsSchema =
         'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
       ),
     status_is: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         'Limit result set to items that have the specified order status.'
       ),
     status_is_not: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         "Limit result set to items that don't have the specified order status."
@@ -166,6 +192,18 @@ export type AnalyticsCategoriesStatsQueryParams = z.infer<
  */
 export const AnalyticsCategoriesListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    interval: z
+      .enum(['day', 'hour', 'month', 'quarter', 'week', 'year'])
+      .default('week')
+      .optional()
+      .describe('Time interval to use for buckets in the returned data.'),
     categories: z
       .array(z.number())
       .optional()
@@ -173,19 +211,52 @@ export const AnalyticsCategoriesListQueryParamsSchema =
         'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
       ),
     status_is: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         'Limit result set to items that have the specified order status.'
       ),
     status_is_not: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         "Limit result set to items that don't have the specified order status."
       ),
     orderby: z
-      .string()
+      .enum([
+        'category',
+        'category_id',
+        'items_sold',
+        'net_revenue',
+        'orders_count',
+        'products_count',
+      ])
       .default('category_id')
       .optional()
       .describe('Sort collection by object attribute.'),

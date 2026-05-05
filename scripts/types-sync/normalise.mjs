@@ -46,6 +46,8 @@ const TYPE_ALIASES = {
   bool: { type: 'boolean' },
   // WC's `int` is a JSON integer.
   int: { type: 'integer' },
+  // WC uses `float` for floating-point numbers; treat as `number`.
+  float: { type: 'number' },
 };
 
 function aliasType(t) {
@@ -128,8 +130,18 @@ function describeNode(node, requiredSet, fieldName) {
   const nullable = typeNullable || collapsed._nullable === true;
 
   const enumValues = Array.isArray(collapsed.enum)
-    ? [...collapsed.enum].map(String).sort()
+    ? [...new Set([...collapsed.enum].map(String))].sort()
     : undefined;
+
+  // Fix WC schema inconsistency: some fields are declared as type "number"
+  // but carry string-valued enum entries (e.g. format: ["currency","number"]).
+  // Reclassify as "string" so the diff engine sees matching types.
+  const effectiveType =
+    (type === 'number' || type === 'integer') &&
+    enumValues?.length > 0 &&
+    enumValues.every((v) => isNaN(Number(v)))
+      ? 'string'
+      : type;
 
   // For arrays we keep both the element's primitive type AND any enum
   // declared on the element. WC frequently expresses "list of allowed
@@ -137,12 +149,13 @@ function describeNode(node, requiredSet, fieldName) {
   // Older snapshots stored items as a bare string; the diff engine handles
   // both shapes for back-compat.
   let items;
-  if (type === 'array') {
+  if (effectiveType === 'array') {
     if (collapsed.items && typeof collapsed.items === 'object') {
       const inner = coerceType(collapsed.items.type);
-      const itemEnum = Array.isArray(collapsed.items.enum)
-        ? [...collapsed.items.enum].map(String).sort()
-        : undefined;
+      const itemEnum =
+        Array.isArray(collapsed.items.enum) && collapsed.items.enum.length > 0
+          ? [...new Set([...collapsed.items.enum].map(String))].sort()
+          : undefined;
       items = itemEnum
         ? { type: inner.type, enum: itemEnum }
         : { type: inner.type };
@@ -154,10 +167,16 @@ function describeNode(node, requiredSet, fieldName) {
   // Capture default if declared. WC OPTIONS often supplies defaults for
   // query params (per_page=10, context="view", …); Zod 4 emits `default`
   // when toJSONSchema runs with io:"input" on a `.default(...)` schema.
-  const defaultValue =
+  // WC inconsistency: some array fields declare a scalar string default (e.g.
+  // status: default "any"). Treat those as no default to avoid false mismatches.
+  const rawDefault =
     collapsed && typeof collapsed === 'object' && 'default' in collapsed
       ? collapsed.default
       : undefined;
+  const defaultValue =
+    effectiveType === 'array' && !Array.isArray(rawDefault)
+      ? undefined
+      : rawDefault;
 
   // Capture description. Zod's `.describe(...)` round-trips through
   // toJSONSchema as `description`. WC always populates this on its OPTIONS
@@ -170,7 +189,7 @@ function describeNode(node, requiredSet, fieldName) {
       : undefined;
 
   return {
-    type,
+    type: effectiveType,
     types: types.length > 1 ? types : undefined,
     optional:
       collapsed.readonly === true
@@ -184,7 +203,9 @@ function describeNode(node, requiredSet, fieldName) {
     default: defaultValue,
     description,
     additionalProperties:
-      type === 'object' ? isAdditionalPropertiesOpen(collapsed) : false,
+      effectiveType === 'object'
+        ? isAdditionalPropertiesOpen(collapsed)
+        : false,
     format:
       typeof collapsed.format === 'string' ? collapsed.format : aliasFormat,
     readonly: collapsed.readonly === true,
@@ -216,8 +237,11 @@ export function normaliseJsonSchema(root) {
       const desc = describeNode(child, required, name);
       fields[path] = desc;
 
-      if (desc.type === 'object' && child?.properties) {
-        visit(child, path);
+      // Unwrap anyOf/oneOf nullable wrapper so nested properties are still
+      // traversed when the object is nullable (Zod 4 emits anyOf for .nullable()).
+      const traversable = unwrapOneOfNull(child) ?? child;
+      if (desc.type === 'object' && traversable?.properties) {
+        visit(traversable, path);
       }
     }
   }

@@ -2,6 +2,17 @@ import { z } from 'zod';
 import { PaginatedSchema } from '../paginated.js';
 
 export const ProductRequestSchema = PaginatedSchema.extend({
+  context: z
+    .enum(['edit', 'embed', 'view'])
+    .default('view')
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  related: z
+    .number()
+    .optional()
+    .describe('Limit result set to products related to a specific product ID.'),
   /**
    * Limit results to those matching a string.
    */
@@ -122,8 +133,7 @@ export const ProductRequestSchema = PaginatedSchema.extend({
    * Limit result set to products assigned a specific type.
    */
   type: z
-    .enum(['simple', 'grouped', 'external', 'variable', 'variation'])
-    .or(z.string())
+    .enum(['external', 'grouped', 'simple', 'variable', 'variation'])
     .optional()
     .describe('Limit result set to products assigned a specific type.'),
   /**
@@ -149,7 +159,7 @@ export const ProductRequestSchema = PaginatedSchema.extend({
     .string()
     .optional()
     .describe(
-      'Limit result set to products assigned to categories IDs or slugs, separated by commas.'
+      'Limit result set to products assigned a set of category IDs or slugs, separated by commas.'
     ),
   /**
    * Operator to compare product category terms.
@@ -167,7 +177,7 @@ export const ProductRequestSchema = PaginatedSchema.extend({
     .string()
     .optional()
     .describe(
-      'Limit result set to products assigned to brands IDs or slugs, separated by commas.'
+      'Limit result set to products assigned a set of brand IDs or slugs, separated by commas.'
     ),
   /**
    * Operator to compare product brand terms.
@@ -188,7 +198,9 @@ export const ProductRequestSchema = PaginatedSchema.extend({
   tag: z
     .string()
     .optional()
-    .describe('Limit result set to products assigned a specific tag ID.'),
+    .describe(
+      'Limit result set to products assigned a set of tag IDs or slugs, separated by commas.'
+    ),
   /**
    * Operator to compare product tags.
    * Allowed values: `in`, `not_in`, `and`
@@ -212,7 +224,9 @@ export const ProductRequestSchema = PaginatedSchema.extend({
   min_price: z
     .string()
     .optional()
-    .describe('Limit result set to products based on a minimum price.'),
+    .describe(
+      'Limit result set to products based on a minimum price, provided using the smallest unit of the currency.'
+    ),
   /**
    * Limit result set to products based on a maximum price, provided using the smallest unit of the currency.
    * E.g. provide 10025 for 100.25 USD, which is a two-decimal currency, and 1025 for 1025 JPY, which is a zero-decimal currency.
@@ -220,7 +234,9 @@ export const ProductRequestSchema = PaginatedSchema.extend({
   max_price: z
     .string()
     .optional()
-    .describe('Limit result set to products based on a maximum price.'),
+    .describe(
+      'Limit result set to products based on a maximum price, provided using the smallest unit of the currency.'
+    ),
   /**
    * Limit result set to products with specified stock statuses.
    * Expects an array of strings containing `instock`, `outofstock` or `onbackorder`.
@@ -229,21 +245,21 @@ export const ProductRequestSchema = PaginatedSchema.extend({
     .array(z.enum(['instock', 'outofstock', 'onbackorder']))
     .default([])
     .optional()
-    .describe('Limit result set to products with specified stock statuses.'),
+    .describe('Limit result set to products with specified stock status.'),
   /**
    * Limit result set to specific attribute terms.
    * Expects an array of objects containing attribute (taxonomy), `term_id` or `slug`, and optional operator for comparison.
    */
   attributes: z
-    .array(z.enum(['attribute', 'term_id', 'slug']))
+    .array(z.string())
     .default([])
     .optional()
-    .describe('Limit result set to specific attribute terms.'),
+    .describe('Limit result set to products with selected global attributes.'),
   /**
    * The logical relationship between attributes when filtering across multiple at once.
    */
   attribute_relation: z
-    .string()
+    .enum(['and', 'in'])
     .default('and')
     .optional()
     .describe(
@@ -261,7 +277,7 @@ export const ProductRequestSchema = PaginatedSchema.extend({
    * Limit result set to products with a certain average rating.
    */
   rating: z
-    .array(z.number())
+    .array(z.enum(['1', '2', '3', '4', '5']))
     .default([])
     .optional()
     .describe('Limit result set to products with a certain average rating.'),

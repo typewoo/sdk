@@ -78,7 +78,7 @@ export const AdminProductReviewQueryParamsSchema = z.looseObject({
     .optional()
     .describe('Limit result set to reviews assigned to specific product IDs.'),
   status: z
-    .string()
+    .enum(['all', 'approved', 'hold', 'spam', 'trash'])
     .default('approved')
     .optional()
     .describe('Limit result set to reviews assigned a specific status.'),

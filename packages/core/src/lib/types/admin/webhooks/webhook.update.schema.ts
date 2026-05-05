@@ -13,6 +13,7 @@ export const AdminWebhookUpdateRequestSchema = z.looseObject({
     .describe(
       "Secret key used to generate a hash of the delivered webhook and provided in the request headers. This will default to a MD5 hash from the current user's ID|username if not provided."
     ),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminWebhookUpdateRequest = z.input<

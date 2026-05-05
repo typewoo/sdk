@@ -81,6 +81,29 @@ export type AnalyticsRevenueStats = z.infer<typeof AnalyticsRevenueStatsSchema>;
  */
 export const AnalyticsRevenueQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.omit({ fields: true }).extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    orderby: z
+      .enum([
+        'coupons',
+        'date',
+        'gross_sales',
+        'items_sold',
+        'net_revenue',
+        'orders_count',
+        'refunds',
+        'shipping',
+        'taxes',
+        'total_sales',
+      ])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     segmentby: z
       .enum(['product', 'category', 'variation', 'coupon', 'customer_type'])
       .optional()
@@ -89,7 +112,7 @@ export const AnalyticsRevenueQueryParamsSchema =
       .enum(['date_paid', 'date_created', 'date_completed'])
       .optional()
       .describe(
-        'Override the "woocommerce_date_type" option that is used for the database date field.'
+        'Override the "woocommerce_date_type" option that is used for the database date field considered for revenue reports.'
       ),
   });
 export type AnalyticsRevenueQueryParams = z.infer<

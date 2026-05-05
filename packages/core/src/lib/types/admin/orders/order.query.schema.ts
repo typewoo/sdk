@@ -93,19 +93,21 @@ export const AdminOrderQueryParamsSchema = z.looseObject({
       'Limit result set to all items except those of a particular parent ID.'
     ),
   status: z
-    .enum([
-      'pending',
-      'processing',
-      'on-hold',
-      'completed',
-      'cancelled',
-      'refunded',
-      'failed',
-      'checkout-draft',
-      'any',
-      'trash',
-    ])
-    .default('any')
+    .array(
+      z.enum([
+        'any',
+        'auto-draft',
+        'cancelled',
+        'checkout-draft',
+        'completed',
+        'failed',
+        'on-hold',
+        'pending',
+        'processing',
+        'refunded',
+        'trash',
+      ])
+    )
     .optional()
     .describe('Limit result set to orders which have specific statuses.'),
   customer: z
@@ -131,6 +133,17 @@ export const AdminOrderQueryParamsSchema = z.looseObject({
     .default([])
     .optional()
     .describe('Ensure meta_data excludes specific keys.'),
+  created_via: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Limit result set to orders created via specific sources (e.g. checkout, admin).'
+    ),
+  order_item_display_meta: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe('Only show meta which is meant to be displayed for an order.'),
 });
 
 export type AdminOrderQueryParams = z.infer<typeof AdminOrderQueryParamsSchema>;

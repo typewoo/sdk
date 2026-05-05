@@ -11,7 +11,7 @@ export const CartItemResponseSchema = z.looseObject({
   quantity: z.number().describe('Quantity of this item.'),
   type: z.string().describe('The item type.'),
   quantity_limits: CartItemQuantityLimitsResponseSchema.describe(
-    'How the quantity of this item should be controlled, for example, how many remain in stock.'
+    'How the quantity of this item should be controlled, for example, any limits in place.'
   ),
   name: z.string().describe('Product name.'),
   short_description: z
@@ -43,7 +43,7 @@ export const CartItemResponseSchema = z.looseObject({
     .describe('Chosen attributes (for variations).'),
   item_data: z.array(z.unknown()).describe('Metadata related to the item'),
   prices: CartItemPriceResponseSchema.describe(
-    'Price data for the product in the current line item, including or excluding taxes based on the store configuration.'
+    'Price data for the product in the current line item, including or excluding taxes based on the "display prices during cart and checkout" setting. Provided using the smallest unit of the currency.'
   ),
   totals: CartItemTotalResponseSchema.describe(
     'Item total amounts provided using the smallest unit of the currency.'

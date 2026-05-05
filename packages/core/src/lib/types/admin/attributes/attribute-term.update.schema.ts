@@ -19,6 +19,10 @@ export const AdminProductAttributeTermUpdateRequestSchema = z.looseObject({
     .number()
     .optional()
     .describe('Menu order, used to custom sort the resource.'),
+  attribute_id: z
+    .number()
+    .optional()
+    .describe('Unique identifier for the attribute of the terms.'),
 });
 
 export type AdminProductAttributeTermUpdateRequest = z.input<

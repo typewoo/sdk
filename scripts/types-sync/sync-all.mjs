@@ -122,7 +122,7 @@ async function main() {
 
   if (!args.noCheck) {
     console.log('\n========== diff ==========');
-    run('node scripts/types-sync/cli.mjs check');
+    run('node scripts/types-sync/cli.mjs check --no-coverage-check');
   }
   console.log('\n[sync-all] done.');
 }

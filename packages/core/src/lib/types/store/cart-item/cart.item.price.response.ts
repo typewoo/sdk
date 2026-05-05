@@ -5,7 +5,12 @@ export const CartItemPriceResponseSchema = z.looseObject({
   regular_price: z.string().describe('Regular product price.'),
   sale_price: z.string().describe('Sale product price, if applicable.'),
   price_range: z
-    .union([z.unknown(), z.null()])
+    .looseObject({
+      min_amount: z.string().optional().describe('Price amount.'),
+      max_amount: z.string().optional().describe('Price amount.'),
+    })
+    .nullable()
+    .optional()
     .describe('Price range, if applicable.'),
   currency_code: z
     .string()
@@ -18,7 +23,7 @@ export const CartItemPriceResponseSchema = z.looseObject({
   currency_minor_unit: z
     .number()
     .describe(
-      'Currency minor unit (number of digits after the decimal separator).'
+      'Currency minor unit (number of digits after the decimal separator) for returned prices.'
     ),
   currency_decimal_separator: z
     .string()
@@ -42,14 +47,21 @@ export const CartItemPriceResponseSchema = z.looseObject({
     ),
   raw_prices: z
     .looseObject({
-      precision: z.number(),
-      price: z.string(),
-      regular_price: z.string(),
-      sale_price: z.string(),
+      precision: z
+        .number()
+        .optional()
+        .describe('Decimal precision of the returned prices.'),
+      price: z.string().optional().describe('Current product price.'),
+      regular_price: z.string().optional().describe('Regular product price.'),
+      sale_price: z
+        .string()
+        .optional()
+        .describe('Sale product price, if applicable.'),
     })
     .nullable()
+    .optional()
     .describe(
-      'Raw unrounded product prices used in calculations. Provided using a precision value and amount.'
+      'Raw unrounded product prices used in calculations. Provided using a higher unit of precision than the currency.'
     ),
 });
 

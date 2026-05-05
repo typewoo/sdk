@@ -22,7 +22,15 @@ export const AdminProductUpdateRequestSchema = z.looseObject({
     .optional()
     .describe('Product type.'),
   status: z
-    .enum(['draft', 'pending', 'private', 'publish'])
+    .enum([
+      'auto-draft',
+      'draft',
+      'future',
+      'pending',
+      'private',
+      'publish',
+      'trash',
+    ])
     .optional()
     .describe('Product status (post status).'),
   featured: z.boolean().optional().describe('Featured product.'),
@@ -155,6 +163,19 @@ export const AdminProductUpdateRequestSchema = z.looseObject({
     .optional()
     .describe('Menu order, used to custom sort products.'),
   meta_data: z.array(AdminProductMetaData).optional().describe('Meta data.'),
+  date_created: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("The date the product was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .nullable()
+    .optional()
+    .describe('The date the product was created, as GMT.'),
+  global_unique_id: z.string().optional().describe('GTIN, UPC, EAN or ISBN.'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
+  post_password: z.string().optional().describe('Post password.'),
 });
 
 export type AdminProductUpdateRequest = z.input<

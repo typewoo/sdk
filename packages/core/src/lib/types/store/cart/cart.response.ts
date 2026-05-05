@@ -36,7 +36,7 @@ export const CartResponseSchema = z.looseObject({
   needs_shipping: z
     .boolean()
     .describe(
-      'True if the cart needs shipping. False for carts with only digital products.'
+      'True if the cart needs shipping. False for carts with only digital goods or stores with no shipping methods set-up.'
     ),
   payment_requirements: z
     .array(z.string())
@@ -61,12 +61,12 @@ export const CartResponseSchema = z.looseObject({
   errors: z
     .array(CartErrorResponseSchema)
     .describe(
-      'List of cart item errors, for example, items in the cart which are no longer purchasable.'
+      'List of cart item errors, for example, items in the cart which are out of stock.'
     ),
   payment_methods: z
     .array(z.string())
     .describe(
-      'List of available payment method IDs that can be used to process the current order.'
+      'List of available payment method IDs that can be used to process the order.'
     ),
   extensions: z.unknown().optional(),
 });

@@ -91,9 +91,7 @@ const AnalyticsListQueryParamsSchema = z.object({
     .boolean()
     .default(false)
     .optional()
-    .describe(
-      'Add additional piece of info about each category to the report.'
-    ),
+    .describe('Add additional piece of info about each coupon to the report.'),
   force_cache_refresh: z
     .boolean()
     .optional()
@@ -135,7 +133,7 @@ export const AnalyticsCouponSchema = z.object({
   coupon_id: z.number().describe('Coupon ID.'),
   amount: z.number().describe('Net discount amount.'),
   orders_count: z.number().describe('Number of orders.'),
-  extended_info: z.record(z.unknown()).optional(),
+  extended_info: z.record(z.string(), z.unknown()).optional(),
   _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCoupon = z.infer<typeof AnalyticsCouponSchema>;
@@ -145,10 +143,26 @@ export type AnalyticsCoupon = z.infer<typeof AnalyticsCouponSchema>;
  */
 export const AnalyticsCouponsStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
     coupons: z
       .array(z.number())
       .optional()
-      .describe('Limit result set to items with specified coupon ids.'),
+      .describe('Limit result set to coupons assigned specific coupon IDs.'),
+    orderby: z
+      .enum(['amount', 'coupons_count', 'date', 'orders_count'])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
+    segmentby: z
+      .enum(['category', 'coupon', 'product', 'variation'])
+      .optional()
+      .describe('Segment the response by additional constraint.'),
   });
 export type AnalyticsCouponsStatsQueryParams = z.infer<
   typeof AnalyticsCouponsStatsQueryParamsSchema
@@ -159,12 +173,19 @@ export type AnalyticsCouponsStatsQueryParams = z.infer<
  */
 export const AnalyticsCouponsListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
     coupons: z
       .array(z.number())
       .optional()
-      .describe('Limit result set to items with specified coupon ids.'),
+      .describe('Limit result set to coupons assigned specific coupon IDs.'),
     orderby: z
-      .string()
+      .enum(['amount', 'code', 'coupon_id', 'orders_count'])
       .default('coupon_id')
       .optional()
       .describe('Sort collection by object attribute.'),

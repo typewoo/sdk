@@ -92,9 +92,7 @@ const AnalyticsListQueryParamsSchema = z.object({
     .boolean()
     .default(false)
     .optional()
-    .describe(
-      'Add additional piece of info about each category to the report.'
-    ),
+    .describe('Add additional piece of info about each coupon to the report.'),
   force_cache_refresh: z
     .boolean()
     .optional()
@@ -166,7 +164,7 @@ export const AnalyticsOrderSchema = z.object({
   order_number: z
     .union([z.string(), z.number()])
     .optional()
-    .describe('Order number.'),
+    .describe('Order Number.'),
   date_created: z
     .string()
     .describe("Date the order was created, in the site's timezone."),
@@ -183,7 +181,7 @@ export const AnalyticsOrderSchema = z.object({
     .string()
     .optional()
     .describe('Net total revenue (formatted).'),
-  extended_info: z.record(z.unknown()).optional(),
+  extended_info: z.record(z.string(), z.unknown()).optional(),
   _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsOrder = z.infer<typeof AnalyticsOrderSchema>;
@@ -193,21 +191,59 @@ export type AnalyticsOrder = z.infer<typeof AnalyticsOrderSchema>;
  */
 export const AnalyticsOrdersStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.omit({ fields: true }).extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    orderby: z
+      .enum(['avg_order_value', 'date', 'net_revenue', 'orders_count'])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     match: z
       .enum(['all', 'any'])
       .default('all')
       .optional()
       .describe(
-        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient.'
+        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories'
       ),
     status_is: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         'Limit result set to items that have the specified order status.'
       ),
     status_is_not: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         "Limit result set to items that don't have the specified order status."
@@ -271,7 +307,9 @@ export const AnalyticsOrdersStatsQueryParamsSchema =
     customer_type: z
       .enum(['new', 'returning'])
       .optional()
-      .describe('Limit result set to returning or new customers.'),
+      .describe(
+        'Limit result set to orders that have the specified customer_type'
+      ),
     refunds: z
       .enum(['', 'all', 'partial', 'full', 'none'])
       .default('')
@@ -295,6 +333,10 @@ export const AnalyticsOrdersStatsQueryParamsSchema =
       .enum(['product', 'category', 'variation', 'coupon', 'customer_type'])
       .optional()
       .describe('Segment the response by additional constraint.'),
+    customer: z
+      .enum(['new', 'returning'])
+      .optional()
+      .describe('Alias for customer_type (deprecated).'),
   });
 export type AnalyticsOrdersStatsQueryParams = z.infer<
   typeof AnalyticsOrdersStatsQueryParamsSchema
@@ -305,14 +347,52 @@ export type AnalyticsOrdersStatsQueryParams = z.infer<
  */
 export const AnalyticsOrdersListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    orderby: z
+      .enum(['date', 'net_total', 'num_items_sold'])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     status_is: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         'Limit result set to items that have the specified order status.'
       ),
     status_is_not: z
-      .array(z.string())
+      .array(
+        z.enum([
+          'any',
+          'cancelled',
+          'checkout-draft',
+          'completed',
+          'failed',
+          'on-hold',
+          'pending',
+          'processing',
+          'refunded',
+          'trash',
+        ])
+      )
       .optional()
       .describe(
         "Limit result set to items that don't have the specified order status."
@@ -355,6 +435,58 @@ export const AnalyticsOrdersListQueryParamsSchema =
       .default('')
       .optional()
       .describe('Limit result set to specific types of refunds.'),
+    attribute_is: z
+      .array(z.array(z.unknown()))
+      .default([])
+      .optional()
+      .describe(
+        'Limit result set to orders that include products with the specified attributes.'
+      ),
+    attribute_is_not: z
+      .array(z.array(z.unknown()))
+      .default([])
+      .optional()
+      .describe(
+        "Limit result set to orders that don't include products with the specified attributes."
+      ),
+    order_excludes: z
+      .array(z.number())
+      .optional()
+      .describe(
+        "Limit result set to items that don't have the specified order ids."
+      ),
+    order_includes: z
+      .array(z.number())
+      .optional()
+      .describe('Limit result set to items that have the specified order ids.'),
+    tax_rate_excludes: z
+      .array(z.number())
+      .default([])
+      .optional()
+      .describe(
+        "Limit result set to items that don't have the specified tax rate(s) assigned."
+      ),
+    tax_rate_includes: z
+      .array(z.number())
+      .default([])
+      .optional()
+      .describe(
+        'Limit result set to items that have the specified tax rate(s) assigned.'
+      ),
+    variation_excludes: z
+      .array(z.number())
+      .default([])
+      .optional()
+      .describe(
+        "Limit result set to items that don't have the specified variation(s) assigned."
+      ),
+    variation_includes: z
+      .array(z.number())
+      .default([])
+      .optional()
+      .describe(
+        'Limit result set to items that have the specified variation(s) assigned.'
+      ),
   });
 export type AnalyticsOrdersListQueryParams = z.infer<
   typeof AnalyticsOrdersListQueryParamsSchema

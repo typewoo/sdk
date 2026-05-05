@@ -69,6 +69,12 @@ export const AdminBrandQueryParamsSchema = z.looseObject({
     .string()
     .optional()
     .describe('Limit result set to resources with a specific slug.'),
+  offset: z
+    .number()
+    .optional()
+    .describe(
+      'Offset the result set by a specific number of items. Applies to hierarchical taxonomies only.'
+    ),
 });
 
 export type AdminBrandQueryParams = z.infer<typeof AdminBrandQueryParamsSchema>;

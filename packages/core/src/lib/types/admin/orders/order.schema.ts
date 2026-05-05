@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { AdminOrderAddress, AdminOrderMetaData } from './order.js';
+import {
+  AdminOrderAddress,
+  AdminOrderMetaData,
+  WC_CURRENCIES,
+} from './order.js';
 
 /**
  * Line item in an order
@@ -139,20 +143,21 @@ export const AdminOrderSchema = z.looseObject({
   parent_id: z.number().optional().describe('Parent order ID.'),
   status: z
     .enum([
+      'auto-draft',
+      'cancelled',
+      'checkout-draft',
+      'completed',
+      'failed',
+      'on-hold',
       'pending',
       'processing',
-      'on-hold',
-      'completed',
-      'cancelled',
       'refunded',
-      'failed',
-      'checkout-draft',
     ])
     .default('pending')
     .optional()
     .describe('Order status.'),
   currency: z
-    .string()
+    .enum(WC_CURRENCIES)
     .default('EUR')
     .optional()
     .describe('Currency the order was created with, in ISO format.'),
@@ -243,6 +248,28 @@ export const AdminOrderSchema = z.looseObject({
   needs_processing: z
     .boolean()
     .describe('Whether an order needs processing before it can be completed.'),
+  date_completed_gmt: z
+    .string()
+    .optional()
+    .describe('The date the order was completed, as GMT.'),
+  date_paid_gmt: z
+    .string()
+    .optional()
+    .describe('The date the order was paid, as GMT.'),
+  manual_update: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      'Set the action as manual so that the order note registers as "added by user".'
+    ),
+  set_paid: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      'Define if the order is paid. It will set the status to processing and reduce stock items.'
+    ),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),

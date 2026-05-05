@@ -11,6 +11,10 @@ export const ProductAttributeResponseSchema = z.looseObject({
   has_archives: z
     .boolean()
     .describe('If this attribute has term archive pages.'),
+  count: z
+    .number()
+    .optional()
+    .describe('Number of terms in the attribute taxonomy.'),
 });
 
 export type ProductAttributeResponse = z.infer<

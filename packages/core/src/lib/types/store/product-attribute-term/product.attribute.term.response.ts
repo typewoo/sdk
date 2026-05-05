@@ -7,6 +7,8 @@ export const ProductAttributeTermResponseSchema = z.looseObject({
   count: z
     .number()
     .describe('Number of objects (posts of any type) assigned to the term.'),
+  description: z.string().optional().describe('Term description.'),
+  parent: z.number().optional().describe('Parent term ID, if applicable.'),
 });
 
 export type ProductAttributeTermResponse = z.infer<

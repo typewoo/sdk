@@ -76,7 +76,21 @@ export const AdminProductQueryParamsSchema = z.looseObject({
     .optional()
     .describe('Order sort attribute ascending or descending.'),
   orderby: z
-    .enum(['date', 'id', 'include', 'title', 'slug', 'modified', 'menu_order'])
+    .enum([
+      'date',
+      'id',
+      'include',
+      'menu_order',
+      'modified',
+      'popularity',
+      'post__in',
+      'price',
+      'random',
+      'rating',
+      'sales',
+      'slug',
+      'title',
+    ])
     .default('date')
     .optional()
     .describe('Sort collection by object attribute.'),
@@ -167,6 +181,77 @@ export const AdminProductQueryParamsSchema = z.looseObject({
     .default([])
     .optional()
     .describe('Ensure meta_data excludes specific keys.'),
+  brand: z
+    .string()
+    .optional()
+    .describe('Limit result set to products assigned a specific brand ID.'),
+  downloadable: z
+    .boolean()
+    .optional()
+    .describe('Limit result set to downloadable products.'),
+  exclude_status: z
+    .array(
+      z.enum(['draft', 'future', 'pending', 'private', 'publish', 'trash'])
+    )
+    .optional()
+    .describe('Exclude products with any of the statuses from result set.'),
+  exclude_types: z
+    .array(z.enum(['external', 'grouped', 'simple', 'variable']))
+    .optional()
+    .describe('Exclude products with any of the types from result set.'),
+  include_status: z
+    .array(
+      z.enum([
+        'any',
+        'draft',
+        'future',
+        'pending',
+        'private',
+        'publish',
+        'trash',
+      ])
+    )
+    .optional()
+    .describe('Limit result set to products with any of the statuses.'),
+  include_types: z
+    .array(z.enum(['external', 'grouped', 'simple', 'variable']))
+    .optional()
+    .describe('Limit result set to products with any of the types.'),
+  pos_products_only: z
+    .boolean()
+    .optional()
+    .describe('Limit result set to products visible in Point of Sale.'),
+  search_fields: z
+    .array(
+      z.enum([
+        'description',
+        'global_unique_id',
+        'name',
+        'short_description',
+        'sku',
+      ])
+    )
+    .default([])
+    .optional()
+    .describe(
+      'Limit search to specific fields when used with search parameter. Available fields: name, sku, global_unique_id, description, short_description. This argument takes precedence over all other search parameters.'
+    ),
+  search_name_or_sku: z
+    .string()
+    .optional()
+    .describe(
+      "Limit results to those with a name or SKU that partial matches a string. This argument takes precedence over 'search', 'sku' and 'search_sku'."
+    ),
+  search_sku: z
+    .string()
+    .optional()
+    .describe(
+      "Limit results to those with a SKU that partial matches a string. This argument takes precedence over 'sku'."
+    ),
+  virtual: z
+    .boolean()
+    .optional()
+    .describe('Limit result set to virtual products.'),
 });
 
 export type AdminProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;

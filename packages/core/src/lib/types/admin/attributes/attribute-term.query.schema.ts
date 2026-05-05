@@ -78,6 +78,10 @@ export const AdminProductAttributeTermQueryParamsSchema = z.looseObject({
     .string()
     .optional()
     .describe('Limit result set to resources with a specific slug.'),
+  attribute_id: z
+    .number()
+    .optional()
+    .describe('Unique identifier for the attribute of the terms.'),
 });
 
 export type AdminProductAttributeTermQueryParams = z.infer<

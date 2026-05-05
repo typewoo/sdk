@@ -42,6 +42,7 @@ export const AdminTaxUpdateRequestSchema = z.looseObject({
     .enum(['standard', 'reduced-rate', 'zero-rate'])
     .optional()
     .describe('Tax class.'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminTaxUpdateRequest = z.input<typeof AdminTaxUpdateRequestSchema>;

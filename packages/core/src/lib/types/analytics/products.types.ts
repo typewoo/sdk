@@ -92,9 +92,7 @@ const AnalyticsListQueryParamsSchema = z.object({
     .boolean()
     .default(false)
     .optional()
-    .describe(
-      'Add additional piece of info about each category to the report.'
-    ),
+    .describe('Add additional piece of info about each product to the report.'),
   force_cache_refresh: z
     .boolean()
     .optional()
@@ -142,9 +140,9 @@ export type AnalyticsProductExtendedInfo = z.infer<
 export const AnalyticsProductSchema = z.object({
   product_id: z.number().describe('Product ID.'),
   items_sold: z.number().describe('Number of items sold.'),
-  net_revenue: z.number().describe('Net revenue.'),
-  orders_count: z.number().describe('Number of orders.'),
-  extended_info: z.record(z.unknown()).optional(),
+  net_revenue: z.number().describe('Total Net sales of all items sold.'),
+  orders_count: z.number().describe('Number of orders product appeared in.'),
+  extended_info: z.record(z.string(), z.unknown()).optional(),
   _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsProduct = z.infer<typeof AnalyticsProductSchema>;
@@ -154,16 +152,39 @@ export type AnalyticsProduct = z.infer<typeof AnalyticsProductSchema>;
  */
 export const AnalyticsProductsStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    orderby: z
+      .enum([
+        'coupons',
+        'date',
+        'items_sold',
+        'net_revenue',
+        'orders_count',
+        'refunds',
+        'shipping',
+        'taxes',
+      ])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     categories: z
       .array(z.number())
       .optional()
-      .describe(
-        'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
-      ),
+      .describe('Limit result to items from the specified categories.'),
     products: z
       .array(z.number())
       .optional()
       .describe('Limit result to items with specified product ids.'),
+    segmentby: z
+      .enum(['category', 'product', 'variation'])
+      .optional()
+      .describe('Segment the response by additional constraint.'),
     variations: z
       .array(z.number())
       .optional()
@@ -178,19 +199,37 @@ export type AnalyticsProductsStatsQueryParams = z.infer<
  */
 export const AnalyticsProductsListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    orderby: z
+      .enum([
+        'date',
+        'items_sold',
+        'net_revenue',
+        'orders_count',
+        'product_name',
+        'sku',
+        'variations',
+      ])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     match: z
       .enum(['all', 'any'])
       .default('all')
       .optional()
       .describe(
-        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient.'
+        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories'
       ),
     categories: z
       .array(z.number())
       .optional()
-      .describe(
-        'Limit result set to all items that have the specified term assigned in the categories taxonomy.'
-      ),
+      .describe('Limit result to items from the specified categories.'),
     products: z
       .array(z.number())
       .optional()

@@ -106,7 +106,15 @@ export const AdminProductSchema = z.looseObject({
     .optional()
     .describe('Product type.'),
   status: z
-    .enum(['draft', 'pending', 'private', 'publish'])
+    .enum([
+      'auto-draft',
+      'draft',
+      'future',
+      'pending',
+      'private',
+      'publish',
+      'trash',
+    ])
     .default('publish')
     .optional()
     .describe('Product status (post status).'),
@@ -223,7 +231,7 @@ export const AdminProductSchema = z.looseObject({
     .boolean()
     .describe('Shows whether or not the product shipping is taxable.'),
   shipping_class: z.string().optional().describe('Shipping class slug.'),
-  shipping_class_id: z.number().describe('Shipping class ID.'),
+  shipping_class_id: z.string().describe('Shipping class ID.'),
   reviews_allowed: z
     .boolean()
     .default(true)
@@ -271,6 +279,25 @@ export const AdminProductSchema = z.looseObject({
     .optional()
     .describe('Menu order, used to custom sort products.'),
   meta_data: z.array(AdminProductMetaData).optional().describe('Meta data.'),
+  generated_slug: z
+    .string()
+    .optional()
+    .describe('Slug automatically generated from the product name.'),
+  has_options: z
+    .boolean()
+    .optional()
+    .describe(
+      'Shows if the product needs to be configured before it can be bought.'
+    ),
+  permalink_template: z
+    .string()
+    .optional()
+    .describe('Permalink template for the product.'),
+  post_password: z.string().optional().describe('Post password.'),
+  related_ids: z
+    .array(z.number())
+    .optional()
+    .describe('List of related products IDs.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),
@@ -314,7 +341,15 @@ export const AdminProductVariationSchema = z.looseObject({
     .describe("End date of sale price, in the site's timezone."),
   on_sale: z.boolean().describe('Shows if the product is on sale.'),
   status: z
-    .enum(['publish', 'private', 'draft'])
+    .enum([
+      'auto-draft',
+      'draft',
+      'future',
+      'pending',
+      'private',
+      'publish',
+      'trash',
+    ])
     .describe('Product status (post status).'),
   purchasable: z.boolean(),
   virtual: z.boolean().describe('If the product is virtual.'),
@@ -349,7 +384,7 @@ export const AdminProductVariationSchema = z.looseObject({
   weight: z.string().describe('Product weight (lbs).'),
   dimensions: AdminProductDimensions.describe('Product dimensions.'),
   shipping_class: z.string().describe('Shipping class slug.'),
-  shipping_class_id: z.number(),
+  shipping_class_id: z.string(),
   image: AdminProductImage,
   attributes: z
     .array(AdminProductDefaultAttributeSchema)

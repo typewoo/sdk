@@ -114,7 +114,8 @@ export type AnalyticsDownloadStats = z.infer<
  * Single download row from the downloads detail endpoint
  */
 export const AnalyticsDownloadSchema = z.object({
-  download_id: z.number().optional().describe('Download ID.'),
+  id: z.number().optional().describe('ID.'),
+  download_id: z.string().optional().describe('Download ID.'),
   product_id: z.number().describe('Product ID.'),
   date: z
     .string()
@@ -122,7 +123,8 @@ export const AnalyticsDownloadSchema = z.object({
   date_gmt: z.string().optional().describe('The date of the download, as GMT.'),
   order_id: z.number().describe('Order ID.'),
   order_number: z.string().optional().describe('Order Number.'),
-  user_id: z.number().describe('User ID.'),
+  user_id: z.number().describe('User ID for the downloader.'),
+  username: z.string().optional().describe('User name of the downloader.'),
   ip_address: z.string().optional().describe('IP address for the downloader.'),
   file_name: z.string().optional().describe('File name.'),
   file_path: z.string().optional().describe('File URL.'),
@@ -134,6 +136,25 @@ export type AnalyticsDownload = z.infer<typeof AnalyticsDownloadSchema>;
  */
 export const AnalyticsDownloadsStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    match: z
+      .enum(['all', 'any'])
+      .default('all')
+      .optional()
+      .describe(
+        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: status_is, status_is_not, product_includes, product_excludes, coupon_includes, coupon_excludes, customer, categories'
+      ),
+    orderby: z
+      .enum(['date', 'download_count'])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     product_includes: z
       .array(z.number())
       .default([])
@@ -171,12 +192,14 @@ export const AnalyticsDownloadsStatsQueryParamsSchema =
     customer_includes: z
       .array(z.number())
       .optional()
-      .describe('Limit response to objects that have the specified user ids.'),
+      .describe(
+        'Limit response to objects that have the specified customer ids.'
+      ),
     customer_excludes: z
       .array(z.number())
       .optional()
       .describe(
-        "Limit response to objects that don't have the specified user ids."
+        "Limit response to objects that don't have the specified customer ids."
       ),
   });
 export type AnalyticsDownloadsStatsQueryParams = z.infer<
@@ -188,6 +211,25 @@ export type AnalyticsDownloadsStatsQueryParams = z.infer<
  */
 export const AnalyticsDownloadsListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.omit({ extended_info: true }).extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
+    match: z
+      .enum(['all', 'any'])
+      .default('all')
+      .optional()
+      .describe(
+        'Indicates whether all the conditions should be true for the resulting set, or if any one of them is sufficient. Match affects the following parameters: products, orders, username, ip_address.'
+      ),
+    orderby: z
+      .enum(['date', 'product'])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
     product_includes: z
       .array(z.number())
       .default([])

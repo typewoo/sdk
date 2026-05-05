@@ -9,6 +9,8 @@ export const AdminSettingUpdateRequestSchema = z.looseObject({
     .union([z.string(), z.number(), z.boolean(), z.null()])
     .optional()
     .describe('Setting value.'),
+  group: z.string().optional().describe('Settings group ID.'),
+  id: z.string().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminSettingUpdateRequest = z.input<

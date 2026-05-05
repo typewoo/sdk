@@ -28,7 +28,7 @@ export const AdminTaxQueryParamsSchema = z.looseObject({
     .optional()
     .describe('Order sort attribute ascending or descending.'),
   orderby: z
-    .enum(['id', 'order', 'priority', 'name'])
+    .enum(['id', 'order', 'priority'])
     .default('order')
     .optional()
     .describe('Sort collection by object attribute.'),

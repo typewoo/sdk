@@ -5,8 +5,9 @@ import { ProductCollectionDataRatingCountsResponseSchema } from './product.colle
 import { ProductCollectionDataTaxonomyCountsResponseSchema } from './product.collection.data.taxonomy.counts.response.js';
 
 export const ProductCollectionDataResponseSchema = z.looseObject({
-  price_range:
-    ProductCollectionDataPriceRangeResponseSchema.nullable().describe(
+  price_range: ProductCollectionDataPriceRangeResponseSchema.nullable()
+    .optional()
+    .describe(
       'Min and max prices found in collection of products, provided using the smallest unit of the currency.'
     ),
   attribute_counts: z
@@ -21,6 +22,11 @@ export const ProductCollectionDataResponseSchema = z.looseObject({
     .array(ProductCollectionDataTaxonomyCountsResponseSchema)
     .nullable()
     .describe('Returns number of products within taxonomy terms.'),
+  stock_status_counts: z
+    .array(z.record(z.string(), z.unknown()))
+    .nullable()
+    .optional()
+    .describe('Returns number of products with each stock status.'),
 });
 
 export type ProductCollectionDataResponse = z.infer<

@@ -99,7 +99,7 @@ export const ProductResponseSchema = z.looseObject({
     .array(ProductEmbeddedAttributeResponseSchema)
     .optional()
     .describe(
-      'List of attributes (taxonomy terms) assigned to the product. For variable products, these are used to assign the available variation attributes and values.'
+      'List of attributes (taxonomy terms) assigned to the product. For variable products, these are mapped to variations (see the `variations` field).'
     ),
   variations: z
     .array(ProductEmbeddedVariationResponseSchema)
@@ -119,10 +119,11 @@ export const ProductResponseSchema = z.looseObject({
   is_on_backorder: z
     .boolean()
     .describe(
-      'Is the product stock backordered? This will also return false if the product is not being tracked for stock.'
+      'Is the product stock backordered? This will also return false if backorder notifications are turned off.'
     ),
   low_stock_remaining: z
-    .union([z.unknown(), z.null()])
+    .number()
+    .nullable()
     .describe(
       'Quantity left in stock if stock is low, or null if not applicable.'
     ),
@@ -159,6 +160,29 @@ export const ProductResponseSchema = z.looseObject({
         ),
     })
     .describe('Add to cart button parameters.'),
+  weight: z.string().optional().describe('Product weight (lbs).'),
+  dimensions: z
+    .looseObject({
+      length: z.string().optional().describe('Product length (in).'),
+      width: z.string().optional().describe('Product width (in).'),
+      height: z.string().optional().describe('Product height (in).'),
+    })
+    .optional()
+    .describe('Product dimensions.'),
+  formatted_weight: z
+    .string()
+    .optional()
+    .describe('Product weight formatted for display (e.g. "2.5 kg").'),
+  formatted_dimensions: z
+    .string()
+    .optional()
+    .describe(
+      'Product dimensions formatted for display (e.g. "10 × 5 × 3 cm").'
+    ),
+  is_password_protected: z
+    .boolean()
+    .optional()
+    .describe('Whether the product requires a password to access its content.'),
   extensions: z.unknown().optional(),
 });
 export type ProductResponse = z.infer<typeof ProductResponseSchema>;

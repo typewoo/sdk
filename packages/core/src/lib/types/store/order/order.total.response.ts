@@ -18,11 +18,51 @@ export const OrderTotalResponseSchema = z.looseObject({
     .string()
     .nullable()
     .describe(
-      'Total tax on shipping. If shipping has not been calculated, a null is returned.'
+      'Total tax on shipping. If shipping has not been calculated, a null response will be sent.'
     ),
   tax_lines: z
     .array(z.unknown())
     .describe('Lines of taxes applied to items and shipping.'),
+  currency_code: z
+    .string()
+    .optional()
+    .describe('Currency code (in ISO format) for returned prices.'),
+  currency_symbol: z
+    .string()
+    .optional()
+    .describe(
+      'Currency symbol for the currency which can be used to format returned prices.'
+    ),
+  currency_minor_unit: z
+    .number()
+    .optional()
+    .describe(
+      'Currency minor unit (number of digits after the decimal separator) for returned prices.'
+    ),
+  currency_decimal_separator: z
+    .string()
+    .optional()
+    .describe(
+      'Decimal separator for the currency which can be used to format returned prices.'
+    ),
+  currency_thousand_separator: z
+    .string()
+    .optional()
+    .describe(
+      'Thousand separator for the currency which can be used to format returned prices.'
+    ),
+  currency_prefix: z
+    .string()
+    .optional()
+    .describe(
+      'Price prefix for the currency which can be used to format returned prices.'
+    ),
+  currency_suffix: z
+    .string()
+    .optional()
+    .describe(
+      'Price prefix for the currency which can be used to format returned prices.'
+    ),
 });
 
 export type OrderTotalResponse = z.infer<typeof OrderTotalResponseSchema>;

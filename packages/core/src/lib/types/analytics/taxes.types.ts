@@ -133,10 +133,10 @@ export type AnalyticsTaxExtendedInfo = z.infer<
  */
 export const AnalyticsTaxSchema = z.object({
   tax_rate_id: z.number().describe('Tax rate ID.'),
-  name: z.string().describe('Name.'),
+  name: z.string().describe('Tax rate name.'),
   tax_rate: z.number().describe('Tax rate.'),
-  country: z.string().describe('Country code.'),
-  state: z.string().describe('State code.'),
+  country: z.string().describe('Country / Region.'),
+  state: z.string().describe('State.'),
   priority: z.number().describe('Priority.'),
   total_tax: z.number().describe('Total tax.'),
   order_tax: z.number().describe('Order tax.'),
@@ -151,10 +151,34 @@ export type AnalyticsTax = z.infer<typeof AnalyticsTaxSchema>;
  */
 export const AnalyticsTaxesStatsQueryParamsSchema =
   AnalyticsStatsQueryParamsSchema.extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
     taxes: z
       .array(z.number())
       .optional()
-      .describe('Limit result set to items assigned one or more tax rates.'),
+      .describe(
+        'Limit result set to all items that have the specified term assigned in the taxes taxonomy.'
+      ),
+    orderby: z
+      .enum([
+        'date',
+        'items_sold',
+        'orders_count',
+        'products_count',
+        'total_sales',
+      ])
+      .default('date')
+      .optional()
+      .describe('Sort collection by object attribute.'),
+    segmentby: z
+      .enum(['tax_rate_id'])
+      .optional()
+      .describe('Segment the response by additional constraint.'),
   });
 export type AnalyticsTaxesStatsQueryParams = z.infer<
   typeof AnalyticsTaxesStatsQueryParamsSchema
@@ -165,12 +189,28 @@ export type AnalyticsTaxesStatsQueryParams = z.infer<
  */
 export const AnalyticsTaxesListQueryParamsSchema =
   AnalyticsListQueryParamsSchema.omit({ extended_info: true }).extend({
+    context: z
+      .enum(['edit', 'view'])
+      .default('view')
+      .optional()
+      .describe(
+        'Scope under which the request is made; determines fields present in response.'
+      ),
     taxes: z
       .array(z.number())
       .optional()
       .describe('Limit result set to items assigned one or more tax rates.'),
     orderby: z
-      .string()
+      .enum([
+        'name',
+        'order_tax',
+        'orders_count',
+        'rate',
+        'shipping_tax',
+        'tax_code',
+        'tax_rate_id',
+        'total_tax',
+      ])
       .default('tax_rate_id')
       .optional()
       .describe('Sort collection by object attribute.'),

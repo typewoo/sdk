@@ -63,11 +63,13 @@ export type AnalyticsStockStats = z.infer<typeof AnalyticsStockStatsSchema>;
  * Single stock row from the stock detail endpoint
  */
 export const AnalyticsStockItemSchema = z.object({
-  id: z.number().describe('Product ID.'),
+  id: z.number().describe('Unique identifier for the resource.'),
   parent_id: z.number().optional().describe('Product parent ID.'),
   name: z.string().describe('Product name.'),
   sku: z.string().optional().describe('Unique identifier.'),
-  stock_status: z.string().describe('Stock status.'),
+  stock_status: z
+    .enum(['instock', 'onbackorder', 'outofstock'])
+    .describe('Stock status.'),
   stock_quantity: z.number().describe('Stock quantity.'),
   manage_stock: z.boolean().optional().describe('Manage stock.'),
   _links: AnalyticsLinksSchema.optional(),
@@ -89,7 +91,15 @@ export const AnalyticsStockListQueryParamsSchema = z.object({
     .optional()
     .describe('Maximum number of items to be returned in result set.'),
   orderby: z
-    .string()
+    .enum([
+      'date',
+      'id',
+      'include',
+      'sku',
+      'stock_quantity',
+      'stock_status',
+      'title',
+    ])
     .default('stock_status')
     .optional()
     .describe('Sort collection by object attribute.'),
@@ -99,16 +109,43 @@ export const AnalyticsStockListQueryParamsSchema = z.object({
     .optional()
     .describe('Order sort attribute ascending or descending.'),
   type: z
-    .enum(['all', 'out_of_stock', 'low_stock', 'in_stock', 'on_backorder'])
+    .enum(['all', 'instock', 'lowstock', 'onbackorder', 'outofstock'])
     .default('all')
     .optional()
     .describe('Limit result set to items assigned a stock report type.'),
-  context: z.string().optional(),
-  exclude: z.array(z.number()).optional(),
-  include: z.array(z.number()).optional(),
-  offset: z.number().optional(),
-  parent: z.array(z.number()).optional(),
-  parent_exclude: z.array(z.number()).optional(),
+  context: z
+    .enum(['edit', 'view'])
+    .default('view')
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
+  exclude: z
+    .array(z.number())
+    .default([])
+    .optional()
+    .describe('Ensure result set excludes specific IDs.'),
+  include: z
+    .array(z.number())
+    .default([])
+    .optional()
+    .describe('Limit result set to specific ids.'),
+  offset: z
+    .number()
+    .optional()
+    .describe('Offset the result set by a specific number of items.'),
+  parent: z
+    .array(z.number())
+    .default([])
+    .optional()
+    .describe('Limit result set to those of particular parent IDs.'),
+  parent_exclude: z
+    .array(z.number())
+    .default([])
+    .optional()
+    .describe(
+      'Limit result set to all items except those of a particular parent ID.'
+    ),
 });
 export type AnalyticsStockListQueryParams = z.infer<
   typeof AnalyticsStockListQueryParamsSchema

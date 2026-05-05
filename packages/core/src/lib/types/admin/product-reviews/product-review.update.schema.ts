@@ -17,6 +17,7 @@ export const AdminProductReviewUpdateRequestSchema = z.looseObject({
   reviewer_email: z.string().optional().describe('Reviewer email.'),
   review: z.string().optional().describe('The content of the review.'),
   rating: z.number().optional().describe('Review rating (0 to 5).'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminProductReviewUpdateRequest = z.input<

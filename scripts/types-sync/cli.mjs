@@ -23,6 +23,9 @@
  *   --json                Emit JSON to stdout instead of writing files (check)
  *   --no-coverage-check   Skip the route-coverage check (allowlist-backed
  *                         enforcement that every upstream route is mapped)
+ *   --no-endpoint-check   Suppress endpoint-missing-upstream warnings (SDK
+ *                         defines schemas for routes WC doesn't expose via
+ *                         OPTIONS, e.g. batch, collection-data request)
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
@@ -424,6 +427,10 @@ async function runCheck(args) {
     writeMarkdown(join(OUT_DIR, 'drift.md'), drifts, meta, { routeFiles });
     console.log(`[check] wrote ${join(OUT_DIR, 'drift.json')}`);
     console.log(`[check] wrote ${join(OUT_DIR, 'drift.md')}`);
+  }
+
+  if (args['no-endpoint-check'] === true) {
+    drifts = drifts.filter((d) => d.driftKind !== 'endpoint-missing-upstream');
   }
 
   const counts = summarise(drifts);

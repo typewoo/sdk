@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const ProductPriceRangeResponseSchema = z.looseObject({
-  min_amount: z.string(),
-  max_amount: z.string(),
+  min_amount: z.string().describe('Price amount.'),
+  max_amount: z.string().describe('Price amount.'),
 });
 
 export type ProductPriceRangeResponse = z.infer<
@@ -21,7 +21,7 @@ export const ProductPriceResponseSchema = z.looseObject({
   currency_minor_unit: z
     .number()
     .describe(
-      'Currency minor unit (number of digits after the decimal separator).'
+      'Currency minor unit (number of digits after the decimal separator) for returned prices.'
     ),
   currency_decimal_separator: z
     .string()
@@ -46,9 +46,9 @@ export const ProductPriceResponseSchema = z.looseObject({
   price: z.string().describe('Current product price.'),
   regular_price: z.string().describe('Regular product price.'),
   sale_price: z.string().describe('Sale product price, if applicable.'),
-  price_range: ProductPriceRangeResponseSchema.nullish().describe(
-    'Price range, if applicable.'
-  ),
+  price_range: ProductPriceRangeResponseSchema.nullable()
+    .optional()
+    .describe('Price range, if applicable.'),
 });
 
 export type ProductPriceResponse = z.infer<typeof ProductPriceResponseSchema>;

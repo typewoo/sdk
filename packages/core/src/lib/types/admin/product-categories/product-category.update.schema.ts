@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  AdminTaxonomyCategoryImage,
+  AdminTaxonomyCategoryImageRequest,
   AdminCategoryDisplaySchema,
 } from './product-category.js';
 
@@ -23,7 +23,8 @@ export const AdminTaxonomyCategoryUpdateRequestSchema = z.looseObject({
   display: AdminCategoryDisplaySchema.optional().describe(
     'Category archive display type.'
   ),
-  image: AdminTaxonomyCategoryImage.optional().describe('Image data.'),
+  image: AdminTaxonomyCategoryImageRequest.optional().describe('Image data.'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminTaxonomyCategoryUpdateRequest = z.input<

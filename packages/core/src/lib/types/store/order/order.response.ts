@@ -25,18 +25,18 @@ export const OrderResponseSchema = z.looseObject({
   needs_payment: z
     .boolean()
     .describe(
-      'True if the cart needs payment. False for carts with only free products.'
+      'True if the cart needs payment. False for carts with only free products and no shipping costs.'
     ),
   needs_shipping: z
     .boolean()
     .describe(
-      'True if the cart needs shipping. False for carts with only digital products.'
+      'True if the cart needs shipping. False for carts with only digital goods or stores with no shipping methods set-up.'
     ),
   totals: OrderTotalResponseSchema.describe('Order totals.'),
   errors: z
     .array(ErrorResponseSchema)
     .describe(
-      'List of cart item errors, for example, items in the cart which are no longer purchasable.'
+      'List of cart item errors, for example, items in the cart which are out of stock.'
     ),
   payment_requirements: z
     .array(z.string())

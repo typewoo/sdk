@@ -13,13 +13,13 @@ export const CartTotalResponseSchema = z.looseObject({
     .string()
     .nullable()
     .describe(
-      'Total price of shipping. If shipping has not been calculated, a null is returned.'
+      'Total price of shipping. If shipping has not been calculated, a null response will be sent.'
     ),
   total_shipping_tax: z
     .string()
     .nullable()
     .describe(
-      'Total tax on shipping. If shipping has not been calculated, a null is returned.'
+      'Total tax on shipping. If shipping has not been calculated, a null response will be sent.'
     ),
   total_price: z.string().describe('Total price the customer will pay.'),
   total_tax: z.string().describe('Total tax applied to items and shipping.'),
@@ -43,7 +43,7 @@ export const CartTotalResponseSchema = z.looseObject({
   currency_minor_unit: z
     .number()
     .describe(
-      'Currency minor unit (number of digits after the decimal separator).'
+      'Currency minor unit (number of digits after the decimal separator) for returned prices.'
     ),
   currency_decimal_separator: z
     .string()

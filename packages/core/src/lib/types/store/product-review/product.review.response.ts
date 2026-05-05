@@ -9,7 +9,7 @@ export const ProductReviewResponseSchema = z.looseObject({
   formatted_date_created: z
     .string()
     .describe(
-      "The date the review was created, in the site's timezone in human readable format."
+      "The date the review was created, in the site's timezone in human-readable format."
     ),
   date_created_gmt: z
     .string()
@@ -33,7 +33,20 @@ export const ProductReviewResponseSchema = z.looseObject({
     .boolean()
     .describe('Shows if the reviewer bought the product or not.'),
   reviewer_avatar_urls: z
-    .array(z.record(z.string(), z.string()))
+    .looseObject({
+      '24': z
+        .string()
+        .optional()
+        .describe('Avatar URL with image size of 24 pixels.'),
+      '48': z
+        .string()
+        .optional()
+        .describe('Avatar URL with image size of 48 pixels.'),
+      '96': z
+        .string()
+        .optional()
+        .describe('Avatar URL with image size of 96 pixels.'),
+    })
     .describe('Avatar URLs for the object reviewer.'),
 });
 

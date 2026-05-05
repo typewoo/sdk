@@ -2,6 +2,13 @@ import { z } from 'zod';
 import { PaginatedSchema } from '../paginated.js';
 
 export const ProductReviewRequestSchema = PaginatedSchema.extend({
+  context: z
+    .enum(['edit', 'view'])
+    .default('view')
+    .optional()
+    .describe(
+      'Scope under which the request is made; determines fields present in response.'
+    ),
   /**
    * Order sort attribute ascending or descending. Allowed values: `asc`, `desc`
    */

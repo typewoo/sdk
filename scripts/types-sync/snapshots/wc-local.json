@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-05-04T19:32:44.512Z",
+  "capturedAt": "2026-05-05T20:19:51.609Z",
   "surfaces": {
     "admin": {
       "/wc/v3": {
@@ -5866,7 +5866,6 @@
               },
               "status": {
                 "additionalProperties": false,
-                "default": "any",
                 "description": "Limit result set to orders which have specific statuses.",
                 "items": {
                   "enum": [
@@ -13589,17 +13588,11 @@
                   "id",
                   "include",
                   "menu_order",
-                  "menu_order",
                   "modified",
-                  "popularity",
-                  "popularity",
                   "popularity",
                   "post__in",
                   "price",
-                  "price",
                   "random",
-                  "rating",
-                  "rating",
                   "rating",
                   "sales",
                   "slug",
@@ -31526,14 +31519,11 @@
                   "id",
                   "include",
                   "menu_order",
-                  "menu_order",
                   "modified",
-                  "popularity",
                   "popularity",
                   "post__in",
                   "price",
                   "random",
-                  "rating",
                   "rating",
                   "sales",
                   "slug",
@@ -51462,17 +51452,11 @@
                   "id",
                   "include",
                   "menu_order",
-                  "menu_order",
                   "modified",
-                  "popularity",
-                  "popularity",
                   "popularity",
                   "post__in",
                   "price",
-                  "price",
                   "random",
-                  "rating",
-                  "rating",
                   "rating",
                   "sales",
                   "slug",
@@ -68863,14 +68847,11 @@
                   "id",
                   "include",
                   "menu_order",
-                  "menu_order",
                   "modified",
-                  "popularity",
                   "popularity",
                   "post__in",
                   "price",
                   "random",
-                  "rating",
                   "rating",
                   "sales",
                   "slug",
@@ -72504,7 +72485,7 @@
               "nullable": false,
               "optional": false,
               "readonly": true,
-              "type": "float"
+              "type": "number"
             },
             "num_items_sold": {
               "additionalProperties": false,
@@ -72775,7 +72756,6 @@
               },
               "status_is": {
                 "additionalProperties": false,
-                "default": null,
                 "description": "Limit result set to items that have the specified order status.",
                 "items": {
                   "enum": [
@@ -73032,7 +73012,6 @@
                 "default": [],
                 "description": "Limit response to specific report stats. Allowed values: .",
                 "items": {
-                  "enum": [],
                   "type": "string"
                 },
                 "nullable": false,
@@ -73064,7 +73043,7 @@
               "nullable": false,
               "optional": false,
               "readonly": true,
-              "type": "number"
+              "type": "string"
             },
             "label": {
               "additionalProperties": false,
@@ -73151,7 +73130,6 @@
                 "default": [],
                 "description": "Limit response to specific report stats. Allowed values: .",
                 "items": {
-                  "enum": [],
                   "type": "string"
                 },
                 "nullable": false,
@@ -73485,7 +73463,6 @@
                   "coupons",
                   "date",
                   "items_sold",
-                  "net_revenue",
                   "net_revenue",
                   "orders_count",
                   "refunds",
@@ -74986,7 +74963,6 @@
                   "coupons",
                   "date",
                   "items_sold",
-                  "net_revenue",
                   "net_revenue",
                   "orders_count",
                   "refunds",

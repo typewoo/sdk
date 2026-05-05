@@ -12,6 +12,7 @@ export const AdminTaxonomyTagUpdateRequestSchema = z.looseObject({
     .string()
     .optional()
     .describe('HTML description of the resource.'),
+  id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 
 export type AdminTaxonomyTagUpdateRequest = z.input<

@@ -32,6 +32,11 @@ export const AdminRefundCreateRequestSchema = z.looseObject({
     .array(z.record(z.string(), z.unknown()))
     .optional()
     .describe('Fee lines data.'),
+  meta_data: z
+    .array(z.record(z.string(), z.unknown()))
+    .optional()
+    .describe('Meta data.'),
+  order_id: z.number().optional().describe('The order ID.'),
 });
 
 export type AdminRefundCreateRequest = z.infer<
