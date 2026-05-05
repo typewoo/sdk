@@ -98,9 +98,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Coupon stats totals/subtotals shape
  */
@@ -110,6 +107,18 @@ export const AnalyticsCouponStatsSchema = z.object({
   orders_count: z.number(),
 });
 export type AnalyticsCouponStats = z.infer<typeof AnalyticsCouponStatsSchema>;
+
+export const AnalyticsCouponIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsCouponStatsSchema,
+});
+export type AnalyticsCouponInterval = z.infer<
+  typeof AnalyticsCouponIntervalSchema
+>;
 
 /**
  * Extended info for a coupon detail row
@@ -129,12 +138,11 @@ export type AnalyticsCouponExtendedInfo = z.infer<
 /**
  * Single coupon row from the coupons detail endpoint
  */
-export const AnalyticsCouponSchema = z.object({
+export const AnalyticsCouponSchema = z.looseObject({
   coupon_id: z.number().describe('Coupon ID.'),
   amount: z.number().describe('Net discount amount.'),
   orders_count: z.number().describe('Number of orders.'),
   extended_info: z.record(z.string(), z.unknown()).optional(),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCoupon = z.infer<typeof AnalyticsCouponSchema>;
 

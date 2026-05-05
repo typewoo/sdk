@@ -92,9 +92,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Customer stats totals/subtotals shape
  */
@@ -111,7 +108,7 @@ export type AnalyticsCustomerStats = z.infer<
 /**
  * Single customer row from the customers detail endpoint
  */
-export const AnalyticsCustomerSchema = z.object({
+export const AnalyticsCustomerSchema = z.looseObject({
   id: z.number().describe('Customer ID.'),
   user_id: z.number().describe('User ID.'),
   name: z.string().describe('Name.'),
@@ -130,7 +127,6 @@ export const AnalyticsCustomerSchema = z.object({
   total_spend: z.number().describe('Total spend.'),
   avg_order_value: z.number().describe('Avg order value.'),
   email: z.string().optional().describe('Email address.'),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCustomer = z.infer<typeof AnalyticsCustomerSchema>;
 

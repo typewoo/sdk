@@ -93,9 +93,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Category stats totals/subtotals shape
  */
@@ -122,14 +119,13 @@ export type AnalyticsCategoryExtendedInfo = z.infer<
 /**
  * Single category row from the categories detail endpoint
  */
-export const AnalyticsCategorySchema = z.object({
+export const AnalyticsCategorySchema = z.looseObject({
   category_id: z.number().describe('Category ID.'),
   items_sold: z.number().describe('Amount of items sold.'),
   net_revenue: z.number().describe('Total sales.'),
   orders_count: z.number().describe('Number of orders.'),
   products_count: z.number().describe('Amount of products.'),
   extended_info: z.record(z.string(), z.unknown()).optional(),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsCategory = z.infer<typeof AnalyticsCategorySchema>;
 

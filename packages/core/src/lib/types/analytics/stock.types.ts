@@ -44,9 +44,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Stock stats totals shape
  */
@@ -62,7 +59,7 @@ export type AnalyticsStockStats = z.infer<typeof AnalyticsStockStatsSchema>;
 /**
  * Single stock row from the stock detail endpoint
  */
-export const AnalyticsStockItemSchema = z.object({
+export const AnalyticsStockItemSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
   parent_id: z.number().optional().describe('Product parent ID.'),
   name: z.string().describe('Product name.'),
@@ -72,7 +69,6 @@ export const AnalyticsStockItemSchema = z.object({
     .describe('Stock status.'),
   stock_quantity: z.number().describe('Stock quantity.'),
   manage_stock: z.boolean().optional().describe('Manage stock.'),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsStockItem = z.infer<typeof AnalyticsStockItemSchema>;
 

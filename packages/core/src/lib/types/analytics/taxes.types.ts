@@ -99,9 +99,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Tax stats totals/subtotals shape
  */
@@ -113,6 +110,16 @@ export const AnalyticsTaxStatsSchema = z.object({
   orders_count: z.number(),
 });
 export type AnalyticsTaxStats = z.infer<typeof AnalyticsTaxStatsSchema>;
+
+export const AnalyticsTaxIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsTaxStatsSchema,
+});
+export type AnalyticsTaxInterval = z.infer<typeof AnalyticsTaxIntervalSchema>;
 
 /**
  * Extended info for a tax detail row
@@ -131,7 +138,7 @@ export type AnalyticsTaxExtendedInfo = z.infer<
 /**
  * Single tax row from the taxes detail endpoint
  */
-export const AnalyticsTaxSchema = z.object({
+export const AnalyticsTaxSchema = z.looseObject({
   tax_rate_id: z.number().describe('Tax rate ID.'),
   name: z.string().describe('Tax rate name.'),
   tax_rate: z.number().describe('Tax rate.'),
@@ -142,7 +149,6 @@ export const AnalyticsTaxSchema = z.object({
   order_tax: z.number().describe('Order tax.'),
   shipping_tax: z.number().describe('Shipping tax.'),
   orders_count: z.number().describe('Number of orders.'),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsTax = z.infer<typeof AnalyticsTaxSchema>;
 

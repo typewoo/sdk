@@ -4,7 +4,7 @@ export type Surface = 'admin' | 'store' | 'analytics';
 export type Kind = 'response' | 'request' | 'query';
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-export interface RouteMeta {
+export type RouteMeta = {
   surface: Surface;
   route: string;
   kind: Kind;
@@ -19,7 +19,7 @@ export interface RouteMeta {
     sinceVersion?: string;
     note?: string;
   };
-}
+};
 
 /**
  * Zod 4 typed registry mapping each schema instance to its WC route metadata.

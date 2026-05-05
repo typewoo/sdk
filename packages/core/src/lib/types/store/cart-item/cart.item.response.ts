@@ -41,7 +41,15 @@ export const CartItemResponseSchema = z.looseObject({
   variation: z
     .array(CartItemVariationResponseSchema)
     .describe('Chosen attributes (for variations).'),
-  item_data: z.array(z.unknown()).describe('Metadata related to the item'),
+  item_data: z
+    .array(
+      z.looseObject({
+        name: z.string(),
+        value: z.string(),
+        display: z.string(),
+      })
+    )
+    .describe('Metadata related to the item'),
   prices: CartItemPriceResponseSchema.describe(
     'Price data for the product in the current line item, including or excluding taxes based on the "display prices during cart and checkout" setting. Provided using the smallest unit of the currency.'
   ),

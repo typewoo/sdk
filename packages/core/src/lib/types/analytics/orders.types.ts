@@ -99,9 +99,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Order stats totals/subtotals shape
  */
@@ -122,6 +119,18 @@ export const AnalyticsOrderStatsSchema = z.object({
   products: z.number().optional(),
 });
 export type AnalyticsOrderStats = z.infer<typeof AnalyticsOrderStatsSchema>;
+
+export const AnalyticsOrderIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsOrderStatsSchema,
+});
+export type AnalyticsOrderInterval = z.infer<
+  typeof AnalyticsOrderIntervalSchema
+>;
 
 /**
  * Extended info for an order detail row
@@ -151,6 +160,7 @@ export const AnalyticsOrderExtendedInfoSchema = z.object({
       email: z.string().optional(),
     })
     .optional(),
+  attribution: z.looseObject({}).optional(),
 });
 export type AnalyticsOrderExtendedInfo = z.infer<
   typeof AnalyticsOrderExtendedInfoSchema
@@ -159,7 +169,7 @@ export type AnalyticsOrderExtendedInfo = z.infer<
 /**
  * Single order row from the orders detail endpoint
  */
-export const AnalyticsOrderSchema = z.object({
+export const AnalyticsOrderSchema = z.looseObject({
   order_id: z.number().describe('Order ID.'),
   order_number: z
     .union([z.string(), z.number()])
@@ -182,7 +192,6 @@ export const AnalyticsOrderSchema = z.object({
     .optional()
     .describe('Net total revenue (formatted).'),
   extended_info: z.record(z.string(), z.unknown()).optional(),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsOrder = z.infer<typeof AnalyticsOrderSchema>;
 

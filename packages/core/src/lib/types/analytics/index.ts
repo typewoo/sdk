@@ -2,17 +2,20 @@ import { z } from 'zod';
 import { schemaRegistry } from '../schema-registry.js';
 import {
   AnalyticsRevenueStatsSchema,
+  AnalyticsRevenueIntervalSchema,
   AnalyticsRevenueQueryParamsSchema,
 } from './revenue.types.js';
 import {
   AnalyticsOrderSchema,
   AnalyticsOrderStatsSchema,
+  AnalyticsOrderIntervalSchema,
   AnalyticsOrdersListQueryParamsSchema,
   AnalyticsOrdersStatsQueryParamsSchema,
 } from './orders.types.js';
 import {
   AnalyticsProductSchema,
   AnalyticsProductStatsSchema,
+  AnalyticsProductIntervalSchema,
   AnalyticsProductsListQueryParamsSchema,
   AnalyticsProductsStatsQueryParamsSchema,
 } from './products.types.js';
@@ -23,6 +26,7 @@ import {
 import {
   AnalyticsCouponSchema,
   AnalyticsCouponStatsSchema,
+  AnalyticsCouponIntervalSchema,
   AnalyticsCouponsListQueryParamsSchema,
   AnalyticsCouponsStatsQueryParamsSchema,
 } from './coupons.types.js';
@@ -35,18 +39,21 @@ import {
 import {
   AnalyticsDownloadSchema,
   AnalyticsDownloadStatsSchema,
+  AnalyticsDownloadIntervalSchema,
   AnalyticsDownloadsListQueryParamsSchema,
   AnalyticsDownloadsStatsQueryParamsSchema,
 } from './downloads.types.js';
 import {
   AnalyticsTaxSchema,
   AnalyticsTaxStatsSchema,
+  AnalyticsTaxIntervalSchema,
   AnalyticsTaxesListQueryParamsSchema,
   AnalyticsTaxesStatsQueryParamsSchema,
 } from './taxes.types.js';
 import {
   AnalyticsVariationSchema,
   AnalyticsVariationStatsSchema,
+  AnalyticsVariationIntervalSchema,
   AnalyticsVariationsListQueryParamsSchema,
   AnalyticsVariationsStatsQueryParamsSchema,
 } from './variations.types.js';
@@ -68,9 +75,9 @@ import {
 
 // Revenue
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsRevenueStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsRevenueIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -97,9 +104,9 @@ schemaRegistry.add(AnalyticsOrdersListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsOrderStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsOrderIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -126,9 +133,9 @@ schemaRegistry.add(AnalyticsProductsListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsProductStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsProductIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -167,9 +174,9 @@ schemaRegistry.add(AnalyticsCouponsListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsCouponStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsCouponIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -195,7 +202,7 @@ schemaRegistry.add(AnalyticsCustomersListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(z.object({ totals: AnalyticsCustomerStatsSchema }), {
+schemaRegistry.add(z.looseObject({ totals: AnalyticsCustomerStatsSchema }), {
   surface: 'analytics',
   route: '/wc-analytics/reports/customers/stats',
   kind: 'response',
@@ -219,9 +226,9 @@ schemaRegistry.add(AnalyticsDownloadsListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsDownloadStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsDownloadIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -248,9 +255,9 @@ schemaRegistry.add(AnalyticsTaxesListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsTaxStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsTaxIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -277,9 +284,9 @@ schemaRegistry.add(AnalyticsVariationsListQueryParamsSchema, {
   method: 'GET',
 });
 schemaRegistry.add(
-  z.object({
+  z.looseObject({
     totals: AnalyticsVariationStatsSchema,
-    intervals: z.array(z.unknown()).optional(),
+    intervals: z.array(AnalyticsVariationIntervalSchema).optional(),
   }),
   {
     surface: 'analytics',
@@ -305,7 +312,7 @@ schemaRegistry.add(AnalyticsStockListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(z.object({ totals: AnalyticsStockStatsSchema }), {
+schemaRegistry.add(z.looseObject({ totals: AnalyticsStockStatsSchema }), {
   surface: 'analytics',
   route: '/wc-analytics/reports/stock/stats',
   kind: 'response',

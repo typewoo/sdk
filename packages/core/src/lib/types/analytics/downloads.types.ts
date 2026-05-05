@@ -110,10 +110,22 @@ export type AnalyticsDownloadStats = z.infer<
   typeof AnalyticsDownloadStatsSchema
 >;
 
+export const AnalyticsDownloadIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsDownloadStatsSchema,
+});
+export type AnalyticsDownloadInterval = z.infer<
+  typeof AnalyticsDownloadIntervalSchema
+>;
+
 /**
  * Single download row from the downloads detail endpoint
  */
-export const AnalyticsDownloadSchema = z.object({
+export const AnalyticsDownloadSchema = z.looseObject({
   id: z.number().optional().describe('ID.'),
   download_id: z.string().optional().describe('Download ID.'),
   product_id: z.number().describe('Product ID.'),

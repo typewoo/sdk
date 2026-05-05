@@ -76,6 +76,18 @@ export const AnalyticsRevenueStatsSchema = z.object({
 });
 export type AnalyticsRevenueStats = z.infer<typeof AnalyticsRevenueStatsSchema>;
 
+export const AnalyticsRevenueIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsRevenueStatsSchema,
+});
+export type AnalyticsRevenueInterval = z.infer<
+  typeof AnalyticsRevenueIntervalSchema
+>;
+
 /**
  * Query parameters for revenue stats endpoint
  */

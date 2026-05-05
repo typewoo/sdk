@@ -99,9 +99,6 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * Product stats totals/subtotals shape
  */
@@ -113,6 +110,18 @@ export const AnalyticsProductStatsSchema = z.object({
   variations_count: z.number().optional(),
 });
 export type AnalyticsProductStats = z.infer<typeof AnalyticsProductStatsSchema>;
+
+export const AnalyticsProductIntervalSchema = z.looseObject({
+  interval: z.string(),
+  date_start: z.string(),
+  date_start_gmt: z.string(),
+  date_end: z.string(),
+  date_end_gmt: z.string(),
+  subtotals: AnalyticsProductStatsSchema,
+});
+export type AnalyticsProductInterval = z.infer<
+  typeof AnalyticsProductIntervalSchema
+>;
 
 /**
  * Extended info for a product detail row
@@ -137,13 +146,12 @@ export type AnalyticsProductExtendedInfo = z.infer<
 /**
  * Single product row from the products detail endpoint
  */
-export const AnalyticsProductSchema = z.object({
+export const AnalyticsProductSchema = z.looseObject({
   product_id: z.number().describe('Product ID.'),
   items_sold: z.number().describe('Number of items sold.'),
   net_revenue: z.number().describe('Total Net sales of all items sold.'),
   orders_count: z.number().describe('Number of orders product appeared in.'),
   extended_info: z.record(z.string(), z.unknown()).optional(),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsProduct = z.infer<typeof AnalyticsProductSchema>;
 

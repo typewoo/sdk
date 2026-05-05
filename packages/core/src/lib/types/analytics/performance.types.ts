@@ -43,13 +43,10 @@ const AnalyticsListQueryParamsSchema = z.object({
     .describe('Force retrieval of fresh data instead of from the cache.'),
 });
 
-const AnalyticsLinkSchema = z.object({ href: z.string() });
-const AnalyticsLinksSchema = z.record(z.string(), z.array(AnalyticsLinkSchema));
-
 /**
  * A single performance indicator value
  */
-export const AnalyticsPerformanceIndicatorSchema = z.object({
+export const AnalyticsPerformanceIndicatorSchema = z.looseObject({
   stat: z
     .enum([
       'coupons/amount',
@@ -81,7 +78,6 @@ export const AnalyticsPerformanceIndicatorSchema = z.object({
     .describe(
       'Value of the stat. Returns null if the stat does not exist or cannot be loaded.'
     ),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsPerformanceIndicator = z.infer<
   typeof AnalyticsPerformanceIndicatorSchema
@@ -90,7 +86,7 @@ export type AnalyticsPerformanceIndicator = z.infer<
 /**
  * Allowed indicator descriptor
  */
-export const AnalyticsPerformanceAllowedSchema = z.object({
+export const AnalyticsPerformanceAllowedSchema = z.looseObject({
   stat: z
     .enum([
       'coupons/amount',
@@ -112,7 +108,6 @@ export const AnalyticsPerformanceAllowedSchema = z.object({
     .describe('Unique identifier for the resource.'),
   chart: z.string().describe('The specific chart this stat referrers to.'),
   label: z.string().describe('Human readable label for the stat.'),
-  _links: AnalyticsLinksSchema.optional(),
 });
 export type AnalyticsPerformanceAllowed = z.infer<
   typeof AnalyticsPerformanceAllowedSchema
