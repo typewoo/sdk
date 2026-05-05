@@ -43,7 +43,7 @@ function buildHeaders(creds) {
  * fall back to `1` too — OPTIONS doesn't validate the path against the regex
  * for schema lookup in the WP routers we've tested.
  */
-function concretiseRoute(route) {
+export function concretiseRoute(route) {
   return route.replace(/\(\?P<[^>]+>[^)]+\)/g, '1');
 }
 
@@ -63,7 +63,7 @@ async function fetchJson(url, headers) {
  * From args (an object keyed by param name, with JSON-Schema-ish props),
  * synthesise a JSON Schema object so the normaliser can consume it uniformly.
  */
-function argsToSchema(args) {
+export function argsToSchema(args) {
   if (!args || typeof args !== 'object') {
     return { type: 'object', properties: {}, required: [] };
   }
@@ -117,7 +117,7 @@ async function fetchRouteOptions(baseUrl, route, headers) {
   return body;
 }
 
-function shapeRouteEntry(routeDef) {
+export function shapeRouteEntry(routeDef) {
   const entry = { response: null, request: {}, query: {} };
 
   if (routeDef?.schema) {

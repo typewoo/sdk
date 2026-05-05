@@ -13,9 +13,12 @@ function ensureDir(filePath) {
 }
 
 /**
- * Assign a stable sequential id (1, 2, 3, …) to every drift in the order
+ * Assign a stable per-severity sequential id to every drift in the order
  * they will appear in the markdown table. Mutates the drifts array. Returns
  * the same array for fluent use.
+ *
+ * ID format: ERROR-001, WARN-001, INFO-001 (zero-padded to 3 digits within
+ * each severity bucket).
  *
  * Display order: surface → route → severity → field → kind → driftKind.
  * (Mirrors the markdown writer's sort exactly.)
@@ -30,10 +33,15 @@ export function assignDriftIds(drifts) {
       a.kind.localeCompare(b.kind) ||
       a.driftKind.localeCompare(b.driftKind)
   );
-  let counter = 0;
+
+  const PREFIX = { error: 'ERROR', warn: 'WARN', info: 'INFO' };
+  const counters = { error: 0, warn: 0, info: 0 };
+
   for (const d of sorted) {
-    counter += 1;
-    d.id = String(counter);
+    const sev = d.severity ?? 'info';
+    counters[sev] = (counters[sev] ?? 0) + 1;
+    const prefix = PREFIX[sev] ?? 'INFO';
+    d.id = `${prefix}-${String(counters[sev]).padStart(3, '0')}`;
   }
   return drifts;
 }

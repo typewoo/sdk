@@ -73,8 +73,13 @@ export function reconcileAcrossVersions({
       // if any of them does NOT report extra-in-sdk for the same key, that
       // version still has the field — we're covering a legitimate older
       // client.
+      const routeLevelKey = `${d.kind}|<route>`;
       const stillIn = olderVersions.filter((v) => {
-        const status = fieldStatusByVersion.get(v).get(key);
+        const vMap = fieldStatusByVersion.get(v);
+        // If the entire route was absent in this older version, the field is
+        // not present either — do NOT count it as back-compat cover.
+        if (vMap.get(routeLevelKey) === 'route-missing-upstream') return false;
+        const status = vMap.get(key);
         return status !== 'extra-in-sdk' && status !== 'route-missing-upstream';
       });
       if (stillIn.length > 0) {

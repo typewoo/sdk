@@ -14,8 +14,9 @@
  *   pnpm types:sync:all --no-clean        # don't tear down between versions (faster, may stale)
  */
 
-import { execSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { request } from 'node:http';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -76,25 +77,25 @@ function run(cmd, opts = {}) {
 async function captureOne(version, opts) {
   console.log(`\n========== ${version} ==========`);
 
-  if (!opts.noClean) {
-    run('pnpm wp:env:clean');
-  }
-  run('pnpm wp:env:up:minimal', { env: { WOO_COMMERCE_VERSION: version } });
+  // wp:env:rebuild = wp:env:clean + wp:env:up (full WC install + app password export)
+  // wp:env:up alone when --no-clean is set (skip the tear-down step)
+  const setupCmd = opts.noClean ? 'pnpm wp:env:up' : 'pnpm wp:env:rebuild';
+  run(setupCmd, { env: { WOO_COMMERCE_VERSION: version } });
 
-  // Wait for /wp-json/ to respond (the up:minimal script returns once docker
-  // is up, but WP can take a few extra seconds to be reachable).
+  // Wait for /wp-json/ to respond using Node.js HTTP (avoids cross-platform
+  // curl issues with /dev/null on Windows).
   console.log('[sync-all] waiting for WP to respond...');
   for (let i = 0; i < 60; i++) {
-    try {
-      execSync('curl -fs http://localhost:8080/wp-json/ -o /dev/null', {
-        stdio: 'ignore',
+    const ok = await new Promise((resolve) => {
+      const req = request('http://localhost:8080/wp-json/', (res) => {
+        res.resume();
+        resolve(res.statusCode >= 200 && res.statusCode < 400);
       });
-      break;
-    } catch {
-      execSync(
-        process.platform === 'win32' ? 'timeout /t 2 /nobreak >nul' : 'sleep 2'
-      );
-    }
+      req.on('error', () => resolve(false));
+      req.end();
+    });
+    if (ok) break;
+    await new Promise((r) => setTimeout(r, 2000));
   }
 
   const password = readAdminPassword();

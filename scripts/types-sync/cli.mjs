@@ -19,7 +19,7 @@
  *   --base-url <url>      WP base URL (default: http://localhost:8080)
  *   --wc-version <ver>    WC version label for the snapshot file
  *   --snapshot <path>     Override snapshot path on `check`
- *   --allow-warn          Treat warns as non-fatal (errors still fail)
+ *   --strict              Also fail on warn-severity rows (default: warns are non-fatal)
  *   --json                Emit JSON to stdout instead of writing files (check)
  *   --no-coverage-check   Skip the route-coverage check (allowlist-backed
  *                         enforcement that every upstream route is mapped)
@@ -218,11 +218,18 @@ function diffEntryAgainstSnapshot(entry, snapshot, options) {
   if (entry.kind === 'response') {
     upstream = upstreamRoute.response;
   } else if (entry.kind === 'request') {
-    upstream =
-      upstreamRoute.request?.[entry.method ?? 'POST'] ??
-      upstreamRoute.request?.PUT ??
-      upstreamRoute.request?.PATCH ??
-      null;
+    if (entry.method) {
+      // Explicit method — look up only that method; no fallback so we don't
+      // silently compare a POST schema against a PUT/PATCH schema.
+      upstream = upstreamRoute.request?.[entry.method] ?? null;
+    } else {
+      // No method specified — try POST, then PUT, then PATCH.
+      upstream =
+        upstreamRoute.request?.POST ??
+        upstreamRoute.request?.PUT ??
+        upstreamRoute.request?.PATCH ??
+        null;
+    }
   } else if (entry.kind === 'query') {
     upstream = upstreamRoute.query?.[entry.method ?? 'GET'] ?? null;
   }
