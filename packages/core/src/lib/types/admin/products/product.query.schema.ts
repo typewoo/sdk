@@ -254,7 +254,9 @@ export const AdminProductQueryParamsSchema = z.looseObject({
     .describe('Limit result set to virtual products.'),
 });
 
-export type AdminProductQueryParams = z.infer<typeof AdminProductQueryParamsSchema>;
+export type AdminProductQueryParams = z.infer<
+  typeof AdminProductQueryParamsSchema
+>;
 
 /**
  * Query params for listing product custom-field names
