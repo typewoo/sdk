@@ -1,7 +1,7 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { CheckoutCreateRequestSchema } from './checkout.create.request.js';
-import { CheckoutResponseSchema } from './checkout.response.js';
-import { CheckoutUpdateRequestSchema } from './checkout.update.request.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { CheckoutCreateRequestSchema } from './checkout.create.schema.js';
+import { CheckoutResponseSchema } from './checkout.schema.js';
+import { CheckoutUpdateRequestSchema } from './checkout.update.schema.js';
 
 schemaRegistry.add(CheckoutResponseSchema, {
   surface: 'store',
@@ -21,8 +21,8 @@ schemaRegistry.add(CheckoutUpdateRequestSchema, {
   method: 'PUT',
 });
 
-export * from './checkout.billing.response.js';
-export * from './checkout.create.request.js';
-export * from './checkout.response.js';
-export * from './checkout.shipping.js';
-export * from './checkout.update.request.js';
+export * from './checkout.billing.schema.js';
+export * from './checkout.create.schema.js';
+export * from './checkout.schema.js';
+export * from './checkout.shipping.schema.js';
+export * from './checkout.update.schema.js';

@@ -76,9 +76,9 @@ Core internals (`packages/core/src/lib/`):
 1. `pnpm install` (MANDATORY—fail fast if node_modules missing)
 2. Format check: `pnpm run format:check` (fix with `pnpm run format`)
 3. Implement change (see section 5 for patterns)
-4. Build: `pnpm nx build core` (or `pnpm nx run-many -t build` for multi-package)
-5. Test: `pnpm nx test core` (add `--coverage` if changing runtime logic)
-6. Lint: `pnpm nx lint core`
+4. Build: `pnpm nx build @typewoo/sdk  ` (or `pnpm nx run-many -t build` for multi-package)
+5. Test: `pnpm nx test @typewoo/sdk  ` (add `--coverage` if changing runtime logic)
+6. Lint: `pnpm nx lint @typewoo/sdk  `
 7. Verify `index.ts` exports only intended public symbols
 8. Add tests for new code paths (coverage target ≥ 98%)
 9. Re-run full suite before final output

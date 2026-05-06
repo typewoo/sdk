@@ -1,6 +1,6 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { ProductCollectionDataRequestSchema } from './product.collection.data.request.js';
-import { ProductCollectionDataResponseSchema } from './product.collection.data.response.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { ProductCollectionDataRequestSchema } from './product.collection.data.query.schema.js';
+import { ProductCollectionDataResponseSchema } from './product.collection.data.schema.js';
 
 schemaRegistry.add(ProductCollectionDataResponseSchema, {
   surface: 'store',
@@ -14,9 +14,9 @@ schemaRegistry.add(ProductCollectionDataRequestSchema, {
   method: 'POST',
 });
 
-export * from './product.collection.data.attribute.counts.response.js';
-export * from './product.collection.data.price.range.response.js';
-export * from './product.collection.data.rating.counts.response.js';
-export * from './product.collection.data.request.js';
-export * from './product.collection.data.response.js';
-export * from './product.collection.data.taxonomy.counts.response.js';
+export * from './product.collection.data.attribute.counts.schema.js';
+export * from './product.collection.data.price.range.schema.js';
+export * from './product.collection.data.rating.counts.schema.js';
+export * from './product.collection.data.query.schema.js';
+export * from './product.collection.data.schema.js';
+export * from './product.collection.data.taxonomy.counts.schema.js';

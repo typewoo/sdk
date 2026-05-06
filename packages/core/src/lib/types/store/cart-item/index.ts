@@ -1,7 +1,7 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { CartItemAddRequestSchema } from './cart.item.add.request.js';
-import { CartItemEditRequestSchema } from './cart.item.edit.request.js';
-import { CartItemResponseSchema } from './cart.item.response.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { CartItemAddRequestSchema } from './cart.item.add.schema.js';
+import { CartItemEditRequestSchema } from './cart.item.update.schema.js';
+import { CartItemResponseSchema } from './cart.item.schema.js';
 
 schemaRegistry.add(CartItemResponseSchema, {
   surface: 'store',
@@ -21,10 +21,10 @@ schemaRegistry.add(CartItemEditRequestSchema, {
   method: 'POST',
 });
 
-export * from './cart.item.add.request.js';
-export * from './cart.item.edit.request.js';
-export * from './cart.item.price.response.js';
-export * from './cart.item.quantity.limits.response.js';
-export * from './cart.item.response.js';
-export * from './cart.item.total.response.js';
-export * from './cart.item.variation.response.js';
+export * from './cart.item.add.schema.js';
+export * from './cart.item.update.schema.js';
+export * from './cart.item.price.schema.js';
+export * from './cart.item.quantity.limits.schema.js';
+export * from './cart.item.schema.js';
+export * from './cart.item.total.schema.js';
+export * from './cart.item.variation.schema.js';

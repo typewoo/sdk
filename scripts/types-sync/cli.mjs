@@ -422,6 +422,10 @@ async function runCheck(args) {
     if (file) routeFiles[key] = file;
   }
 
+  if (args['no-endpoint-check'] === true) {
+    drifts = drifts.filter((d) => d.driftKind !== 'endpoint-missing-upstream');
+  }
+
   if (args.json) {
     process.stdout.write(
       JSON.stringify(sortKeysDeep({ meta, drifts }), null, 2) + '\n'
@@ -432,10 +436,6 @@ async function runCheck(args) {
     writeMarkdown(join(OUT_DIR, 'drift.md'), drifts, meta, { routeFiles });
     console.log(`[check] wrote ${join(OUT_DIR, 'drift.json')}`);
     console.log(`[check] wrote ${join(OUT_DIR, 'drift.md')}`);
-  }
-
-  if (args['no-endpoint-check'] === true) {
-    drifts = drifts.filter((d) => d.driftKind !== 'endpoint-missing-upstream');
   }
 
   const counts = summarise(drifts);

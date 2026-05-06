@@ -1,6 +1,6 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { ProductReviewRequestSchema } from './product.review.request.js';
-import { ProductReviewResponseSchema } from './product.review.response.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { ProductReviewRequestSchema } from './product.review.query.schema.js';
+import { ProductReviewResponseSchema } from './product.review.schema.js';
 
 schemaRegistry.add(ProductReviewResponseSchema, {
   surface: 'store',
@@ -14,5 +14,5 @@ schemaRegistry.add(ProductReviewRequestSchema, {
   method: 'GET',
 });
 
-export * from './product.review.request.js';
-export * from './product.review.response.js';
+export * from './product.review.query.schema.js';
+export * from './product.review.schema.js';

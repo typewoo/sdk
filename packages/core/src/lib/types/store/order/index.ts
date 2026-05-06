@@ -1,6 +1,6 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
-import { OrderResponseSchema } from './order.response.js';
+import { OrderResponseSchema } from './order.schema.js';
 
 const OrderGetQuerySchema = z.object({
   context: z.string().optional(),
@@ -18,9 +18,9 @@ schemaRegistry.add(OrderGetQuerySchema, {
   method: 'GET',
 });
 
-export * from './order.billing.response.js';
-export * from './order.coupon.response.js';
-export * from './order.request.js';
-export * from './order.response.js';
-export * from './order.shipping.response.js';
-export * from './order.total.response.js';
+export * from './order.billing.schema.js';
+export * from './order.coupon.schema.js';
+export * from './order.query.schema.js';
+export * from './order.schema.js';
+export * from './order.shipping.schema.js';
+export * from './order.total.schema.js';

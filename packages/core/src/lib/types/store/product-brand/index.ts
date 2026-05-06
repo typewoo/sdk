@@ -1,5 +1,5 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { ProductBrandResponseSchema } from './product.brand.response.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { ProductBrandResponseSchema } from './product.brand.schema.js';
 
 schemaRegistry.add(ProductBrandResponseSchema, {
   surface: 'store',
@@ -7,4 +7,4 @@ schemaRegistry.add(ProductBrandResponseSchema, {
   kind: 'response',
 });
 
-export * from './product.brand.response.js';
+export * from './product.brand.schema.js';

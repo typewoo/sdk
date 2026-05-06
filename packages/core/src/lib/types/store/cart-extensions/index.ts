@@ -1,6 +1,6 @@
-import { schemaRegistry } from '../../schema-registry.js';
-import { CartExtensionsRequestSchema } from './cart.extensions.request.js';
-import { CartExtensionsResponseSchema } from './cart.extensions.response.js';
+﻿import { schemaRegistry } from '../../schema-registry.js';
+import { CartExtensionsRequestSchema } from './cart.extensions.create.schema.js';
+import { CartExtensionsResponseSchema } from './cart.extensions.schema.js';
 
 schemaRegistry.add(CartExtensionsRequestSchema, {
   surface: 'store',
@@ -9,5 +9,5 @@ schemaRegistry.add(CartExtensionsRequestSchema, {
   method: 'POST',
 });
 
-export * from './cart.extensions.request.js';
-export * from './cart.extensions.response.js';
+export * from './cart.extensions.create.schema.js';
+export * from './cart.extensions.schema.js';
