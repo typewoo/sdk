@@ -36,12 +36,18 @@ export function assignDriftIds(drifts) {
 
   const PREFIX = { error: 'ERROR', warn: 'WARN', info: 'INFO' };
   const counters = { error: 0, warn: 0, info: 0 };
-
+  // Build a Map from sorted entry → id so we can assign without mutating
+  // the caller's objects. We still write back to the original drifts array
+  // entries (by reference) so the JSON/markdown writers see the ids.
+  const idMap = new Map();
   for (const d of sorted) {
     const sev = d.severity ?? 'info';
     counters[sev] = (counters[sev] ?? 0) + 1;
     const prefix = PREFIX[sev] ?? 'INFO';
-    d.id = `${prefix}-${String(counters[sev]).padStart(3, '0')}`;
+    idMap.set(d, `${prefix}-${String(counters[sev]).padStart(3, '0')}`);
+  }
+  for (const d of drifts) {
+    if (idMap.has(d)) d.id = idMap.get(d);
   }
   return drifts;
 }

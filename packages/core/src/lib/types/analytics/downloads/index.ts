@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsDownloadSchema,
-  AnalyticsDownloadStatsSchema,
-  AnalyticsDownloadIntervalSchema,
+  AnalyticsDownloadsStatsResponseSchema,
 } from './downloads.schema.js';
 import {
   AnalyticsDownloadsListQueryParamsSchema,
@@ -21,17 +19,11 @@ schemaRegistry.add(AnalyticsDownloadsListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsDownloadStatsSchema,
-    intervals: z.array(AnalyticsDownloadIntervalSchema).optional(),
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/downloads/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsDownloadsStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/downloads/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsDownloadsStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/downloads/stats',

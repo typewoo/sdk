@@ -40,5 +40,10 @@ export function schemaRegistryEntries(): IterableIterator<
   const internal = schemaRegistry as unknown as {
     _map: Map<z.ZodType, RouteMeta>;
   };
+  if (!(internal._map instanceof Map)) {
+    throw new Error(
+      'Zod registry internal _map not found — check Zod version compatibility'
+    );
+  }
   return internal._map.entries();
 }

@@ -1,8 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsCustomerSchema,
-  AnalyticsCustomerStatsSchema,
+  AnalyticsCustomersStatsResponseSchema,
 } from './customers.schema.js';
 import {
   AnalyticsCustomersListQueryParamsSchema,
@@ -20,16 +19,11 @@ schemaRegistry.add(AnalyticsCustomersListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsCustomerStatsSchema,
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/customers/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsCustomersStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/customers/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsCustomersStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/customers/stats',

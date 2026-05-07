@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsOrderSchema,
-  AnalyticsOrderStatsSchema,
-  AnalyticsOrderIntervalSchema,
+  AnalyticsOrdersStatsResponseSchema,
 } from './orders.schema.js';
 import {
   AnalyticsOrdersListQueryParamsSchema,
@@ -21,17 +19,11 @@ schemaRegistry.add(AnalyticsOrdersListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsOrderStatsSchema,
-    intervals: z.array(AnalyticsOrderIntervalSchema).optional(),
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/orders/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsOrdersStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/orders/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsOrdersStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/orders/stats',

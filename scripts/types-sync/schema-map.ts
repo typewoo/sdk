@@ -49,7 +49,12 @@ function buildSchemaMap(): SchemaMapEntry[] {
   const entries: SchemaMapEntry[] = [];
   for (const [zod, meta] of schemaRegistryEntries()) {
     const name = names.get(zod);
-    if (!name) continue; // registered but not exported from any barrel — skip
+    if (!name) {
+      console.warn(
+        `[schema-map] registered schema has no barrel export — skipped (route: ${meta.route}, kind: ${meta.kind})`
+      );
+      continue;
+    }
     entries.push({ name, zod, ...meta });
   }
   return entries;

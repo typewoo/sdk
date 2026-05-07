@@ -84,13 +84,33 @@ async function loadRegistry() {
   return mod.SCHEMA_MAP;
 }
 
+function semverCompareFiles(a, b) {
+  // Extract version from filenames like "wc-9.8.0.json"
+  const va = a
+    .replace(/^wc-/, '')
+    .replace(/\.json$/, '')
+    .split('.')
+    .map(Number);
+  const vb = b
+    .replace(/^wc-/, '')
+    .replace(/\.json$/, '')
+    .split('.')
+    .map(Number);
+  for (let i = 0; i < Math.max(va.length, vb.length); i++) {
+    const x = va[i] ?? 0;
+    const y = vb[i] ?? 0;
+    if (x !== y) return x - y;
+  }
+  return 0;
+}
+
 function findLatestSnapshot() {
   try {
     const files = readdirSync(SNAPSHOTS_DIR).filter(
       (f) => f.startsWith('wc-') && f.endsWith('.json')
     );
     if (files.length === 0) return null;
-    files.sort();
+    files.sort(semverCompareFiles);
     return join(SNAPSHOTS_DIR, files[files.length - 1]);
   } catch {
     return null;

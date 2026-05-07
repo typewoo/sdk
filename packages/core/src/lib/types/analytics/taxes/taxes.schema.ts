@@ -3,12 +3,15 @@ import { z } from 'zod';
 /**
  * Tax stats totals/subtotals shape
  */
-export const AnalyticsTaxStatsSchema = z.object({
-  tax_codes: z.number().optional(),
-  total_tax: z.number(),
-  order_tax: z.number(),
-  shipping_tax: z.number(),
-  orders_count: z.number(),
+export const AnalyticsTaxStatsSchema = z.looseObject({
+  tax_codes: z.number().optional().describe('Amount of tax codes.'),
+  total_tax: z.number().describe('Total tax.'),
+  order_tax: z.number().describe('Order tax.'),
+  shipping_tax: z.number().describe('Shipping tax.'),
+  orders_count: z.number().describe('Number of orders.'),
+  segments: z
+    .array(z.looseObject({}))
+    .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsTaxStats = z.infer<typeof AnalyticsTaxStatsSchema>;
 
@@ -21,6 +24,17 @@ export const AnalyticsTaxIntervalSchema = z.looseObject({
   subtotals: AnalyticsTaxStatsSchema,
 });
 export type AnalyticsTaxInterval = z.infer<typeof AnalyticsTaxIntervalSchema>;
+
+export const AnalyticsTaxesStatsResponseSchema = z.looseObject({
+  totals: AnalyticsTaxStatsSchema.describe('Totals data.'),
+  intervals: z
+    .array(AnalyticsTaxIntervalSchema)
+    .optional()
+    .describe('Reports data grouped by intervals.'),
+});
+export type AnalyticsTaxesStatsResponse = z.infer<
+  typeof AnalyticsTaxesStatsResponseSchema
+>;
 
 /**
  * Extended info for a tax detail row

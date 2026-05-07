@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsTaxSchema,
-  AnalyticsTaxStatsSchema,
-  AnalyticsTaxIntervalSchema,
+  AnalyticsTaxesStatsResponseSchema,
 } from './taxes.schema.js';
 import {
   AnalyticsTaxesListQueryParamsSchema,
@@ -21,17 +19,11 @@ schemaRegistry.add(AnalyticsTaxesListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsTaxStatsSchema,
-    intervals: z.array(AnalyticsTaxIntervalSchema).optional(),
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/taxes/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsTaxesStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/taxes/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsTaxesStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/taxes/stats',

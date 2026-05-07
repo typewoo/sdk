@@ -10,10 +10,7 @@ on:
         required: false
         type: string
   pull_request:
-    paths:
-      - 'packages/core/src/lib/types/**'
-      - 'scripts/types-sync/**'
-      - '.github/workflows/types-sync.yml'
+    branches: [main]
 
 permissions:
   contents: read
@@ -124,7 +121,6 @@ jobs:
       - name: Diff against SDK types (full support window)
         id: check
         run: pnpm types:sync:check
-        continue-on-error: true
 
       - name: Run registry-completeness test (strict)
         env:
@@ -140,7 +136,7 @@ jobs:
           path: scripts/types-sync/out/
 
       - name: Open / update tracking issue on drift
-        if: steps.check.outcome == 'failure'
+        if: steps.check.outcome == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_GIST_TOKEN: ${{ secrets.GH_GIST_TOKEN }}
@@ -190,8 +186,23 @@ jobs:
               --label "types-sync" --label "schema-drift"
           fi
 
-      - name: Fail job if drift was detected
-        if: steps.check.outcome == 'failure'
+      - name: Close tracking issue if drift resolved
+        if: steps.check.outcome == 'success' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
-          echo "::error::Schema drift detected against support window [${{ needs.window.outputs.versions }}]. See drift.md artifact and tracking issue."
-          exit 1
+          existing=$(gh issue list \
+            --label "types-sync" --label "schema-drift" \
+            --state open \
+            --json number,title \
+            --jq ".[] | select(.title==\"$TITLE\") | .number" \
+            | head -1)
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" \
+              --body "Schema drift resolved — \`pnpm types:sync:check\` passed against WooCommerce \`${{ needs.window.outputs.latest }}\` ([run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))."
+            gh issue close "$existing" --reason completed
+            echo "Closed issue #$existing"
+          else
+            echo "No open drift issue to close."
+          fi

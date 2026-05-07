@@ -3,21 +3,19 @@ import { z } from 'zod';
 /**
  * Order stats totals/subtotals shape
  */
-export const AnalyticsOrderStatsSchema = z.object({
-  orders_count: z.number(),
-  num_items_sold: z.number(),
-  gross_sales: z.number(),
-  total_sales: z.number(),
-  coupons: z.number(),
-  coupons_count: z.number(),
-  refunds: z.number(),
-  taxes: z.number(),
-  shipping: z.number(),
-  net_revenue: z.number(),
-  avg_items_per_order: z.number(),
-  avg_order_value: z.number(),
-  total_customers: z.number(),
-  products: z.number().optional(),
+export const AnalyticsOrderStatsSchema = z.looseObject({
+  orders_count: z.number().describe('Number of orders'),
+  num_items_sold: z.number().describe('Number of items sold'),
+  coupons: z.number().describe('Amount discounted by coupons.'),
+  coupons_count: z.number().describe('Unique coupons count.'),
+  net_revenue: z.number().describe('Net sales.'),
+  avg_items_per_order: z.number().describe('Average items per order'),
+  avg_order_value: z.number().describe('Average order value.'),
+  total_customers: z.number().describe('Total distinct customers.'),
+  products: z.number().optional().describe('Number of distinct products sold.'),
+  segments: z
+    .array(z.looseObject({}))
+    .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsOrderStats = z.infer<typeof AnalyticsOrderStatsSchema>;
 
@@ -31,6 +29,17 @@ export const AnalyticsOrderIntervalSchema = z.looseObject({
 });
 export type AnalyticsOrderInterval = z.infer<
   typeof AnalyticsOrderIntervalSchema
+>;
+
+export const AnalyticsOrdersStatsResponseSchema = z.looseObject({
+  totals: AnalyticsOrderStatsSchema.describe('Totals data.'),
+  intervals: z
+    .array(AnalyticsOrderIntervalSchema)
+    .optional()
+    .describe('Reports data grouped by intervals.'),
+});
+export type AnalyticsOrdersStatsResponse = z.infer<
+  typeof AnalyticsOrdersStatsResponseSchema
 >;
 
 /**

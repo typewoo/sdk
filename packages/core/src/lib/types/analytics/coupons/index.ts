@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsCouponSchema,
-  AnalyticsCouponStatsSchema,
-  AnalyticsCouponIntervalSchema,
+  AnalyticsCouponsStatsResponseSchema,
 } from './coupons.schema.js';
 import {
   AnalyticsCouponsListQueryParamsSchema,
@@ -21,17 +19,11 @@ schemaRegistry.add(AnalyticsCouponsListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsCouponStatsSchema,
-    intervals: z.array(AnalyticsCouponIntervalSchema).optional(),
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/coupons/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsCouponsStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/coupons/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsCouponsStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/coupons/stats',

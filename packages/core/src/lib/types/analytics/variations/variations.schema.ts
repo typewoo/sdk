@@ -3,11 +3,13 @@ import { z } from 'zod';
 /**
  * Variation stats totals/subtotals shape
  */
-export const AnalyticsVariationStatsSchema = z.object({
-  items_sold: z.number(),
-  net_revenue: z.number(),
-  orders_count: z.number(),
-  variations_count: z.number().optional(),
+export const AnalyticsVariationStatsSchema = z.looseObject({
+  items_sold: z.number().describe('Number of variation items sold.'),
+  net_revenue: z.number().describe('Net sales.'),
+  orders_count: z.number().describe('Number of orders.'),
+  segments: z
+    .array(z.looseObject({}))
+    .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsVariationStats = z.infer<
   typeof AnalyticsVariationStatsSchema
@@ -23,6 +25,17 @@ export const AnalyticsVariationIntervalSchema = z.looseObject({
 });
 export type AnalyticsVariationInterval = z.infer<
   typeof AnalyticsVariationIntervalSchema
+>;
+
+export const AnalyticsVariationsStatsResponseSchema = z.looseObject({
+  totals: AnalyticsVariationStatsSchema.describe('Totals data.'),
+  intervals: z
+    .array(AnalyticsVariationIntervalSchema)
+    .optional()
+    .describe('Reports data grouped by intervals.'),
+});
+export type AnalyticsVariationsStatsResponse = z.infer<
+  typeof AnalyticsVariationsStatsResponseSchema
 >;
 
 /**

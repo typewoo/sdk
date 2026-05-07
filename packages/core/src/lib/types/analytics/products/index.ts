@@ -1,9 +1,7 @@
-import { z } from 'zod';
 import { schemaRegistry } from '../../schema-registry.js';
 import {
   AnalyticsProductSchema,
-  AnalyticsProductStatsSchema,
-  AnalyticsProductIntervalSchema,
+  AnalyticsProductsStatsResponseSchema,
 } from './products.schema.js';
 import {
   AnalyticsProductsListQueryParamsSchema,
@@ -21,17 +19,11 @@ schemaRegistry.add(AnalyticsProductsListQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
-schemaRegistry.add(
-  z.looseObject({
-    totals: AnalyticsProductStatsSchema,
-    intervals: z.array(AnalyticsProductIntervalSchema).optional(),
-  }),
-  {
-    surface: 'analytics',
-    route: '/wc-analytics/reports/products/stats',
-    kind: 'response',
-  }
-);
+schemaRegistry.add(AnalyticsProductsStatsResponseSchema, {
+  surface: 'analytics',
+  route: '/wc-analytics/reports/products/stats',
+  kind: 'response',
+});
 schemaRegistry.add(AnalyticsProductsStatsQueryParamsSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/products/stats',

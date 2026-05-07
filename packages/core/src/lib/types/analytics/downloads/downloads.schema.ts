@@ -3,8 +3,8 @@ import { z } from 'zod';
 /**
  * Download stats totals/subtotals shape
  */
-export const AnalyticsDownloadStatsSchema = z.object({
-  download_count: z.number(),
+export const AnalyticsDownloadStatsSchema = z.looseObject({
+  download_count: z.number().describe('Number of downloads.'),
 });
 export type AnalyticsDownloadStats = z.infer<
   typeof AnalyticsDownloadStatsSchema
@@ -20,6 +20,17 @@ export const AnalyticsDownloadIntervalSchema = z.looseObject({
 });
 export type AnalyticsDownloadInterval = z.infer<
   typeof AnalyticsDownloadIntervalSchema
+>;
+
+export const AnalyticsDownloadsStatsResponseSchema = z.looseObject({
+  totals: AnalyticsDownloadStatsSchema.describe('Totals data.'),
+  intervals: z
+    .array(AnalyticsDownloadIntervalSchema)
+    .optional()
+    .describe('Reports data grouped by intervals.'),
+});
+export type AnalyticsDownloadsStatsResponse = z.infer<
+  typeof AnalyticsDownloadsStatsResponseSchema
 >;
 
 /**

@@ -3,14 +3,21 @@ import { z } from 'zod';
 /**
  * Customer stats totals/subtotals shape
  */
-export const AnalyticsCustomerStatsSchema = z.object({
-  customers_count: z.number(),
-  avg_orders_count: z.number(),
-  avg_total_spend: z.number(),
-  avg_avg_order_value: z.number(),
+export const AnalyticsCustomerStatsSchema = z.looseObject({
+  customers_count: z.number().describe('Number of customers.'),
+  avg_orders_count: z.number().describe('Average number of orders.'),
+  avg_total_spend: z.number().describe('Average total spend per customer.'),
+  avg_avg_order_value: z.number().describe('Average AOV per customer.'),
 });
 export type AnalyticsCustomerStats = z.infer<
   typeof AnalyticsCustomerStatsSchema
+>;
+
+export const AnalyticsCustomersStatsResponseSchema = z.looseObject({
+  totals: AnalyticsCustomerStatsSchema.describe('Totals data.'),
+});
+export type AnalyticsCustomersStatsResponse = z.infer<
+  typeof AnalyticsCustomersStatsResponseSchema
 >;
 
 /**
