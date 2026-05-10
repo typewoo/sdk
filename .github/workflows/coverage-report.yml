@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Unit Tests (coverage)
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests-v2/unit
+          cd packages/core && npx vitest run --coverage src/lib/tests/unit
 
       - name: Upload Unit Coverage to Codecov
         if: success() || failure()
@@ -55,7 +55,7 @@ jobs:
 
       - name: Run Integration Tests (coverage)
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests-v2/integration
+          cd packages/core && npx vitest run --coverage src/lib/tests/integration
 
       - name: Upload Integration Coverage to Codecov
         if: success() || failure()
