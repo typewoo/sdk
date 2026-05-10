@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Flow Tests (coverage)
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests-v2/flow
+          cd packages/core && npx vitest run --coverage src/lib/tests/flow
 
       - name: Upload Flow Coverage to Codecov
         if: success() || failure()

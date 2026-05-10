@@ -110,7 +110,7 @@ jobs:
           cd packages/core && npx vitest run src/lib/tests-v2/integration
       - name: Run Flow Tests
         run: |
-          cd packages/core && npx vitest run src/lib/tests-v2/flow
+          cd packages/core && npx vitest run src/lib/tests/flow
       - name: Tear Down WordPress Environment
         if: always()
         run: npm run wp:env:clean || true
