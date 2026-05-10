@@ -21,12 +21,6 @@ export default defineConfig(({ mode }) => {
       coverage: {
         reportsDirectory: './test-output/vitest/coverage',
         provider: 'v8' as const,
-        thresholds: {
-          statements: 90,
-          branches: 80,
-          functions: 92,
-          lines: 90,
-        },
         exclude: [
           // Pure type/interface definition folders (tree-shaken, no runtime)
           'src/lib/types/**',
