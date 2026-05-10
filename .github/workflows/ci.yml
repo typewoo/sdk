@@ -76,7 +76,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run Unit Tests (fast, no WP env)
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/unit
+          cd packages/core && npx vitest run src/lib/tests-v2/unit
   test:
     name: tests / integration & flow & plugin
     runs-on: ubuntu-latest
@@ -107,10 +107,10 @@ jobs:
           npx vitest run --config scripts/tests/vitest.config.ts scripts/tests
       - name: Run Integration Tests
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/integration
+          cd packages/core && npx vitest run --coverage src/lib/tests-v2/integration
       - name: Run Flow Tests
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/flow
+          cd packages/core && npx vitest run --coverage src/lib/tests-v2/flow
       - name: Tear Down WordPress Environment
         if: always()
         run: npm run wp:env:clean || true

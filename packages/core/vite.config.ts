@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
           'src/lib/configs/sdk.config.ts',
           // Test suites and test helpers are not production code
           'src/lib/tests/**',
+          'src/lib/tests-v2/**',
           // Generated / build output & configs
           '**/dist/**',
           '**/eslint.config.*',
