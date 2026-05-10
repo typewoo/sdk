@@ -19,12 +19,10 @@ vi.mock('../../../http/http.client.js', () => ({
 // Provide a minimal mock for AuthService
 vi.mock('../../../services/auth/auth.service.js', () => ({
   AuthService: vi.fn().mockImplementation(() => ({
-    refreshToken: vi
-      .fn()
-      .mockResolvedValue({
-        data: { access_token: 'new-tok' },
-        error: undefined,
-      }),
+    refreshToken: vi.fn().mockResolvedValue({
+      data: { access_token: 'new-tok' },
+      error: undefined,
+    }),
   })),
 }));
 
