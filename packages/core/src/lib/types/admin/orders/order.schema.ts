@@ -118,12 +118,12 @@ export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
  */
 export const AdminOrderRefundSchema = z.looseObject({
   id: z.number(),
-  date_created: z.string(),
-  date_created_gmt: z.string(),
+  date_created: z.string().optional(),
+  date_created_gmt: z.string().optional(),
   amount: z.string().optional(),
   reason: z.string().optional(),
   refunded_by: z.number().optional(),
-  refunded_payment: z.boolean(),
+  refunded_payment: z.boolean().optional(),
   meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
   line_items: z
     .array(AdminOrderLineItemSchema)
@@ -211,9 +211,11 @@ export const AdminOrderSchema = z.looseObject({
     .describe('Note left by customer during checkout.'),
   date_completed: z
     .string()
+    .nullish()
     .describe("The date the order was completed, in the site's timezone."),
   date_paid: z
     .string()
+    .nullish()
     .describe("The date the order was paid, in the site's timezone."),
   cart_hash: z
     .string()
@@ -250,11 +252,11 @@ export const AdminOrderSchema = z.looseObject({
     .describe('Whether an order needs processing before it can be completed.'),
   date_completed_gmt: z
     .string()
-    .optional()
+    .nullish()
     .describe('The date the order was completed, as GMT.'),
   date_paid_gmt: z
     .string()
-    .optional()
+    .nullish()
     .describe('The date the order was paid, as GMT.'),
   manual_update: z
     .boolean()

@@ -146,6 +146,25 @@ export function reconcileAcrossVersions({
       };
     }
 
+    // Honour known-nullable acks. Fields listed in `knownNullable` on the
+    // registry entry are intentionally more permissive than WC's formal schema
+    // — the live API returns null for these fields when unset, even though the
+    // WC JSON Schema declares nullable:false. Downgrade to info so the gate
+    // stays clean without losing traceability.
+    const knownNullableFields = new Set(registryEntry?.knownNullable ?? []);
+    if (
+      d.driftKind === 'nullable-mismatch' &&
+      d.sdk?.nullable === true &&
+      knownNullableFields.has(d.field)
+    ) {
+      reconciled.severity = 'info';
+      reconciled.provenance = {
+        ...(reconciled.provenance ?? {}),
+        acked: true,
+        knownNullable: true,
+      };
+    }
+
     out.push(reconciled);
   }
 

@@ -8,6 +8,9 @@ schemaRegistry.add(AdminTaxonomyCategorySchema, {
   surface: 'admin',
   route: '/wc/v3/products/categories',
   kind: 'response',
+  // WC JSON Schema declares image as non-nullable, but the live API returns
+  // null when no image has been assigned to the category.
+  knownNullable: ['image'],
 });
 schemaRegistry.add(AdminTaxonomyCategoryCreateRequestSchema, {
   surface: 'admin',

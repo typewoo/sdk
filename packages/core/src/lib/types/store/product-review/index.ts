@@ -6,6 +6,9 @@ schemaRegistry.add(ProductReviewResponseSchema, {
   surface: 'store',
   route: '/wc/store/v1/products/reviews',
   kind: 'response',
+  // WC JSON Schema declares product_image as non-nullable, but the live API
+  // returns null for reviews on products without an assigned image.
+  knownNullable: ['product_image'],
 });
 schemaRegistry.add(ProductReviewRequestSchema, {
   surface: 'store',

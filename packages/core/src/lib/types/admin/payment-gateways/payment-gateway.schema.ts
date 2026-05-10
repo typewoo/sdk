@@ -7,7 +7,10 @@ export const AdminPaymentGatewaySchema = z.looseObject({
     .string()
     .optional()
     .describe('Payment gateway description on checkout.'),
-  order: z.number().optional().describe('Payment gateway sort order.'),
+  order: z
+    .union([z.number(), z.string()])
+    .optional()
+    .describe('Payment gateway sort order.'),
   enabled: z.boolean().optional().describe('Payment gateway enabled status.'),
   method_title: z.string().describe('Payment gateway method title.'),
   method_description: z

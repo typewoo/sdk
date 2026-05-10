@@ -12,6 +12,14 @@ schemaRegistry.add(AdminOrderSchema, {
   surface: 'admin',
   route: '/wc/v3/orders',
   kind: 'response',
+  // WC JSON Schema declares these as non-nullable, but the live API returns
+  // null for orders that have not yet been paid or completed.
+  knownNullable: [
+    'date_completed',
+    'date_completed_gmt',
+    'date_paid',
+    'date_paid_gmt',
+  ],
 });
 schemaRegistry.add(AdminOrderCreateRequestSchema, {
   surface: 'admin',

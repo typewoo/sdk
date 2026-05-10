@@ -5,7 +5,7 @@ export const AdminCountrySchema = z.looseObject({
   name: z.string(),
   states: z.array(
     z.object({
-      code: z.string(),
+      code: z.union([z.string(), z.number()]),
       name: z.string(),
     })
   ),

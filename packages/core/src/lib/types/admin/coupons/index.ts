@@ -12,6 +12,15 @@ schemaRegistry.add(AdminCouponSchema, {
   surface: 'admin',
   route: '/wc/v3/coupons',
   kind: 'response',
+  // WC JSON Schema declares these as non-nullable, but the live API returns
+  // null when they are unset (e.g. no expiry, unlimited usage).
+  knownNullable: [
+    'date_expires',
+    'date_expires_gmt',
+    'limit_usage_to_x_items',
+    'usage_limit',
+    'usage_limit_per_user',
+  ],
 });
 schemaRegistry.add(AdminCouponCreateRequestSchema, {
   surface: 'admin',

@@ -7,6 +7,7 @@ export const AdminCustomerMetaData = z.object({
     z.string(),
     z.number(),
     z.boolean(),
+    z.array(z.unknown()),
     z.record(z.string(), z.unknown()),
     z.null(),
   ]),

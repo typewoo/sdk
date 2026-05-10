@@ -8,6 +8,9 @@ schemaRegistry.add(AdminCustomerSchema, {
   surface: 'admin',
   route: '/wc/v3/customers',
   kind: 'response',
+  // WC JSON Schema declares these as non-nullable, but the live API returns
+  // null for customers who have never been modified.
+  knownNullable: ['date_modified', 'date_modified_gmt'],
 });
 schemaRegistry.add(AdminCustomerCreateRequestSchema, {
   surface: 'admin',

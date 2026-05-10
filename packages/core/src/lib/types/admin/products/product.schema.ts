@@ -136,19 +136,19 @@ export const AdminProductSchema = z.looseObject({
   sale_price: z.string().optional().describe('Product sale price.'),
   date_on_sale_from: z
     .string()
-    .optional()
+    .nullish()
     .describe("Start date of sale price, in the site's timezone."),
   date_on_sale_from_gmt: z
     .string()
-    .optional()
+    .nullish()
     .describe('Start date of sale price, as GMT.'),
   date_on_sale_to: z
     .string()
-    .optional()
+    .nullish()
     .describe("End date of sale price, in the site's timezone."),
   date_on_sale_to_gmt: z
     .string()
-    .optional()
+    .nullish()
     .describe("End date of sale price, in the site's timezone."),
   price_html: z.string().describe('Price formatted in HTML.'),
   on_sale: z.boolean().describe('Shows if the product is on sale.'),
@@ -199,7 +199,7 @@ export const AdminProductSchema = z.looseObject({
     .default(false)
     .optional()
     .describe('Stock management at product level.'),
-  stock_quantity: z.number().optional().describe('Stock quantity.'),
+  stock_quantity: z.number().nullable().optional().describe('Stock quantity.'),
   stock_status: z
     .enum(['instock', 'outofstock', 'onbackorder'])
     .default('instock')
@@ -231,7 +231,9 @@ export const AdminProductSchema = z.looseObject({
     .boolean()
     .describe('Shows whether or not the product shipping is taxable.'),
   shipping_class: z.string().optional().describe('Shipping class slug.'),
-  shipping_class_id: z.string().describe('Shipping class ID.'),
+  shipping_class_id: z
+    .union([z.number(), z.string()])
+    .describe('Shipping class ID.'),
   reviews_allowed: z
     .boolean()
     .default(true)

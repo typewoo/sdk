@@ -31,11 +31,13 @@ export const AdminWebhookSchema = z.looseObject({
     .describe('The date the webhook was created, as GMT.'),
   date_modified: z
     .string()
+    .nullish()
     .describe(
       "The date the webhook was last modified, in the site's timezone."
     ),
   date_modified_gmt: z
     .string()
+    .nullish()
     .describe('The date the webhook was last modified, as GMT.'),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),

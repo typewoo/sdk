@@ -5,6 +5,396 @@
       "route": "/wc/v3",
       "reason": "Root path, not user-facing SDK target",
       "addedAt": "2026-05-02"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics",
+      "reason": "WC Analytics root path, not a user-facing SDK target",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/(?P<id>[\\d-]+)",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/(?P<note_id>[\\d-]+)/action/(?P<action_id>[\\d-]+)",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/delete/(?P<id>[\\d-]+)",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/delete/all",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/experimental-activate-promo/(?P<promo_note_name>[\\w-]+)",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/admin/notes/update",
+      "reason": "WC Analytics admin notes API; SDK does not cover internal WC admin notification management",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/coupons",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/coupons; covered by AdminCouponService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/coupons/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/coupons/{id}; covered by AdminCouponService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/coupons/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/coupons/batch; covered by AdminCouponService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/customers",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/customers; covered by AdminCustomerService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/customers/(?P<id>[\\d-]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/customers/{id}; covered by AdminCustomerService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/data",
+      "reason": "WC Analytics data API; read-only country/locale data not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/data/countries",
+      "reason": "WC Analytics data API; read-only country/locale data not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/data/countries/(?P<location>[\\w-]+)",
+      "reason": "WC Analytics data API; read-only country/locale data not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/data/countries/locales",
+      "reason": "WC Analytics data API; read-only country/locale data not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/data/download-ips",
+      "reason": "WC Analytics data API; read-only download IP data not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/imports/status",
+      "reason": "WC Analytics data import management; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/imports/trigger",
+      "reason": "WC Analytics data import management; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/orders",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/orders; covered by AdminOrderService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/orders/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/orders/{id}; covered by AdminOrderService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/orders/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/orders/batch; covered by AdminOrderService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)/duplicate",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}/duplicate; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)/related",
+      "reason": "WC Analytics namespace CRUD proxy for related products; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}/variations; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}/variations/{id}; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}/variations/batch; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/generate",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/{id}/variations/generate; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes; covered by AdminProductAttributeService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes/{id}/terms; covered by AdminProductAttributeTermService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes/{id}/terms/{id}; covered by AdminProductAttributeTermService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes/{id}/terms/batch; covered by AdminProductAttributeTermService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes/{id}; covered by AdminProductAttributeService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)",
+      "reason": "WC Analytics namespace CRUD proxy for product attributes by slug; covered by AdminProductAttributeService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)/terms",
+      "reason": "WC Analytics namespace CRUD proxy for product attribute terms by slug; covered by AdminProductAttributeTermService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/attributes/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/attributes/batch; covered by AdminProductAttributeService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/batch; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/categories",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/categories; covered by AdminProductCategoryService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/categories/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/categories/{id}; covered by AdminProductCategoryService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/categories/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/categories/batch; covered by AdminProductCategoryService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/count-low-in-stock",
+      "reason": "WC Analytics low-stock count endpoint; covered by AnalyticsStockService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/low-in-stock",
+      "reason": "WC Analytics low-stock product list; covered by AnalyticsStockService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/reviews",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/reviews; covered by AdminProductReviewService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/reviews/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/reviews/{id}; covered by AdminProductReviewService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/reviews/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/products/reviews/batch; covered by AdminProductReviewService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/products/suggested-products",
+      "reason": "WC Analytics suggested products endpoint; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)",
+      "reason": "WC Analytics settings proxy mirroring /wc/v3/settings/{group}; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)",
+      "reason": "WC Analytics settings proxy mirroring /wc/v3/settings/{group}/{id}; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/batch",
+      "reason": "WC Analytics settings proxy mirroring /wc/v3/settings/{group}/batch; not part of the analytics reporting surface",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/taxes",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/taxes; covered by AdminTaxService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/taxes/(?P<id>[\\d]+)",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/taxes/{id}; covered by AdminTaxService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/taxes/batch",
+      "reason": "WC Analytics namespace CRUD proxy mirroring /wc/v3/taxes/batch; covered by AdminTaxService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/variations",
+      "reason": "WC Analytics namespace proxy for product variations; covered by AdminProductService",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports",
+      "reason": "Root reports index — SDK exposes individual report services, not this meta-list endpoint",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/leaderboards/(?P<leaderboard>\\w+)",
+      "reason": "Named leaderboard by slug — SDK uses the list endpoint; per-slug access not part of public API",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export",
+      "reason": "Async report export trigger — not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export/(?P<export_id>[a-z0-9]+)/status",
+      "reason": "Async report export status polling — not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/import",
+      "reason": "Historical data import trigger — admin-only utility, not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/import/cancel",
+      "reason": "Historical data import cancel — admin-only utility, not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/import/delete",
+      "reason": "Historical data import delete — admin-only utility, not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/import/status",
+      "reason": "Historical data import status — admin-only utility, not in SDK scope",
+      "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/reports/import/totals",
+      "reason": "Historical data import totals — admin-only utility, not in SDK scope",
+      "addedAt": "2026-05-09"
     }
   ]
 }

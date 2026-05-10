@@ -8,6 +8,9 @@ schemaRegistry.add(AdminBrandSchema, {
   surface: 'admin',
   route: '/wc/v3/products/brands',
   kind: 'response',
+  // WC JSON Schema declares image as non-nullable, but the live API returns
+  // null when no image has been assigned to the brand.
+  knownNullable: ['image'],
 });
 schemaRegistry.add(AdminBrandCreateRequestSchema, {
   surface: 'admin',

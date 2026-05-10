@@ -44,11 +44,11 @@ export const AdminCouponSchema = z.looseObject({
   description: z.string().optional().describe('Coupon description.'),
   date_expires: z
     .string()
-    .optional()
+    .nullish()
     .describe("The date the coupon expires, in the site's timezone."),
   date_expires_gmt: z
     .string()
-    .optional()
+    .nullish()
     .describe('The date the coupon expires, as GMT.'),
   usage_count: z
     .number()
@@ -70,14 +70,17 @@ export const AdminCouponSchema = z.looseObject({
     .describe('List of product IDs the coupon cannot be used on.'),
   usage_limit: z
     .number()
+    .nullable()
     .optional()
     .describe('How many times the coupon can be used in total.'),
   usage_limit_per_user: z
     .number()
+    .nullable()
     .optional()
     .describe('How many times the coupon can be used per customer.'),
   limit_usage_to_x_items: z
     .number()
+    .nullable()
     .optional()
     .describe('Max number of items in the cart the coupon can be applied to.'),
   free_shipping: z

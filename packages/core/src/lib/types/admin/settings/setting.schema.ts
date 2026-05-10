@@ -30,6 +30,7 @@ export const AdminSettingSchema = z.looseObject({
     .describe('Default value for the setting.'),
   tip: z
     .string()
+    .optional()
     .describe('Additional help text shown to the user about the setting.'),
   value: z
     .union([z.string(), z.number(), z.boolean()])

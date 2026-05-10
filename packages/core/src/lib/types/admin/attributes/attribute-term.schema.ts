@@ -25,7 +25,7 @@ export const AdminProductAttributeTermSchema = z.looseObject({
     .object({
       self: z.array(z.object({ href: z.string() })),
       collection: z.array(z.object({ href: z.string() })),
-      up: z.array(z.object({ href: z.string() })),
+      up: z.array(z.object({ href: z.string() })).optional(),
     })
     .optional(),
 });

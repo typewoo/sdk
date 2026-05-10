@@ -23,7 +23,7 @@ export const ProductReviewResponseSchema = z.looseObject({
   product_permalink: z
     .string()
     .describe('Permalink of the product that the review belongs to.'),
-  product_image: ImageResponseSchema.describe(
+  product_image: ImageResponseSchema.nullish().describe(
     'Image of the product that the review belongs to.'
   ),
   reviewer: z.string().describe('Reviewer name.'),

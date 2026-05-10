@@ -24,7 +24,7 @@ export const AdminTaxonomyCategorySchema = z.looseObject({
   display: AdminCategoryDisplaySchema.default('default')
     .optional()
     .describe('Category archive display type.'),
-  image: AdminTaxonomyCategoryImage.optional().describe('Image data.'),
+  image: AdminTaxonomyCategoryImage.nullish().describe('Image data.'),
   menu_order: z
     .number()
     .optional()

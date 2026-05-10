@@ -19,6 +19,15 @@ export type RouteMeta = {
     sinceVersion?: string;
     note?: string;
   };
+  /**
+   * Fields where the SDK intentionally accepts `null` even though the WC
+   * JSON Schema declares `nullable: false`. WC's formal schema is incomplete
+   * for these fields — the live API returns `null` when they are unset (e.g.
+   * `date_expires` on a coupon with no expiry, `stock_quantity` when stock is
+   * not tracked). The reconciler downgrades `nullable-mismatch` drift for
+   * these fields from `warn` to `info` so the drift gate stays clean.
+   */
+  knownNullable?: string[];
 };
 
 /**

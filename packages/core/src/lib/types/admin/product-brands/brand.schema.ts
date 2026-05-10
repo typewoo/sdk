@@ -23,7 +23,7 @@ export const AdminBrandSchema = z.looseObject({
     .default('default')
     .optional()
     .describe('Category archive display type.'),
-  image: AdminBrandImage.optional().describe('Image data.'),
+  image: AdminBrandImage.nullish().describe('Image data.'),
   menu_order: z
     .number()
     .optional()

@@ -8,6 +8,9 @@ schemaRegistry.add(AdminWebhookSchema, {
   surface: 'admin',
   route: '/wc/v3/webhooks',
   kind: 'response',
+  // WC JSON Schema declares these as non-nullable, but the live API returns
+  // null for webhooks that have never been triggered/modified.
+  knownNullable: ['date_modified', 'date_modified_gmt'],
 });
 schemaRegistry.add(AdminWebhookCreateRequestSchema, {
   surface: 'admin',

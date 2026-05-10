@@ -13,7 +13,7 @@ export const AdminProductReviewSchema = z.looseObject({
     .optional()
     .describe('Unique identifier for the product that the review belongs to.'),
   product_name: z.string().optional().describe('Product name.'),
-  product_permalink: z.string().describe('Product URL.'),
+  product_permalink: z.string().optional().describe('Product URL.'),
   status: z
     .enum(['approved', 'hold', 'spam', 'unspam', 'trash', 'untrash'])
     .default('approved')
@@ -25,6 +25,7 @@ export const AdminProductReviewSchema = z.looseObject({
   rating: z.number().optional().describe('Review rating (0 to 5).'),
   verified: z
     .boolean()
+    .optional()
     .describe('Shows if the reviewer bought the product or not.'),
   reviewer_avatar_urls: z
     .object({
@@ -43,11 +44,13 @@ export const AdminProductReviewSchema = z.looseObject({
     })
     .optional()
     .describe('Avatar URLs for the object reviewer.'),
-  _links: z.object({
-    self: z.array(z.object({ href: z.string() })),
-    collection: z.array(z.object({ href: z.string() })),
-    up: z.array(z.object({ href: z.string() })),
-  }),
+  _links: z
+    .object({
+      self: z.array(z.object({ href: z.string() })),
+      collection: z.array(z.object({ href: z.string() })),
+      up: z.array(z.object({ href: z.string() })).optional(),
+    })
+    .optional(),
 });
 
 export type AdminProductReview = z.infer<typeof AdminProductReviewSchema>;

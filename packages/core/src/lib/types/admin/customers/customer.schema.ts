@@ -12,11 +12,13 @@ export const AdminCustomerSchema = z.looseObject({
     .describe('The date the customer was created, as GMT.'),
   date_modified: z
     .string()
+    .nullish()
     .describe(
       "The date the customer was last modified, in the site's timezone."
     ),
   date_modified_gmt: z
     .string()
+    .nullish()
     .describe('The date the customer was last modified, as GMT.'),
   email: z.string().optional().describe('The email address for the customer.'),
   first_name: z.string().optional().describe('Customer first name.'),

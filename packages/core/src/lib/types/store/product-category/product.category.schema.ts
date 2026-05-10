@@ -10,7 +10,7 @@ export const ProductCategoryResponseSchema = z.looseObject({
   count: z
     .number()
     .describe('Number of objects (posts of any type) assigned to the term.'),
-  image: ImageResponseSchema.describe('Category image.'),
+  image: ImageResponseSchema.nullish().describe('Category image.'),
   review_count: z
     .number()
     .describe('Number of reviews for products in this category.'),

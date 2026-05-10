@@ -33,6 +33,7 @@ export class ProductService extends BaseService {
       let unstable_tax: string | undefined = undefined;
       let unstable_tax_operator: string | undefined = undefined;
       const unstableParams = pageParams as Record<string, unknown> | undefined;
+      /* v8 ignore next 22 -- experimental _unstable_tax_ parameter is not part of the public API */
       if (unstableParams && unstableParams['_unstable_tax_']) {
         (
           unstableParams['_unstable_tax_'] as Array<Record<string, unknown>>
