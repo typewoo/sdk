@@ -1,9 +1,6 @@
 import { schemaRegistry } from '../../schema-registry.js';
 import { AdminCouponSchema } from './coupon.schema.js';
-import {
-  AdminCouponBatchRequestSchema,
-  AdminCouponBatchResponseSchema,
-} from './coupon.batch.schema.js';
+import { AdminCouponBatchResponseSchema } from './coupon.batch.schema.js';
 import { AdminCouponCreateRequestSchema } from './coupon.create.schema.js';
 import { AdminCouponUpdateRequestSchema } from './coupon.update.schema.js';
 import { AdminCouponQueryParamsSchema } from './coupon.query.schema.js';

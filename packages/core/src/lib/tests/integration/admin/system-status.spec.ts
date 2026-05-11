@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { createTypewoo } from '../../../../index.js';
 import type { TypewooClient } from '../../../../index.js';
-import { AdminSystemStatusSchema } from '../../../types/admin/system-status/system-status.schema.js';
 import {
   getWpUrl,
   getAdminUser,

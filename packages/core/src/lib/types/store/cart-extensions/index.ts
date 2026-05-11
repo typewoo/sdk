@@ -1,6 +1,5 @@
 ﻿import { schemaRegistry } from '../../schema-registry.js';
 import { CartExtensionsRequestSchema } from './cart.extensions.create.schema.js';
-import { CartExtensionsResponseSchema } from './cart.extensions.schema.js';
 
 schemaRegistry.add(CartExtensionsRequestSchema, {
   surface: 'store',

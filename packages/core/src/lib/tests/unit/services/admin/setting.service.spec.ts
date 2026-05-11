@@ -11,7 +11,7 @@ vi.mock('../../../../utilities/common.js', () => ({
   extractPagination: vi.fn(),
 }));
 
-import { doGet, doPost, doPut, doDelete } from '../../../../http/http.js';
+import { doGet, doPost, doPut } from '../../../../http/http.js';
 import { AdminSettingService } from '../../../../services/admin/setting.service.js';
 
 const doGetMock = vi.mocked(doGet);

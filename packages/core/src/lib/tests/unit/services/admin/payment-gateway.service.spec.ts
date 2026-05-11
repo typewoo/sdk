@@ -13,7 +13,7 @@ vi.mock('../../../../utilities/common.js', () => ({
     .mockReturnValue({ total: 5, totalPages: 1, currentPage: 1, perPage: 10 }),
 }));
 
-import { doGet, doPost, doPut, doDelete } from '../../../../http/http.js';
+import { doGet, doPut } from '../../../../http/http.js';
 import { AdminPaymentGatewayService } from '../../../../services/admin/payment-gateway.service.js';
 
 const doGetMock = vi.mocked(doGet);

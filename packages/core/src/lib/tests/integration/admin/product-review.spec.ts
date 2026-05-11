@@ -121,7 +121,7 @@ describe('Admin Product Review — integration', () => {
   });
 
   it('deletes the review successfully', async () => {
-    const { data, error } = await sdk.admin.productReviews.delete(
+    const { error } = await sdk.admin.productReviews.delete(
       createdReviewId,
       true
     );
