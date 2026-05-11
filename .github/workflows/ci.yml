@@ -2,7 +2,10 @@ name: ci
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - 'alpha/**'
+      - 'alpha*'
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
