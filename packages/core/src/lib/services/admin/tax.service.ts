@@ -6,10 +6,11 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminTaxQueryParams,
   AdminTax,
-  AdminTaxRequest,
+  AdminTaxCreateRequest,
+  AdminTaxUpdateRequest,
   AdminTaxClassQueryParams,
   AdminTaxClass,
-  AdminTaxClassRequest,
+  AdminTaxClassCreateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,11 +66,11 @@ export class AdminTaxService extends BaseService {
    * Create a new tax
    */
   async create(
-    tax: AdminTaxRequest,
+    tax: AdminTaxCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminTax, AdminTaxRequest>(
+    const { data, error } = await doPost<AdminTax, AdminTaxCreateRequest>(
       url,
       tax,
       options
@@ -83,11 +84,11 @@ export class AdminTaxService extends BaseService {
    */
   async update(
     id: number,
-    tax: AdminTaxRequest,
+    tax: AdminTaxUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminTax, AdminTaxRequest>(
+    const { data, error } = await doPut<AdminTax, AdminTaxUpdateRequest>(
       url,
       tax,
       options
@@ -116,8 +117,8 @@ export class AdminTaxService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminTaxRequest[];
-      update?: Array<AdminTaxRequest & { id: number }>;
+      create?: AdminTaxCreateRequest[];
+      update?: Array<AdminTaxUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -181,15 +182,14 @@ export class AdminTaxClassService extends BaseService {
    * Create a new tax class
    */
   async create(
-    taxClass: AdminTaxClassRequest,
+    taxClass: AdminTaxClassCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminTaxClass, AdminTaxClassRequest>(
-      url,
-      taxClass,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminTaxClass,
+      AdminTaxClassCreateRequest
+    >(url, taxClass, options);
 
     return { data, error };
   }

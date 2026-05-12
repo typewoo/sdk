@@ -56,3 +56,6 @@ proxy.conf.json
 .env.local
 .env.*.local
 infra/wordpress/scripts/generated-app-passwords.txt
+
+# types-sync — reports are ephemeral; snapshots are committed.
+/scripts/types-sync/out/

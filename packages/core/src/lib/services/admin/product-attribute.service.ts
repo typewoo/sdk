@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminProductAttributeQueryParams,
   AdminProductAttribute,
-  AdminProductAttributeRequest,
+  AdminProductAttributeCreateRequest,
+  AdminProductAttributeUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -68,13 +69,13 @@ export class AdminProductAttributeService extends BaseService {
    * Create a new product attribute
    */
   async create(
-    attribute: AdminProductAttributeRequest,
+    attribute: AdminProductAttributeCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminProductAttribute,
-      AdminProductAttributeRequest
+      AdminProductAttributeCreateRequest
     >(url, attribute, options);
 
     return { data, error };
@@ -85,13 +86,13 @@ export class AdminProductAttributeService extends BaseService {
    */
   async update(
     id: number,
-    attribute: AdminProductAttributeRequest,
+    attribute: AdminProductAttributeUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminProductAttribute,
-      AdminProductAttributeRequest
+      AdminProductAttributeUpdateRequest
     >(url, attribute, options);
 
     return { data, error };
@@ -117,8 +118,8 @@ export class AdminProductAttributeService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminProductAttributeRequest[];
-      update?: Array<AdminProductAttributeRequest & { id: number }>;
+      create?: AdminProductAttributeCreateRequest[];
+      update?: Array<AdminProductAttributeUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

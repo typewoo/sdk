@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => {
           'src/lib/sdk.events.ts',
           // Config types-only files
           'src/lib/configs/sdk.config.ts',
+          // Test suites and test helpers are not production code
+          'src/lib/tests/**',
           // Generated / build output & configs
           '**/dist/**',
           '**/eslint.config.*',

@@ -6,9 +6,10 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminOrderQueryParams,
   AdminOrder,
-  AdminOrderRequest,
+  AdminOrderCreateRequest,
+  AdminOrderUpdateRequest,
   AdminOrderNote,
-  AdminOrderNoteRequest,
+  AdminOrderNoteCreateRequest,
   AdminOrderReceiptRequest,
   AdminOrderReceipt,
   AdminOrderEmailTemplate,
@@ -73,11 +74,11 @@ export class AdminOrderService extends BaseService {
    * Create a new order
    */
   async create(
-    order: AdminOrderRequest,
+    order: AdminOrderCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminOrder, AdminOrderRequest>(
+    const { data, error } = await doPost<AdminOrder, AdminOrderCreateRequest>(
       url,
       order,
       options
@@ -91,11 +92,11 @@ export class AdminOrderService extends BaseService {
    */
   async update(
     id: number,
-    order: AdminOrderRequest,
+    order: AdminOrderUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminOrder, AdminOrderRequest>(
+    const { data, error } = await doPut<AdminOrder, AdminOrderUpdateRequest>(
       url,
       order,
       options
@@ -124,8 +125,8 @@ export class AdminOrderService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminOrderRequest[];
-      update?: Array<AdminOrderRequest & { id: number }>;
+      create?: AdminOrderCreateRequest[];
+      update?: Array<AdminOrderUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -185,15 +186,14 @@ export class AdminOrderService extends BaseService {
    */
   async createNote(
     orderId: number,
-    note: AdminOrderNoteRequest,
+    note: AdminOrderNoteCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
     const url = `/${this.endpoint}/${orderId}/notes`;
-    const { data, error } = await doPost<AdminOrderNote, AdminOrderNoteRequest>(
-      url,
-      note,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminOrderNote,
+      AdminOrderNoteCreateRequest
+    >(url, note, options);
 
     return { data, error };
   }

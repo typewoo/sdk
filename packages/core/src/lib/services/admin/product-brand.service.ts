@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminBrandQueryParams,
   AdminBrand,
-  AdminBrandRequest,
+  AdminBrandCreateRequest,
+  AdminBrandUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -62,11 +63,11 @@ export class AdminProductBrandService extends BaseService {
    * Create a new product brand
    */
   async create(
-    brand: AdminBrandRequest,
+    brand: AdminBrandCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminBrand, AdminBrandRequest>(
+    const { data, error } = await doPost<AdminBrand, AdminBrandCreateRequest>(
       url,
       brand,
       options
@@ -80,11 +81,11 @@ export class AdminProductBrandService extends BaseService {
    */
   async update(
     id: number,
-    brand: AdminBrandRequest,
+    brand: AdminBrandUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminBrand, AdminBrandRequest>(
+    const { data, error } = await doPut<AdminBrand, AdminBrandUpdateRequest>(
       url,
       brand,
       options
@@ -113,8 +114,8 @@ export class AdminProductBrandService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminBrandRequest[];
-      update?: Array<AdminBrandRequest & { id: number }>;
+      create?: AdminBrandCreateRequest[];
+      update?: Array<AdminBrandUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

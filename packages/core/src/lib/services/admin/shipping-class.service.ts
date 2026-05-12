@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminShippingClassQueryParams,
   AdminShippingClass,
-  AdminShippingClassRequest,
+  AdminShippingClassCreateRequest,
+  AdminShippingClassUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,13 +66,13 @@ export class AdminShippingClassService extends BaseService {
    * Create a new shipping class
    */
   async create(
-    shippingClass: AdminShippingClassRequest,
+    shippingClass: AdminShippingClassCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminShippingClass,
-      AdminShippingClassRequest
+      AdminShippingClassCreateRequest
     >(url, shippingClass, options);
 
     return { data, error };
@@ -82,13 +83,13 @@ export class AdminShippingClassService extends BaseService {
    */
   async update(
     id: number,
-    shippingClass: AdminShippingClassRequest,
+    shippingClass: AdminShippingClassUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminShippingClass,
-      AdminShippingClassRequest
+      AdminShippingClassUpdateRequest
     >(url, shippingClass, options);
 
     return { data, error };
@@ -114,8 +115,8 @@ export class AdminShippingClassService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminShippingClassRequest[];
-      update?: Array<AdminShippingClassRequest & { id: number }>;
+      create?: AdminShippingClassCreateRequest[];
+      update?: Array<AdminShippingClassUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

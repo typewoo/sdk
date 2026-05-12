@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminProductReviewQueryParams,
   AdminProductReview,
-  AdminProductReviewRequest,
+  AdminProductReviewCreateRequest,
+  AdminProductReviewUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,13 +66,13 @@ export class AdminProductReviewService extends BaseService {
    * Create a new product review
    */
   async create(
-    review: AdminProductReviewRequest,
+    review: AdminProductReviewCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}`;
     const { data, error } = await doPost<
       AdminProductReview,
-      AdminProductReviewRequest
+      AdminProductReviewCreateRequest
     >(url, review, options);
 
     return { data, error };
@@ -82,13 +83,13 @@ export class AdminProductReviewService extends BaseService {
    */
   async update(
     id: number,
-    review: AdminProductReviewRequest,
+    review: AdminProductReviewUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminProductReview,
-      AdminProductReviewRequest
+      AdminProductReviewUpdateRequest
     >(url, review, options);
 
     return { data, error };
@@ -114,8 +115,8 @@ export class AdminProductReviewService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminProductReviewRequest[];
-      update?: Array<AdminProductReviewRequest & { id: number }>;
+      create?: AdminProductReviewCreateRequest[];
+      update?: Array<AdminProductReviewUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

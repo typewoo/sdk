@@ -1,0 +1,2073 @@
+﻿{
+  "drifts": [
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-004",
+      "kind": "request",
+      "route": "/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods",
+      "sdk": {
+        "method": "PUT",
+        "name": "AdminShippingZoneMethodUpdateRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "admin",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-001",
+      "kind": "request",
+      "route": "/wc/v3/payment_gateways",
+      "sdk": {
+        "method": "PUT",
+        "name": "AdminPaymentGatewayUpdateRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "admin",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-002",
+      "kind": "request",
+      "route": "/wc/v3/products/attributes",
+      "sdk": {
+        "method": "PUT",
+        "name": "AdminProductAttributeUpdateRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "admin",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-003",
+      "kind": "request",
+      "route": "/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms",
+      "sdk": {
+        "method": "PUT",
+        "name": "AdminProductAttributeTermUpdateRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "admin",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-005",
+      "kind": "response",
+      "route": "/wc/store/v1/batch",
+      "sdk": {
+        "method": null,
+        "name": "BatchResponseSchema"
+      },
+      "severity": "warn",
+      "surface": "store",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-006",
+      "kind": "request",
+      "route": "/wc/store/v1/checkout/(?P<id>[\\d]+)",
+      "sdk": {
+        "method": "PUT",
+        "name": "CheckoutUpdateRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "store",
+      "upstream": null
+    },
+    {
+      "driftKind": "endpoint-missing-upstream",
+      "field": "<endpoint>",
+      "id": "WARN-007",
+      "kind": "request",
+      "route": "/wc/store/v1/products/collection-data",
+      "sdk": {
+        "method": "POST",
+        "name": "ProductCollectionDataRequestSchema"
+      },
+      "severity": "warn",
+      "surface": "store",
+      "upstream": null
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-001",
+      "kind": "coverage",
+      "route": "/wc/v3/customers/(?P<customer_id>[\\d]+)/downloads",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/customers/(?P<customer_id>[\\d]+)/downloads"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-002",
+      "kind": "coverage",
+      "route": "/wc/v3/customers/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/customers/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-003",
+      "kind": "coverage",
+      "route": "/wc/v3/data",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-004",
+      "kind": "coverage",
+      "route": "/wc/v3/data/continents",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/continents"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-005",
+      "kind": "coverage",
+      "route": "/wc/v3/data/continents/(?P<location>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/continents/(?P<location>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-006",
+      "kind": "coverage",
+      "route": "/wc/v3/data/countries",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/countries"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-007",
+      "kind": "coverage",
+      "route": "/wc/v3/data/countries/(?P<location>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/countries/(?P<location>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-008",
+      "kind": "coverage",
+      "route": "/wc/v3/data/currencies",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/currencies"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-009",
+      "kind": "coverage",
+      "route": "/wc/v3/data/currencies/(?P<currency>[\\w-]{3})",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/currencies/(?P<currency>[\\w-]{3})"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-010",
+      "kind": "coverage",
+      "route": "/wc/v3/data/currencies/current",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/data/currencies/current"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-011",
+      "kind": "coverage",
+      "route": "/wc/v3/layout-templates",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/layout-templates"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-012",
+      "kind": "coverage",
+      "route": "/wc/v3/layout-templates/(?P<id>\\w[\\w\\s\\-]*)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/layout-templates/(?P<id>\\w[\\w\\s\\-]*)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-013",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/create-order",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/create-order"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-014",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/featured",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/featured"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-015",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/refresh",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/refresh"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-016",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-017",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions/activate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions/activate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-018",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions/activate-plugin",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions/activate-plugin"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-019",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions/connect",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions/connect"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-020",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions/disconnect",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions/disconnect"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-021",
+      "kind": "coverage",
+      "route": "/wc/v3/marketplace/subscriptions/install-url",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/marketplace/subscriptions/install-url"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-022",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/email_templates",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/email_templates"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-023",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/send_email",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/send_email"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-024",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/send_order_details",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<id>[\\d]+)/actions/send_order_details"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-025",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<id>[\\d]+)/receipt",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<id>[\\d]+)/receipt"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-026",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<order_id>[\\d]+)/notes/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<order_id>[\\d]+)/notes/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-027",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/(?P<order_id>[\\d]+)/refunds/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/(?P<order_id>[\\d]+)/refunds/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-028",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-029",
+      "kind": "coverage",
+      "route": "/wc/v3/orders/statuses",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/orders/statuses"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-030",
+      "kind": "coverage",
+      "route": "/wc/v3/payment_gateways/(?P<id>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/payment_gateways/(?P<id>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-031",
+      "kind": "coverage",
+      "route": "/wc/v3/paypal-buttons/cancel-payment",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/paypal-buttons/cancel-payment"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-032",
+      "kind": "coverage",
+      "route": "/wc/v3/paypal-buttons/create-order",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/paypal-buttons/create-order"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-033",
+      "kind": "coverage",
+      "route": "/wc/v3/paypal-standard/update-shipping",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/paypal-standard/update-shipping"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-034",
+      "kind": "coverage",
+      "route": "/wc/v3/paypal-webhooks",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/paypal-webhooks"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-035",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<id>[\\d]+)/duplicate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<id>[\\d]+)/duplicate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-036",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<id>[\\d]+)/related",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<id>[\\d]+)/related"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-037",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-038",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-039",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-040",
+      "kind": "coverage",
+      "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/generate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/(?P<product_id>[\\d]+)/variations/generate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-041",
+      "kind": "coverage",
+      "route": "/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-042",
+      "kind": "coverage",
+      "route": "/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-043",
+      "kind": "coverage",
+      "route": "/wc/v3/products/attributes/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/attributes/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-044",
+      "kind": "coverage",
+      "route": "/wc/v3/products/attributes/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/attributes/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-045",
+      "kind": "coverage",
+      "route": "/wc/v3/products/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-046",
+      "kind": "coverage",
+      "route": "/wc/v3/products/brands/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/brands/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-047",
+      "kind": "coverage",
+      "route": "/wc/v3/products/categories/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/categories/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-048",
+      "kind": "coverage",
+      "route": "/wc/v3/products/custom-fields/names",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/custom-fields/names"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-049",
+      "kind": "coverage",
+      "route": "/wc/v3/products/reviews/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/reviews/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-050",
+      "kind": "coverage",
+      "route": "/wc/v3/products/shipping_classes/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/shipping_classes/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-051",
+      "kind": "coverage",
+      "route": "/wc/v3/products/shipping_classes/slug-suggestion",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/shipping_classes/slug-suggestion"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-052",
+      "kind": "coverage",
+      "route": "/wc/v3/products/suggested-products",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/suggested-products"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-053",
+      "kind": "coverage",
+      "route": "/wc/v3/products/tags/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/products/tags/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-054",
+      "kind": "coverage",
+      "route": "/wc/v3/refunds",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/refunds"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-055",
+      "kind": "coverage",
+      "route": "/wc/v3/reports",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-056",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/coupons/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/coupons/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-057",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/customers/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/customers/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-058",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/orders/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/orders/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-059",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/products/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/products/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-060",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/reviews/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/reviews/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-061",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/sales",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/sales"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-062",
+      "kind": "coverage",
+      "route": "/wc/v3/reports/top_sellers",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/reports/top_sellers"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-063",
+      "kind": "coverage",
+      "route": "/wc/v3/settings/(?P<group_id>[\\w-]+)/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/settings/(?P<group_id>[\\w-]+)/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-064",
+      "kind": "coverage",
+      "route": "/wc/v3/settings/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/settings/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-066",
+      "kind": "coverage",
+      "route": "/wc/v3/shipping/zones/(?P<id>[\\d]+)/locations",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/shipping/zones/(?P<id>[\\d]+)/locations"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-067",
+      "kind": "coverage",
+      "route": "/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods/(?P<instance_id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods/(?P<instance_id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-065",
+      "kind": "coverage",
+      "route": "/wc/v3/shipping_methods/(?P<id>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/shipping_methods/(?P<id>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-068",
+      "kind": "coverage",
+      "route": "/wc/v3/system_status",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/system_status"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-069",
+      "kind": "coverage",
+      "route": "/wc/v3/system_status/tools",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/system_status/tools"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-070",
+      "kind": "coverage",
+      "route": "/wc/v3/system_status/tools/(?P<id>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/system_status/tools/(?P<id>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-071",
+      "kind": "coverage",
+      "route": "/wc/v3/taxes/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/taxes/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-072",
+      "kind": "coverage",
+      "route": "/wc/v3/taxes/classes/(?P<slug>\\w[\\w\\s\\-]*)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/taxes/classes/(?P<slug>\\w[\\w\\s\\-]*)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-073",
+      "kind": "coverage",
+      "route": "/wc/v3/variations",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/variations"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-074",
+      "kind": "coverage",
+      "route": "/wc/v3/webhooks/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "admin",
+      "upstream": {
+        "route": "/wc/v3/webhooks/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-075",
+      "kind": "coverage",
+      "route": "/wc-analytics",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-076",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-077",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/(?P<id>[\\d-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/(?P<id>[\\d-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-078",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/(?P<note_id>[\\d-]+)/action/(?P<action_id>[\\d-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/(?P<note_id>[\\d-]+)/action/(?P<action_id>[\\d-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-079",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/delete/(?P<id>[\\d-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/delete/(?P<id>[\\d-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-080",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/delete/all",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/delete/all"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-081",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/experimental-activate-promo/(?P<promo_note_name>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/experimental-activate-promo/(?P<promo_note_name>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-082",
+      "kind": "coverage",
+      "route": "/wc-analytics/admin/notes/update",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/admin/notes/update"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-083",
+      "kind": "coverage",
+      "route": "/wc-analytics/coupons",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/coupons"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-084",
+      "kind": "coverage",
+      "route": "/wc-analytics/coupons/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/coupons/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-085",
+      "kind": "coverage",
+      "route": "/wc-analytics/coupons/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/coupons/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-086",
+      "kind": "coverage",
+      "route": "/wc-analytics/customers",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/customers"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-087",
+      "kind": "coverage",
+      "route": "/wc-analytics/customers/(?P<id>[\\d-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/customers/(?P<id>[\\d-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-088",
+      "kind": "coverage",
+      "route": "/wc-analytics/data",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/data"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-089",
+      "kind": "coverage",
+      "route": "/wc-analytics/data/countries",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/data/countries"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-090",
+      "kind": "coverage",
+      "route": "/wc-analytics/data/countries/(?P<location>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/data/countries/(?P<location>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-091",
+      "kind": "coverage",
+      "route": "/wc-analytics/data/countries/locales",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/data/countries/locales"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-092",
+      "kind": "coverage",
+      "route": "/wc-analytics/data/download-ips",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/data/download-ips"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-093",
+      "kind": "coverage",
+      "route": "/wc-analytics/imports/status",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/imports/status"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-094",
+      "kind": "coverage",
+      "route": "/wc-analytics/imports/trigger",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/imports/trigger"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-095",
+      "kind": "coverage",
+      "route": "/wc-analytics/leaderboards/(?P<leaderboard>\\w+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/leaderboards/(?P<leaderboard>\\w+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-096",
+      "kind": "coverage",
+      "route": "/wc-analytics/orders",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/orders"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-097",
+      "kind": "coverage",
+      "route": "/wc-analytics/orders/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/orders/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-098",
+      "kind": "coverage",
+      "route": "/wc-analytics/orders/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/orders/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-099",
+      "kind": "coverage",
+      "route": "/wc-analytics/products",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-100",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-101",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)/duplicate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<id>[\\d]+)/duplicate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-102",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<id>[\\d]+)/related",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<id>[\\d]+)/related"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-103",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-104",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-105",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-106",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/generate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/(?P<product_id>[\\d]+)/variations/generate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-107",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-108",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-109",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-110",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<attribute_id>[\\d]+)/terms/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-111",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-112",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-113",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)/terms",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/(?P<slug>[a-z0-9_\\-]+)/terms"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-114",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/attributes/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/attributes/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-115",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-116",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/categories",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/categories"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-117",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/categories/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/categories/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-118",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/categories/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/categories/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-119",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/count-low-in-stock",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/count-low-in-stock"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-120",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/low-in-stock",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/low-in-stock"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-121",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/reviews",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/reviews"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-122",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/reviews/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/reviews/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-123",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/reviews/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/reviews/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-124",
+      "kind": "coverage",
+      "route": "/wc-analytics/products/suggested-products",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/products/suggested-products"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-125",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-126",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-127",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export/(?P<export_id>[a-z0-9]+)/status",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/(?P<type>[a-z]+)/export/(?P<export_id>[a-z0-9]+)/status"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-128",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/import",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/import"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-129",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/import/cancel",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/import/cancel"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-130",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/import/delete",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/import/delete"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-131",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/import/status",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/import/status"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-132",
+      "kind": "coverage",
+      "route": "/wc-analytics/reports/import/totals",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/reports/import/totals"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-133",
+      "kind": "coverage",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-134",
+      "kind": "coverage",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/(?P<id>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-135",
+      "kind": "coverage",
+      "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/settings/(?P<group_id>[\\w-]+)/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-136",
+      "kind": "coverage",
+      "route": "/wc-analytics/taxes",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/taxes"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-137",
+      "kind": "coverage",
+      "route": "/wc-analytics/taxes/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/taxes/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-138",
+      "kind": "coverage",
+      "route": "/wc-analytics/taxes/batch",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/taxes/batch"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-139",
+      "kind": "coverage",
+      "route": "/wc-analytics/variations",
+      "sdk": null,
+      "severity": "error",
+      "surface": "analytics",
+      "upstream": {
+        "route": "/wc-analytics/variations"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-140",
+      "kind": "coverage",
+      "route": "/wc/store/v1",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-141",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/apply-coupon",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/apply-coupon"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-142",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/coupons/(?P<code>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/coupons/(?P<code>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-143",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/items/(?P<key>[\\w-]{32})",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/items/(?P<key>[\\w-]{32})"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-144",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/remove-coupon",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/remove-coupon"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-145",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/remove-item",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/remove-item"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-146",
+      "kind": "coverage",
+      "route": "/wc/store/v1/cart/select-shipping-rate",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/cart/select-shipping-rate"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-147",
+      "kind": "coverage",
+      "route": "/wc/store/v1/products/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/products/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-148",
+      "kind": "coverage",
+      "route": "/wc/store/v1/products/(?P<slug>[\\S]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/products/(?P<slug>[\\S]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-149",
+      "kind": "coverage",
+      "route": "/wc/store/v1/products/attributes/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/products/attributes/(?P<id>[\\d]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-150",
+      "kind": "coverage",
+      "route": "/wc/store/v1/products/brands/(?P<identifier>[\\w-]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/products/brands/(?P<identifier>[\\w-]+)"
+      }
+    },
+    {
+      "driftKind": "route-missing-sdk",
+      "field": "<route>",
+      "id": "ERROR-151",
+      "kind": "coverage",
+      "route": "/wc/store/v1/products/categories/(?P<id>[\\d]+)",
+      "sdk": null,
+      "severity": "error",
+      "surface": "store",
+      "upstream": {
+        "route": "/wc/store/v1/products/categories/(?P<id>[\\d]+)"
+      }
+    }
+  ],
+  "meta": {
+    "capturedAt": "2026-05-05T22:23:53.104Z",
+    "generatedAt": "2026-05-08T23:14:35.523Z",
+    "registrySize": 146,
+    "sdkRef": "f02b99d",
+    "snapshot": "D:\\work-personal\\projects\\typewoo\\sdk\\scripts\\types-sync\\snapshots\\wc-10.7.0.json",
+    "wcVersion": "10.7.0"
+  }
+}

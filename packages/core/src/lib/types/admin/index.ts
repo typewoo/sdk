@@ -2,37 +2,43 @@
  * Export all REST API types with selective exports to avoid conflicts
  */
 export * from './common.types.js';
-export * from './product.types.js';
-export * from './order.types.js';
-export * from './customer.types.js';
-export * from './coupon.types.js';
-export * from './product-review.types.js';
-export * from './refund.types.js';
-export * from './tax.types.js';
-export * from './webhook.types.js';
-export * from './setting.types.js';
-export * from './report.types.js';
-export * from './shipping-zone.types.js';
-export * from './payment-gateway.types.js';
-export * from './shipping-method.types.js';
-export * from './system-status.types.js';
-export * from './data.types.js';
-export * from './taxonomy.types.js';
-export * from './product-brand.types.js';
+export * from './products/index.js';
+export * from './orders/index.js';
+export * from './customers/index.js';
+export * from './coupons/index.js';
+export * from './product-reviews/index.js';
+export * from './refunds/index.js';
+export * from './taxes/index.js';
+export * from './webhooks/index.js';
+export * from './settings/index.js';
+export * from './reports/index.js';
+export * from './shipping-zones/index.js';
+export * from './payment-gateways/index.js';
+export * from './shipping-methods/index.js';
+export * from './system-status/index.js';
+export * from './data/index.js';
+export * from './product-categories/index.js';
+export * from './product-tags/index.js';
+export * from './shipping-classes/index.js';
+export * from './product-brands/index.js';
 
 export {
   AdminProductAttributeSchema as AdminProductAttributeEntitySchema,
-  AdminProductAttributeRequestSchema,
+  AdminProductAttributeCreateRequestSchema,
+  AdminProductAttributeUpdateRequestSchema,
   AdminProductAttributeQueryParamsSchema,
   AdminProductAttributeTermSchema,
-  AdminProductAttributeTermRequestSchema,
+  AdminProductAttributeTermCreateRequestSchema,
+  AdminProductAttributeTermUpdateRequestSchema,
   AdminProductAttributeTermQueryParamsSchema,
-} from './attribute.types.js';
+} from './attributes/index.js';
 
 export type {
-  AdminProductAttributeRequest,
+  AdminProductAttributeCreateRequest,
+  AdminProductAttributeUpdateRequest,
   AdminProductAttributeQueryParams,
   AdminProductAttributeTerm,
-  AdminProductAttributeTermRequest,
+  AdminProductAttributeTermCreateRequest,
+  AdminProductAttributeTermUpdateRequest,
   AdminProductAttributeTermQueryParams,
-} from './attribute.types.js';
+} from './attributes/index.js';

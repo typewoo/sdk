@@ -6,7 +6,8 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminCustomerQueryParams,
   AdminCustomer,
-  AdminCustomerRequest,
+  AdminCustomerCreateRequest,
+  AdminCustomerUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -65,15 +66,14 @@ export class AdminCustomerService extends BaseService {
    * Create a new customer
    */
   async create(
-    customer: AdminCustomerRequest,
+    customer: AdminCustomerCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminCustomer, AdminCustomerRequest>(
-      url,
-      customer,
-      options
-    );
+    const { data, error } = await doPost<
+      AdminCustomer,
+      AdminCustomerCreateRequest
+    >(url, customer, options);
 
     return { data, error };
   }
@@ -83,15 +83,14 @@ export class AdminCustomerService extends BaseService {
    */
   async update(
     id: number,
-    customer: AdminCustomerRequest,
+    customer: AdminCustomerUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminCustomer, AdminCustomerRequest>(
-      url,
-      customer,
-      options
-    );
+    const { data, error } = await doPut<
+      AdminCustomer,
+      AdminCustomerUpdateRequest
+    >(url, customer, options);
 
     return { data, error };
   }
@@ -117,8 +116,8 @@ export class AdminCustomerService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminCustomerRequest[];
-      update?: Array<AdminCustomerRequest & { id: number }>;
+      create?: AdminCustomerCreateRequest[];
+      update?: Array<AdminCustomerUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions

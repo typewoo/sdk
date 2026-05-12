@@ -6,7 +6,7 @@ import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminPaymentGatewayQueryParams,
   AdminPaymentGateway,
-  AdminPaymentGatewayRequest,
+  AdminPaymentGatewayUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -66,13 +66,13 @@ export class AdminPaymentGatewayService extends BaseService {
    */
   async update(
     id: string,
-    gateway: AdminPaymentGatewayRequest,
+    gateway: AdminPaymentGatewayUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doPut<
       AdminPaymentGateway,
-      AdminPaymentGatewayRequest
+      AdminPaymentGatewayUpdateRequest
     >(url, gateway, options);
     return { data, error };
   }
