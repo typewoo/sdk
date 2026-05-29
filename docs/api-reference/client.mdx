@@ -5,7 +5,7 @@ description: SDK initialization and main client reference
 
 # SDK Client
 
-The Typewoo SDK is exported as a singleton instance. This page documents the main client interface.
+The Typewoo SDK is created through the `createTypewoo()` factory, which returns a typed client instance. This page documents the main client interface.
 
 ## Import
 
@@ -15,9 +15,9 @@ import { createTypewoo } from '@typewoo/sdk';
 
 ## Initialization
 
-### `createTypewoo(config: SdkConfig): Sdk`
+### `createTypewoo(config: SdkConfig): TypewooClient`
 
-Create an SDK instance with configuration options. Returns the SDK instance synchronously.
+Create an SDK instance with configuration options. Returns the client instance synchronously.
 
 ```typescript
 const sdk = createTypewoo({

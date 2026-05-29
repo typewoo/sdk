@@ -78,7 +78,7 @@ const { data } = await sdk.store.products.list();
 
 ### Multiple Stores
 
-Unlike the deprecated singleton pattern, you can create multiple SDK instances for different stores:
+You can create multiple SDK instances for different stores:
 
 ```typescript
 const storeA = createTypewoo({ baseUrl: 'https://store-a.com' });
@@ -90,8 +90,8 @@ const productsB = await storeB.store.products.list();
 ```
 
 <Note>
-  The legacy `Typewoo.init()` singleton is deprecated and will be removed in a
-  future version.
+  The legacy `Typewoo.init()` singleton was removed in v4. Each call to
+  `createTypewoo()` returns an independent instance.
 </Note>
 
 ## Services

@@ -367,13 +367,19 @@ const sdk = createTypewoo({
 
 ### Request-Scoped State
 
-For SSR, you may need request-scoped SDK instances:
+For SSR, you may need request-scoped SDK instances. Because `createTypewoo()`
+returns an independent instance on each call, you can create one per request:
 
 ```typescript
-// Not recommended for SSR without modifications
-// The SDK is a singleton by design
+// Create a fresh, request-scoped instance for each incoming request
+function createRequestSdk(req: Request, res: Response) {
+  return createTypewoo({
+    baseUrl: 'https://your-store.com',
+    // Use a request-scoped storage provider (see below)
+  });
+}
 
-// For SSR, consider:
+// For SSR, also consider:
 // 1. Making stateless API calls
 // 2. Passing tokens explicitly per-request
 // 3. Using a request-scoped storage provider

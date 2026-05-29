@@ -14,7 +14,7 @@ This page describes the internal architecture and project structure of the Typew
 ├── src/
 │   ├── index.ts                    # Public API exports
 │   └── lib/
-│       ├── sdk.ts                  # Main SDK class and singleton
+│       ├── sdk.ts                  # createTypewoo factory and TypewooClient
 │       ├── sdk.events.ts           # Event type definitions
 │       ├── bus/
 │       │   └── event.bus.ts        # EventBus implementation
@@ -63,30 +63,37 @@ This page describes the internal architecture and project structure of the Typew
 
 ## Design Patterns
 
-### Singleton Pattern
+### Factory Pattern
 
-The SDK uses the singleton pattern to ensure a single instance across the application:
+The SDK is created through the `createTypewoo()` factory, which returns a typed
+`TypewooClient` instance:
 
 ```typescript
 // sdk.ts
-export class Sdk {
-  private _initialized = false;
+export const createTypewoo = <TEndpoints extends CustomEndpoints>(
+  config: SdkConfig<TEndpoints>
+) => {
+  return new TypewooClient<TEndpoints>(config);
+};
 
-  public async init(config: SdkConfig): Promise<void> {
-    if (this._initialized) return; // Idempotent
+export class TypewooClient<TEndpoints> {
+  constructor(config: SdkConfig<TEndpoints>) {
     // ...initialization logic
-    this._initialized = true;
   }
 }
-
-export const Typewoo = new Sdk();
 ```
 
 **Rationale:**
 
-- Ensures consistent state across the application
-- Prevents duplicate HTTP client instances
-- Simplifies import syntax (`sdk.store.products`)
+- Full TypeScript inference, including custom endpoints
+- Supports multiple independent instances (e.g. multiple stores)
+- No hidden global state; the instance is created and owned by your app
+
+<Note>
+  Earlier versions exposed a `Typewoo` singleton initialized via
+  `Typewoo.init()`. That pattern was removed in v4 — use `createTypewoo()`
+  instead.
+</Note>
 
 ### Lazy Initialization (Admin Services)
 
