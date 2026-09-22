@@ -35,13 +35,17 @@ export default defineConfig(({ mode }) => {
       coverage: {
         reportsDirectory: './test-output/vitest/coverage',
         provider: 'v8' as const,
-        // Enforced on the default (unit, contract, snapshot) suite in CI.
-        thresholds: {
-          statements: 90,
-          branches: 80,
-          functions: 92,
-          lines: 90,
-        },
+        // Enforced on the offline (unit, contract, snapshot) suites only. The
+        // live suites are run on their own for the Codecov report and cover
+        // far less of the code by design, so they'd always miss these.
+        thresholds: runLiveSuites
+          ? undefined
+          : {
+              statements: 90,
+              branches: 80,
+              functions: 92,
+              lines: 90,
+            },
         exclude: [
           // Pure type/interface definition folders (tree-shaken, no runtime)
           'src/lib/types/**',

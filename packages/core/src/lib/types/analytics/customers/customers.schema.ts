@@ -36,8 +36,17 @@ export const AnalyticsCustomerSchema = z.looseObject({
   postcode: z.string().describe('Postal code.'),
   date_registered: z.string().optional().describe('Date registered.'),
   date_registered_gmt: z.string().optional().describe('Date registered GMT.'),
-  date_last_active: z.string().optional().describe('Date last active.'),
-  date_last_active_gmt: z.string().optional().describe('Date last active GMT.'),
+  // Null for customers who have never been active.
+  date_last_active: z
+    .string()
+    .nullable()
+    .optional()
+    .describe('Date last active (null if never active).'),
+  date_last_active_gmt: z
+    .string()
+    .nullable()
+    .optional()
+    .describe('Date last active GMT (null if never active).'),
   orders_count: z.number().describe('Order count.'),
   total_spend: z.number().describe('Total spend.'),
   avg_order_value: z.number().describe('Avg order value.'),

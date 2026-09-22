@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AdminSettingsMapSchema } from '../settings-map.schema.js';
 
 export const AdminPaymentGatewaySchema = z.looseObject({
   id: z.string().describe('Payment gateway ID.'),
@@ -19,51 +20,9 @@ export const AdminPaymentGatewaySchema = z.looseObject({
   method_supports: z
     .array(z.string())
     .describe('Supported features for this payment gateway.'),
-  settings: z
-    .looseObject({
-      id: z
-        .string()
-        .optional()
-        .describe('A unique identifier for the setting.'),
-      label: z
-        .string()
-        .optional()
-        .describe('A human readable label for the setting used in interfaces.'),
-      description: z
-        .string()
-        .optional()
-        .describe(
-          'A human readable description for the setting used in interfaces.'
-        ),
-      type: z
-        .enum([
-          'checkbox',
-          'color',
-          'email',
-          'image_width',
-          'multiselect',
-          'number',
-          'password',
-          'radio',
-          'select',
-          'text',
-          'textarea',
-        ])
-        .optional()
-        .describe('Type of setting.'),
-      value: z.string().optional().describe('Setting value.'),
-      default: z.string().optional().describe('Default value for the setting.'),
-      tip: z
-        .string()
-        .optional()
-        .describe('Additional help text shown to the user about the setting.'),
-      placeholder: z
-        .string()
-        .optional()
-        .describe('Placeholder text to be displayed in text inputs.'),
-    })
-    .optional()
-    .describe('Payment gateway settings.'),
+  settings: AdminSettingsMapSchema.optional().describe(
+    'Payment gateway settings, keyed by setting ID.'
+  ),
   _links: z.object({
     self: z.array(z.object({ href: z.string() })),
     collection: z.array(z.object({ href: z.string() })),

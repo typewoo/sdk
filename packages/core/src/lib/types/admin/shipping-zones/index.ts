@@ -59,6 +59,14 @@ schemaRegistry.add(AdminShippingZoneMethodSchema, {
   surface: 'admin',
   route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
   kind: 'response',
+  knownSchemaBugs: [
+    {
+      field: 'settings',
+      driftKinds: ['type-mismatch', 'missing-in-sdk'],
+      reason:
+        "WC's schema describes one setting, but the API returns a map of settings keyed by setting ID.",
+    },
+  ],
 });
 schemaRegistry.add(AdminShippingZoneMethodCreateRequestSchema, {
   surface: 'admin',

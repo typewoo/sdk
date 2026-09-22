@@ -45,3 +45,4 @@ export type {
 } from './attributes/index.js';
 export * from './deprecated.js';
 export * from './meta-data.schema.js';
+export * from './settings-map.schema.js';

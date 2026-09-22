@@ -7,6 +7,14 @@ schemaRegistry.add(AdminPaymentGatewaySchema, {
   surface: 'admin',
   route: '/wc/v3/payment_gateways',
   kind: 'response',
+  knownSchemaBugs: [
+    {
+      field: 'settings',
+      driftKinds: ['type-mismatch', 'missing-in-sdk'],
+      reason:
+        "WC's schema describes one setting, but the API returns a map of settings keyed by setting ID.",
+    },
+  ],
 });
 schemaRegistry.add(AdminPaymentGatewayUpdateRequestSchema, {
   surface: 'admin',

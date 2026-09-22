@@ -12,6 +12,8 @@ schemaRegistry.add(AnalyticsCustomerSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/customers',
   kind: 'response',
+  // Null for customers who have never been active.
+  knownNullable: ['date_last_active', 'date_last_active_gmt'],
 });
 schemaRegistry.add(AnalyticsCustomersListQueryParamsSchema, {
   surface: 'analytics',
