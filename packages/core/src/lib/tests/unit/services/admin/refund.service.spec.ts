@@ -23,15 +23,15 @@ describe('AdminRefundService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminRefundService(state, config, events).list().then
+        typeof new AdminRefundService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/refunds', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminRefundService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminRefundService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10 });
@@ -40,8 +40,8 @@ describe('AdminRefundService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminRefundService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminRefundService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult } from '../../types/api.js';
 import {
@@ -32,10 +31,9 @@ export class ProductAttributeTermService extends BaseService {
     ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> => {
       const query = qs.stringify(pageParams, { encode: true });
       const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
-      const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        ProductAttributeResponse[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
       return { data, error, pagination };

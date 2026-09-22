@@ -28,15 +28,15 @@ describe('AdminOrderService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminOrderService(state, config, events).list().then
+        typeof new AdminOrderService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/orders with params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10, status: 'processing' });
@@ -48,8 +48,8 @@ describe('AdminOrderService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -67,8 +67,8 @@ describe('AdminOrderService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/orders/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 100, status: 'processing' },
         error: undefined,
@@ -82,8 +82,8 @@ describe('AdminOrderService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/orders', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 1, status: 'pending' },
         error: undefined,
@@ -102,8 +102,8 @@ describe('AdminOrderService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/orders/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 100, status: 'completed' },
         error: undefined,
@@ -117,8 +117,8 @@ describe('AdminOrderService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/orders/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({
         data: { id: 100 },
         error: undefined,
@@ -133,8 +133,8 @@ describe('AdminOrderService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/orders/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,
@@ -150,8 +150,8 @@ describe('AdminOrderService', () => {
 
   describe('getStatuses()', () => {
     it('calls GET /wc/v3/orders/statuses', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ slug: 'processing', name: 'Processing' }],
         error: undefined,
@@ -169,8 +169,8 @@ describe('AdminOrderService', () => {
 
   describe('listNotes()', () => {
     it('calls GET /wc/v3/orders/{orderId}/notes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       const result = await svc.listNotes(100);
@@ -183,8 +183,8 @@ describe('AdminOrderService', () => {
 
   describe('getNote()', () => {
     it('calls GET /wc/v3/orders/{orderId}/notes/{noteId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 5, note: 'Internal note' },
         error: undefined,
@@ -200,8 +200,8 @@ describe('AdminOrderService', () => {
 
   describe('createNote()', () => {
     it('POSTs to /wc/v3/orders/{orderId}/notes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 6, note: 'New note' },
         error: undefined,
@@ -217,8 +217,8 @@ describe('AdminOrderService', () => {
 
   describe('deleteNote()', () => {
     it('DELETEs /wc/v3/orders/{orderId}/notes/{noteId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 5 }, error: undefined });
 
       await svc.deleteNote(100, 5, true);
@@ -232,8 +232,8 @@ describe('AdminOrderService', () => {
 
   describe('listRefunds()', () => {
     it('calls GET /wc/v3/orders/{orderId}/refunds', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       const result = await svc.listRefunds(100);
@@ -246,8 +246,8 @@ describe('AdminOrderService', () => {
 
   describe('getRefund()', () => {
     it('calls GET /wc/v3/orders/{orderId}/refunds/{refundId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 10, amount: '5.00' },
         error: undefined,
@@ -263,8 +263,8 @@ describe('AdminOrderService', () => {
 
   describe('createRefund()', () => {
     it('POSTs to /wc/v3/orders/{orderId}/refunds', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 11, amount: '10.00' },
         error: undefined,
@@ -282,8 +282,8 @@ describe('AdminOrderService', () => {
 
   describe('generateReceipt()', () => {
     it('POSTs to /wc/v3/orders/{orderId}/receipt', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { html: '<html>Receipt</html>' },
         error: undefined,
@@ -299,8 +299,8 @@ describe('AdminOrderService', () => {
 
   describe('getReceipt()', () => {
     it('calls GET /wc/v3/orders/{orderId}/receipt', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { html: '<html>Receipt</html>' },
         error: undefined,
@@ -316,8 +316,8 @@ describe('AdminOrderService', () => {
 
   describe('getEmailTemplates()', () => {
     it('calls GET /wc/v3/orders/{orderId}/actions/email_templates', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 'customer_on_hold_order', label: 'Order On-Hold' }],
         error: undefined,
@@ -333,8 +333,8 @@ describe('AdminOrderService', () => {
 
   describe('sendEmail()', () => {
     it('POSTs to /wc/v3/orders/{orderId}/actions/send_email', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { message: 'Email sent.' },
         error: undefined,
@@ -352,8 +352,8 @@ describe('AdminOrderService', () => {
 
   describe('sendOrderDetails()', () => {
     it('POSTs to /wc/v3/orders/{orderId}/actions/send_order_details', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { message: 'Details sent.' },
         error: undefined,

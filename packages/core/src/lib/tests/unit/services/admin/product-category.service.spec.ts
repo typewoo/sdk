@@ -26,16 +26,20 @@ describe('AdminProductCategoryService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductCategoryService(state, config, events).list()
-          .then
+        typeof new AdminProductCategoryService(
+          state,
+          config,
+          events,
+          http
+        ).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/categories', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 5 });
@@ -47,8 +51,8 @@ describe('AdminProductCategoryService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -66,8 +70,8 @@ describe('AdminProductCategoryService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/categories/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 3, name: 'Shoes' },
         error: undefined,
@@ -83,8 +87,8 @@ describe('AdminProductCategoryService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products/categories', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 10, name: 'Hats' },
         error: undefined,
@@ -100,8 +104,8 @@ describe('AdminProductCategoryService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/categories/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 3, name: 'Updated Shoes' },
         error: undefined,
@@ -117,8 +121,8 @@ describe('AdminProductCategoryService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/categories/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 3 }, error: undefined });
 
       await svc.delete(3, true);
@@ -130,8 +134,8 @@ describe('AdminProductCategoryService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/categories/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductCategoryService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

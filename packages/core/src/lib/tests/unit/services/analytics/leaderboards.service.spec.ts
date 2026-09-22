@@ -13,8 +13,8 @@ describe('AnalyticsLeaderboardsService', () => {
 
   describe('list()', () => {
     it('calls /leaderboards URL with no params (returns ApiResult, not PaginatedRequest)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsLeaderboardsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsLeaderboardsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 'customers', label: 'Top Customers', rows: [] }],
         error: undefined,
@@ -31,8 +31,8 @@ describe('AnalyticsLeaderboardsService', () => {
     });
 
     it('appends query params to URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsLeaderboardsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsLeaderboardsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       await svc.list({ after: '2026-01-01', per_page: 5 });
@@ -43,8 +43,8 @@ describe('AnalyticsLeaderboardsService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsLeaderboardsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsLeaderboardsService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot view.',
@@ -62,8 +62,8 @@ describe('AnalyticsLeaderboardsService', () => {
 
   describe('getAllowed()', () => {
     it('calls /leaderboards/allowed URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsLeaderboardsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsLeaderboardsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 'customers', label: 'Top Customers' }],
         error: undefined,
@@ -80,8 +80,8 @@ describe('AnalyticsLeaderboardsService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsLeaderboardsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsLeaderboardsService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Cannot view allowed leaderboards.',

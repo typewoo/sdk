@@ -21,8 +21,8 @@ describe('AnalyticsStockService', () => {
 
   describe('getStats()', () => {
     it('calls /stock/stats URL (no query params — takes no params arg)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { totals: { in_stock: 10, out_of_stock: 2, low_stock: 3 } },
         error: undefined,
@@ -39,8 +39,8 @@ describe('AnalyticsStockService', () => {
     });
 
     it('forwards RequestOptions as second arg', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { totals: {} },
         error: undefined,
@@ -56,8 +56,8 @@ describe('AnalyticsStockService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot view.',
@@ -75,16 +75,16 @@ describe('AnalyticsStockService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest (has .then and .loop)', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       const req = svc.list();
       expect(typeof req.then).toBe('function');
       expect(typeof req.loop).toBe('function');
     });
 
     it('awaiting list calls /stock URL (not /stats)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [{ id: 1 }], headers: {} });
 
       const result = await svc.list({ per_page: 10 });
@@ -97,8 +97,8 @@ describe('AnalyticsStockService', () => {
     });
 
     it('list result includes pagination metadata', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -112,8 +112,8 @@ describe('AnalyticsStockService', () => {
     });
 
     it('returns error when list request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsStockService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsStockService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_list',
         message: 'Cannot list stock items.',

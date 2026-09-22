@@ -1,15 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createTypewoo, TypewooClient } from '../../../sdk.js';
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: vi.fn() },
-      response: { use: vi.fn() },
-    },
-  },
-}));
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({
   addCartTokenInterceptors: vi.fn(),
 }));

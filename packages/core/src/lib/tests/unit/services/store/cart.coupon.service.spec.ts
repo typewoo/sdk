@@ -25,8 +25,8 @@ describe('CartCouponService (store)', () => {
 
   describe('list()', () => {
     it('calls GET /wc/store/v1/cart/coupons and returns ApiPaginationResult directly', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -41,8 +41,8 @@ describe('CartCouponService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -61,8 +61,8 @@ describe('CartCouponService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/cart/coupons/{code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { code: 'SAVE10' },
         error: undefined,
@@ -78,8 +78,8 @@ describe('CartCouponService (store)', () => {
 
   describe('add()', () => {
     it('POSTs to /wc/store/v1/cart/coupons?code={code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { code: 'SAVE10' },
         error: undefined,
@@ -95,8 +95,8 @@ describe('CartCouponService (store)', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/store/v1/cart/coupons/{code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: undefined, error: undefined });
 
       await svc.delete('SAVE10');
@@ -108,8 +108,8 @@ describe('CartCouponService (store)', () => {
 
   describe('clear()', () => {
     it('DELETEs /wc/store/v1/cart/coupons to remove all', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartCouponService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       const result = await svc.clear();

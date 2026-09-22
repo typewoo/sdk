@@ -21,8 +21,8 @@ describe('AnalyticsTaxesService', () => {
 
   describe('getStats()', () => {
     it('calls /taxes/stats URL with no params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { totals: { total_tax: 200 }, intervals: [] },
         error: undefined,
@@ -39,8 +39,8 @@ describe('AnalyticsTaxesService', () => {
     });
 
     it('appends query params to stats URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
 
       await svc.getStats({ after: '2026-01-01', interval: 'month' });
@@ -51,8 +51,8 @@ describe('AnalyticsTaxesService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot view.',
@@ -70,16 +70,16 @@ describe('AnalyticsTaxesService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest (has .then and .loop)', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       const req = svc.list();
       expect(typeof req.then).toBe('function');
       expect(typeof req.loop).toBe('function');
     });
 
     it('awaiting list calls /taxes URL (not /stats)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ tax_rate_id: 1 }],
         headers: {},
@@ -95,8 +95,8 @@ describe('AnalyticsTaxesService', () => {
     });
 
     it('list result includes pagination metadata', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -110,8 +110,8 @@ describe('AnalyticsTaxesService', () => {
     });
 
     it('returns error when list request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsTaxesService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsTaxesService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_list',
         message: 'Cannot list taxes.',

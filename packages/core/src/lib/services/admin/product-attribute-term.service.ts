@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -38,10 +37,9 @@ export class AdminProductAttributeTermService extends BaseService {
         : '';
       const url = `/${endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminProductAttributeTerm[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminProductAttributeTerm[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -63,7 +61,7 @@ export class AdminProductAttributeTermService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${endpoint}/${termId}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductAttributeTerm>(
+    const { data, error } = await this.http.get<AdminProductAttributeTerm>(
       url,
       options
     );
@@ -80,7 +78,7 @@ export class AdminProductAttributeTermService extends BaseService {
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProductAttributeTerm,
       AdminProductAttributeTermCreateRequest
     >(url, term, options);
@@ -99,7 +97,7 @@ export class AdminProductAttributeTermService extends BaseService {
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/${termId}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminProductAttributeTerm,
       AdminProductAttributeTermUpdateRequest
     >(url, term, options);
@@ -119,7 +117,7 @@ export class AdminProductAttributeTermService extends BaseService {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${endpoint}/${termId}?${query}`;
-    const { data, error } = await doDelete<AdminProductAttributeTerm>(
+    const { data, error } = await this.http.delete<AdminProductAttributeTerm>(
       url,
       options
     );
@@ -147,7 +145,7 @@ export class AdminProductAttributeTermService extends BaseService {
   > {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
     const url = `/${endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminProductAttributeTerm[];
         update: AdminProductAttributeTerm[];

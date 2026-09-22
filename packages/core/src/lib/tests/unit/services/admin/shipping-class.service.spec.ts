@@ -26,15 +26,16 @@ describe('AdminShippingClassService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminShippingClassService(state, config, events).list().then
+        typeof new AdminShippingClassService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/shipping_classes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -47,8 +48,8 @@ describe('AdminShippingClassService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/shipping_classes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 1, slug: 'bulky', name: 'Bulky Goods' },
         error: undefined,
@@ -64,8 +65,8 @@ describe('AdminShippingClassService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products/shipping_classes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 2, slug: 'fragile', name: 'Fragile' },
         error: undefined,
@@ -81,8 +82,8 @@ describe('AdminShippingClassService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/shipping_classes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 1, name: 'Updated' },
         error: undefined,
@@ -98,8 +99,8 @@ describe('AdminShippingClassService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/shipping_classes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 1 }, error: undefined });
 
       await svc.delete(1, true);
@@ -111,8 +112,8 @@ describe('AdminShippingClassService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/shipping_classes/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingClassService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

@@ -1,19 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosInstance } from 'axios';
 import { memoryStorageProvider } from '../../../storage/auth.storage.js';
 import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
 import type { InternalAxiosRequestConfig } from 'axios';
 
 const { reqUse } = vi.hoisted(() => ({ reqUse: vi.fn() }));
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: reqUse },
-      response: { use: vi.fn() },
-    },
+const client = {
+  interceptors: {
+    request: { use: reqUse },
+    response: { use: vi.fn() },
   },
-}));
+} as unknown as AxiosInstance;
 
 import { addTokenInterceptor } from '../../../interceptors/token.interceptor.js';
 
@@ -36,7 +34,10 @@ describe('token.interceptor', () => {
   it('adds Authorization Bearer header for Store API requests', async () => {
     const storage = memoryStorageProvider();
     await storage.set('jwt-token-abc');
-    addTokenInterceptor(makeConfig({ auth: { accessToken: { storage } } }));
+    addTokenInterceptor(
+      client,
+      makeConfig({ auth: { accessToken: { storage } } })
+    );
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -53,7 +54,10 @@ describe('token.interceptor', () => {
   it('adds Authorization Bearer header for Typewoo API requests', async () => {
     const storage = memoryStorageProvider();
     await storage.set('jwt-token-typewoo');
-    addTokenInterceptor(makeConfig({ auth: { accessToken: { storage } } }));
+    addTokenInterceptor(
+      client,
+      makeConfig({ auth: { accessToken: { storage } } })
+    );
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -70,7 +74,10 @@ describe('token.interceptor', () => {
   it('does NOT add Authorization for Admin API requests', async () => {
     const storage = memoryStorageProvider();
     await storage.set('jwt-token-should-not-apply');
-    addTokenInterceptor(makeConfig({ auth: { accessToken: { storage } } }));
+    addTokenInterceptor(
+      client,
+      makeConfig({ auth: { accessToken: { storage } } })
+    );
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -84,7 +91,10 @@ describe('token.interceptor', () => {
 
   it('does not add header when no token in storage', async () => {
     const storage = memoryStorageProvider(); // empty
-    addTokenInterceptor(makeConfig({ auth: { accessToken: { storage } } }));
+    addTokenInterceptor(
+      client,
+      makeConfig({ auth: { accessToken: { storage } } })
+    );
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -97,7 +107,7 @@ describe('token.interceptor', () => {
   });
 
   it('does not add header when no accessToken storage configured', async () => {
-    addTokenInterceptor(makeConfig());
+    addTokenInterceptor(client, makeConfig());
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>

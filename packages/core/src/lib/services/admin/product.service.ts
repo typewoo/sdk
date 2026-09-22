@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -37,7 +36,7 @@ export class AdminProductService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminProduct[]>(
+      const { data, error, headers } = await this.http.get<AdminProduct[]>(
         url,
         options
       );
@@ -61,7 +60,7 @@ export class AdminProductService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProduct>(url, options);
+    const { data, error } = await this.http.get<AdminProduct>(url, options);
     return { data, error };
   }
 
@@ -73,7 +72,7 @@ export class AdminProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProduct,
       AdminProductCreateRequest
     >(url, product, options);
@@ -90,7 +89,7 @@ export class AdminProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminProduct,
       AdminProductUpdateRequest
     >(url, product, options);
@@ -108,7 +107,7 @@ export class AdminProductService extends BaseService {
   ): Promise<ApiResult<AdminProduct>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProduct>(url, options);
+    const { data, error } = await this.http.delete<AdminProduct>(url, options);
 
     return { data, error };
   }
@@ -131,7 +130,7 @@ export class AdminProductService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminProduct[];
         update: AdminProduct[];
@@ -152,7 +151,7 @@ export class AdminProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
     const url = `/${this.endpoint}/${id}/duplicate`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProduct,
       AdminProductUpdateRequest
     >(url, product || {}, options);
@@ -178,10 +177,9 @@ export class AdminProductService extends BaseService {
         query ? `?${query}` : ''
       }`;
 
-      const { data, error, headers } = await doGet<AdminProductVariation[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminProductVariation[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
 
@@ -205,7 +203,10 @@ export class AdminProductService extends BaseService {
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminProductVariation>(url, options);
+    const { data, error } = await this.http.get<AdminProductVariation>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -218,7 +219,7 @@ export class AdminProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProductVariation,
       Partial<AdminProductVariation>
     >(url, variation, options);
@@ -236,7 +237,7 @@ export class AdminProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations/${variationId}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminProductVariation,
       Partial<AdminProductVariation>
     >(url, variation, options);
@@ -255,7 +256,10 @@ export class AdminProductService extends BaseService {
   ): Promise<ApiResult<AdminProductVariation>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${productId}/variations/${variationId}?${query}`;
-    const { data, error } = await doDelete<AdminProductVariation>(url, options);
+    const { data, error } = await this.http.delete<AdminProductVariation>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -272,11 +276,10 @@ export class AdminProductService extends BaseService {
     requestOptions?: RequestOptions
   ): Promise<ApiResult<{ count: number }>> {
     const url = `/${this.endpoint}/${productId}/variations/generate`;
-    const { data, error } = await doPost<{ count: number }, typeof options>(
-      url,
-      options || {},
-      requestOptions
-    );
+    const { data, error } = await this.http.post<
+      { count: number },
+      typeof options
+    >(url, options || {}, requestOptions);
 
     return { data, error };
   }
@@ -293,7 +296,7 @@ export class AdminProductService extends BaseService {
     const url = `/${this.endpoint}/custom-fields/names${
       query ? `?${query}` : ''
     }`;
-    const { data, error } = await doGet<string[]>(url, options);
+    const { data, error } = await this.http.get<string[]>(url, options);
     return { data, error };
   }
 }

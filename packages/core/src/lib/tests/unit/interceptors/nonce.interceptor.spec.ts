@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosInstance } from 'axios';
 import { EventBus } from '../../../bus/event.bus.js';
 import type { SdkEvent } from '../../../sdk.events.js';
 import { memoryStorageProvider } from '../../../storage/auth.storage.js';
@@ -10,15 +11,12 @@ const { reqUse, resUse } = vi.hoisted(() => ({
   resUse: vi.fn(),
 }));
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: reqUse },
-      response: { use: resUse },
-    },
+const client = {
+  interceptors: {
+    request: { use: reqUse },
+    response: { use: resUse },
   },
-}));
+} as unknown as AxiosInstance;
 
 import { addNonceInterceptors } from '../../../interceptors/nonce.interceptor.js';
 
@@ -42,7 +40,7 @@ describe('nonce.interceptor', () => {
   it('adds nonce header from state when nonce is present', async () => {
     const state = { nonce: 'abc123' };
     const events = new EventBus<SdkEvent>();
-    addNonceInterceptors(makeConfig(), state, events);
+    addNonceInterceptors(client, makeConfig(), state, events);
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -56,7 +54,7 @@ describe('nonce.interceptor', () => {
   it('skips nonce header when nonce is absent from state', async () => {
     const state = {};
     const events = new EventBus<SdkEvent>();
-    addNonceInterceptors(makeConfig(), state, events);
+    addNonceInterceptors(client, makeConfig(), state, events);
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -71,6 +69,7 @@ describe('nonce.interceptor', () => {
     const state = { nonce: 'skip-me' };
     const events = new EventBus<SdkEvent>();
     addNonceInterceptors(
+      client,
       makeConfig({
         nonce: { disabled: true, storage: memoryStorageProvider() },
       }),
@@ -92,7 +91,12 @@ describe('nonce.interceptor', () => {
     await storage.set('stored-nonce');
     const state = {};
     const events = new EventBus<SdkEvent>();
-    addNonceInterceptors(makeConfig({ nonce: { storage } }), state, events);
+    addNonceInterceptors(
+      client,
+      makeConfig({ nonce: { storage } }),
+      state,
+      events
+    );
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -108,7 +112,7 @@ describe('nonce.interceptor', () => {
     const events = new EventBus<SdkEvent>();
     const listener = vi.fn();
     events.on('nonce:changed', listener);
-    addNonceInterceptors(makeConfig(), state, events);
+    addNonceInterceptors(client, makeConfig(), state, events);
 
     const [resHandler] = resUse.mock.calls[resUse.mock.calls.length - 1] as [
       (r: unknown) => Promise<unknown>
@@ -121,7 +125,7 @@ describe('nonce.interceptor', () => {
   it('does not update state when response has no nonce header', async () => {
     const state: Record<string, unknown> = { nonce: 'old' };
     const events = new EventBus<SdkEvent>();
-    addNonceInterceptors(makeConfig(), state, events);
+    addNonceInterceptors(client, makeConfig(), state, events);
 
     const [resHandler] = resUse.mock.calls[resUse.mock.calls.length - 1] as [
       (r: unknown) => Promise<unknown>

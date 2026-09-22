@@ -23,15 +23,15 @@ describe('AdminReportService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminReportService(state, config, events).list().then
+        typeof new AdminReportService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/reports', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -42,8 +42,8 @@ describe('AdminReportService', () => {
 
   describe('getSalesReport()', () => {
     it('calls GET /wc/v3/reports/sales', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ total_sales: '100.00' }],
         error: undefined,
@@ -59,8 +59,8 @@ describe('AdminReportService', () => {
 
   describe('getTopSellersReport()', () => {
     it('calls GET /wc/v3/reports/top_sellers', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -77,8 +77,8 @@ describe('AdminReportService', () => {
 
   describe('getCustomersReport()', () => {
     it('calls GET /wc/v3/reports/customers/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -95,8 +95,8 @@ describe('AdminReportService', () => {
 
   describe('getOrdersReport()', () => {
     it('calls GET /wc/v3/reports/orders/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ slug: 'pending', name: 'Pending', total: 5 }],
         error: undefined,
@@ -112,8 +112,8 @@ describe('AdminReportService', () => {
 
   describe('getOrdersTotals()', () => {
     it('calls GET /wc/v3/reports/orders/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -130,8 +130,8 @@ describe('AdminReportService', () => {
 
   describe('getProductsTotals()', () => {
     it('calls GET /wc/v3/reports/products/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -148,8 +148,8 @@ describe('AdminReportService', () => {
 
   describe('getCustomersTotals()', () => {
     it('calls GET /wc/v3/reports/customers/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -166,8 +166,8 @@ describe('AdminReportService', () => {
 
   describe('getCouponsTotals()', () => {
     it('calls GET /wc/v3/reports/coupons/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -184,8 +184,8 @@ describe('AdminReportService', () => {
 
   describe('getReviewsTotals()', () => {
     it('calls GET /wc/v3/reports/reviews/totals', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminReportService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminReportService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},

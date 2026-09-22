@@ -1,11 +1,11 @@
-import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
-import { httpClient } from '../http/index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';
 
 export const addCartTokenInterceptors = (
+  client: AxiosInstance,
   config: ResolvedSdkConfig,
   state: SdkState,
   events: EventBus<SdkEvent>
@@ -13,7 +13,7 @@ export const addCartTokenInterceptors = (
   const cartTokenStorage = config.cartToken?.storage;
 
   // Add interceptor for cart token
-  httpClient.interceptors.request.use(
+  client.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.cartToken?.disabled) return axiosConfig;
 
@@ -31,7 +31,7 @@ export const addCartTokenInterceptors = (
     }
   );
 
-  httpClient.interceptors.response.use(async (response) => {
+  client.interceptors.response.use(async (response) => {
     if (config.cartToken?.disabled) return response;
 
     const headers = response.headers;

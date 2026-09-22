@@ -24,15 +24,20 @@ describe('AdminPaymentGatewayService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminPaymentGatewayService(state, config, events).list().then
+        typeof new AdminPaymentGatewayService(
+          state,
+          config,
+          events,
+          http
+        ).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/payment_gateways', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminPaymentGatewayService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminPaymentGatewayService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -43,8 +48,8 @@ describe('AdminPaymentGatewayService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminPaymentGatewayService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminPaymentGatewayService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -62,8 +67,8 @@ describe('AdminPaymentGatewayService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/payment_gateways/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminPaymentGatewayService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminPaymentGatewayService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 'stripe', title: 'Stripe' },
         error: undefined,
@@ -79,8 +84,8 @@ describe('AdminPaymentGatewayService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/payment_gateways/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminPaymentGatewayService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminPaymentGatewayService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 'stripe', enabled: false },
         error: undefined,

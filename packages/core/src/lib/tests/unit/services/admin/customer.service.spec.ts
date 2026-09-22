@@ -29,16 +29,16 @@ describe('AdminCustomerService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       const req = svc.list();
       expect(typeof req.then).toBe('function');
       expect(typeof req.loop).toBe('function');
     });
 
     it('awaiting list calls GET /wc/v3/customers with params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10, role: 'customer' });
@@ -50,8 +50,8 @@ describe('AdminCustomerService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       const mockError = {
         code: 'rest_forbidden',
         message: 'Forbidden',
@@ -71,8 +71,8 @@ describe('AdminCustomerService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/customers/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 7, email: 'a@b.com' },
         error: undefined,
@@ -89,8 +89,8 @@ describe('AdminCustomerService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/customers', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 1, email: 'new@c.com' },
         error: undefined,
@@ -110,8 +110,8 @@ describe('AdminCustomerService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/customers/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 3, email: 'upd@c.com' },
         error: undefined,
@@ -128,8 +128,8 @@ describe('AdminCustomerService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/customers/{id} with force and reassign params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 3 }, error: undefined });
 
       await svc.delete(3, true, 1);
@@ -143,8 +143,8 @@ describe('AdminCustomerService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/customers/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCustomerService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCustomerService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

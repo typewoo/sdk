@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -27,7 +26,7 @@ export class AnalyticsRevenueService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
+    const { data, error } = await this.http.get<
       AnalyticsStatsResponse<AnalyticsRevenueStats>
     >(url, options);
     return { data, error };

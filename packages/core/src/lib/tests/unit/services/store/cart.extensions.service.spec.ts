@@ -21,8 +21,8 @@ describe('CartExtensionsService (store)', () => {
 
   describe('store()', () => {
     it('POSTs to /wc/store/v1/cart/extensions', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartExtensionsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartExtensionsService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { namespace: 'my-plugin', data: {} },
         error: undefined,
@@ -36,8 +36,8 @@ describe('CartExtensionsService (store)', () => {
     });
 
     it('returns error when store fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartExtensionsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartExtensionsService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {

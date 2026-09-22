@@ -21,8 +21,8 @@ describe('BatchService (store)', () => {
 
   describe('execute()', () => {
     it('POSTs to /wc/store/v1/batch with request body', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new BatchService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new BatchService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { responses: [] },
         error: undefined,
@@ -38,8 +38,8 @@ describe('BatchService (store)', () => {
     });
 
     it('returns error when batch fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new BatchService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new BatchService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {

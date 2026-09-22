@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -26,10 +25,9 @@ export class ProductBrandService extends BaseService {
     ): Promise<ApiPaginationResult<ProductBrandResponse[]>> => {
       const query = qs.stringify(pageParams);
       const url = `/${this.endpoint}?${query}`;
-      const { data, error, headers } = await doGet<ProductBrandResponse[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        ProductBrandResponse[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
       return { data, error, pagination };
@@ -48,7 +46,10 @@ export class ProductBrandService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<ProductBrandResponse>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doGet<ProductBrandResponse>(url, options);
+    const { data, error } = await this.http.get<ProductBrandResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

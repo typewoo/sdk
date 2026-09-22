@@ -22,8 +22,8 @@ describe('CartService (store)', () => {
 
   describe('get()', () => {
     it('calls GET /wc/store/v1/cart', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { items: [] },
         error: undefined,
@@ -35,8 +35,8 @@ describe('CartService (store)', () => {
     });
 
     it('returns error when cart request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -54,8 +54,8 @@ describe('CartService (store)', () => {
 
   describe('add()', () => {
     it('POSTs to /wc/store/v1/cart/add-item with product params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { items: [{ id: 1 }] },
         error: undefined,
@@ -69,8 +69,8 @@ describe('CartService (store)', () => {
     });
 
     it('returns error when add fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -88,8 +88,8 @@ describe('CartService (store)', () => {
 
   describe('update()', () => {
     it('POSTs to /wc/store/v1/cart/update-item with key and quantity', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { items: [] },
         error: undefined,
@@ -106,8 +106,8 @@ describe('CartService (store)', () => {
 
   describe('remove()', () => {
     it('POSTs to /wc/store/v1/cart/remove-item with key', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { items: [] },
         error: undefined,
@@ -122,8 +122,8 @@ describe('CartService (store)', () => {
 
   describe('applyCoupon()', () => {
     it('POSTs to /wc/store/v1/cart/apply-coupon with code', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { coupons: [{ code: 'SAVE10' }] },
         error: undefined,
@@ -137,8 +137,8 @@ describe('CartService (store)', () => {
     });
 
     it('returns error for invalid coupon', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -156,8 +156,8 @@ describe('CartService (store)', () => {
 
   describe('removeCoupon()', () => {
     it('POSTs to /wc/store/v1/cart/remove-coupon with code', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { coupons: [] },
         error: undefined,
@@ -172,8 +172,8 @@ describe('CartService (store)', () => {
 
   describe('updateCustomer()', () => {
     it('POSTs to /wc/store/v1/cart/update-customer with body', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { customer: {} },
         error: undefined,
@@ -191,8 +191,8 @@ describe('CartService (store)', () => {
 
   describe('selectShippingRate()', () => {
     it('POSTs to /wc/store/v1/cart/select-shipping-rate with packageId and rateId', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { shipping_rates: [] },
         error: undefined,

@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -38,7 +37,10 @@ export class AdminTaxService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminTax[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminTax[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -58,7 +60,7 @@ export class AdminTaxService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTax>(url, options);
+    const { data, error } = await this.http.get<AdminTax>(url, options);
     return { data, error };
   }
 
@@ -70,11 +72,10 @@ export class AdminTaxService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminTax, AdminTaxCreateRequest>(
-      url,
-      tax,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminTax,
+      AdminTaxCreateRequest
+    >(url, tax, options);
 
     return { data, error };
   }
@@ -88,11 +89,10 @@ export class AdminTaxService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminTax, AdminTaxUpdateRequest>(
-      url,
-      tax,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminTax,
+      AdminTaxUpdateRequest
+    >(url, tax, options);
 
     return { data, error };
   }
@@ -107,7 +107,7 @@ export class AdminTaxService extends BaseService {
   ): Promise<ApiResult<AdminTax>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTax>(url, options);
+    const { data, error } = await this.http.delete<AdminTax>(url, options);
 
     return { data, error };
   }
@@ -130,7 +130,7 @@ export class AdminTaxService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminTax[];
         update: AdminTax[];
@@ -161,7 +161,7 @@ export class AdminTaxClassService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxClass[]>(url, options);
+    const { data, error } = await this.http.get<AdminTaxClass[]>(url, options);
     return { data, error };
   }
 
@@ -174,7 +174,7 @@ export class AdminTaxClassService extends BaseService {
   ): Promise<ApiResult<AdminTaxClass[]>> {
     const url = `/${this.endpoint}/${slug}`;
 
-    const { data, error } = await doGet<AdminTaxClass[]>(url, options);
+    const { data, error } = await this.http.get<AdminTaxClass[]>(url, options);
     return { data, error };
   }
 
@@ -186,7 +186,7 @@ export class AdminTaxClassService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminTaxClass,
       AdminTaxClassCreateRequest
     >(url, taxClass, options);
@@ -204,7 +204,7 @@ export class AdminTaxClassService extends BaseService {
   ): Promise<ApiResult<AdminTaxClass>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${slug}?${query}`;
-    const { data, error } = await doDelete<AdminTaxClass>(url, options);
+    const { data, error } = await this.http.delete<AdminTaxClass>(url, options);
 
     return { data, error };
   }

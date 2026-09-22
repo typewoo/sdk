@@ -23,15 +23,15 @@ describe('ProductService (store)', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
-      expect(typeof new ProductService(state, config, events).list().then).toBe(
-        'function'
-      );
+      const { state, config, events, http } = makeTestDeps();
+      expect(
+        typeof new ProductService(state, config, events, http).list().then
+      ).toBe('function');
     });
 
     it('calls GET /wc/store/v1/products', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -47,8 +47,8 @@ describe('ProductService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -67,8 +67,8 @@ describe('ProductService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/products/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 42, name: 'Test Product' },
         error: undefined,
@@ -82,8 +82,8 @@ describe('ProductService (store)', () => {
     });
 
     it('calls GET /wc/store/v1/products/{slug} when slug given', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 10, slug: 'my-product' },
         error: undefined,
@@ -97,8 +97,8 @@ describe('ProductService (store)', () => {
     });
 
     it('returns error when product not found', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

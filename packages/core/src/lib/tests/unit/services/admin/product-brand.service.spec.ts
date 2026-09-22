@@ -26,15 +26,16 @@ describe('AdminProductBrandService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductBrandService(state, config, events).list().then
+        typeof new AdminProductBrandService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/brands', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10 });
@@ -45,8 +46,8 @@ describe('AdminProductBrandService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -64,8 +65,8 @@ describe('AdminProductBrandService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/brands/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 2, name: 'Nike' },
         error: undefined,
@@ -81,8 +82,8 @@ describe('AdminProductBrandService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products/brands', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 3, name: 'Adidas' },
         error: undefined,
@@ -98,8 +99,8 @@ describe('AdminProductBrandService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/brands/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 2, name: 'Updated Nike' },
         error: undefined,
@@ -115,8 +116,8 @@ describe('AdminProductBrandService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/brands/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 2 }, error: undefined });
 
       await svc.delete(2, true);
@@ -128,8 +129,8 @@ describe('AdminProductBrandService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/brands/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductBrandService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

@@ -21,8 +21,8 @@ describe('OrderService (store)', () => {
 
   describe('get()', () => {
     it('calls GET /wc/store/v1/order/{orderId} with key', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new OrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new OrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 100, status: 'processing' },
         error: undefined,
@@ -36,8 +36,8 @@ describe('OrderService (store)', () => {
     });
 
     it('appends billing_email when provided', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new OrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new OrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { id: 100 }, error: undefined });
 
       await svc.get('wc_order_abc', '100', 'test@example.com');
@@ -46,8 +46,8 @@ describe('OrderService (store)', () => {
     });
 
     it('returns error when order not found', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new OrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new OrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

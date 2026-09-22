@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -35,10 +34,9 @@ export class AnalyticsStockService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsStockItem[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AnalyticsStockItem[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -55,7 +53,7 @@ export class AnalyticsStockService extends BaseService {
   ): Promise<ApiResult<AnalyticsTotalsResponse<AnalyticsStockStats>>> {
     const url = `/${this.endpoint}/stats`;
 
-    const { data, error } = await doGet<
+    const { data, error } = await this.http.get<
       AnalyticsTotalsResponse<AnalyticsStockStats>
     >(url, options);
     return { data, error };

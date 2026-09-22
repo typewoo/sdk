@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult } from '../../types/api.js';
 import { ProductTagRequest, ProductTagResponse } from '../../types/index.js';
@@ -27,10 +26,9 @@ export class ProductTagService extends BaseService {
     ): Promise<ApiPaginationResult<ProductTagResponse[]>> => {
       const query = qs.stringify(pageParams);
       const url = `/${this.endpoint}?${query}`;
-      const { data, error, headers } = await doGet<ProductTagResponse[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        ProductTagResponse[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
       return { data, error, pagination };

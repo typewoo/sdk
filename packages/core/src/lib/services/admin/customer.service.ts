@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -35,7 +34,7 @@ export class AdminCustomerService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminCustomer[]>(
+      const { data, error, headers } = await this.http.get<AdminCustomer[]>(
         url,
         options
       );
@@ -58,7 +57,7 @@ export class AdminCustomerService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCustomer>(url, options);
+    const { data, error } = await this.http.get<AdminCustomer>(url, options);
     return { data, error };
   }
 
@@ -70,7 +69,7 @@ export class AdminCustomerService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminCustomer,
       AdminCustomerCreateRequest
     >(url, customer, options);
@@ -87,7 +86,7 @@ export class AdminCustomerService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminCustomer,
       AdminCustomerUpdateRequest
     >(url, customer, options);
@@ -106,7 +105,7 @@ export class AdminCustomerService extends BaseService {
   ): Promise<ApiResult<AdminCustomer>> {
     const query = qs.stringify({ force, reassign }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCustomer>(url, options);
+    const { data, error } = await this.http.delete<AdminCustomer>(url, options);
 
     return { data, error };
   }
@@ -129,7 +128,7 @@ export class AdminCustomerService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminCustomer[];
         update: AdminCustomer[];

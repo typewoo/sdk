@@ -28,17 +28,25 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductAttributeTermService(state, config, events).list(
-          ATTR_ID
-        ).then
+        typeof new AdminProductAttributeTermService(
+          state,
+          config,
+          events,
+          http
+        ).list(ATTR_ID).then
       ).toBe('function');
     });
 
     it('calls GET with attributeId in URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list(ATTR_ID, { per_page: 10 });
@@ -54,8 +62,13 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/attributes/{attributeId}/terms/{termId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doGetMock.mockResolvedValueOnce({
         data: { id: 5, name: 'Red' },
         error: undefined,
@@ -73,8 +86,13 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('create()', () => {
     it('POSTs with attributeId in URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doPostMock.mockResolvedValueOnce({
         data: { id: 6, name: 'Blue' },
         error: undefined,
@@ -91,8 +109,13 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('update()', () => {
     it('PUTs with attributeId and termId in URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doPutMock.mockResolvedValueOnce({
         data: { id: 5, name: 'Crimson' },
         error: undefined,
@@ -109,8 +132,13 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('delete()', () => {
     it('DELETEs with attributeId and termId in URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doDeleteMock.mockResolvedValueOnce({ data: { id: 5 }, error: undefined });
 
       await svc.delete(ATTR_ID, 5, true);
@@ -125,8 +153,13 @@ describe('AdminProductAttributeTermService', () => {
 
   describe('batch()', () => {
     it('POSTs to terms/batch with attributeId in URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductAttributeTermService(
+        state,
+        config,
+        events,
+        http
+      );
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

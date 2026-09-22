@@ -23,8 +23,8 @@ describe('ProductAttributeService (store)', () => {
 
   describe('list()', () => {
     it('calls GET /wc/store/v1/products/attributes and returns ApiPaginationResult directly', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductAttributeService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductAttributeService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 1, name: 'Color' }],
         headers: {},
@@ -39,8 +39,8 @@ describe('ProductAttributeService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductAttributeService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductAttributeService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -59,8 +59,8 @@ describe('ProductAttributeService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/products/attributes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductAttributeService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductAttributeService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 1, name: 'Color' },
         error: undefined,

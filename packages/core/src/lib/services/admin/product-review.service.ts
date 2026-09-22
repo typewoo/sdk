@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -35,10 +34,9 @@ export class AdminProductReviewService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminProductReview[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminProductReview[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -58,7 +56,10 @@ export class AdminProductReviewService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductReview>(url, options);
+    const { data, error } = await this.http.get<AdminProductReview>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -70,7 +71,7 @@ export class AdminProductReviewService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProductReview,
       AdminProductReviewCreateRequest
     >(url, review, options);
@@ -87,7 +88,7 @@ export class AdminProductReviewService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminProductReview,
       AdminProductReviewUpdateRequest
     >(url, review, options);
@@ -105,7 +106,10 @@ export class AdminProductReviewService extends BaseService {
   ): Promise<ApiResult<AdminProductReview>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProductReview>(url, options);
+    const { data, error } = await this.http.delete<AdminProductReview>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -128,7 +132,7 @@ export class AdminProductReviewService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminProductReview[];
         update: AdminProductReview[];

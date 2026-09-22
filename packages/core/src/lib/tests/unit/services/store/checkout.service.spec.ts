@@ -23,8 +23,8 @@ describe('CheckoutService (store)', () => {
 
   describe('get()', () => {
     it('calls GET /wc/store/v1/checkout/', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { order_id: 1 },
         error: undefined,
@@ -38,8 +38,8 @@ describe('CheckoutService (store)', () => {
     });
 
     it('returns error when get fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -57,8 +57,8 @@ describe('CheckoutService (store)', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/store/v1/checkout with params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { order_id: 1 },
         error: undefined,
@@ -76,8 +76,8 @@ describe('CheckoutService (store)', () => {
 
   describe('processOrderAndPayment()', () => {
     it('POSTs to /wc/store/v1/checkout with payment payload', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { status: 'processing', order_id: 100 },
         error: undefined,
@@ -96,8 +96,8 @@ describe('CheckoutService (store)', () => {
     });
 
     it('returns error when payment fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {

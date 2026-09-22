@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import { OrderRequest, CheckoutResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -25,11 +24,10 @@ export class CheckoutOrderService extends BaseService {
   ): Promise<ApiResult<CheckoutResponse>> {
     const url = `/${this.endpoint}/${orderId}`;
 
-    const { data, error } = await doPost<CheckoutResponse, OrderRequest>(
-      url,
-      params,
-      options
-    );
+    const { data, error } = await this.http.post<
+      CheckoutResponse,
+      OrderRequest
+    >(url, params, options);
 
     return { data, error };
   }

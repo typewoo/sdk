@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   CartExtensionsRequest,
@@ -30,7 +29,7 @@ export class CartExtensionsService extends BaseService {
     this.events.emit('cart:extensions:loading', true);
     this.events.emit('cart:extensions:request:start');
 
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       CartExtensionsResponse,
       CartExtensionsRequest
     >(url, params, options);

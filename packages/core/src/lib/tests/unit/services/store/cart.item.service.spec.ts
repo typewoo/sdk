@@ -26,8 +26,8 @@ describe('CartItemService (store)', () => {
 
   describe('list()', () => {
     it('calls GET /wc/store/v1/cart/items and returns ApiPaginationResult directly', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -44,8 +44,8 @@ describe('CartItemService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/cart/items/{key}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { key: 'abc', quantity: 1 },
         error: undefined,
@@ -61,8 +61,8 @@ describe('CartItemService (store)', () => {
 
   describe('add()', () => {
     it('POSTs to /wc/store/v1/cart/items with product params in query', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { key: 'xyz', quantity: 2 },
         error: undefined,
@@ -76,8 +76,8 @@ describe('CartItemService (store)', () => {
     });
 
     it('returns error when add fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -95,8 +95,8 @@ describe('CartItemService (store)', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/store/v1/cart/items/{key} with quantity', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { key: 'abc', quantity: 5 },
         error: undefined,
@@ -112,8 +112,8 @@ describe('CartItemService (store)', () => {
 
   describe('remove()', () => {
     it('DELETEs /wc/store/v1/cart/items/{key}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: undefined, error: undefined });
 
       await svc.remove('abc');
@@ -125,8 +125,8 @@ describe('CartItemService (store)', () => {
 
   describe('clear()', () => {
     it('DELETEs /wc/store/v1/cart/items to clear all', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CartItemService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CartItemService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       const result = await svc.clear();

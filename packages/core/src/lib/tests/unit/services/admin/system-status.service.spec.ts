@@ -21,8 +21,8 @@ describe('AdminSystemStatusService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/system_status', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSystemStatusService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSystemStatusService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { environment: { wp_version: '6.0' } },
         error: undefined,
@@ -36,8 +36,8 @@ describe('AdminSystemStatusService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSystemStatusService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSystemStatusService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

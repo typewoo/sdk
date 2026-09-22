@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPut } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -34,10 +33,9 @@ export class AdminPaymentGatewayService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminPaymentGateway[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminPaymentGateway[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -57,7 +55,10 @@ export class AdminPaymentGatewayService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminPaymentGateway>(url, options);
+    const { data, error } = await this.http.get<AdminPaymentGateway>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -70,7 +71,7 @@ export class AdminPaymentGatewayService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminPaymentGateway,
       AdminPaymentGatewayUpdateRequest
     >(url, gateway, options);

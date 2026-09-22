@@ -23,8 +23,8 @@ describe('AdminSettingService', () => {
 
   describe('listGroups()', () => {
     it('calls GET /wc/v3/settings and returns ApiResult directly', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 'general', label: 'General' }],
         error: undefined,
@@ -36,8 +36,8 @@ describe('AdminSettingService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -55,8 +55,8 @@ describe('AdminSettingService', () => {
 
   describe('listSettings()', () => {
     it('calls GET /wc/v3/settings/{groupId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ id: 'woocommerce_store_address' }],
         error: undefined,
@@ -72,8 +72,8 @@ describe('AdminSettingService', () => {
 
   describe('getSetting()', () => {
     it('calls GET /wc/v3/settings/{groupId}/{settingId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 'woocommerce_store_address', value: '123 Main St' },
         error: undefined,
@@ -92,8 +92,8 @@ describe('AdminSettingService', () => {
 
   describe('updateSetting()', () => {
     it('PUTs to /wc/v3/settings/{groupId}/{settingId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 'woocommerce_store_address', value: '456 New St' },
         error: undefined,
@@ -113,8 +113,8 @@ describe('AdminSettingService', () => {
 
   describe('batchUpdateSettings()', () => {
     it('POSTs to /wc/v3/settings/{groupId}/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { update: [] },
         error: undefined,
@@ -132,8 +132,8 @@ describe('AdminSettingService', () => {
 
   describe('batchUpdate()', () => {
     it('POSTs to /wc/v3/settings/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminSettingService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminSettingService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { update: [] },
         error: undefined,

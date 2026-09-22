@@ -23,8 +23,8 @@ describe('AdminDataService', () => {
 
   describe('listCountries()', () => {
     it('calls GET /wc/v3/data/countries and returns ApiPaginationResult directly', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -39,8 +39,8 @@ describe('AdminDataService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -59,8 +59,8 @@ describe('AdminDataService', () => {
 
   describe('getCountry()', () => {
     it('calls GET /wc/v3/data/countries/{code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { code: 'US', name: 'United States' },
         error: undefined,
@@ -76,8 +76,8 @@ describe('AdminDataService', () => {
 
   describe('listCurrencies()', () => {
     it('calls GET /wc/v3/data/currencies', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -94,8 +94,8 @@ describe('AdminDataService', () => {
 
   describe('getCurrency()', () => {
     it('calls GET /wc/v3/data/currencies/{code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { code: 'USD', name: 'US Dollar' },
         error: undefined,
@@ -111,8 +111,8 @@ describe('AdminDataService', () => {
 
   describe('listContinents()', () => {
     it('calls GET /wc/v3/data/continents', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -129,8 +129,8 @@ describe('AdminDataService', () => {
 
   describe('getContinent()', () => {
     it('calls GET /wc/v3/data/continents/{code}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { code: 'NA', name: 'North America' },
         error: undefined,

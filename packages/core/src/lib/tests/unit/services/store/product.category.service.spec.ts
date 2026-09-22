@@ -23,15 +23,16 @@ describe('ProductCategoryService (store)', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new ProductCategoryService(state, config, events).list().then
+        typeof new ProductCategoryService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/store/v1/products/categories', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -46,8 +47,8 @@ describe('ProductCategoryService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -66,8 +67,8 @@ describe('ProductCategoryService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/products/categories/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductCategoryService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductCategoryService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 2, name: 'Clothing' },
         error: undefined,

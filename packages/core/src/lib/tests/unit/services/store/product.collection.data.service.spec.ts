@@ -21,8 +21,8 @@ describe('ProductCollectionDataService (store)', () => {
 
   describe('calculate()', () => {
     it('calls GET /wc/store/v1/products/collection-data', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductCollectionDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductCollectionDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { price_range: { min_price: '5.00', max_price: '100.00' } },
         error: undefined,
@@ -36,8 +36,8 @@ describe('ProductCollectionDataService (store)', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductCollectionDataService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductCollectionDataService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doDelete, doGet, doPost, doPut } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -21,7 +20,7 @@ export class CartItemService extends BaseService {
   ): Promise<ApiPaginationResult<CartItemResponse[]>> {
     const url = `/${this.endpoint}`;
 
-    const { data, error, headers } = await doGet<CartItemResponse[]>(
+    const { data, error, headers } = await this.http.get<CartItemResponse[]>(
       url,
       options
     );
@@ -42,7 +41,7 @@ export class CartItemService extends BaseService {
   ): Promise<ApiResult<CartItemResponse>> {
     const url = `/${this.endpoint}/${key}`;
 
-    const { data, error } = await doGet<CartItemResponse>(url, options);
+    const { data, error } = await this.http.get<CartItemResponse>(url, options);
 
     return { data, error };
   }
@@ -62,7 +61,7 @@ export class CartItemService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartItemResponse, unknown>(
+    const { data, error } = await this.http.post<CartItemResponse, unknown>(
       url,
       undefined,
       options
@@ -92,7 +91,7 @@ export class CartItemService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPut<CartItemResponse, unknown>(
+    const { data, error } = await this.http.put<CartItemResponse, unknown>(
       url,
       undefined,
       options
@@ -119,7 +118,7 @@ export class CartItemService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doDelete<unknown>(url, options);
+    const { data, error } = await this.http.delete<unknown>(url, options);
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', error);
@@ -140,7 +139,10 @@ export class CartItemService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doDelete<CartItemResponse[]>(url, options);
+    const { data, error } = await this.http.delete<CartItemResponse[]>(
+      url,
+      options
+    );
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', error);

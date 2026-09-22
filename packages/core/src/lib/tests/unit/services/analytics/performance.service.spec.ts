@@ -13,8 +13,8 @@ describe('AnalyticsPerformanceService', () => {
 
   describe('getIndicators()', () => {
     it('calls /performance-indicators URL with no params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsPerformanceService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsPerformanceService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ stat: 'revenue/gross_revenue', value: 1000 }],
         error: undefined,
@@ -31,8 +31,8 @@ describe('AnalyticsPerformanceService', () => {
     });
 
     it('appends query params to URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsPerformanceService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsPerformanceService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], error: undefined });
 
       await svc.getIndicators({
@@ -46,8 +46,8 @@ describe('AnalyticsPerformanceService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsPerformanceService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsPerformanceService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot view.',
@@ -65,8 +65,8 @@ describe('AnalyticsPerformanceService', () => {
 
   describe('getAllowed()', () => {
     it('calls /performance-indicators/allowed URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsPerformanceService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsPerformanceService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ stat: 'revenue/gross_revenue', label: 'Gross Revenue' }],
         error: undefined,
@@ -83,8 +83,8 @@ describe('AnalyticsPerformanceService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsPerformanceService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsPerformanceService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Cannot view allowed indicators.',

@@ -21,8 +21,8 @@ describe('AnalyticsRevenueService', () => {
 
   describe('getStats()', () => {
     it('calls correct URL with no params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsRevenueService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsRevenueService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { totals: { net_revenue: 500 }, intervals: [] },
         error: undefined,
@@ -42,8 +42,8 @@ describe('AnalyticsRevenueService', () => {
     });
 
     it('appends query params to URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsRevenueService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsRevenueService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
 
       await svc.getStats({
@@ -59,8 +59,8 @@ describe('AnalyticsRevenueService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsRevenueService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsRevenueService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot list resources.',
@@ -76,8 +76,8 @@ describe('AnalyticsRevenueService', () => {
     });
 
     it('forwards RequestOptions to doGet', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsRevenueService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsRevenueService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
       const options = { signal: new AbortController().signal };
 

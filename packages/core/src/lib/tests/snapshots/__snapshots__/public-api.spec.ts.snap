@@ -311,7 +311,6 @@ exports[`Public API surface > exports the expected named symbols 1`] = `
   "ProductTagResponseSchema",
   "SdkStateSchema",
   "TypewooClient",
-  "createHttpClient",
   "createRequest",
   "createTypewoo",
   "doDelete",
@@ -322,7 +321,6 @@ exports[`Public API surface > exports the expected named symbols 1`] = `
   "doRequest",
   "extractPagination",
   "getJwtExpiration",
-  "getSdkConfig",
   "httpClient",
   "isJwtExpired",
   "loopExtension",
@@ -330,6 +328,5 @@ exports[`Public API surface > exports the expected named symbols 1`] = `
   "parseLinkHeaderPage",
   "resolveConfig",
   "resolveStorageProvider",
-  "setSdkConfig",
 ]
 `;

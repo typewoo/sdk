@@ -41,7 +41,12 @@ export class StoreService extends BaseService {
    */
   get tags(): ProductTagService {
     if (!this._tags) {
-      this._tags = new ProductTagService(this.state, this.config, this.events);
+      this._tags = new ProductTagService(
+        this.state,
+        this.config,
+        this.events,
+        this.http
+      );
     }
     return this._tags;
   }
@@ -51,7 +56,12 @@ export class StoreService extends BaseService {
    */
   get orders(): OrderService {
     if (!this._orders) {
-      this._orders = new OrderService(this.state, this.config, this.events);
+      this._orders = new OrderService(
+        this.state,
+        this.config,
+        this.events,
+        this.http
+      );
     }
     return this._orders;
   }
@@ -64,7 +74,8 @@ export class StoreService extends BaseService {
       this._brands = new ProductBrandService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._brands;
@@ -78,7 +89,8 @@ export class StoreService extends BaseService {
       this._checkout = new CheckoutService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._checkout;
@@ -92,7 +104,8 @@ export class StoreService extends BaseService {
       this._checkoutOrder = new CheckoutOrderService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._checkoutOrder;
@@ -106,7 +119,8 @@ export class StoreService extends BaseService {
       this._reviews = new ProductReviewService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._reviews;
@@ -117,7 +131,12 @@ export class StoreService extends BaseService {
    */
   get products(): ProductService {
     if (!this._products) {
-      this._products = new ProductService(this.state, this.config, this.events);
+      this._products = new ProductService(
+        this.state,
+        this.config,
+        this.events,
+        this.http
+      );
     }
     return this._products;
   }
@@ -130,7 +149,8 @@ export class StoreService extends BaseService {
       this._categories = new ProductCategoryService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._categories;
@@ -144,7 +164,8 @@ export class StoreService extends BaseService {
       this._attributes = new ProductAttributeService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._attributes;
@@ -158,7 +179,8 @@ export class StoreService extends BaseService {
       this._attributesTerms = new ProductAttributeTermService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._attributesTerms;
@@ -172,7 +194,8 @@ export class StoreService extends BaseService {
       this._collectionData = new ProductCollectionDataService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._collectionData;
@@ -183,7 +206,12 @@ export class StoreService extends BaseService {
    */
   get cart(): CartService {
     if (!this._cart) {
-      this._cart = new CartService(this.state, this.config, this.events);
+      this._cart = new CartService(
+        this.state,
+        this.config,
+        this.events,
+        this.http
+      );
     }
     return this._cart;
   }
@@ -196,7 +224,8 @@ export class StoreService extends BaseService {
       this._cartItems = new CartItemService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._cartItems;
@@ -210,7 +239,8 @@ export class StoreService extends BaseService {
       this._cartCoupons = new CartCouponService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._cartCoupons;
@@ -224,7 +254,8 @@ export class StoreService extends BaseService {
       this._cartExtensions = new CartExtensionsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._cartExtensions;
@@ -235,7 +266,12 @@ export class StoreService extends BaseService {
    */
   get batch(): BatchService {
     if (!this._batch) {
-      this._batch = new BatchService(this.state, this.config, this.events);
+      this._batch = new BatchService(
+        this.state,
+        this.config,
+        this.events,
+        this.http
+      );
     }
     return this._batch;
   }

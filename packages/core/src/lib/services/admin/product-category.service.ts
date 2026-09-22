@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -38,10 +37,9 @@ export class AdminProductCategoryService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminTaxonomyCategory[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminTaxonomyCategory[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -61,7 +59,10 @@ export class AdminProductCategoryService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxonomyCategory>(url, options);
+    const { data, error } = await this.http.get<AdminTaxonomyCategory>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -73,7 +74,7 @@ export class AdminProductCategoryService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminTaxonomyCategory,
       AdminTaxonomyCategoryCreateRequest
     >(url, category, options);
@@ -90,7 +91,7 @@ export class AdminProductCategoryService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminTaxonomyCategory,
       AdminTaxonomyCategoryUpdateRequest
     >(url, category, options);
@@ -108,7 +109,10 @@ export class AdminProductCategoryService extends BaseService {
   ): Promise<ApiResult<AdminTaxonomyCategory>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTaxonomyCategory>(url, options);
+    const { data, error } = await this.http.delete<AdminTaxonomyCategory>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -131,7 +135,7 @@ export class AdminProductCategoryService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminTaxonomyCategory[];
         update: AdminTaxonomyCategory[];

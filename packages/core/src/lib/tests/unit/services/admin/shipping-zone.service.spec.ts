@@ -28,15 +28,16 @@ describe('AdminShippingZoneService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminShippingZoneService(state, config, events).list().then
+        typeof new AdminShippingZoneService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/shipping/zones', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -49,8 +50,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/shipping/zones/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 1, name: 'US' },
         error: undefined,
@@ -66,8 +67,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/shipping/zones', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 2, name: 'EU' },
         error: undefined,
@@ -83,8 +84,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/shipping/zones/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 1, name: 'USA' },
         error: undefined,
@@ -100,8 +101,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/shipping/zones/{id} with ?force=true', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 1 }, error: undefined });
 
       await svc.delete(1, true);
@@ -115,8 +116,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('listLocations()', () => {
     it('calls GET /wc/v3/shipping/zones/{zoneId}/locations', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ code: 'US', type: 'country' }],
         error: undefined,
@@ -132,8 +133,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('updateLocations()', () => {
     it('PUTs to /wc/v3/shipping/zones/{zoneId}/locations', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: [{ code: 'US', type: 'country' }],
         error: undefined,
@@ -153,8 +154,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('listMethods()', () => {
     it('calls GET /wc/v3/shipping/zones/{zoneId}/methods (returns ApiPaginationResult directly)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -171,8 +172,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('getMethod()', () => {
     it('calls GET /wc/v3/shipping/zones/{zoneId}/methods/{instanceId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { instance_id: 3, method_id: 'flat_rate' },
         error: undefined,
@@ -188,8 +189,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('addMethod()', () => {
     it('POSTs to /wc/v3/shipping/zones/{zoneId}/methods', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { instance_id: 4, method_id: 'flat_rate' },
         error: undefined,
@@ -205,8 +206,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('updateMethod()', () => {
     it('PUTs to /wc/v3/shipping/zones/{zoneId}/methods/{instanceId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { instance_id: 4, enabled: false },
         error: undefined,
@@ -222,8 +223,8 @@ describe('AdminShippingZoneService', () => {
 
   describe('deleteMethod()', () => {
     it('DELETEs /wc/v3/shipping/zones/{zoneId}/methods/{instanceId} with ?force=true', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingZoneService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingZoneService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({
         data: { instance_id: 4 },
         error: undefined,

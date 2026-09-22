@@ -1,25 +1,43 @@
-import { describe, it, expect } from 'vitest';
-import { createHttpClient, httpClient } from '../../../http/http.client.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import axios from 'axios';
+import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
+
+const config = {
+  baseUrl: 'https://store.test',
+  uniqueIdentifier: 'test',
+} as ResolvedSdkConfig;
+
+// Fresh module per test so the default context starts empty
+let mod: typeof import('../../../http/http.client.js');
+beforeEach(async () => {
+  vi.resetModules();
+  mod = await import('../../../http/http.client.js');
+});
 
 describe('http.client', () => {
-  it('createHttpClient returns an axios instance', () => {
-    const client = createHttpClient({ baseURL: 'https://store.test' });
-    expect(client).toBeDefined();
-    expect(typeof client.get).toBe('function');
+  it('resolveHttpContext throws before any instance exists', () => {
+    expect(() => mod.resolveHttpContext()).toThrow(/createTypewoo/);
   });
 
-  it('createHttpClient is idempotent — returns the same instance on repeat calls', () => {
-    const first = createHttpClient({ baseURL: 'https://store.test' });
-    const second = createHttpClient({ baseURL: 'https://other.test' });
-    expect(first).toBe(second);
+  it('resolveHttpContext returns an explicit context over the default', () => {
+    const first = { client: axios.create(), config };
+    const explicit = { client: axios.create(), config };
+    mod.setDefaultHttpContext(first);
+    expect(mod.resolveHttpContext(explicit)).toBe(explicit);
   });
 
-  it('httpClient proxy forwards method access to underlying axios instance', () => {
-    // httpClient is a Proxy — ensure it forwards property access
-    expect(typeof httpClient.get).toBe('function');
-    expect(typeof httpClient.post).toBe('function');
-    expect(typeof httpClient.put).toBe('function');
-    expect(typeof httpClient.delete).toBe('function');
-    expect(typeof httpClient.interceptors).toBe('object');
+  it('keeps the first registered context as the default', () => {
+    const first = { client: axios.create(), config };
+    const second = { client: axios.create(), config };
+    mod.setDefaultHttpContext(first);
+    mod.setDefaultHttpContext(second);
+    expect(mod.resolveHttpContext()).toBe(first);
+  });
+
+  it('httpClient proxy forwards to the default context client', () => {
+    const client = axios.create();
+    mod.setDefaultHttpContext({ client, config });
+    expect(mod.httpClient.interceptors).toBe(client.interceptors);
+    expect(typeof mod.httpClient.get).toBe('function');
   });
 });

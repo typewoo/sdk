@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductAttributeResponse } from '../../types/index.js';
@@ -19,10 +18,9 @@ export class ProductAttributeService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
     const url = `/${this.endpoint}`;
-    const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
-      url,
-      options
-    );
+    const { data, error, headers } = await this.http.get<
+      ProductAttributeResponse[]
+    >(url, options);
 
     const pagination = extractPagination(headers);
     return { data, error, pagination };
@@ -38,7 +36,10 @@ export class ProductAttributeService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doGet<ProductAttributeResponse>(url, options);
+    const { data, error } = await this.http.get<ProductAttributeResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

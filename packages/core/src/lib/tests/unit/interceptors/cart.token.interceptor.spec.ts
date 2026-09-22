@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosInstance } from 'axios';
 import { EventBus } from '../../../bus/event.bus.js';
 import type { SdkEvent } from '../../../sdk.events.js';
 import { memoryStorageProvider } from '../../../storage/auth.storage.js';
@@ -10,15 +11,12 @@ const { reqUse, resUse } = vi.hoisted(() => ({
   resUse: vi.fn(),
 }));
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: reqUse },
-      response: { use: resUse },
-    },
+const client = {
+  interceptors: {
+    request: { use: reqUse },
+    response: { use: resUse },
   },
-}));
+} as unknown as AxiosInstance;
 
 import { addCartTokenInterceptors } from '../../../interceptors/cart.token.interceptor.js';
 
@@ -45,6 +43,7 @@ describe('cart.token.interceptor', () => {
     const state = {};
     const events = new EventBus<SdkEvent>();
     addCartTokenInterceptors(
+      client,
       makeConfig({ cartToken: { storage } }),
       state,
       events
@@ -62,7 +61,7 @@ describe('cart.token.interceptor', () => {
   it('adds cart-token from state when no storage', async () => {
     const state = { cartToken: 'state-tok' };
     const events = new EventBus<SdkEvent>();
-    addCartTokenInterceptors(makeConfig(), state, events);
+    addCartTokenInterceptors(client, makeConfig(), state, events);
 
     const [reqHandler] = reqUse.mock.calls[reqUse.mock.calls.length - 1] as [
       (c: FakeConfig) => Promise<FakeConfig>
@@ -77,6 +76,7 @@ describe('cart.token.interceptor', () => {
     const state = { cartToken: 'skip-me' };
     const events = new EventBus<SdkEvent>();
     addCartTokenInterceptors(
+      client,
       makeConfig({
         cartToken: { disabled: true, storage: memoryStorageProvider() },
       }),
@@ -98,7 +98,7 @@ describe('cart.token.interceptor', () => {
     const events = new EventBus<SdkEvent>();
     const listener = vi.fn();
     events.on('cart:token:changed', listener);
-    addCartTokenInterceptors(makeConfig(), state, events);
+    addCartTokenInterceptors(client, makeConfig(), state, events);
 
     const [resHandler] = resUse.mock.calls[resUse.mock.calls.length - 1] as [
       (r: unknown) => Promise<unknown>
@@ -113,7 +113,7 @@ describe('cart.token.interceptor', () => {
     const events = new EventBus<SdkEvent>();
     const listener = vi.fn();
     events.on('cart:token:changed', listener);
-    addCartTokenInterceptors(makeConfig(), state, events);
+    addCartTokenInterceptors(client, makeConfig(), state, events);
 
     const [resHandler] = resUse.mock.calls[resUse.mock.calls.length - 1] as [
       (r: unknown) => Promise<unknown>

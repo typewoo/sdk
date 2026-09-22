@@ -1,18 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosInstance } from 'axios';
 import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
 import type { InternalAxiosRequestConfig } from 'axios';
 
 const { reqUse } = vi.hoisted(() => ({ reqUse: vi.fn() }));
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: reqUse },
-      response: { use: vi.fn() },
-    },
+const client = {
+  interceptors: {
+    request: { use: reqUse },
+    response: { use: vi.fn() },
   },
-}));
+} as unknown as AxiosInstance;
 
 import { addAdminAuthInterceptor } from '../../../interceptors/admin-auth.interceptor.js';
 
@@ -34,6 +32,7 @@ describe('admin-auth.interceptor', () => {
 
   it('adds Basic Authorization for wc/v3 requests when credentials are set', async () => {
     addAdminAuthInterceptor(
+      client,
       makeConfig({
         admin: {
           consumer_key: 'ck_abc',
@@ -57,6 +56,7 @@ describe('admin-auth.interceptor', () => {
 
   it('adds Basic Authorization for wc-analytics requests', async () => {
     addAdminAuthInterceptor(
+      client,
       makeConfig({
         admin: {
           consumer_key: 'ck_abc',
@@ -80,6 +80,7 @@ describe('admin-auth.interceptor', () => {
 
   it('does NOT add Authorization for Store API requests', async () => {
     addAdminAuthInterceptor(
+      client,
       makeConfig({
         admin: {
           consumer_key: 'ck_abc',
@@ -102,6 +103,7 @@ describe('admin-auth.interceptor', () => {
 
   it('does NOT add Authorization when useAuthInterceptor is not set', async () => {
     addAdminAuthInterceptor(
+      client,
       makeConfig({
         admin: { consumer_key: 'ck_abc', consumer_secret: 'cs_def' },
       })
@@ -120,6 +122,7 @@ describe('admin-auth.interceptor', () => {
 
   it('does NOT add Authorization when credentials are missing', async () => {
     addAdminAuthInterceptor(
+      client,
       makeConfig({
         admin: { useAuthInterceptor: true },
       })

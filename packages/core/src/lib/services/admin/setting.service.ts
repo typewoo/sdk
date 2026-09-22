@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPut, doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   AdminSettingGroup,
@@ -24,7 +23,10 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSettingGroup[]>> {
     const url = `/${this.endpoint}`;
 
-    const { data, error } = await doGet<AdminSettingGroup[]>(url, options);
+    const { data, error } = await this.http.get<AdminSettingGroup[]>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -37,7 +39,7 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSetting[]>> {
     const url = `/${this.endpoint}/${groupId}`;
 
-    const { data, error } = await doGet<AdminSetting[]>(url, options);
+    const { data, error } = await this.http.get<AdminSetting[]>(url, options);
     return { data, error };
   }
 
@@ -51,7 +53,7 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
 
-    const { data, error } = await doGet<AdminSetting>(url, options);
+    const { data, error } = await this.http.get<AdminSetting>(url, options);
     return { data, error };
   }
 
@@ -65,7 +67,7 @@ export class AdminSettingService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminSetting,
       AdminSettingUpdateRequest
     >(url, setting, options);
@@ -84,7 +86,7 @@ export class AdminSettingService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/${groupId}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       { update: AdminSetting[] },
       typeof operations
     >(url, operations, options);
@@ -102,7 +104,7 @@ export class AdminSettingService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       { update: AdminSetting[] },
       typeof operations
     >(url, operations, options);

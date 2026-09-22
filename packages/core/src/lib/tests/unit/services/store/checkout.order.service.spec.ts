@@ -21,8 +21,8 @@ describe('CheckoutOrderService (store)', () => {
 
   describe('order()', () => {
     it('POSTs to /wc/store/v1/checkout/{orderId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { status: 'processing', order_id: 55 },
         error: undefined,
@@ -41,8 +41,8 @@ describe('CheckoutOrderService (store)', () => {
     });
 
     it('returns error when order processing fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new CheckoutOrderService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new CheckoutOrderService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {

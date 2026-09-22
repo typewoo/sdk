@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -36,7 +35,7 @@ export class AnalyticsCouponsService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsCoupon[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsCoupon[]>(
         url,
         options
       );
@@ -58,7 +57,7 @@ export class AnalyticsCouponsService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
+    const { data, error } = await this.http.get<
       AnalyticsStatsResponse<AnalyticsCouponStats>
     >(url, options);
     return { data, error };

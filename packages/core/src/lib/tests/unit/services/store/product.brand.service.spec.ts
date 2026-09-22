@@ -23,15 +23,15 @@ describe('ProductBrandService (store)', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new ProductBrandService(state, config, events).list().then
+        typeof new ProductBrandService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/store/v1/products/brands', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -46,8 +46,8 @@ describe('ProductBrandService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -66,8 +66,8 @@ describe('ProductBrandService (store)', () => {
 
   describe('single()', () => {
     it('calls GET /wc/store/v1/products/brands/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductBrandService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductBrandService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 5, name: 'Nike' },
         error: undefined,

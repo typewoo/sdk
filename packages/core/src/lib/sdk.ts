@@ -1,12 +1,13 @@
+import axios from 'axios';
 import {
   CustomEndpoints,
   resolveConfig,
   ResolvedSdkConfig,
   SdkConfig,
-  setSdkConfig,
 } from './configs/sdk.config.js';
 import { SdkState } from './types/sdk.state.js';
-import { createHttpClient } from './http/http.client.js';
+import { setDefaultHttpContext } from './http/http.client.js';
+import { createHttp, TypewooHttp } from './http/http.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
 import { StoreService } from './services/store.service.js';
@@ -22,23 +23,21 @@ import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.j
 /**
  * Create a fully typed Typewoo SDK instance.
  *
- * This is the recommended way to initialize the SDK when using custom endpoints,
- * as it provides full TypeScript inference for your endpoint functions.
+ * Each call returns an independent instance with its own HTTP client,
+ * interceptors, configuration and state, so several instances (e.g. one per
+ * store, or one per server request) never interfere with each other.
  *
  * @example
  * ```typescript
- * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
+ * import { createTypewoo, RequestOptions } from '@typewoo/sdk';
  *
  * // Create your typed SDK instance
  * export const typewoo = createTypewoo({
  *   baseUrl: 'https://mystore.com',
- *   endpoints: {
- *     posts: (options?: RequestOptions) => doGet(`/wp/v2/posts`, options),
- *     pages: () => doGet(`/wp/v2/pages`),
- *
- *     // using different baseUrl
- *     pages: () => doGet(`https://another-store.com/wp/v2/comments`),
- *   },
+ *   endpoints: (http) => ({
+ *     posts: (options?: RequestOptions) => http.get(`/wp/v2/posts`, options),
+ *     pages: () => http.get(`/wp/v2/pages`),
+ *   }),
  * });
  *
  * // Full autocomplete and type checking!
@@ -49,7 +48,6 @@ import { addAdminAuthInterceptor } from './interceptors/admin-auth.interceptor.j
  * @param config - SDK configuration with optional custom endpoints
  * @returns A fully typed SDK instance
  */
-
 export const createTypewoo = <
   TEndpoints extends CustomEndpoints = Record<string, never>
 >(
@@ -61,49 +59,77 @@ export const createTypewoo = <
 export class TypewooClient<
   TEndpoints extends CustomEndpoints = Record<string, never>
 > {
-  private _auth!: AuthService;
-  private _store!: StoreService;
-  private _admin!: AdminService;
-  private _analytics!: AnalyticsService;
-  private _config!: ResolvedSdkConfig;
-
-  private _endpoints!: TEndpoints;
+  private readonly _auth: AuthService;
+  private readonly _store: StoreService;
+  private readonly _admin: AdminService;
+  private readonly _analytics: AnalyticsService;
+  private readonly _config: ResolvedSdkConfig;
+  private readonly _http: TypewooHttp;
+  private readonly _endpoints: TEndpoints;
 
   state: SdkState = {};
   events = new EventBus<SdkEvent>();
+
+  /**
+   * Resolves once the initial authentication state has been read from
+   * storage (`state.authenticated` is set and `auth:changed` has fired).
+   * Await it before reading `state.authenticated` at startup.
+   */
+  readonly ready: Promise<void>;
 
   constructor(config: SdkConfig<TEndpoints>) {
     // Resolve all storage providers to ensure type safety
     this._config = resolveConfig(config);
 
-    // Store original config for retry logic access
-    setSdkConfig(this._config);
-
-    // Store custom endpoints
-    this._endpoints = (config.endpoints ?? {}) as TEndpoints;
-
-    this._auth = new AuthService(this.state, this._config, this.events);
-    this._store = new StoreService(this.state, this._config, this.events);
-    this._admin = new AdminService(this.state, this._config, this.events);
-    this._analytics = new AnalyticsService(
-      this.state,
-      this._config,
-      this.events
-    );
-
-    createHttpClient({
+    const client = axios.create({
       baseURL: this._config.baseUrl,
       ...this._config.axiosConfig,
     });
+    const context = { client, config: this._config };
+    this._http = createHttp(context);
 
-    addNonceInterceptors(this._config, this.state, this.events);
-    addCartTokenInterceptors(this._config, this.state, this.events);
+    // Lets the free doGet/doPost helpers work without an explicit instance
+    setDefaultHttpContext(context);
+
+    this._auth = new AuthService(
+      this.state,
+      this._config,
+      this.events,
+      this._http
+    );
+    this._store = new StoreService(
+      this.state,
+      this._config,
+      this.events,
+      this._http
+    );
+    this._admin = new AdminService(
+      this.state,
+      this._config,
+      this.events,
+      this._http
+    );
+    this._analytics = new AnalyticsService(
+      this.state,
+      this._config,
+      this.events,
+      this._http
+    );
+
+    this._endpoints = (
+      typeof config.endpoints === 'function'
+        ? config.endpoints(this._http)
+        : config.endpoints ?? {}
+    ) as TEndpoints;
+
+    addNonceInterceptors(client, this._config, this.state, this.events);
+    addCartTokenInterceptors(client, this._config, this.state, this.events);
 
     if (!config.auth?.accessToken?.disabled) {
       const useTokenInterceptor =
         this._config.auth?.accessToken?.useInterceptor ?? true;
       if (useTokenInterceptor) {
-        addTokenInterceptor(this._config);
+        addTokenInterceptor(client, this._config);
       }
     }
 
@@ -115,6 +141,7 @@ export class TypewooClient<
         this._config.auth?.refreshToken?.useInterceptor ?? true;
       if (useRefreshTokenInterceptor) {
         addRefreshTokenInterceptor(
+          client,
           this._config,
           this._auth,
           this.state,
@@ -128,18 +155,30 @@ export class TypewooClient<
       this._config.admin.consumer_secret
     ) {
       if (this._config.admin.useAuthInterceptor !== false) {
-        addAdminAuthInterceptor(this._config);
+        addAdminAuthInterceptor(client, this._config);
       }
     }
 
-    // Set initial authentication state based on stored token
+    this.ready = this.loadAuthState();
+  }
+
+  /**
+   * Sets the initial authentication state based on the stored access token.
+   * A failing storage provider leaves the instance unauthenticated instead of
+   * surfacing an unhandled rejection.
+   */
+  private async loadAuthState(): Promise<void> {
     const accessTokenStorage = this._config.auth?.accessToken?.storage;
-    if (accessTokenStorage) {
-      accessTokenStorage.get().then((value) => {
-        this.state.authenticated = !!value;
-        this.events.emit('auth:changed', !!value);
-      });
+    if (!accessTokenStorage) return;
+
+    let authenticated = false;
+    try {
+      authenticated = !!(await accessTokenStorage.get());
+    } catch {
+      authenticated = false;
     }
+    this.state.authenticated = authenticated;
+    this.events.emit('auth:changed', authenticated);
   }
 
   /**
@@ -156,6 +195,15 @@ export class TypewooClient<
    */
   get config(): ResolvedSdkConfig {
     return this._config;
+  }
+
+  /**
+   * HTTP helpers bound to this instance, for requests the built-in services
+   * don't cover. `http.client` is the instance's axios client, e.g. for
+   * adding your own interceptors.
+   */
+  get http(): TypewooHttp {
+    return this._http;
   }
 
   /**
@@ -189,14 +237,14 @@ export class TypewooClient<
   /**
    * Custom endpoints defined in the SDK configuration.
    *
-   * For full type inference on custom endpoints, use `createTypewoo()` instead:
    * @example
    * ```typescript
    * const typewoo = createTypewoo({
    *   baseUrl: 'https://mystore.com',
-   *   endpoints: {
-   *     getNotifications: (userId: string) => doGet<Notification[]>(`/notifications/${userId}`),
-   *   },
+   *   endpoints: (http) => ({
+   *     getNotifications: (userId: string) =>
+   *       http.get<Notification[]>(`/notifications/${userId}`),
+   *   }),
    * });
    *
    * // Full type inference:

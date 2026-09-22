@@ -26,15 +26,16 @@ describe('AdminProductTagService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductTagService(state, config, events).list().then
+        typeof new AdminProductTagService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/tags', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10 });
@@ -46,8 +47,8 @@ describe('AdminProductTagService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -65,8 +66,8 @@ describe('AdminProductTagService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/tags/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 5, name: 'sale' },
         error: undefined,
@@ -82,8 +83,8 @@ describe('AdminProductTagService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products/tags', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 6, name: 'new-tag' },
         error: undefined,
@@ -99,8 +100,8 @@ describe('AdminProductTagService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/tags/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 5, name: 'updated-tag' },
         error: undefined,
@@ -116,8 +117,8 @@ describe('AdminProductTagService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/tags/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 5 }, error: undefined });
 
       await svc.delete(5, true);
@@ -129,8 +130,8 @@ describe('AdminProductTagService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/tags/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductTagService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductTagService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

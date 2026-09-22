@@ -4,7 +4,7 @@ import {
   AxiosError,
   AxiosResponse,
 } from 'axios';
-import { getSdkConfig } from '../configs/index.js';
+import type { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { AxiosApiResult, ApiError } from '../types/index.js';
 import { RequestContext, RequestOptions } from '../types/request.js';
 import { createRequest } from './http.js';
@@ -18,7 +18,8 @@ import {
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
-  requestOptions: RequestOptions
+  requestOptions: RequestOptions,
+  sdkConfig?: ResolvedSdkConfig
 ): Promise<AxiosApiResult<T>> => {
   const options = requestOptions.axiosConfig;
   const { method = 'get', data } = options ?? {};
@@ -33,20 +34,20 @@ export const doRequest = async <T>(
 
   let responseData: T | undefined;
   let responseError: ApiError | undefined;
-  const globalConfig = getSdkConfig();
 
   try {
     await requestOptions?.onLoading?.(true, context);
-    await globalConfig?.request?.onLoading?.(true, context);
+    await sdkConfig?.request?.onLoading?.(true, context);
 
     await requestOptions?.onRequest?.(context);
-    await globalConfig?.request?.onRequest?.(context);
+    await sdkConfig?.request?.onRequest?.(context);
 
     const { response, error } = await doRequestWithRetry<T>(
       instance,
       url,
       requestOptions,
-      context
+      context,
+      sdkConfig
     );
 
     if (error) {
@@ -55,7 +56,7 @@ export const doRequest = async <T>(
 
     responseData = response?.data;
     await requestOptions?.onResponse?.(responseData, context);
-    await globalConfig?.request?.onResponse?.(responseData, context);
+    await sdkConfig?.request?.onResponse?.(responseData, context);
 
     return {
       data: responseData,
@@ -74,18 +75,14 @@ export const doRequest = async <T>(
     const errorResult = createError<T>(axiosError);
     responseError = errorResult.error;
     await requestOptions?.onError?.(responseError, context);
-    await globalConfig?.request?.onError?.(responseError, context);
+    await sdkConfig?.request?.onError?.(responseError, context);
 
     return errorResult;
   } finally {
     await requestOptions?.onFinally?.(responseData, responseError, context);
-    await globalConfig?.request?.onFinally?.(
-      responseData,
-      responseError,
-      context
-    );
+    await sdkConfig?.request?.onFinally?.(responseData, responseError, context);
     await requestOptions?.onLoading?.(false, context);
-    await globalConfig?.request?.onLoading?.(false, context);
+    await sdkConfig?.request?.onLoading?.(false, context);
   }
 };
 /**
@@ -95,12 +92,12 @@ const doRequestWithRetry = async <T>(
   instance: AxiosInstance,
   url: string,
   requestOptions: RequestOptions,
-  context: RequestContext<T>
+  context: RequestContext<T>,
+  config?: ResolvedSdkConfig
 ): Promise<{
   response?: AxiosResponse<T>;
   error?: AxiosError;
 }> => {
-  const config = getSdkConfig();
   const retryConfig = config?.request?.retry;
   const method = requestOptions.axiosConfig?.method ?? 'get';
 
@@ -130,7 +127,7 @@ const doRequestWithRetry = async <T>(
     } catch (error) {
       const axiosError = error as AxiosError<ApiError>;
 
-      if (!shouldRetry(axiosError, attempt, method)) {
+      if (!shouldRetry(axiosError, attempt, method, retryConfig)) {
         return { error: axiosError };
       }
 

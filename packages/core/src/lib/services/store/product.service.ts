@@ -4,7 +4,6 @@ import {
 } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductRequest, ProductResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -63,7 +62,7 @@ export class ProductService extends BaseService {
       );
 
       const url = `/${this.endpoint}?${query}`;
-      const { data, error, headers } = await doGet<ProductResponse[]>(
+      const { data, error, headers } = await this.http.get<ProductResponse[]>(
         url,
         options
       );
@@ -85,7 +84,7 @@ export class ProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<ProductResponse>> {
     const url = `/${this.endpoint}/${params.id || params.slug}`;
-    const { data, error } = await doGet<ProductResponse>(url, options);
+    const { data, error } = await this.http.get<ProductResponse>(url, options);
     return { data, error };
   }
 }

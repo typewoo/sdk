@@ -26,15 +26,16 @@ describe('AdminProductReviewService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductReviewService(state, config, events).list().then
+        typeof new AdminProductReviewService(state, config, events, http).list()
+          .then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/reviews', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10 });
@@ -45,8 +46,8 @@ describe('AdminProductReviewService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -64,8 +65,8 @@ describe('AdminProductReviewService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/products/reviews/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 8, review: 'Great!' },
         error: undefined,
@@ -81,8 +82,8 @@ describe('AdminProductReviewService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products/reviews', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 9, review: 'Nice!' },
         error: undefined,
@@ -105,8 +106,8 @@ describe('AdminProductReviewService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/reviews/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 8, review: 'Updated!' },
         error: undefined,
@@ -122,8 +123,8 @@ describe('AdminProductReviewService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/reviews/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 8 }, error: undefined });
 
       await svc.delete(8, true);
@@ -135,8 +136,8 @@ describe('AdminProductReviewService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/reviews/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductReviewService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

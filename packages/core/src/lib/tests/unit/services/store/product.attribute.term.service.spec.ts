@@ -23,16 +23,20 @@ describe('ProductAttributeTermService (store)', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new ProductAttributeTermService(state, config, events).list(1)
-          .then
+        typeof new ProductAttributeTermService(
+          state,
+          config,
+          events,
+          http
+        ).list(1).then
       ).toBe('function');
     });
 
     it('calls GET /wc/store/v1/products/attributes/{attributeId}/terms', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductAttributeTermService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -48,8 +52,8 @@ describe('ProductAttributeTermService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductAttributeTermService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductAttributeTermService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

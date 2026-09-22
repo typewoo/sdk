@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
@@ -30,10 +29,9 @@ export class ProductCategoryService extends BaseService {
     ): Promise<ApiPaginationResult<ProductCategoryResponse[]>> => {
       const query = qs.stringify(pageParams);
       const url = `/${this.endpoint}?${query}`;
-      const { data, error, headers } = await doGet<ProductCategoryResponse[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        ProductCategoryResponse[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
       return { data, error, pagination };
@@ -52,7 +50,10 @@ export class ProductCategoryService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<ProductCategoryResponse>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doGet<ProductCategoryResponse>(url, options);
+    const { data, error } = await this.http.get<ProductCategoryResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

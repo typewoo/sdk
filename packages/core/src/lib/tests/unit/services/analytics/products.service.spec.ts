@@ -21,8 +21,8 @@ describe('AnalyticsProductsService', () => {
 
   describe('getStats()', () => {
     it('calls /products/stats URL with no params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { totals: { items_sold: 100 }, intervals: [] },
         error: undefined,
@@ -42,8 +42,8 @@ describe('AnalyticsProductsService', () => {
     });
 
     it('appends query params to stats URL', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
 
       await svc.getStats({ after: '2026-01-01', before: '2026-03-31' });
@@ -54,8 +54,8 @@ describe('AnalyticsProductsService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_view',
         message: 'Sorry, you cannot list resources.',
@@ -73,16 +73,16 @@ describe('AnalyticsProductsService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest (has .then and .loop)', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       const req = svc.list({ per_page: 10 });
       expect(typeof req.then).toBe('function');
       expect(typeof req.loop).toBe('function');
     });
 
     it('awaiting list calls /products URL (not /stats)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ product_id: 42 }],
         headers: {},
@@ -97,8 +97,8 @@ describe('AnalyticsProductsService', () => {
     });
 
     it('list result includes pagination metadata', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -112,8 +112,8 @@ describe('AnalyticsProductsService', () => {
     });
 
     it('returns error when list request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AnalyticsProductsService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsProductsService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_cannot_list',
         message: 'Cannot list products.',

@@ -28,15 +28,15 @@ describe('AdminProductService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductService(state, config, events).list().then
+        typeof new AdminProductService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products with params', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 10, status: 'publish' });
@@ -48,8 +48,8 @@ describe('AdminProductService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -67,8 +67,8 @@ describe('AdminProductService', () => {
 
   describe('getById()', () => {
     it('calls GET /wc/v3/products/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 42, name: 'Shirt' },
         error: undefined,
@@ -83,8 +83,8 @@ describe('AdminProductService', () => {
     });
 
     it('returns 404 error when product not found', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_product_invalid_id',
         message: 'Not found',
@@ -100,8 +100,8 @@ describe('AdminProductService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/products with product body', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 1, name: 'New Product' },
         error: undefined,
@@ -119,8 +119,8 @@ describe('AdminProductService', () => {
     });
 
     it('returns error when create fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -138,8 +138,8 @@ describe('AdminProductService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/products/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 5, regular_price: '15.00' },
         error: undefined,
@@ -154,8 +154,8 @@ describe('AdminProductService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/products/{id} with force param', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 5 }, error: undefined });
 
       await svc.delete(5, true);
@@ -168,8 +168,8 @@ describe('AdminProductService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/products/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,
@@ -185,8 +185,8 @@ describe('AdminProductService', () => {
 
   describe('duplicate()', () => {
     it('POSTs to /wc/v3/products/{id}/duplicate', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 100, name: 'Shirt Copy' },
         error: undefined,
@@ -205,16 +205,20 @@ describe('AdminProductService', () => {
 
   describe('listVariations()', () => {
     it('returns a PaginatedRequest with productId in URL', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminProductService(state, config, events).listVariations(10)
-          .then
+        typeof new AdminProductService(
+          state,
+          config,
+          events,
+          http
+        ).listVariations(10).then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/products/{productId}/variations', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       await svc.listVariations(10, { per_page: 5 });
@@ -226,8 +230,8 @@ describe('AdminProductService', () => {
 
   describe('getVariation()', () => {
     it('calls GET /wc/v3/products/{productId}/variations/{variationId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 20, sku: 'VAR-20' },
         error: undefined,
@@ -243,8 +247,8 @@ describe('AdminProductService', () => {
 
   describe('createVariation()', () => {
     it('POSTs to /wc/v3/products/{productId}/variations', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 21, sku: 'NEW-VAR' },
         error: undefined,
@@ -260,8 +264,8 @@ describe('AdminProductService', () => {
 
   describe('updateVariation()', () => {
     it('PUTs to /wc/v3/products/{productId}/variations/{variationId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 20, regular_price: '25.00' },
         error: undefined,
@@ -279,8 +283,8 @@ describe('AdminProductService', () => {
 
   describe('deleteVariation()', () => {
     it('DELETEs /wc/v3/products/{productId}/variations/{variationId}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({
         data: { id: 20 },
         error: undefined,
@@ -296,8 +300,8 @@ describe('AdminProductService', () => {
 
   describe('generateVariations()', () => {
     it('POSTs to /wc/v3/products/{productId}/variations/generate', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { count: 3 },
         error: undefined,
@@ -314,8 +318,8 @@ describe('AdminProductService', () => {
 
   describe('listCustomFieldNames()', () => {
     it('calls GET /wc/v3/products/custom-fields/names', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminProductService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: ['field1', 'field2'],
         error: undefined,

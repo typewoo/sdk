@@ -23,15 +23,20 @@ describe('AdminShippingMethodService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminShippingMethodService(state, config, events).list().then
+        typeof new AdminShippingMethodService(
+          state,
+          config,
+          events,
+          http
+        ).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/shipping_methods', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingMethodService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingMethodService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list();
@@ -42,8 +47,8 @@ describe('AdminShippingMethodService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingMethodService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingMethodService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -61,8 +66,8 @@ describe('AdminShippingMethodService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/shipping_methods/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminShippingMethodService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminShippingMethodService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 'flat_rate', method_title: 'Flat Rate' },
         error: undefined,

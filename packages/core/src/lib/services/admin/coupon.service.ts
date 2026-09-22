@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -53,7 +52,10 @@ export class AdminCouponService extends BaseService {
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminCoupon[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminCoupon[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -73,7 +75,7 @@ export class AdminCouponService extends BaseService {
     const query = params ? qs.stringify(params, { encode: false }) : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCoupon>(url, options);
+    const { data, error } = await this.http.get<AdminCoupon>(url, options);
     return { data, error };
   }
 
@@ -85,11 +87,10 @@ export class AdminCouponService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminCoupon, AdminCouponCreateRequest>(
-      url,
-      coupon,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminCoupon,
+      AdminCouponCreateRequest
+    >(url, coupon, options);
 
     return { data, error };
   }
@@ -103,11 +104,10 @@ export class AdminCouponService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminCoupon, AdminCouponUpdateRequest>(
-      url,
-      coupon,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminCoupon,
+      AdminCouponUpdateRequest
+    >(url, coupon, options);
 
     return { data, error };
   }
@@ -122,7 +122,7 @@ export class AdminCouponService extends BaseService {
   ): Promise<ApiResult<AdminCoupon>> {
     const query = qs.stringify({ force }, { encode: false });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCoupon>(url, options);
+    const { data, error } = await this.http.delete<AdminCoupon>(url, options);
 
     return { data, error };
   }
@@ -145,7 +145,7 @@ export class AdminCouponService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminCoupon[];
         update: AdminCoupon[];

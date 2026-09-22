@@ -23,15 +23,15 @@ describe('ProductReviewService (store)', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new ProductReviewService(state, config, events).list().then
+        typeof new ProductReviewService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/store/v1/products/reviews', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductReviewService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [],
         headers: {},
@@ -46,8 +46,8 @@ describe('ProductReviewService (store)', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new ProductReviewService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductReviewService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {

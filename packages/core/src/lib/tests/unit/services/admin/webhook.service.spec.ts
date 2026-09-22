@@ -29,14 +29,14 @@ describe('AdminWebhookService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       expect(typeof svc.list().then).toBe('function');
     });
 
     it('awaiting list calls GET /wc/v3/webhooks', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 5 });
@@ -48,8 +48,8 @@ describe('AdminWebhookService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       const mockError = {
         code: 'rest_forbidden',
         message: 'Forbidden',
@@ -69,8 +69,8 @@ describe('AdminWebhookService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/webhooks/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 1, name: 'Test Hook' },
         error: undefined,
@@ -85,8 +85,8 @@ describe('AdminWebhookService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/webhooks', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 2, name: 'New Hook' },
         error: undefined,
@@ -105,8 +105,8 @@ describe('AdminWebhookService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/webhooks/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 1, status: 'active' },
         error: undefined,
@@ -121,8 +121,8 @@ describe('AdminWebhookService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/webhooks/{id} with force param', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 1 }, error: undefined });
 
       await svc.delete(1, true);
@@ -135,8 +135,8 @@ describe('AdminWebhookService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/webhooks/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminWebhookService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminWebhookService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

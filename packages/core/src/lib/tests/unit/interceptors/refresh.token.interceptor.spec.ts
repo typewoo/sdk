@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { AxiosInstance } from 'axios';
 import { memoryStorageProvider } from '../../../storage/auth.storage.js';
 import type { ResolvedSdkConfig } from '../../../configs/sdk.config.js';
 import { EventBus } from '../../../bus/event.bus.js';
@@ -6,15 +7,12 @@ import type { SdkEvent } from '../../../sdk.events.js';
 
 const { resUse } = vi.hoisted(() => ({ resUse: vi.fn() }));
 
-vi.mock('../../../http/http.client.js', () => ({
-  createHttpClient: vi.fn(),
-  httpClient: {
-    interceptors: {
-      request: { use: vi.fn() },
-      response: { use: resUse },
-    },
+const client = {
+  interceptors: {
+    request: { use: vi.fn() },
+    response: { use: resUse },
   },
-}));
+} as unknown as AxiosInstance;
 
 // Provide a minimal mock for AuthService
 vi.mock('../../../services/auth/auth.service.js', () => ({
@@ -26,10 +24,7 @@ vi.mock('../../../services/auth/auth.service.js', () => ({
   })),
 }));
 
-import {
-  addRefreshTokenInterceptor,
-  resetRefreshTokenState,
-} from '../../../interceptors/refresh.token.interceptor.js';
+import { addRefreshTokenInterceptor } from '../../../interceptors/refresh.token.interceptor.js';
 import { AuthService } from '../../../services/auth/auth.service.js';
 
 function makeConfig(overrides?: Partial<ResolvedSdkConfig>): ResolvedSdkConfig {
@@ -44,14 +39,13 @@ function makeConfig(overrides?: Partial<ResolvedSdkConfig>): ResolvedSdkConfig {
 describe('refresh.token.interceptor', () => {
   beforeEach(() => {
     resUse.mockClear();
-    resetRefreshTokenState();
   });
 
   it('passes through successful responses unchanged', async () => {
     const state = {};
     const events = new EventBus<SdkEvent>();
-    const auth = new AuthService({} as never, {} as never, events);
-    addRefreshTokenInterceptor(makeConfig(), auth, state, events);
+    const auth = new AuthService({} as never, {} as never, events, {} as never);
+    addRefreshTokenInterceptor(client, makeConfig(), auth, state, events);
 
     // The first handler passed to resUse is the success passthrough
     const [successHandler] = resUse.mock.calls[
@@ -64,8 +58,8 @@ describe('refresh.token.interceptor', () => {
   it('passes through 401 errors for non-store/typewoo URLs without retrying', async () => {
     const state = {};
     const events = new EventBus<SdkEvent>();
-    const auth = new AuthService({} as never, {} as never, events);
-    addRefreshTokenInterceptor(makeConfig(), auth, state, events);
+    const auth = new AuthService({} as never, {} as never, events, {} as never);
+    addRefreshTokenInterceptor(client, makeConfig(), auth, state, events);
 
     const [, errHandler] = resUse.mock.calls[resUse.mock.calls.length - 1] as [
       unknown,
@@ -84,7 +78,7 @@ describe('refresh.token.interceptor', () => {
 
     const state = {};
     const events = new EventBus<SdkEvent>();
-    const auth = new AuthService({} as never, {} as never, events);
+    const auth = new AuthService({} as never, {} as never, events, {} as never);
     // Override mock to return an error so the interceptor doesn't try an actual HTTP retry
     vi.mocked(auth.refreshToken).mockResolvedValueOnce({
       data: undefined,
@@ -97,6 +91,7 @@ describe('refresh.token.interceptor', () => {
     });
 
     addRefreshTokenInterceptor(
+      client,
       makeConfig({ auth: { refreshToken: { storage: refreshStorage } } }),
       auth,
       state,
@@ -122,8 +117,9 @@ describe('refresh.token.interceptor', () => {
     const refreshStorage = memoryStorageProvider(); // empty
     const state = {};
     const events = new EventBus<SdkEvent>();
-    const auth = new AuthService({} as never, {} as never, events);
+    const auth = new AuthService({} as never, {} as never, events, {} as never);
     addRefreshTokenInterceptor(
+      client,
       makeConfig({ auth: { refreshToken: { storage: refreshStorage } } }),
       auth,
       state,

@@ -29,16 +29,16 @@ describe('AdminCouponService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest (has .then and .loop)', () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       const req = svc.list();
       expect(typeof req.then).toBe('function');
       expect(typeof req.loop).toBe('function');
     });
 
     it('awaiting list calls GET /wc/v3/coupons', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 5 });
@@ -50,8 +50,8 @@ describe('AdminCouponService', () => {
     });
 
     it('returns error when list fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       const mockError = {
         code: 'rest_forbidden',
         message: 'Forbidden',
@@ -71,8 +71,8 @@ describe('AdminCouponService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/coupons/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 42, code: 'TEST10' },
         error: undefined,
@@ -85,8 +85,8 @@ describe('AdminCouponService', () => {
     });
 
     it('returns error when not found', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       const mockError = {
         code: 'woocommerce_rest_coupon_invalid_id',
         message: 'Not found',
@@ -102,8 +102,8 @@ describe('AdminCouponService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/coupons with coupon body', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 1, code: 'NEWCOUPON' },
         error: undefined,
@@ -123,8 +123,8 @@ describe('AdminCouponService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/coupons/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 5, code: 'UPDATED' },
         error: undefined,
@@ -139,8 +139,8 @@ describe('AdminCouponService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/coupons/{id} with force param', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 5 }, error: undefined });
 
       await svc.delete(5, true);
@@ -153,8 +153,8 @@ describe('AdminCouponService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/coupons/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminCouponService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminCouponService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,

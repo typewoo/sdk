@@ -29,15 +29,15 @@ describe('AdminTaxService', () => {
 
   describe('list()', () => {
     it('returns a PaginatedRequest for /wc/v3/taxes', () => {
-      const { state, config, events } = makeTestDeps();
+      const { state, config, events, http } = makeTestDeps();
       expect(
-        typeof new AdminTaxService(state, config, events).list().then
+        typeof new AdminTaxService(state, config, events, http).list().then
       ).toBe('function');
     });
 
     it('calls GET /wc/v3/taxes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
       const result = await svc.list({ per_page: 5 });
@@ -48,8 +48,8 @@ describe('AdminTaxService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/taxes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: { id: 1, rate: '10' },
         error: undefined,
@@ -63,8 +63,8 @@ describe('AdminTaxService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/taxes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { id: 2, rate: '5' },
         error: undefined,
@@ -82,8 +82,8 @@ describe('AdminTaxService', () => {
 
   describe('update()', () => {
     it('PUTs to /wc/v3/taxes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doPutMock.mockResolvedValueOnce({
         data: { id: 1, rate: '12' },
         error: undefined,
@@ -97,8 +97,8 @@ describe('AdminTaxService', () => {
 
   describe('delete()', () => {
     it('DELETEs /wc/v3/taxes/{id}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doDeleteMock.mockResolvedValueOnce({ data: { id: 1 }, error: undefined });
 
       await svc.delete(1, true);
@@ -108,8 +108,8 @@ describe('AdminTaxService', () => {
 
   describe('batch()', () => {
     it('POSTs to /wc/v3/taxes/batch', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { create: [], update: [], delete: [] },
         error: undefined,
@@ -129,8 +129,8 @@ describe('AdminTaxClassService', () => {
 
   describe('list()', () => {
     it('calls GET /wc/v3/taxes/classes (returns ApiResult, not paginated)', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxClassService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ slug: 'standard', name: 'Standard Rate' }],
         error: undefined,
@@ -144,8 +144,8 @@ describe('AdminTaxClassService', () => {
     });
 
     it('returns error when request fails', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxClassService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: undefined,
         error: {
@@ -163,8 +163,8 @@ describe('AdminTaxClassService', () => {
 
   describe('get()', () => {
     it('calls GET /wc/v3/taxes/classes/{slug}', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxClassService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({
         data: [{ slug: 'reduced-rate', name: 'Reduced Rate' }],
         error: undefined,
@@ -180,8 +180,8 @@ describe('AdminTaxClassService', () => {
 
   describe('create()', () => {
     it('POSTs to /wc/v3/taxes/classes', async () => {
-      const { state, config, events } = makeTestDeps();
-      const svc = new AdminTaxClassService(state, config, events);
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminTaxClassService(state, config, events, http);
       doPostMock.mockResolvedValueOnce({
         data: { slug: 'new-rate', name: 'New Rate' },
         error: undefined,
