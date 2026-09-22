@@ -132,6 +132,8 @@ exports[`Public API surface > exports the expected named symbols 1`] = `
   "AdminSettingSchema",
   "AdminSettingService",
   "AdminSettingUpdateRequestSchema",
+  "AdminSettingsFieldSchema",
+  "AdminSettingsMapSchema",
   "AdminShippingClassCreateRequestSchema",
   "AdminShippingClassQueryParamsSchema",
   "AdminShippingClassRequestSchema",
