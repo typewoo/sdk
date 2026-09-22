@@ -1,6 +1,4 @@
-## Unreleased
-
-<!-- Fold this section into the generated 4.0.0 release entry. -->
+# 4.0.0 (2026-09-22)
 
 > **⚠️ 4.0.0 is a major release with breaking changes.** Read the upgrade
 > summary and work through the migration checklist at the end before
