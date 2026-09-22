@@ -8,7 +8,8 @@
 > also apply to you.
 >
 > **WooCommerce compatibility:** the request and response types are checked
-> against WooCommerce 10.7.0's REST schemas.
+> against WooCommerce 10.7.0 and 11.1.1. Fields added in 11.1 are optional and
+> marked `WooCommerce 11.1+` in their descriptions.
 
 ### 📝 Upgrade summary (read this first)
 
@@ -273,6 +274,22 @@ were removed with it.
 - The docs' custom-endpoint examples passed `params`/`headers` at the top
   level of `RequestOptions`, where they're ignored; they belong in
   `axiosConfig`.
+
+#### ✨ WooCommerce 11.1 support
+
+- Product variations: `gallery_image_ids` (responses and
+  create/update/generate requests); products and variations accept an
+  `image_size` query param.
+- Refunds: `compute_totals` on `AdminRefundCreateRequest` lets WooCommerce
+  compute each line's amount from its quantity; order `refunds[]` entries
+  include `total_tax`.
+- Categories: `menu_order` on create/update requests.
+- Store API: `expected_total` on `CheckoutCreateRequest` (the order is
+  rejected if the server total differs), and attribute terms can return
+  `__experimentalVisual` swatch data when requested with
+  `__experimental_visual`.
+- WooCommerce 11.1 rejects products `orderby` values `post__in`, `random`
+  and `sales`; they remain in the type for 10.x stores.
 
 #### 🗓️ Deprecated (removed in 5.0)
 

@@ -112,6 +112,12 @@ const variationWritableFields = {
   image: AdminProductVariationImageInputSchema.optional().describe(
     'Variation image data.'
   ),
+  gallery_image_ids: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Variation gallery image IDs, excluding the featured image (set via `image`). WooCommerce 11.1+.'
+    ),
   attributes: z
     .array(AdminProductVariationAttributeInputSchema)
     .optional()
@@ -219,6 +225,13 @@ export const AdminProductVariationQueryParamsSchema = z.looseObject({
     .default(10)
     .optional()
     .describe('Maximum number of items to be returned in result set.'),
+  image_size: z
+    .string()
+    .default('full')
+    .optional()
+    .describe(
+      'Registered image size for the returned variation image `src` (falls back to full). WooCommerce 11.1+.'
+    ),
   search: z
     .string()
     .optional()

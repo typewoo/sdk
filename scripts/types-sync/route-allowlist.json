@@ -404,18 +404,6 @@
     },
     {
       "surface": "admin",
-      "route": "/wc/v3/layout-templates",
-      "reason": "Block product editor layout templates; wp-admin internal, not a store API.",
-      "addedAt": "2026-09-22"
-    },
-    {
-      "surface": "admin",
-      "route": "/wc/v3/layout-templates/(?P<id>\\w[\\w\\s\\-]*)",
-      "reason": "Block product editor layout templates; wp-admin internal, not a store API.",
-      "addedAt": "2026-09-22"
-    },
-    {
-      "surface": "admin",
       "route": "/wc/v3/marketplace/create-order",
       "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
       "addedAt": "2026-09-22"
@@ -538,6 +526,30 @@
       "surface": "store",
       "route": "/wc/store/v1",
       "reason": "Store API root path, not a user-facing SDK target.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/orders/(?P<order_id>[\\d]+)/refunds/preview",
+      "reason": "Refund preview (WooCommerce 11.1+); not covered by the SDK yet.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/pickup-locations",
+      "reason": "Local pickup locations (WooCommerce 11.1+); not covered by the SDK yet.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/activity-panel/counts",
+      "reason": "wp-admin activity panel badge counts; internal to the WooCommerce admin UI.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "analytics",
+      "route": "/wc-analytics/imports/retry-failed",
+      "reason": "Analytics import maintenance for wp-admin; not a reporting API.",
       "addedAt": "2026-09-22"
     }
   ]

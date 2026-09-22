@@ -180,6 +180,10 @@ export const AdminOrderRefundSchema = z.looseObject({
   id: z.number().describe('Refund ID.'),
   reason: z.string().describe('Refund reason.'),
   total: z.string().describe('Refund total (negative, e.g. "-5.00").'),
+  total_tax: z
+    .string()
+    .optional()
+    .describe('Refund total tax. WooCommerce 11.1+.'),
 });
 
 export type AdminOrderRefund = z.infer<typeof AdminOrderRefundSchema>;

@@ -33,13 +33,16 @@ schemaRegistry.add(AdminRefundSchema, {
   // WC's v3 schema adds these refund inputs to the response items, but the
   // live API never returns them.
   knownSchemaBugs: [
-    ...['line_items[].refund_total', 'line_items[].taxes[].refund_total'].map(
-      (field) => ({
-        field,
-        reason: 'Refund-create input; not returned in refund responses.',
-        driftKinds: ['missing-in-sdk'],
-      })
-    ),
+    ...[
+      'line_items[].refund_total',
+      'line_items[].taxes[].refund_total',
+      // WC 11.1 request flag (see AdminRefundCreateRequest.compute_totals).
+      'compute_totals',
+    ].map((field) => ({
+      field,
+      reason: 'Refund-create input; not returned in refund responses.',
+      driftKinds: ['missing-in-sdk'],
+    })),
     // One schema serves both the order-scoped routes and `/refunds`; only
     // the latter returns (and documents) the parent order ID.
     {
