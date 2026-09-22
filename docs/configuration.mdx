@@ -481,10 +481,11 @@ Define custom API endpoints that become accessible via `sdk.endpoints`. This is 
 
 ### Basic Usage
 
-Use the exported HTTP helpers (`doGet`, `doPost`, `doPut`, `doDelete`, `doHead`) to define your endpoints:
+Pass `endpoints` as a factory. It receives `http`, a set of helpers
+(`get`, `post`, `put`, `delete`, `head`) bound to this SDK instance:
 
 ```typescript
-import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/sdk';
+import { createTypewoo, RequestOptions } from '@typewoo/sdk';
 
 interface Notification {
   id: number;
@@ -494,20 +495,20 @@ interface Notification {
 
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
-  endpoints: {
+  endpoints: (http) => ({
     // GET request with parameters
     getNotifications: (userId: string, options?: RequestOptions) =>
-      doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+      http.get<Notification[]>(`/custom/notifications/${userId}`, options),
 
     // POST request
     markAsRead: (id: number) =>
-      doPost<{ success: boolean }>(`/custom/notifications/${id}/read`),
+      http.post<{ success: boolean }>(`/custom/notifications/${id}/read`),
 
     // WordPress REST API endpoints
-    getPosts: (options?: RequestOptions) => doGet(`/wp/v2/posts`, options),
+    getPosts: (options?: RequestOptions) => http.get(`/wp/v2/posts`, options),
 
-    getPages: () => doGet(`/wp/v2/pages`),
-  },
+    getPages: () => http.get(`/wp/v2/pages`),
+  }),
 });
 
 // Use your custom endpoints with full type inference
@@ -519,6 +520,12 @@ const { data: posts } = await sdk.endpoints.getPosts({
   params: { per_page: 10 },
 });
 ```
+
+<Note>
+  A plain object of endpoints that call the free helpers (`doGet`, `doPost`, …)
+  still works, but those helpers always use the **first** SDK instance created.
+  Use the factory form if your app creates more than one instance.
+</Note>
 
 ### Type Inference
 
@@ -544,17 +551,17 @@ Endpoints can call different base URLs by providing a full URL:
 ```typescript
 const sdk = createTypewoo({
   baseUrl: 'https://main-store.com',
-  endpoints: {
+  endpoints: (http) => ({
     // Uses the SDK's baseUrl
-    getProducts: () => doGet('/wc/store/v1/products'),
+    getProducts: () => http.get('/wc/store/v1/products'),
 
     // Uses a completely different URL
-    getExternalData: () => doGet('https://api.external-service.com/data'),
+    getExternalData: () => http.get('https://api.external-service.com/data'),
 
     // Another store
     getOtherStoreProducts: () =>
-      doGet('https://other-store.com/wc/store/v1/products'),
-  },
+      http.get('https://other-store.com/wc/store/v1/products'),
+  }),
 });
 ```
 
@@ -563,23 +570,24 @@ const sdk = createTypewoo({
 All HTTP helpers accept an optional `RequestOptions` parameter for customizing requests:
 
 ```typescript
-import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/sdk';
+import { createTypewoo, RequestOptions } from '@typewoo/sdk';
 
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
-  endpoints: {
+  endpoints: (http) => ({
     search: (query: string, options?: RequestOptions) =>
-      doGet(`/custom/search`, {
+      http.get(`/custom/search`, {
         ...options,
         params: { q: query, ...options?.params },
       }),
 
     createItem: (data: CreateItemRequest, options?: RequestOptions) =>
-      doPost<ItemResponse>(`/custom/items`, {
-        ...options,
+      http.post<ItemResponse, CreateItemRequest>(
+        `/custom/items`,
         data,
-      }),
-  },
+        options
+      ),
+  }),
 });
 
 // Use with additional options
@@ -591,7 +599,7 @@ const { data } = await sdk.endpoints.search('keyword', {
 
 ### Accessing SDK State
 
-Custom endpoints automatically use the SDK's configured Axios instance, which includes all interceptors (authentication, nonce, cart token, etc.). Your endpoints benefit from:
+Custom endpoints defined with the factory use this SDK instance's own Axios client, which includes all interceptors (authentication, nonce, cart token, etc.). Your endpoints benefit from:
 
 - Automatic JWT token injection (if authenticated)
 - Automatic nonce handling for Store API requests

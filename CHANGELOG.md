@@ -1,4 +1,114 @@
+## Unreleased
+
+<!-- Fold this section into the next generated release entry (4.0.0-alpha.1). -->
+
+> **⚠️ Breaking changes.** Read this before upgrading from 3.x or
+> 4.0.0-alpha.0. This is an **alpha**; the API may still change before the
+> stable 4.0.0.
+
+### 📝 Upgrade summary (read this first)
+
+#### ⚠️ Breaking change — `Typewoo.init()` singleton removed, use the `createTypewoo` factory
+
+The global `Typewoo` singleton, its `Typewoo.init(config)` initializer and the
+`Sdk` class have been **removed**. Build your own instance with the
+`createTypewoo(config)` factory, which returns a `TypewooClient`.
+
+`createTypewoo()` already existed in 3.x as the recommended approach — in 4.0 it
+is now the **only** way.
+
+```typescript
+// Before (3.x) — global singleton, initialized in place
+import { Typewoo } from '@typewoo/sdk';
+
+await Typewoo.init({
+  baseUrl: 'https://your-store.example',
+  request: { retry: { enabled: true } },
+});
+
+const products = await Typewoo.store.products.list();
+
+// After (4.0) — create your own instance and export it
+import { createTypewoo } from '@typewoo/sdk';
+
+export const typewoo = createTypewoo({
+  baseUrl: 'https://your-store.example',
+  request: { retry: { enabled: true } },
+});
+
+const products = await typewoo.store.products.list();
+```
+
+Import that instance wherever you need it. The service API on the instance
+(`store`, `auth`, `admin`, `analytics`, `endpoints`, `events`, `state`) is
+unchanged.
+
+**Startup timing:** `Typewoo.init()` was async and finished reading the stored
+access token before resolving. `createTypewoo()` returns synchronously, so
+`state.authenticated` is not set yet and the first `auth:changed` event fires
+shortly after. If you read auth state at startup, `await typewoo.ready` first.
+
+#### ✨ Every instance is now fully independent
+
+Each `createTypewoo()` call gets its own Axios client, interceptors, config,
+request hooks and token-refresh queue. Previously all instances shared one
+global client, so a second instance used the first one's `baseUrl`, and
+creating an instance per server request piled up interceptors and could send
+one user's token on another user's request. You can now safely:
+
+- talk to several stores from one app, and
+- create one instance per request in SSR (with request-scoped storage).
+
+#### ⚠️ Breaking change — global HTTP/config helpers removed
+
+- **Removed:** `createHttpClient()`, `getSdkConfig()` and `setSdkConfig()`. The
+  SDK creates its client per instance; read config from `typewoo.config`.
+- **Deprecated:** `httpClient`. It now points at the _first_ instance's client.
+  Use `typewoo.http.client` to add your own interceptors.
+- **New:** `typewoo.http` — `get`, `post`, `put`, `delete`, `head` bound to the
+  instance, plus `client` (its Axios instance).
+
+#### ✨ Custom endpoints: factory form
+
+`endpoints` can now be a factory that receives the instance's `http` helpers.
+Use it whenever your app creates more than one instance. The free helpers
+(`doGet`, `doPost`, …) always target the first instance created.
+
+```typescript
+const typewoo = createTypewoo({
+  baseUrl: 'https://your-store.example',
+  endpoints: (http) => ({
+    posts: () => http.get<Post[]>('/wp-json/wp/v2/posts'),
+  }),
+});
+```
+
+A plain object of endpoints still works unchanged for single-instance apps.
+
+#### ✅ Migration checklist
+
+- [ ] Replace `await Typewoo.init({...})` with `export const typewoo = createTypewoo({...})`
+- [ ] Remove any `Typewoo` / `Sdk` imports; import your created instance instead
+- [ ] Update service calls from `Typewoo.store...` to `typewoo.store...`
+- [ ] `await typewoo.ready` wherever you relied on `await Typewoo.init()` having
+      loaded `state.authenticated`
+- [ ] Replace `httpClient.interceptors...` with `typewoo.http.client.interceptors...`
+- [ ] Remove calls to `createHttpClient()`, `getSdkConfig()` and `setSdkConfig()`
+- [ ] (Multiple instances) switch custom `endpoints` to the factory form
+- [ ] (Angular) drop the `provideAppInitializer(() => Typewoo.init(...))` provider;
+      create the instance in a shared module instead
+
 ## 4.0.0-alpha.0 (2026-05-12)
+
+### ✨ Highlights
+
+- **Type definitions split into per-resource Zod schemas** (`*.schema.ts`,
+  `*.query.schema.ts`) for store products, categories, tags, reviews,
+  collection-data, and more — improving type inference and tree-shaking.
+- **Expanded WooCommerce Analytics** schemas and response types with detailed
+  descriptions.
+- **Schema-drift detection tooling** (`scripts/types-sync`) to keep SDK types in
+  sync with upstream WooCommerce REST schemas (maintainer-facing).
 
 ### 🚀 Features
 
@@ -19,7 +129,7 @@
 - updates ([39ea6f6](https://github.com/typewoo/sdk/commit/39ea6f6))
 - add ignored files for ESLint configuration to exclude test directories ([3c8b5e4](https://github.com/typewoo/sdk/commit/3c8b5e4))
 - update test paths to use new directory structure and add Vitest snapshots ([3f007cf](https://github.com/typewoo/sdk/commit/3f007cf))
-- **analytics:** add comprehensive  woocommerce analytics types and services ([df141d9](https://github.com/typewoo/sdk/commit/df141d9))
+- **analytics:** add comprehensive woocommerce analytics types and services ([df141d9](https://github.com/typewoo/sdk/commit/df141d9))
 - **analytics:** add documentation for WooCommerce Analytics API and services ([29d2816](https://github.com/typewoo/sdk/commit/29d2816))
 - **analytics:** update analytics types and services to include totals response and links schema ([fa6398b](https://github.com/typewoo/sdk/commit/fa6398b))
 - **auth:** add first_name and last_name fields to AuthTokenResponseSchema ([d816587](https://github.com/typewoo/sdk/commit/d816587))

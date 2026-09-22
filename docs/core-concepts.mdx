@@ -337,18 +337,18 @@ const removeMiddleware = sdk.events.use((ctx, next) => {
 
 ## HTTP Client
 
-The SDK uses Axios for HTTP requests with a singleton pattern:
+Each SDK instance creates its own Axios client, configured from `baseUrl` and
+`axiosConfig`, with its own interceptors. It's available as `sdk.http.client`,
+and `sdk.http` exposes request helpers bound to that client:
 
 ```typescript
-import { httpClient, createHttpClient } from '@typewoo/sdk';
-
-// httpClient is a proxy to the underlying Axios instance
-// It throws if accessed before SDK initialization
+const { data, error } = await sdk.http.get<Post[]>('/wp-json/wp/v2/posts');
 ```
 
 ### Request Helpers
 
-Internal request helpers:
+The free request helpers below behave the same way, but target the first
+instance created unless you pass a context:
 
 ```typescript
 // GET request

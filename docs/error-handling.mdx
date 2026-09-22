@@ -447,7 +447,7 @@ export const errorHandler = new ErrorHandler();
 ### Enable Axios Debug
 
 ```typescript
-import { createTypewoo, httpClient } from '@typewoo/sdk';
+import { createTypewoo } from '@typewoo/sdk';
 
 const sdk = createTypewoo({
   baseUrl: 'https://your-store.com',
@@ -457,7 +457,7 @@ const sdk = createTypewoo({
 });
 
 // Add response interceptor for debugging
-httpClient.interceptors.response.use(
+sdk.http.client.interceptors.response.use(
   (response) => {
     console.log('Response:', response.config.url, response.status);
     return response;
