@@ -395,6 +395,150 @@
       "route": "/wc-analytics/reports/import/totals",
       "reason": "Historical data import totals — admin-only utility, not in SDK scope",
       "addedAt": "2026-05-09"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/data",
+      "reason": "Index of the data endpoints; the SDK calls the endpoints themselves.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/layout-templates",
+      "reason": "Block product editor layout templates; wp-admin internal, not a store API.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/layout-templates/(?P<id>\\w[\\w\\s\\-]*)",
+      "reason": "Block product editor layout templates; wp-admin internal, not a store API.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/create-order",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/featured",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/refresh",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions/activate",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions/activate-plugin",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions/connect",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions/disconnect",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/marketplace/subscriptions/install-url",
+      "reason": "WooCommerce.com marketplace and extension subscriptions; wp-admin internal.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/paypal-buttons/cancel-payment",
+      "reason": "PayPal gateway callbacks used by the gateway itself, not by API clients.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/paypal-buttons/create-order",
+      "reason": "PayPal gateway callbacks used by the gateway itself, not by API clients.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/paypal-standard/update-shipping",
+      "reason": "PayPal gateway callbacks used by the gateway itself, not by API clients.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/paypal-webhooks",
+      "reason": "PayPal gateway callbacks used by the gateway itself, not by API clients.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/system_status/tools",
+      "reason": "Maintenance tools (clear transients, regenerate lookups); not covered by the SDK.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/system_status/tools/(?P<id>[\\w-]+)",
+      "reason": "Maintenance tools (clear transients, regenerate lookups); not covered by the SDK.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/products/shipping_classes/slug-suggestion",
+      "reason": "Product editor helpers for wp-admin; not covered by the SDK.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/products/suggested-products",
+      "reason": "Product editor helpers for wp-admin; not covered by the SDK.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/products/(?P<id>[\\d]+)/related",
+      "reason": "Not covered by the SDK yet.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/customers/(?P<customer_id>[\\d]+)/downloads",
+      "reason": "Not covered by the SDK yet.",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "admin",
+      "route": "/wc/v3/variations",
+      "reason": "Store-wide variations list; not covered by the SDK yet (variations are fetched per product).",
+      "addedAt": "2026-09-22"
+    },
+    {
+      "surface": "store",
+      "route": "/wc/store/v1",
+      "reason": "Store API root path, not a user-facing SDK target.",
+      "addedAt": "2026-09-22"
     }
   ]
 }
