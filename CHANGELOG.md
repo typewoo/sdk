@@ -1,3 +1,9 @@
+## 4.0.1 (2026-09-22)
+
+### 🩹 Fixes
+
+- **core:** type gateway and shipping method settings as maps ([7fe1030](https://github.com/typewoo/sdk/commit/7fe1030))
+
 # 4.0.0 (2026-09-22)
 
 > **⚠️ 4.0.0 is a major release with breaking changes.** Read the upgrade
