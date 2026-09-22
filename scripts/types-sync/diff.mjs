@@ -71,12 +71,29 @@ function contextOverlaps(field, allowed) {
 }
 
 /**
+ * Element shape of an array field. Older snapshots stored `items` as a bare
+ * type string; newer ones store `{ type, types?, enum? }`.
+ */
+function itemsShape(items) {
+  if (!items) return { type: 'any' };
+  return typeof items === 'string' ? { type: items } : items;
+}
+
+function typesCompatible(s, u) {
+  // Arrays are compatible only when their element types are too.
+  if (s.type === 'array' && u.type === 'array') {
+    return scalarTypesCompatible(itemsShape(s.items), itemsShape(u.items));
+  }
+  return scalarTypesCompatible(s, u);
+}
+
+/**
  * Two field type-shapes are compatible if either side is `any`, the primary
  * types match, or one side's type is contained in the other's union (`types`).
  * `number` and `integer` are treated as interchangeable: the SDK uses
  * z.number() for all numeric fields while WC declares many as `integer`.
  */
-function typesCompatible(s, u) {
+function scalarTypesCompatible(s, u) {
   if (s.type === u.type) return true;
   if (s.type === 'any' || u.type === 'any') return true;
   // integer ⊂ number — SDK uses z.number() which emits "number"; WC declares
@@ -166,7 +183,17 @@ export function diffPair({ sdk, upstream, surface, route, kind, options }) {
 
   const allowedCtx = SURFACE_CONTEXT[surface] ?? ['view', 'edit'];
 
-  // Build context-filtered upstream field map for response shapes.
+  // Build context-filtered upstream field map for response shapes. For
+  // requests and queries, ignore the route's path parameters (e.g. `id` in
+  // `/products/(?P<id>[\d]+)`) on both sides: WP lists them among the args,
+  // but they're part of the URL, so whether a body type repeats them
+  // doesn't matter.
+  const pathParams = new Set(
+    kind === 'response'
+      ? []
+      : [...route.matchAll(/\(\?P<(\w+)>/g)].map((m) => m[1])
+  );
+  const isPathParam = (path) => pathParams.has(path.split(/[.[]/)[0]);
   const upstreamFields =
     kind === 'response'
       ? Object.fromEntries(
@@ -174,13 +201,31 @@ export function diffPair({ sdk, upstream, surface, route, kind, options }) {
             contextOverlaps(f, allowedCtx)
           )
         )
-      : upstream.fields;
+      : Object.fromEntries(
+          Object.entries(upstream.fields).filter(([path]) => !isPathParam(path))
+        );
 
   // Strip WP REST envelope fields (e.g. `_links`) from the SDK side. They're
   // HATEOAS metadata WP adds at runtime, never declared in the OPTIONS schema,
   // so they would otherwise produce permanent extra-in-sdk noise.
+  // Snapshots captured before array elements were walked have no `x[].y`
+  // paths. Only compare an array's element fields when the upstream side
+  // actually describes them; otherwise every SDK element field would show up
+  // as extra-in-sdk.
+  const upstreamElementArrays = new Set(
+    Object.keys(upstreamFields)
+      .filter((path) => path.includes('[].'))
+      .map((path) => path.slice(0, path.lastIndexOf('[].')))
+  );
+  const hasUpstreamElements = (path) => {
+    const i = path.lastIndexOf('[].');
+    return i < 0 || upstreamElementArrays.has(path.slice(0, i));
+  };
   const sdkFields = Object.fromEntries(
-    Object.entries(sdk.fields).filter(([path]) => !isExcludedPath(path))
+    Object.entries(sdk.fields).filter(
+      ([path]) =>
+        !isExcludedPath(path) && hasUpstreamElements(path) && !isPathParam(path)
+    )
   );
 
   const allPaths = new Set([
@@ -191,6 +236,11 @@ export function diffPair({ sdk, upstream, surface, route, kind, options }) {
   for (const path of [...allPaths].sort()) {
     const s = sdkFields[path];
     const u = upstreamFields[path];
+
+    // Read-only fields can't be sent. WP drops them from top-level request
+    // args but not from nested objects (e.g. `coupon_lines[].discount_type`),
+    // so ignore them in request and query shapes.
+    if (kind !== 'response' && u?.readonly) continue;
 
     if (!s && u) {
       drifts.push({
@@ -276,7 +326,8 @@ export function diffPair({ sdk, upstream, surface, route, kind, options }) {
       }
     }
 
-    if (s.nullable !== u.nullable) {
+    // An unconstrained (`any`) type already admits null.
+    if (s.nullable !== u.nullable && s.type !== 'any' && u.type !== 'any') {
       drifts.push({
         surface,
         route,
@@ -289,7 +340,13 @@ export function diffPair({ sdk, upstream, surface, route, kind, options }) {
       });
     }
 
-    if (s.optional !== u.optional && !u.readonly) {
+    // Skip nested fields whose upstream object doesn't declare requiredness:
+    // there "optional" upstream means "unknown", not "may be omitted".
+    if (
+      s.optional !== u.optional &&
+      !u.readonly &&
+      u.requiredDeclared !== false
+    ) {
       drifts.push({
         surface,
         route,

@@ -87,5 +87,22 @@ export function computeRouteCoverage(snapshot, registry, allowlist) {
       });
     }
   }
+
+  // An allowlist entry that matches no upstream route is either a typo
+  // (so the route it meant is still reported) or a route WC has removed.
+  for (const key of [...allowlist].sort()) {
+    const [surface, route] = key.split('|');
+    if (surfaces[surface]?.[route]) continue;
+    drifts.push({
+      surface,
+      route,
+      kind: 'coverage',
+      field: '<route>',
+      driftKind: 'allowlist-stale',
+      severity: 'warn',
+      sdk: null,
+      upstream: null,
+    });
+  }
   return drifts;
 }

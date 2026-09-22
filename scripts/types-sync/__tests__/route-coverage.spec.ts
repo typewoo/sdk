@@ -151,6 +151,27 @@ describe('computeRouteCoverage', () => {
     expect(drifts).toHaveLength(0);
   });
 
+  it('warns about allowlist entries that match no upstream route', () => {
+    const registry = [
+      { surface: 'admin', route: '/wc/v3/coupons' },
+      { surface: 'admin', route: '/wc/v3/orders' },
+      { surface: 'store', route: '/wc/store/v1/cart' },
+    ];
+    // A lost backslash: the real route is (?P<id>[\d]+).
+    const allowlist = new Set([
+      'admin|/wc/v3/system_status',
+      'admin|/wc/v3/products/(?P<id>[d]+)/related',
+    ]);
+    const drifts = computeRouteCoverage(snapshot, registry, allowlist);
+    expect(drifts).toEqual([
+      expect.objectContaining({
+        driftKind: 'allowlist-stale',
+        severity: 'warn',
+        route: '/wc/v3/products/(?P<id>[d]+)/related',
+      }),
+    ]);
+  });
+
   it('handles a snapshot with no surfaces gracefully', () => {
     const drifts = computeRouteCoverage({}, [], new Set());
     expect(drifts).toEqual([]);

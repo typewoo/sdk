@@ -56,6 +56,9 @@ function buildSchemaMap(): SchemaMapEntry[] {
       continue;
     }
     entries.push({ name, zod, ...meta });
+    for (const route of meta.alsoAt ?? []) {
+      entries.push({ name, zod, ...meta, route });
+    }
   }
   return entries;
 }

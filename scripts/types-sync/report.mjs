@@ -91,6 +91,17 @@ function severityIcon(sev) {
 }
 
 /**
+ * Label for an acknowledged drift, naming which registry ack applied.
+ */
+function ackLabel(p) {
+  if (p.knownNullable) return 'acked (known nullable)';
+  if (p.openEnum) return 'acked (open enum)';
+  if (p.undocumented) return 'acked (undocumented upstream)';
+  if (p.schemaBug) return 'acked (upstream schema bug)';
+  return 'acked (deprecated)';
+}
+
+/**
  * Render the reconciler's `provenance` annotations as a compact one-liner
  * for the markdown table. Empty when no annotation is present.
  */
@@ -101,8 +112,9 @@ function formatProvenance(p) {
   if (p.addedIn) parts.push(`addedIn=${p.addedIn}`);
   if (p.matchedIn) parts.push(`matchedIn=${p.matchedIn}`);
   if (p.safeToRemove) parts.push('safeToRemove');
-  if (p.acked) parts.push('acked (deprecated)');
+  if (p.acked) parts.push(ackLabel(p));
   if (p.deprecatedSince) parts.push(`since=${p.deprecatedSince}`);
+  if (p.schemaBug) parts.push(`reason: ${p.schemaBug}`);
   return parts.length ? '`' + parts.join(', ') + '`' : '—';
 }
 
@@ -204,7 +216,8 @@ export function writeMarkdown(filePath, drifts, meta, opts = {}) {
   const timeline = drifts.filter(
     (d) =>
       d.driftKind === 'removed-in-window' ||
-      d.provenance?.acked === true ||
+      (d.provenance?.acked === true &&
+        ackLabel(d.provenance) === 'acked (deprecated)') ||
       d.provenance?.safeToRemove === true
   );
   if (timeline.length > 0) {
@@ -231,7 +244,7 @@ export function writeMarkdown(filePath, drifts, meta, opts = {}) {
         const status = r.provenance?.safeToRemove
           ? 'safeToRemove'
           : r.provenance?.acked
-          ? 'acked (deprecated)'
+          ? ackLabel(r.provenance)
           : 'removed-in-window';
         lines.push(
           `| ${r.id ?? ''} | ${r.surface} | \`${r.route}\` | \`${r.field}\` | ${

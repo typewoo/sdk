@@ -10,6 +10,7 @@ import {
   concretiseRoute,
   argsToSchema,
   shapeRouteEntry,
+  assertCaptureHealthy,
 } from '../capture-upstream.mjs';
 
 // ─── concretiseRoute ──────────────────────────────────────────────────────────
@@ -31,9 +32,18 @@ describe('concretiseRoute', () => {
     expect(concretiseRoute('/wc/v3/coupons')).toBe('/wc/v3/coupons');
   });
 
-  it('handles non-numeric placeholder patterns (falls back to 1)', () => {
+  it('uses a value that matches a non-numeric placeholder', () => {
     expect(concretiseRoute('/wc/v3/reports/(?P<slug>[a-z-]+)')).toBe(
-      '/wc/v3/reports/1'
+      '/wc/v3/reports/abc'
+    );
+  });
+
+  it('satisfies fixed-length placeholders', () => {
+    expect(
+      concretiseRoute('/wc/v3/data/currencies/(?P<currency>[\\w-]{3})')
+    ).toBe('/wc/v3/data/currencies/abc');
+    expect(concretiseRoute('/wc/store/v1/cart/items/(?P<key>[\\w-]{32})')).toBe(
+      `/wc/store/v1/cart/items/${'a'.repeat(32)}`
     );
   });
 });
@@ -171,5 +181,42 @@ describe('shapeRouteEntry', () => {
     expect(entry.response).toBeNull();
     expect(entry.request).toEqual({});
     expect(entry.query).toEqual({});
+  });
+});
+
+describe('concretiseRoute – nested placeholders', () => {
+  it('replaces a placeholder containing nested groups', () => {
+    expect(
+      concretiseRoute('/wc/v3/settings/(?P<group_id>(?:[w-]+|general))/x')
+    ).toBe('/wc/v3/settings/1/x');
+  });
+
+  it('ignores escaped parentheses inside a placeholder', () => {
+    expect(concretiseRoute('/a/(?P<id>[()d]+)/b')).toBe('/a/1/b');
+  });
+});
+
+describe('assertCaptureHealthy', () => {
+  const fail = (route: string) => ({
+    surface: 'admin',
+    route,
+    error: 'HTTP 401',
+  });
+
+  it('passes when there are no failures', () => {
+    expect(() => assertCaptureHealthy([], 100, 0.05)).not.toThrow();
+  });
+
+  it('passes when failures stay within the limit', () => {
+    expect(() =>
+      assertCaptureHealthy([fail('/a'), fail('/b')], 100, 0.05)
+    ).not.toThrow();
+  });
+
+  it('fails and lists routes when failures exceed the limit', () => {
+    const failures = Array.from({ length: 20 }, (_, i) => fail(`/r${i}`));
+    expect(() => assertCaptureHealthy(failures, 100, 0.05)).toThrow(
+      /OPTIONS failed for 20\/100 routes[\s\S]*admin \/r0: HTTP 401/
+    );
   });
 });

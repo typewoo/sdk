@@ -54,6 +54,21 @@ describe('types-sync registry completeness', () => {
     });
   }
 
+  it('checks a schema at each of its alsoAt routes', () => {
+    const aliased = SCHEMA_MAP.filter((e) => e.alsoAt?.length);
+    expect(aliased.length).toBeGreaterThan(0);
+    for (const e of aliased) {
+      for (const route of e.alsoAt ?? []) {
+        expect(
+          SCHEMA_MAP.some(
+            (x) => x.zod === e.zod && x.route === route && x.kind === e.kind
+          ),
+          `${e.name} at ${route}`
+        ).toBe(true);
+      }
+    }
+  });
+
   it('no duplicate (route, kind, method) tuples', () => {
     const seen = new Map<string, string>();
     for (const e of SCHEMA_MAP) {

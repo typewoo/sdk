@@ -58,6 +58,51 @@ Add a row (or three) to `schema-map.ts`. The completeness test
 or fail (`TYPES_SYNC_REGISTRY=strict`, used in CI) when an exported schema
 isn't mapped.
 
+A schema has one registry entry, but many routes share a shape: the
+single-item route of a collection, `/duplicate`, every `/batch` response.
+List them in `alsoAt: [route, …]` and each is checked against WC like the
+main `route`, with the same acknowledgements.
+
+## Acknowledging intentional differences
+
+WooCommerce is the source of truth, but its published schemas aren't always
+right. When the SDK deliberately differs, record why on the registry entry
+(`schemaRegistry.add(schema, { ... })`) instead of letting drift fail CI.
+Each acknowledgement downgrades the matching drift to `info` and is labelled
+in the report:
+
+| Field                                               | Use when                                                                                                       |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `knownNullable: [field]`                            | The live API returns `null` for a field WC declares non-nullable.                                              |
+| `openEnums: [field]`                                | WC's enum depends on site configuration (e.g. `payment_method` lists enabled gateways); the SDK uses a string. |
+| `undocumented: [field]`                             | The live API accepts or returns a field WC's schema omits (e.g. checkout `payment_data`).                      |
+| `knownSchemaBugs: [{ field, reason, driftKinds? }]` | WC's published type is wrong and the SDK follows the live API. `driftKinds` widens it beyond type mismatches.  |
+| `noUpstreamSchema: reason`                          | WC publishes no schema for the endpoint at all (e.g. the Store API batch response).                            |
+| `deprecated: { fields }`                            | A field is kept for older WC versions in the support window.                                                   |
+
+Some differences are never reported, because WooCommerce's schema carries
+no signal for them:
+
+- Path parameters (`id` in `/products/(?P<id>[\d]+)`) in request and query
+  shapes: they're part of the URL, not the body.
+- Read-only fields in request and query shapes. WP drops them from top-level
+  args but leaves them in nested objects (`coupon_lines[].discount_type`).
+- Optionality of nested fields when the upstream object doesn't say which of
+  its fields are required. WC declares requiredness either JSON-Schema style
+  (a `required` list) or WP style (`required: true` on the property); both
+  are honoured.
+- Nullability against an upstream `any` type.
+
+Array element fields (`line_items[].price`) are only compared when the
+snapshot records them; snapshots captured before element walking existed
+don't, so re-capture to get element-level drift.
+
+## Exit codes
+
+`check` exits `0` when clean, `1` when drift is found (any `error`, or any
+`warn` with `--strict`), and `2` when the tool itself fails (bad arguments,
+missing snapshot, crash). CI only files a drift issue on `1`.
+
 ## Route allowlist
 
 `route-allowlist.json` lists upstream routes that are intentionally not

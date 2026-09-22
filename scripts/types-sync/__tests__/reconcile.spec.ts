@@ -294,3 +294,90 @@ describe('reconcileAcrossVersions – deprecation acks', () => {
     expect(result[0].provenance?.acked).toBeUndefined();
   });
 });
+
+describe('reconcileAcrossVersions – open-enum and undocumented acks', () => {
+  const window = { versions: ['10.7.0'], latest: '10.7.0' };
+  const reconcileOne = (
+    drift: ReturnType<typeof makeDrift>,
+    registryEntry: Record<string, unknown>
+  ) =>
+    reconcileAcrossVersions({
+      perVersionDrifts: new Map([['10.7.0', [drift]]]),
+      window,
+      registryEntry,
+    })[0];
+
+  it('downgrades enum-drift on an open-enum field when the SDK has no enum', () => {
+    const d = {
+      ...makeDrift({ field: 'payment_method', driftKind: 'enum-drift' }),
+      sdk: { enum: null, extraInSdk: [] },
+      upstream: { enum: ['bacs', 'cod'], missingInSdk: ['bacs', 'cod'] },
+    };
+    const result = reconcileOne(d, { openEnums: ['payment_method'] });
+    expect(result.severity).toBe('info');
+    expect(result.provenance).toMatchObject({ acked: true, openEnum: true });
+  });
+
+  it('keeps enum-drift when the SDK declares its own narrower enum', () => {
+    const d = {
+      ...makeDrift({ field: 'payment_method', driftKind: 'enum-drift' }),
+      sdk: { enum: ['cod'], extraInSdk: [] },
+      upstream: { enum: ['bacs', 'cod'], missingInSdk: ['bacs'] },
+    };
+    const result = reconcileOne(d, { openEnums: ['payment_method'] });
+    expect(result.severity).toBe('error');
+    expect(result.provenance?.acked).toBeUndefined();
+  });
+
+  it('downgrades extra-in-sdk on an undocumented field and its nested paths', () => {
+    for (const field of ['payment_data', 'payment_data.key']) {
+      const result = reconcileOne(makeDrift({ field }), {
+        undocumented: ['payment_data'],
+      });
+      expect(result.severity).toBe('info');
+      expect(result.provenance).toMatchObject({
+        acked: true,
+        undocumented: true,
+      });
+    }
+  });
+
+  it('does not treat a field sharing the prefix as undocumented', () => {
+    const result = reconcileOne(makeDrift({ field: 'payment_data_extra' }), {
+      undocumented: ['payment_data'],
+    });
+    expect(result.severity).toBe('error');
+  });
+});
+
+describe('reconcileAcrossVersions – known upstream schema bugs', () => {
+  const window = { versions: ['10.7.0'], latest: '10.7.0' };
+
+  it('downgrades a type-mismatch on an acknowledged field and records why', () => {
+    const d = makeDrift({ field: 'used_by', driftKind: 'type-mismatch' });
+    const [result] = reconcileAcrossVersions({
+      perVersionDrifts: new Map([['10.7.0', [d]]]),
+      window,
+      registryEntry: {
+        knownSchemaBugs: [{ field: 'used_by', reason: 'holds emails too' }],
+      },
+    });
+    expect(result.severity).toBe('info');
+    expect(result.provenance).toMatchObject({
+      acked: true,
+      schemaBug: 'holds emails too',
+    });
+  });
+
+  it('does not hide other drift kinds on that field', () => {
+    const d = makeDrift({ field: 'used_by', driftKind: 'missing-in-sdk' });
+    const [result] = reconcileAcrossVersions({
+      perVersionDrifts: new Map([['10.7.0', [d]]]),
+      window,
+      registryEntry: {
+        knownSchemaBugs: [{ field: 'used_by', reason: 'holds emails too' }],
+      },
+    });
+    expect(result.severity).toBe('error');
+  });
+});

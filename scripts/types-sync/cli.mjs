@@ -10,7 +10,8 @@
  *   check     Load the most recent (or specified) snapshot, introspect every
  *             Zod schema in schema-map.ts, run the diff engine, and write
  *             scripts/types-sync/out/drift.{json,md}. Exits 1 if any `error`
- *             severity rows exist (unless --allow-warn is passed).
+ *             severity rows exist (or any `warn` with --strict), and 2 if
+ *             the tool itself fails.
  *
  *   list-routes   Dump unmapped routes from the snapshot (helps grow the
  *                 registry).
@@ -23,9 +24,10 @@
  *   --json                Emit JSON to stdout instead of writing files (check)
  *   --no-coverage-check   Skip the route-coverage check (allowlist-backed
  *                         enforcement that every upstream route is mapped)
- *   --no-endpoint-check   Suppress endpoint-missing-upstream warnings (SDK
- *                         defines schemas for routes WC doesn't expose via
- *                         OPTIONS, e.g. batch, collection-data request)
+ *   --no-endpoint-check   Suppress endpoint-missing-upstream warnings. These
+ *                         usually mean a registry entry has the wrong route,
+ *                         kind or method; for endpoints WC really publishes
+ *                         no schema for, set `noUpstreamSchema` on the entry.
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
@@ -43,6 +45,7 @@ import { sortKeysDeep } from './normalise.mjs';
 import { buildSdkSourceIndex } from './sdk-source-index.mjs';
 import { reconcileAcrossVersions } from './reconcile.mjs';
 import { loadRouteAllowlist, computeRouteCoverage } from './route-coverage.mjs';
+import { pickLatestSnapshot } from './snapshots.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SNAPSHOTS_DIR = join(HERE, 'snapshots');
@@ -84,34 +87,10 @@ async function loadRegistry() {
   return mod.SCHEMA_MAP;
 }
 
-function semverCompareFiles(a, b) {
-  // Extract version from filenames like "wc-9.8.0.json"
-  const va = a
-    .replace(/^wc-/, '')
-    .replace(/\.json$/, '')
-    .split('.')
-    .map(Number);
-  const vb = b
-    .replace(/^wc-/, '')
-    .replace(/\.json$/, '')
-    .split('.')
-    .map(Number);
-  for (let i = 0; i < Math.max(va.length, vb.length); i++) {
-    const x = va[i] ?? 0;
-    const y = vb[i] ?? 0;
-    if (x !== y) return x - y;
-  }
-  return 0;
-}
-
 function findLatestSnapshot() {
   try {
-    const files = readdirSync(SNAPSHOTS_DIR).filter(
-      (f) => f.startsWith('wc-') && f.endsWith('.json')
-    );
-    if (files.length === 0) return null;
-    files.sort(semverCompareFiles);
-    return join(SNAPSHOTS_DIR, files[files.length - 1]);
+    const latest = pickLatestSnapshot(readdirSync(SNAPSHOTS_DIR));
+    return latest ? join(SNAPSHOTS_DIR, latest) : null;
   } catch {
     return null;
   }
@@ -255,15 +234,22 @@ function diffEntryAgainstSnapshot(entry, snapshot, options) {
   }
 
   if (!upstream) {
+    // A registry entry can acknowledge that WC publishes no schema for this
+    // endpoint (e.g. the Store API batch response); anything else usually
+    // means the route, kind or method in the registry is wrong.
+    const acked = typeof entry.noUpstreamSchema === 'string';
     drifts.push({
       surface: entry.surface,
       route: entry.route,
       kind: entry.kind,
       field: '<endpoint>',
       driftKind: 'endpoint-missing-upstream',
-      severity: 'warn',
+      severity: acked ? 'info' : 'warn',
       sdk: { name: entry.name, method: entry.method ?? null },
       upstream: null,
+      ...(acked && {
+        provenance: { acked: true, schemaBug: entry.noUpstreamSchema },
+      }),
     });
     return drifts;
   }
@@ -567,7 +553,10 @@ async function main() {
   }
 }
 
+// Exit codes: 0 = clean, 1 = drift found, 2 = the tool itself failed
+// (bad arguments, missing snapshot, crash). CI relies on the difference to
+// avoid reporting a crash as schema drift.
 main().catch((err) => {
   console.error(err?.stack ?? err);
-  process.exit(1);
+  process.exit(2);
 });

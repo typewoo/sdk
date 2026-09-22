@@ -28,6 +28,43 @@ export type RouteMeta = {
    * these fields from `warn` to `info` so the drift gate stays clean.
    */
   knownNullable?: string[];
+  /**
+   * Fields where WC's enum depends on site configuration, so the SDK types
+   * them as plain strings. E.g. checkout `payment_method` only lists the
+   * gateways enabled on the store the snapshot was captured from. The
+   * reconciler downgrades `enum-drift` on these fields to `info` as long as
+   * the SDK declares no enum.
+   */
+  openEnums?: string[];
+  /**
+   * Fields the live API accepts or returns but WC's JSON Schema omits (e.g.
+   * checkout `payment_data`, consumed by payment gateways). The reconciler
+   * downgrades `extra-in-sdk` drift on these fields (and their nested paths)
+   * to `info`.
+   */
+  undocumented?: string[];
+  /**
+   * Fields where WC's published type is wrong and the SDK follows what the
+   * live API actually sends (e.g. coupon `used_by` is declared as integers
+   * but contains guest email addresses too). The reconciler downgrades
+   * `type-mismatch` drift on these fields to `info` and shows the reason.
+   * Set `driftKinds` to cover other kinds instead, on the field and its
+   * children (e.g. `missing-in-sdk` for sub-fields of a mis-described object).
+   */
+  knownSchemaBugs?: { field: string; reason: string; driftKinds?: string[] }[];
+  /**
+   * Set (with the reason) when WC publishes no schema for this endpoint, so
+   * the SDK schema is hand-written and can't be compared. Without it, a
+   * missing upstream schema is reported as a warning because it usually
+   * means the route, kind or method here is wrong.
+   */
+  noUpstreamSchema?: string;
+  /**
+   * Other routes that use this schema unchanged, e.g. the single-item route
+   * of a collection's response (`/products/(?P<id>[\d]+)`). Each is checked
+   * against WC exactly like `route`, with the same acknowledgements.
+   */
+  alsoAt?: string[];
 };
 
 /**

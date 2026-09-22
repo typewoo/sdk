@@ -165,6 +165,60 @@ export function reconcileAcrossVersions({
       };
     }
 
+    // Honour open-enum acks. WC derives some enums from site configuration
+    // (e.g. `payment_method` lists only the gateways enabled on the captured
+    // store), so the SDK types them as plain strings. Only downgrade when the
+    // SDK declares no enum — a narrower SDK enum is still real drift.
+    const openEnumFields = new Set(registryEntry?.openEnums ?? []);
+    if (
+      d.driftKind === 'enum-drift' &&
+      !d.sdk?.enum &&
+      openEnumFields.has(d.field)
+    ) {
+      reconciled.severity = 'info';
+      reconciled.provenance = {
+        ...(reconciled.provenance ?? {}),
+        acked: true,
+        openEnum: true,
+      };
+    }
+
+    // Honour known upstream schema bugs: fields where WC's published type is
+    // wrong and the SDK follows what the live API actually sends. Each entry
+    // carries a reason that's shown in the report.
+    // By default an entry covers type mismatches on the field itself; it can
+    // list other drift kinds, which then also apply to the field's children.
+    const schemaBug = (registryEntry?.knownSchemaBugs ?? []).find((b) =>
+      b.driftKinds
+        ? b.driftKinds.includes(d.driftKind) &&
+          (d.field === b.field || d.field.startsWith(`${b.field}.`))
+        : d.driftKind === 'type-mismatch' && d.field === b.field
+    );
+    if (schemaBug) {
+      reconciled.severity = 'info';
+      reconciled.provenance = {
+        ...(reconciled.provenance ?? {}),
+        acked: true,
+        schemaBug: schemaBug.reason,
+      };
+    }
+
+    // Honour undocumented-field acks: fields the live API accepts or returns
+    // but WC's OPTIONS schema omits (e.g. checkout `payment_data`). Nested
+    // paths under an acked field are covered too.
+    const undocumented = registryEntry?.undocumented ?? [];
+    if (
+      d.driftKind === 'extra-in-sdk' &&
+      undocumented.some((f) => d.field === f || d.field.startsWith(`${f}.`))
+    ) {
+      reconciled.severity = 'info';
+      reconciled.provenance = {
+        ...(reconciled.provenance ?? {}),
+        acked: true,
+        undocumented: true,
+      };
+    }
+
     out.push(reconciled);
   }
 

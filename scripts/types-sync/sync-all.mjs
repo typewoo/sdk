@@ -85,6 +85,7 @@ async function captureOne(version, opts) {
   // Wait for /wp-json/ to respond using Node.js HTTP (avoids cross-platform
   // curl issues with /dev/null on Windows).
   console.log('[sync-all] waiting for WP to respond...');
+  let ready = false;
   for (let i = 0; i < 60; i++) {
     const ok = await new Promise((resolve) => {
       const req = request('http://localhost:8080/wp-json/', (res) => {
@@ -94,8 +95,16 @@ async function captureOne(version, opts) {
       req.on('error', () => resolve(false));
       req.end();
     });
-    if (ok) break;
+    if (ok) {
+      ready = true;
+      break;
+    }
     await new Promise((r) => setTimeout(r, 2000));
+  }
+  if (!ready) {
+    throw new Error(
+      `WordPress didn't respond at http://localhost:8080/wp-json/ within 2 minutes (WC ${version}).`
+    );
   }
 
   const password = readAdminPassword();
