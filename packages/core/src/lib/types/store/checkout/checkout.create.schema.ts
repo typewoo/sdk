@@ -60,6 +60,12 @@ export const CheckoutCreateRequestSchema = z.looseObject({
     .string()
     .optional()
     .describe('Customer password for new accounts, if applicable.'),
+  expected_total: z
+    .string()
+    .optional()
+    .describe(
+      'Order total the shopper confirmed, in the smallest currency unit (like cart `totals.total_price`). The order is rejected if the server total differs. WooCommerce 11.1+.'
+    ),
   extensions: z
     .looseObject({
       'woocommerce/order-attribution': z

@@ -46,19 +46,23 @@ export function reconcileAcrossVersions({
   const latestDrifts = perVersionDrifts.get(latest) ?? [];
   const out = [];
 
-  // Build a quick lookup: for each (kind, field) what drift kind fired in
-  // each older version. Used to decide whether an `extra-in-sdk` against
-  // latest is covered by an older version (i.e. that version still has the
-  // field, so it does NOT report extra-in-sdk for it).
-  /** @type {Map<string, Map<string, string>>} */
+  // Build a quick lookup: for each (kind, field) which drift kinds fired in
+  // each older version. A field can drift in several ways at once (e.g. an
+  // enum and a description), so keep every kind, not just the last one.
+  /** @type {Map<string, Map<string, Set<string>>>} */
   const fieldStatusByVersion = new Map();
   for (const v of olderVersions) {
     const map = new Map();
     for (const d of perVersionDrifts.get(v) ?? []) {
-      map.set(`${d.kind}|${d.field}`, d.driftKind);
+      const key = `${d.kind}|${d.field}`;
+      if (!map.has(key)) map.set(key, new Set());
+      map.get(key).add(d.driftKind);
     }
     fieldStatusByVersion.set(v, map);
   }
+  /** Did `driftKind` fire for `key` in older version `v`? */
+  const firedIn = (v, key, driftKind) =>
+    fieldStatusByVersion.get(v)?.get(key)?.has(driftKind) ?? false;
 
   const deprecatedFields = new Set(registryEntry?.deprecated?.fields ?? []);
 
@@ -75,12 +79,13 @@ export function reconcileAcrossVersions({
       // client.
       const routeLevelKey = `${d.kind}|<route>`;
       const stillIn = olderVersions.filter((v) => {
-        const vMap = fieldStatusByVersion.get(v);
         // If the entire route was absent in this older version, the field is
         // not present either — do NOT count it as back-compat cover.
-        if (vMap.get(routeLevelKey) === 'route-missing-upstream') return false;
-        const status = vMap.get(key);
-        return status !== 'extra-in-sdk' && status !== 'route-missing-upstream';
+        if (firedIn(v, routeLevelKey, 'route-missing-upstream')) return false;
+        return (
+          !firedIn(v, key, 'extra-in-sdk') &&
+          !firedIn(v, key, 'route-missing-upstream')
+        );
       });
       if (stillIn.length > 0) {
         reconciled.severity = 'info';
@@ -103,8 +108,7 @@ export function reconcileAcrossVersions({
       // the team knows when to mark it `@since` in the SDK.
       const presentSince = olderVersions
         .filter((v) => {
-          const status = fieldStatusByVersion.get(v).get(key);
-          return status === 'missing-in-sdk';
+          return firedIn(v, key, 'missing-in-sdk');
         })
         .sort(semverCompare);
       reconciled.provenance = {
@@ -120,8 +124,9 @@ export function reconcileAcrossVersions({
       // If the SDK matches an older window version's type/enum, the SDK is
       // stale rather than wrong — downgrade to warn with provenance.
       const matchedIn = olderVersions.find((v) => {
-        const status = fieldStatusByVersion.get(v).get(key);
-        return status === undefined; // no drift recorded against this version → SDK matches it
+        // The same kind of drift didn't fire against this version, so the
+        // SDK matches it (other drift, e.g. a description, doesn't count).
+        return !firedIn(v, key, d.driftKind);
       });
       if (matchedIn) {
         reconciled.severity = 'warn';

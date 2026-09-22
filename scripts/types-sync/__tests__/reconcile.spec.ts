@@ -251,6 +251,23 @@ describe('reconcileAcrossVersions – type-mismatch / enum-drift stale downgrade
     expect(result[0].severity).toBe('warn');
     expect(result[0].provenance.matchedIn).toBe('9.5.0');
   });
+
+  it('still matches an older version when other drift fired on the same field there', () => {
+    const enumDrift = makeDrift({ driftKind: 'enum-drift', severity: 'error' });
+    const result = reconcileAcrossVersions({
+      perVersionDrifts: new Map([
+        ['10.7.0', [enumDrift]],
+        // A description change doesn't mean the enum differs from 9.5.0.
+        [
+          '9.5.0',
+          [makeDrift({ driftKind: 'description-mismatch', severity: 'info' })],
+        ],
+      ]),
+      window: { versions: ['9.5.0', '10.7.0'], latest: '10.7.0' },
+    });
+    expect(result[0].severity).toBe('warn');
+    expect(result[0].provenance.matchedIn).toBe('9.5.0');
+  });
 });
 
 // ─── deprecation acks ────────────────────────────────────────────────────────

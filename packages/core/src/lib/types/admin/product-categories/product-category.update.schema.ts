@@ -24,6 +24,12 @@ export const AdminTaxonomyCategoryUpdateRequestSchema = z.looseObject({
     'Category archive display type.'
   ),
   image: AdminTaxonomyCategoryImageRequest.optional().describe('Image data.'),
+  menu_order: z
+    .number()
+    .optional()
+    .describe(
+      'Menu order, used to custom sort the resource. WooCommerce 11.1+.'
+    ),
   id: z.number().optional().describe('Unique identifier for the resource.'),
 });
 

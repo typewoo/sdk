@@ -71,6 +71,13 @@ export const AdminRefundCreateRequestSchema = z.looseObject({
     .default(true)
     .optional()
     .describe('When true, refunded items are restocked.'),
+  compute_totals: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      "When true, WooCommerce computes each line's refund amount from its quantity using the order's stored prices and taxes. WooCommerce 11.1+."
+    ),
   line_items: z
     .array(AdminRefundCreateLineItemSchema)
     .optional()

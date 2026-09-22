@@ -24,6 +24,12 @@ export const AdminTaxonomyCategoryCreateRequestSchema = z.looseObject({
     .optional()
     .describe('Category archive display type.'),
   image: AdminTaxonomyCategoryImageRequest.optional().describe('Image data.'),
+  menu_order: z
+    .number()
+    .optional()
+    .describe(
+      'Menu order, used to custom sort the resource. WooCommerce 11.1+.'
+    ),
 });
 
 export type AdminTaxonomyCategoryCreateRequest = z.input<

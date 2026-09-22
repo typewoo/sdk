@@ -464,6 +464,12 @@ export const AdminProductVariationSchema = z.looseObject({
   image: AdminProductImage.nullable()
     .optional()
     .describe('Variation image data (`null` when the variation has none).'),
+  gallery_image_ids: z
+    .array(z.number())
+    .optional()
+    .describe(
+      'Variation gallery image IDs, excluding the featured image (set via `image`). WooCommerce 11.1+.'
+    ),
   attributes: z
     .array(AdminProductDefaultAttributeSchema)
     .optional()

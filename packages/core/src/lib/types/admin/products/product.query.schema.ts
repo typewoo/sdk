@@ -4,6 +4,13 @@ import { z } from 'zod';
  * Product query parameters for listing
  */
 export const AdminProductQueryParamsSchema = z.looseObject({
+  image_size: z
+    .string()
+    .default('full')
+    .optional()
+    .describe(
+      'Registered image size to return for product images (falls back to full). WooCommerce 11.1+.'
+    ),
   context: z
     .enum(['view', 'edit'])
     .default('view')
@@ -93,7 +100,9 @@ export const AdminProductQueryParamsSchema = z.looseObject({
     ])
     .default('date')
     .optional()
-    .describe('Sort collection by object attribute.'),
+    .describe(
+      'Sort collection by object attribute. `post__in`, `random` and `sales` are rejected by WooCommerce 11.1+ (they work on 10.x).'
+    ),
   parent: z
     .array(z.number())
     .default([])

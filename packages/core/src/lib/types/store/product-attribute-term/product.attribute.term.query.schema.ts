@@ -72,6 +72,13 @@ export const ProductAttributeTermRequestSchema = z.looseObject({
     .default('name')
     .optional()
     .describe('Sort by term property.'),
+  __experimental_visual: z
+    .boolean()
+    .default(false)
+    .optional()
+    .describe(
+      'Include experimental swatch data for visual attribute terms. WooCommerce 11.1+.'
+    ),
 });
 
 export type ProductAttributeTermRequest = z.input<
