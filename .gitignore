@@ -59,3 +59,11 @@ infra/wordpress/scripts/generated-app-passwords.txt
 
 # types-sync — reports are ephemeral; snapshots are committed.
 /scripts/types-sync/out/
+# Ad-hoc captures (`types:sync:local`, captures without a version) and
+# `check` output written to the repo root.
+/scripts/types-sync/snapshots/wc-local.json
+/scripts/types-sync/snapshots/wc-unknown.json
+/drift-output.json
+
+# Personal Claude Code settings
+.claude/settings.local.json
