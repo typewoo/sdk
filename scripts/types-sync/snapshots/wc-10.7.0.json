@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-09-22T10:46:01.929Z",
+  "capturedAt": "2026-09-22T11:40:02.147Z",
   "surfaces": {
     "admin": {
       "/wc/v3": {
@@ -143445,7 +143445,7 @@
                 "additionalProperties": false,
                 "description": "Billing address.",
                 "nullable": false,
-                "optional": true,
+                "optional": false,
                 "readonly": false,
                 "requiredDeclared": true,
                 "type": "object"
@@ -143578,8 +143578,20 @@
                 "requiredDeclared": true,
                 "type": "string"
               },
+              "customer_password": {
+                "additionalProperties": false,
+                "description": "Customer password for new accounts, if applicable.",
+                "nullable": false,
+                "optional": true,
+                "readonly": false,
+                "requiredDeclared": true,
+                "type": "string"
+              },
               "extensions": {
                 "additionalProperties": false,
+                "default": {
+                  "woocommerce/order-attribution": []
+                },
                 "nullable": false,
                 "optional": true,
                 "readonly": false,
@@ -143756,14 +143768,34 @@
                 "requiredDeclared": false,
                 "type": "string"
               },
-              "order_notes": {
+              "payment_data": {
                 "additionalProperties": false,
-                "description": "Order notes.",
+                "description": "Data to pass through to the payment method when processing payment.",
+                "items": {
+                  "type": "object"
+                },
                 "nullable": false,
                 "optional": true,
                 "readonly": false,
                 "requiredDeclared": true,
+                "type": "array"
+              },
+              "payment_data[].key": {
+                "additionalProperties": false,
+                "nullable": false,
+                "optional": true,
+                "readonly": false,
+                "requiredDeclared": false,
                 "type": "string"
+              },
+              "payment_data[].value": {
+                "additionalProperties": false,
+                "nullable": false,
+                "optional": true,
+                "readonly": false,
+                "requiredDeclared": false,
+                "type": "boolean",
+                "types": ["boolean", "string"]
               },
               "payment_method": {
                 "additionalProperties": false,

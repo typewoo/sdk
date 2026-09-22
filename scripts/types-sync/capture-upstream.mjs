@@ -7,9 +7,9 @@
  * returns the JSON Schema document. We do that in parallel with a small
  * concurrency cap.
  *
- * Path params like `(?P<id>[\d]+)` are substituted with `1` purely so the URL
- * matches the route — OPTIONS returns the schema regardless of whether
- * resource id=1 actually exists.
+ * Path params like `(?P<id>[\d]+)` are substituted with a value that matches
+ * them purely so the URL matches the route — OPTIONS returns the schema
+ * regardless of whether that resource actually exists.
  */
 
 import { normaliseJsonSchema, sortKeysDeep } from './normalise.mjs';
@@ -37,12 +37,6 @@ function buildHeaders(creds) {
   return h;
 }
 
-/**
- * Replace WP REST regex placeholders (`(?P<name>pattern)`) with a concrete
- * value. `1` is a safe stand-in for numeric ids; for non-numeric patterns we
- * fall back to `1` too — OPTIONS doesn't validate the path against the regex
- * for schema lookup in the WP routers we've tested.
- */
 // Values tried, in order, for a route placeholder. The first one matching
 // the placeholder's own pattern is used, so `[\d]+` gets `1`, a currency
 // code `[\w-]{3}` gets `abc` and a cart item key `[\w-]{32}` gets 32 chars.
@@ -58,6 +52,10 @@ function placeholderFor(pattern) {
   return PLACEHOLDER_CANDIDATES.find((c) => re.test(c)) ?? '1';
 }
 
+/**
+ * Replace WP REST regex placeholders (`(?P<name>pattern)`) with concrete
+ * values, so the URL matches the route and WP returns its OPTIONS schema.
+ */
 export function concretiseRoute(route) {
   // Placeholders can contain nested groups, e.g. `(?P<x>(?:a|b))`, so find
   // each one's closing parenthesis by depth rather than with a regex.
@@ -171,6 +169,9 @@ export function shapeRouteEntry(routeDef) {
     entry.response = normaliseJsonSchema(routeDef.schema);
   }
 
+  // WP dispatches a request to the first endpoint whose methods include it,
+  // so when two endpoints share a method (e.g. /checkout's CREATABLE POST
+  // and EDITABLE POST/PUT/PATCH) the first one's args are the real ones.
   if (Array.isArray(routeDef?.endpoints)) {
     for (const ep of routeDef.endpoints) {
       const methods = Array.isArray(ep.methods) ? ep.methods : [];
@@ -178,13 +179,13 @@ export function shapeRouteEntry(routeDef) {
       const normArgs = normaliseJsonSchema(argsSchema);
       for (const method of methods) {
         if (method === 'GET') {
-          entry.query[method] = normArgs;
+          entry.query[method] ??= normArgs;
         } else if (
           method === 'POST' ||
           method === 'PUT' ||
           method === 'PATCH'
         ) {
-          entry.request[method] = normArgs;
+          entry.request[method] ??= normArgs;
         }
       }
     }

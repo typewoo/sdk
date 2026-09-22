@@ -157,6 +157,21 @@ describe('shapeRouteEntry', () => {
     expect(entry.request['POST'].fields['code'].type).toBe('string');
   });
 
+  it('keeps the first endpoint for a method, as WP dispatches', () => {
+    // /checkout: CREATABLE (POST) then EDITABLE (POST, PUT, PATCH).
+    const entry = shapeRouteEntry({
+      endpoints: [
+        { methods: ['POST'], args: { payment_data: { type: 'array' } } },
+        {
+          methods: ['POST', 'PUT', 'PATCH'],
+          args: { order_notes: { type: 'string' } },
+        },
+      ],
+    });
+    expect(Object.keys(entry.request['POST'].fields)).toEqual(['payment_data']);
+    expect(Object.keys(entry.request['PUT'].fields)).toEqual(['order_notes']);
+  });
+
   it('places PUT and PATCH endpoint args into request map', () => {
     const routeDef = {
       endpoints: [
