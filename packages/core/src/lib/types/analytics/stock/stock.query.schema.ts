@@ -71,6 +71,6 @@ export const AnalyticsStockListQueryParamsSchema = z.object({
       'Limit result set to all items except those of a particular parent ID.'
     ),
 });
-export type AnalyticsStockListQueryParams = z.infer<
+export type AnalyticsStockListQueryParams = z.input<
   typeof AnalyticsStockListQueryParamsSchema
 >;

@@ -27,4 +27,4 @@ export const PaginatedSchema = z.object({
     .describe('Offset the result set by a specific number of items.'),
 });
 
-export type Paginated = z.infer<typeof PaginatedSchema>;
+export type Paginated = z.input<typeof PaginatedSchema>;

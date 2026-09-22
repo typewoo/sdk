@@ -181,7 +181,7 @@ export const AnalyticsVariationsStatsQueryParamsSchema =
       .optional()
       .describe('Segment the response by additional constraint.'),
   });
-export type AnalyticsVariationsStatsQueryParams = z.infer<
+export type AnalyticsVariationsStatsQueryParams = z.input<
   typeof AnalyticsVariationsStatsQueryParamsSchema
 >;
 
@@ -256,6 +256,6 @@ export const AnalyticsVariationsListQueryParamsSchema =
         'Limit result set to items that have the specified parent product(s).'
       ),
   });
-export type AnalyticsVariationsListQueryParams = z.infer<
+export type AnalyticsVariationsListQueryParams = z.input<
   typeof AnalyticsVariationsListQueryParamsSchema
 >;

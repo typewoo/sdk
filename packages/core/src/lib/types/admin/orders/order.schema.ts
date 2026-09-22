@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { AdminMetaDataSchema } from '../meta-data.schema.js';
+import {
+  AdminMetaDataSchema,
+  AdminMetaValueSchema,
+} from '../meta-data.schema.js';
 import {
   AdminOrderAddress,
   AdminOrderMetaData,
@@ -7,16 +10,20 @@ import {
 } from './order.js';
 
 /**
- * A line item `meta_data` entry. On top of the raw key/value, WooCommerce
- * adds the formatted label and value it shows in the admin UI.
+ * An order item `meta_data` entry (line, tax, shipping, fee and coupon
+ * lines). On top of the raw key/value, WooCommerce adds the formatted label
+ * and value it shows in the admin UI. `display_value` falls back to the raw
+ * value, so it can be any meta value, not only a string.
  */
-export const AdminOrderLineItemMetaDataSchema = AdminMetaDataSchema.extend({
+export const AdminOrderItemMetaDataSchema = AdminMetaDataSchema.extend({
   display_key: z.string().optional().describe('Meta key for UI display.'),
-  display_value: z.string().optional().describe('Meta value for UI display.'),
+  display_value: AdminMetaValueSchema.optional().describe(
+    'Meta value for UI display.'
+  ),
 });
 
-export type AdminOrderLineItemMetaData = z.infer<
-  typeof AdminOrderLineItemMetaDataSchema
+export type AdminOrderItemMetaData = z.infer<
+  typeof AdminOrderItemMetaDataSchema
 >;
 
 /**
@@ -50,8 +57,11 @@ export const AdminOrderLineItemSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderLineItemMetaDataSchema).describe('Meta data.'),
-  sku: z.string(),
+  meta_data: z.array(AdminOrderItemMetaDataSchema).describe('Meta data.'),
+  sku: z
+    .string()
+    .nullable()
+    .describe('Product SKU. Null when the product no longer exists.'),
   global_unique_id: z
     .string()
     .nullable()
@@ -61,7 +71,11 @@ export const AdminOrderLineItemSchema = z.looseObject({
   price: z.number().describe('Product price.'),
   image: z.object({
     id: AdminOrderLineItemImageIdSchema,
-    src: z.string(),
+    src: z
+      .union([z.string(), z.literal(false)])
+      .describe(
+        'Image URL. An empty string when the product has no image, false when its attachment was deleted.'
+      ),
   }),
   parent_name: z
     .string()
@@ -86,7 +100,7 @@ export const AdminOrderTaxLineSchema = z.looseObject({
   tax_total: z.string(),
   shipping_tax_total: z.string(),
   rate_percent: z.number(),
-  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  meta_data: z.array(AdminOrderItemMetaDataSchema).describe('Meta data.'),
 });
 
 export type AdminOrderTaxLine = z.infer<typeof AdminOrderTaxLineSchema>;
@@ -107,7 +121,7 @@ export const AdminOrderShippingLineSchema = z.looseObject({
       total: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  meta_data: z.array(AdminOrderItemMetaDataSchema).describe('Meta data.'),
 });
 
 export type AdminOrderShippingLine = z.infer<
@@ -131,7 +145,7 @@ export const AdminOrderFeeLineSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  meta_data: z.array(AdminOrderItemMetaDataSchema).describe('Meta data.'),
 });
 
 export type AdminOrderFeeLine = z.infer<typeof AdminOrderFeeLineSchema>;
@@ -144,7 +158,7 @@ export const AdminOrderCouponLineSchema = z.looseObject({
   code: z.string(),
   discount: z.string(),
   discount_tax: z.string(),
-  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  meta_data: z.array(AdminOrderItemMetaDataSchema).describe('Meta data.'),
   discount_type: z.string().describe('Discount type.'),
   nominal_amount: z
     .number()

@@ -42,4 +42,4 @@ export const ProductReviewRequestSchema = PaginatedSchema.extend({
     .describe('Limit result set to reviews from specific product IDs.'),
 });
 
-export type ProductReviewRequest = z.infer<typeof ProductReviewRequestSchema>;
+export type ProductReviewRequest = z.input<typeof ProductReviewRequestSchema>;

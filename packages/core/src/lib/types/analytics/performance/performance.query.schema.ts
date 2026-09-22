@@ -29,6 +29,6 @@ export const AnalyticsPerformanceQueryParamsSchema = z.object({
     .optional()
     .describe('Limit response to specific report stats. Allowed values: .'),
 });
-export type AnalyticsPerformanceQueryParams = z.infer<
+export type AnalyticsPerformanceQueryParams = z.input<
   typeof AnalyticsPerformanceQueryParamsSchema
 >;

@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 
-import { AdminCouponMetaData } from './coupon.js';
-
 /**
  * Coupon request parameters for POST /coupons (create).
  *

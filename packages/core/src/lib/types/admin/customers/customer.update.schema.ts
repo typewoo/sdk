@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
-
-import { AdminCustomerAddress, AdminCustomerMetaData } from './customer.js';
+import { AdminCustomerAddress } from './customer.js';
 
 export const AdminCustomerUpdateRequestSchema = z.looseObject({
   id: z.number().optional().describe('Unique identifier for the resource.'),

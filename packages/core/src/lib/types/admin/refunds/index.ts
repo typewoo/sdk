@@ -11,9 +11,25 @@ schemaRegistry.add(AdminRefundSchema, {
     '/wc/v3/orders/(?P<order_id>[\\d]+)/refunds/(?P<id>[\\d]+)',
     '/wc/v3/refunds',
   ],
-  // WC stores the rate percent on tax items and returns it, but its schema
-  // omits the field.
-  undocumented: ['tax_lines[].rate_percent'],
+  // Null when the line item's product no longer exists.
+  knownNullable: ['line_items[].sku'],
+  undocumented: [
+    // WC stores the rate percent on tax items and returns it, but its schema
+    // omits the field.
+    'tax_lines[].rate_percent',
+    // Refund items are built by the same code as order items, but WC's
+    // refund schema omits these line item fields.
+    'line_items[].global_unique_id',
+    'line_items[].image',
+    'line_items[].parent_name',
+    // ...and the formatted meta WC adds to every item's meta_data.
+    ...['line_items', 'tax_lines', 'shipping_lines', 'fee_lines'].flatMap(
+      (line) => [
+        `${line}[].meta_data[].display_key`,
+        `${line}[].meta_data[].display_value`,
+      ]
+    ),
+  ],
   // WC's v3 schema adds these refund inputs to the response items, but the
   // live API never returns them.
   knownSchemaBugs: [

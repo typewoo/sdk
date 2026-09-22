@@ -47,6 +47,30 @@ describe('AdminProductService', () => {
       expect(result.pagination?.total).toBe(3);
     });
 
+    it('encodes reserved characters in values so they cannot break or inject params', async () => {
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminProductService(state, config, events, http);
+      doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
+
+      await svc.list({
+        search: 'a&b#c+d',
+        sku: 'x&per_page=1',
+        include: [1, 2],
+      });
+
+      const url = doGetMock.mock.calls[0][0] as string;
+      expect(url).toContain('search=a%26b%23c%2Bd');
+      expect(url).toContain('sku=x%26per_page%3D1');
+      // Keys stay unencoded: WC reads plain brackets.
+      expect(url).toContain('include[0]=1&include[1]=2');
+      expect(url).not.toContain('#');
+      expect(url).not.toContain('&per_page=');
+      const parsed = new URLSearchParams(url.split('?')[1]);
+      expect(parsed.get('search')).toBe('a&b#c+d');
+      expect(parsed.get('sku')).toBe('x&per_page=1');
+      expect(parsed.has('per_page')).toBe(false);
+    });
+
     it('returns error when list fails', async () => {
       const { state, config, events, http } = makeTestDeps();
       const svc = new AdminProductService(state, config, events, http);

@@ -50,4 +50,4 @@ export const CartCustomerRequestSchema = z.looseObject({
     .describe('Shipping address.'),
 });
 
-export type CartCustomerRequest = z.infer<typeof CartCustomerRequestSchema>;
+export type CartCustomerRequest = z.input<typeof CartCustomerRequestSchema>;

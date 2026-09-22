@@ -1,81 +1,35 @@
 import { z } from 'zod';
+import {
+  AdminOrderFeeLineSchema,
+  AdminOrderLineItemSchema,
+  AdminOrderShippingLineSchema,
+  AdminOrderTaxLineSchema,
+} from '../orders/order.schema.js';
 import { AdminRefundMetaData } from './refund.js';
 
-export const AdminRefundLineItemSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  product_id: z.number(),
-  variation_id: z.number(),
-  quantity: z.number(),
-  tax_class: z.string(),
-  subtotal: z.string(),
-  subtotal_tax: z.string(),
-  total: z.string(),
-  total_tax: z.string(),
-  taxes: z.array(
-    z.object({
-      id: z.number(),
-      total: z.string(),
-      subtotal: z.string(),
-    })
-  ),
-  meta_data: z.array(AdminRefundMetaData),
-  sku: z.string(),
-  price: z.number(),
-});
+// WooCommerce builds refund items with the same code as order items, so the
+// refund line schemas reuse the order ones. Refunded quantities and totals
+// are negative.
+
+/** Line item in a refund. */
+export const AdminRefundLineItemSchema = AdminOrderLineItemSchema;
 
 export type AdminRefundLineItem = z.infer<typeof AdminRefundLineItemSchema>;
 
-export const AdminRefundShippingLineSchema = z.looseObject({
-  id: z.number(),
-  method_title: z.string(),
-  method_id: z.string(),
-  instance_id: z.string(),
-  total: z.string(),
-  total_tax: z.string(),
-  taxes: z.array(
-    z.object({
-      id: z.number(),
-      total: z.string(),
-    })
-  ),
-  meta_data: z.array(AdminRefundMetaData),
-});
+/** Shipping line in a refund. */
+export const AdminRefundShippingLineSchema = AdminOrderShippingLineSchema;
 
 export type AdminRefundShippingLine = z.infer<
   typeof AdminRefundShippingLineSchema
 >;
 
-export const AdminRefundTaxLineSchema = z.looseObject({
-  id: z.number(),
-  rate_code: z.string(),
-  rate_id: z.number(),
-  label: z.string(),
-  compound: z.boolean(),
-  tax_total: z.string(),
-  shipping_tax_total: z.string(),
-  rate_percent: z.number(),
-  meta_data: z.array(AdminRefundMetaData),
-});
+/** Tax line in a refund. */
+export const AdminRefundTaxLineSchema = AdminOrderTaxLineSchema;
 
 export type AdminRefundTaxLine = z.infer<typeof AdminRefundTaxLineSchema>;
 
-export const AdminRefundFeeLineSchema = z.looseObject({
-  id: z.number(),
-  name: z.string(),
-  tax_class: z.string(),
-  tax_status: z.enum(['taxable', 'none']),
-  total: z.string(),
-  total_tax: z.string(),
-  taxes: z.array(
-    z.object({
-      id: z.number(),
-      total: z.string(),
-      subtotal: z.string(),
-    })
-  ),
-  meta_data: z.array(AdminRefundMetaData),
-});
+/** Fee line in a refund. */
+export const AdminRefundFeeLineSchema = AdminOrderFeeLineSchema;
 
 export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
 

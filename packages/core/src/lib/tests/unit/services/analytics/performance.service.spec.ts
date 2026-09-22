@@ -43,7 +43,7 @@ describe('AnalyticsPerformanceService', () => {
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('after=2026-01-01');
       expect(url).toContain(
-        'stats[0]=revenue/net_revenue&stats[1]=orders/orders_count'
+        'stats[0]=revenue%2Fnet_revenue&stats[1]=orders%2Forders_count'
       );
     });
 

@@ -259,9 +259,7 @@ export const AdminProductSchema = z.looseObject({
     .boolean()
     .describe('Shows whether or not the product shipping is taxable.'),
   shipping_class: z.string().optional().describe('Shipping class slug.'),
-  shipping_class_id: z
-    .union([z.number(), z.string()])
-    .describe('Shipping class ID.'),
+  shipping_class_id: z.number().describe('Shipping class ID.'),
   reviews_allowed: z
     .boolean()
     .default(true)
@@ -397,9 +395,19 @@ export const AdminProductVariationSchema = z.looseObject({
     .describe('End date of sale price, as GMT.'),
   on_sale: z.boolean().describe('Shows if the variation is on sale.'),
   status: z
-    .enum(['draft', 'pending', 'private', 'publish'])
+    .enum([
+      'auto-draft',
+      'draft',
+      'future',
+      'pending',
+      'private',
+      'publish',
+      'trash',
+    ])
     .optional()
-    .describe('Variation status.'),
+    .describe(
+      'Variation status. Variations of a trashed product are "trash", of a scheduled one "future".'
+    ),
   purchasable: z.boolean().describe('Shows if the variation can be bought.'),
   virtual: z.boolean().optional().describe('If the variation is virtual.'),
   downloadable: z
@@ -452,9 +460,7 @@ export const AdminProductVariationSchema = z.looseObject({
     'Variation dimensions.'
   ),
   shipping_class: z.string().optional().describe('Shipping class slug.'),
-  shipping_class_id: z
-    .union([z.number(), z.string()])
-    .describe('Shipping class ID.'),
+  shipping_class_id: z.number().describe('Shipping class ID.'),
   image: AdminProductImage.nullable()
     .optional()
     .describe('Variation image data (`null` when the variation has none).'),

@@ -33,7 +33,7 @@ export class AdminProductAttributeTermService extends BaseService {
     ): Promise<ApiPaginationResult<AdminProductAttributeTerm[]>> => {
       const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${endpoint}${query ? `?${query}` : ''}`;
 
@@ -58,7 +58,9 @@ export class AdminProductAttributeTermService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${endpoint}/${termId}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminProductAttributeTerm>(
@@ -115,7 +117,7 @@ export class AdminProductAttributeTermService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttributeTerm>> {
     const endpoint = `wp-json/wc/v3/products/attributes/${attributeId}/terms`;
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${endpoint}/${termId}?${query}`;
     const { data, error } = await this.http.delete<AdminProductAttributeTerm>(
       url,

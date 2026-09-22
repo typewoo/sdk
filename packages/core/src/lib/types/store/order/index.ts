@@ -1,4 +1,7 @@
-﻿import { PARTIAL_ADDRESS_SCHEMA_BUGS } from '../known-schema-bugs.js';
+﻿import {
+  EXTENSIONS_DEFAULT_SCHEMA_BUG,
+  PARTIAL_ADDRESS_SCHEMA_BUGS,
+} from '../known-schema-bugs.js';
 import { schemaRegistry } from '../../schema-registry.js';
 import { OrderResponseSchema } from './order.schema.js';
 import {
@@ -28,12 +31,7 @@ schemaRegistry.add(OrderRequestSchema, {
   openEnums: ['payment_method'],
   knownSchemaBugs: [
     ...PARTIAL_ADDRESS_SCHEMA_BUGS,
-    {
-      field: 'extensions',
-      reason:
-        'WC fills an empty order-attribution bucket server-side when extensions is omitted; the SDK should not send it by default.',
-      driftKinds: ['default-mismatch'],
-    },
+    EXTENSIONS_DEFAULT_SCHEMA_BUG,
   ],
   // The order key and billing email are read from the request by the
   // route's permission check, not declared in its schema.

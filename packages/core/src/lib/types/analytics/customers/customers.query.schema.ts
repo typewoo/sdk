@@ -226,7 +226,7 @@ export const AnalyticsCustomersStatsQueryParamsSchema = z.object({
       'Scope under which the request is made; determines fields present in response.'
     ),
 });
-export type AnalyticsCustomersStatsQueryParams = z.infer<
+export type AnalyticsCustomersStatsQueryParams = z.input<
   typeof AnalyticsCustomersStatsQueryParamsSchema
 >;
 
@@ -451,6 +451,6 @@ export const AnalyticsCustomersListQueryParamsSchema =
       .optional()
       .describe('Limit result to items with specified user ids.'),
   });
-export type AnalyticsCustomersListQueryParams = z.infer<
+export type AnalyticsCustomersListQueryParams = z.input<
   typeof AnalyticsCustomersListQueryParamsSchema
 >;

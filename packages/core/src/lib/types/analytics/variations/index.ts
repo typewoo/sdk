@@ -28,6 +28,8 @@ schemaRegistry.add(AnalyticsVariationsStatsResponseSchema, {
   route: '/wc-analytics/reports/variations/stats',
   kind: 'response',
   undocumented: [
+    'totals.variations_count',
+    'intervals[].subtotals.variations_count',
     'totals.segments[].subtotals.variations_count',
     'intervals[].subtotals.segments[].subtotals.variations_count',
   ],

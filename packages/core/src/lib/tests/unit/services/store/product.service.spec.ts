@@ -73,8 +73,8 @@ describe('ProductService (store)', () => {
         attributes: [
           { attribute: 'pa_color', slug: 'red', operator: 'in' as const },
         ],
-        _unstable_tax_product_cat: 12,
-        _unstable_tax_product_cat_operator: 'in',
+        _unstable_tax_product_type: 'simple,variable',
+        _unstable_tax_product_type_operator: 'not_in' as const,
       };
       const snapshot = structuredClone(params);
 
@@ -85,10 +85,28 @@ describe('ProductService (store)', () => {
       expect(url).toContain(
         'attributes[0][attribute]=pa_color&attributes[0][slug]=red&attributes[0][operator]=in'
       );
-      expect(url).toContain('_unstable_tax_product_cat=12');
-      expect(url).toContain('_unstable_tax_product_cat_operator=in');
+      expect(url).toContain('_unstable_tax_product_type=simple%2Cvariable');
+      expect(url).toContain('_unstable_tax_product_type_operator=not_in');
       expect(url).not.toContain('undefined');
       expect(params).toEqual(snapshot);
+    });
+
+    it('encodes reserved characters in values so they cannot break or inject params', async () => {
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
+      doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
+
+      await svc.list({ search: 'a&b#c+d', category: 'x&per_page=1' });
+
+      const url = doGetMock.mock.calls[0][0] as string;
+      expect(url).toContain('search=a%26b%23c%2Bd');
+      expect(url).toContain('category=x%26per_page%3D1');
+      expect(url).not.toContain('#');
+      expect(url).not.toContain('&per_page=');
+      const parsed = new URLSearchParams(url.split('?')[1]);
+      expect(parsed.get('search')).toBe('a&b#c+d');
+      expect(parsed.get('category')).toBe('x&per_page=1');
+      expect(parsed.has('per_page')).toBe(false);
     });
   });
 

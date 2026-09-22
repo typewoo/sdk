@@ -8,20 +8,19 @@ const variationStatsFields = {
   items_sold: z.number().describe('Number of variation items sold.'),
   net_revenue: z.number().describe('Net sales.'),
   orders_count: z.number().describe('Number of orders.'),
+  // The API also sends this in totals, interval subtotals and segments,
+  // although WC's schema omits it.
+  variations_count: z
+    .number()
+    .optional()
+    .describe('Number of distinct variations sold.'),
 };
 
 /**
- * A single variation stats segment. The API also sends `variations_count` in
- * segment subtotals, which WC's schema omits.
+ * A single variation stats segment.
  */
 export const AnalyticsVariationSegmentSchema = analyticsStatsSegmentSchema(
-  z.looseObject({
-    ...variationStatsFields,
-    variations_count: z
-      .number()
-      .optional()
-      .describe('Number of distinct variations sold.'),
-  }),
+  z.looseObject(variationStatsFields),
   { labelRequired: true }
 );
 export type AnalyticsVariationSegment = z.infer<

@@ -132,7 +132,7 @@ export const AnalyticsTaxesStatsQueryParamsSchema =
       .optional()
       .describe('Segment the response by additional constraint.'),
   });
-export type AnalyticsTaxesStatsQueryParams = z.infer<
+export type AnalyticsTaxesStatsQueryParams = z.input<
   typeof AnalyticsTaxesStatsQueryParamsSchema
 >;
 
@@ -169,6 +169,6 @@ export const AnalyticsTaxesListQueryParamsSchema =
       .optional()
       .describe('Sort collection by object attribute.'),
   });
-export type AnalyticsTaxesListQueryParams = z.infer<
+export type AnalyticsTaxesListQueryParams = z.input<
   typeof AnalyticsTaxesListQueryParamsSchema
 >;

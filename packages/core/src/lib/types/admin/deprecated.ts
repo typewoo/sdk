@@ -81,108 +81,108 @@ import {
   type AdminWebhookUpdateRequest,
 } from './webhooks/webhook.update.schema.js';
 
-/** @deprecated Removed in 4.0. Use `AdminBrandCreateRequest` for create() and `AdminBrandUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminBrandCreateRequest` for create() and `AdminBrandUpdateRequest` for update() instead. */
 export const AdminBrandRequestSchema = AdminBrandUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminBrandCreateRequest` for create() and `AdminBrandUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminBrandCreateRequest` for create() and `AdminBrandUpdateRequest` for update() instead. */
 export type AdminBrandRequest = AdminBrandUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminCouponCreateRequest` for create() and `AdminCouponUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminCouponCreateRequest` for create() and `AdminCouponUpdateRequest` for update() instead. */
 export const AdminCouponRequestSchema = AdminCouponUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminCouponCreateRequest` for create() and `AdminCouponUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminCouponCreateRequest` for create() and `AdminCouponUpdateRequest` for update() instead. */
 export type AdminCouponRequest = AdminCouponUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminCustomerCreateRequest` for create() and `AdminCustomerUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminCustomerCreateRequest` for create() and `AdminCustomerUpdateRequest` for update() instead. */
 export const AdminCustomerRequestSchema = AdminCustomerUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminCustomerCreateRequest` for create() and `AdminCustomerUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminCustomerCreateRequest` for create() and `AdminCustomerUpdateRequest` for update() instead. */
 export type AdminCustomerRequest = AdminCustomerUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminOrderCreateRequest` for create() and `AdminOrderUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminOrderCreateRequest` for create() and `AdminOrderUpdateRequest` for update() instead. */
 export const AdminOrderRequestSchema = AdminOrderUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminOrderCreateRequest` for create() and `AdminOrderUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminOrderCreateRequest` for create() and `AdminOrderUpdateRequest` for update() instead. */
 export type AdminOrderRequest = AdminOrderUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminOrderNoteCreateRequest`. */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminOrderNoteCreateRequest` instead. */
 export const AdminOrderNoteRequestSchema = AdminOrderNoteCreateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminOrderNoteCreateRequest`. */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminOrderNoteCreateRequest` instead. */
 export type AdminOrderNoteRequest = AdminOrderNoteCreateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminPaymentGatewayCreateRequest` for create() and `AdminPaymentGatewayUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminPaymentGatewayCreateRequest` for create() and `AdminPaymentGatewayUpdateRequest` for update() instead. */
 export const AdminPaymentGatewayRequestSchema =
   AdminPaymentGatewayUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminPaymentGatewayCreateRequest` for create() and `AdminPaymentGatewayUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminPaymentGatewayCreateRequest` for create() and `AdminPaymentGatewayUpdateRequest` for update() instead. */
 export type AdminPaymentGatewayRequest = AdminPaymentGatewayUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminProductAttributeCreateRequest` for create() and `AdminProductAttributeUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductAttributeCreateRequest` for create() and `AdminProductAttributeUpdateRequest` for update() instead. */
 export const AdminProductAttributeRequestSchema =
   AdminProductAttributeUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminProductAttributeCreateRequest` for create() and `AdminProductAttributeUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductAttributeCreateRequest` for create() and `AdminProductAttributeUpdateRequest` for update() instead. */
 export type AdminProductAttributeRequest = AdminProductAttributeUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminProductAttributeTermCreateRequest` for create() and `AdminProductAttributeTermUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductAttributeTermCreateRequest` for create() and `AdminProductAttributeTermUpdateRequest` for update() instead. */
 export const AdminProductAttributeTermRequestSchema =
   AdminProductAttributeTermUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminProductAttributeTermCreateRequest` for create() and `AdminProductAttributeTermUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductAttributeTermCreateRequest` for create() and `AdminProductAttributeTermUpdateRequest` for update() instead. */
 export type AdminProductAttributeTermRequest =
   AdminProductAttributeTermUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminProductCreateRequest` for create() and `AdminProductUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductCreateRequest` for create() and `AdminProductUpdateRequest` for update() instead. */
 export const AdminProductRequestSchema = AdminProductUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminProductCreateRequest` for create() and `AdminProductUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductCreateRequest` for create() and `AdminProductUpdateRequest` for update() instead. */
 export type AdminProductRequest = AdminProductUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminProductReviewCreateRequest` for create() and `AdminProductReviewUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductReviewCreateRequest` for create() and `AdminProductReviewUpdateRequest` for update() instead. */
 export const AdminProductReviewRequestSchema =
   AdminProductReviewUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminProductReviewCreateRequest` for create() and `AdminProductReviewUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminProductReviewCreateRequest` for create() and `AdminProductReviewUpdateRequest` for update() instead. */
 export type AdminProductReviewRequest = AdminProductReviewUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminSettingCreateRequest` for create() and `AdminSettingUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminSettingCreateRequest` for create() and `AdminSettingUpdateRequest` for update() instead. */
 export const AdminSettingRequestSchema = AdminSettingUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminSettingCreateRequest` for create() and `AdminSettingUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminSettingCreateRequest` for create() and `AdminSettingUpdateRequest` for update() instead. */
 export type AdminSettingRequest = AdminSettingUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminShippingClassCreateRequest` for create() and `AdminShippingClassUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingClassCreateRequest` for create() and `AdminShippingClassUpdateRequest` for update() instead. */
 export const AdminShippingClassRequestSchema =
   AdminShippingClassUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminShippingClassCreateRequest` for create() and `AdminShippingClassUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingClassCreateRequest` for create() and `AdminShippingClassUpdateRequest` for update() instead. */
 export type AdminShippingClassRequest = AdminShippingClassUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminShippingZoneCreateRequest` for create() and `AdminShippingZoneUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingZoneCreateRequest` for create() and `AdminShippingZoneUpdateRequest` for update() instead. */
 export const AdminShippingZoneRequestSchema =
   AdminShippingZoneUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminShippingZoneCreateRequest` for create() and `AdminShippingZoneUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingZoneCreateRequest` for create() and `AdminShippingZoneUpdateRequest` for update() instead. */
 export type AdminShippingZoneRequest = AdminShippingZoneUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminShippingZoneMethodCreateRequest` for create() and `AdminShippingZoneMethodUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingZoneMethodCreateRequest` for create() and `AdminShippingZoneMethodUpdateRequest` for update() instead. */
 export const AdminShippingZoneMethodRequestSchema =
   AdminShippingZoneMethodUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminShippingZoneMethodCreateRequest` for create() and `AdminShippingZoneMethodUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminShippingZoneMethodCreateRequest` for create() and `AdminShippingZoneMethodUpdateRequest` for update() instead. */
 export type AdminShippingZoneMethodRequest =
   AdminShippingZoneMethodUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminTaxCreateRequest` for create() and `AdminTaxUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxCreateRequest` for create() and `AdminTaxUpdateRequest` for update() instead. */
 export const AdminTaxRequestSchema = AdminTaxUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminTaxCreateRequest` for create() and `AdminTaxUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxCreateRequest` for create() and `AdminTaxUpdateRequest` for update() instead. */
 export type AdminTaxRequest = AdminTaxUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminTaxClassCreateRequest`. */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxClassCreateRequest` instead. */
 export const AdminTaxClassRequestSchema = AdminTaxClassCreateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminTaxClassCreateRequest`. */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxClassCreateRequest` instead. */
 export type AdminTaxClassRequest = AdminTaxClassCreateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminTaxonomyCategoryCreateRequest` for create() and `AdminTaxonomyCategoryUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxonomyCategoryCreateRequest` for create() and `AdminTaxonomyCategoryUpdateRequest` for update() instead. */
 export const AdminTaxonomyCategoryRequestSchema =
   AdminTaxonomyCategoryUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminTaxonomyCategoryCreateRequest` for create() and `AdminTaxonomyCategoryUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxonomyCategoryCreateRequest` for create() and `AdminTaxonomyCategoryUpdateRequest` for update() instead. */
 export type AdminTaxonomyCategoryRequest = AdminTaxonomyCategoryUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminTaxonomyTagCreateRequest` for create() and `AdminTaxonomyTagUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxonomyTagCreateRequest` for create() and `AdminTaxonomyTagUpdateRequest` for update() instead. */
 export const AdminTaxonomyTagRequestSchema =
   AdminTaxonomyTagUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminTaxonomyTagCreateRequest` for create() and `AdminTaxonomyTagUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminTaxonomyTagCreateRequest` for create() and `AdminTaxonomyTagUpdateRequest` for update() instead. */
 export type AdminTaxonomyTagRequest = AdminTaxonomyTagUpdateRequest;
 
-/** @deprecated Removed in 4.0. Use `AdminWebhookCreateRequest` for create() and `AdminWebhookUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminWebhookCreateRequest` for create() and `AdminWebhookUpdateRequest` for update() instead. */
 export const AdminWebhookRequestSchema = AdminWebhookUpdateRequestSchema;
-/** @deprecated Removed in 4.0. Use `AdminWebhookCreateRequest` for create() and `AdminWebhookUpdateRequest` for update(). */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminWebhookCreateRequest` for create() and `AdminWebhookUpdateRequest` for update() instead. */
 export type AdminWebhookRequest = AdminWebhookUpdateRequest;

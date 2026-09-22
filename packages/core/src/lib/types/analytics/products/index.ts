@@ -28,6 +28,8 @@ schemaRegistry.add(AnalyticsProductsStatsResponseSchema, {
   route: '/wc-analytics/reports/products/stats',
   kind: 'response',
   undocumented: ['products_count', 'variations_count'].flatMap((f) => [
+    `totals.${f}`,
+    `intervals[].subtotals.${f}`,
     `totals.segments[].subtotals.${f}`,
     `intervals[].subtotals.segments[].subtotals.${f}`,
   ]),

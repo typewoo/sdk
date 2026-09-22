@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, expectTypeOf, vi, beforeEach } from 'vitest';
+import type { AnalyticsRevenueStatsResponse } from '../../../../types/index.js';
 import { makeTestDeps } from '../../../helpers/make-test-deps.js';
 
 vi.mock('../../../../http/http.js', () => ({ doGet: vi.fn() }));
@@ -56,6 +57,37 @@ describe('AnalyticsRevenueService', () => {
       expect(url).toContain('after=2026-01-01');
       expect(url).toContain('before=2026-01-31');
       expect(url).toContain('interval=day');
+    });
+
+    it('encodes reserved characters in query values', async () => {
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AnalyticsRevenueService(state, config, events, http);
+      doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
+
+      await svc.getStats({ after: '2026-01-01T00:00:00+02:00&per_page=1' });
+
+      const url = doGetMock.mock.calls[0][0] as string;
+      expect(url).toContain(
+        'after=2026-01-01T00%3A00%3A00%2B02%3A00%26per_page%3D1'
+      );
+      expect(new URLSearchParams(url.split('?')[1]).has('per_page')).toBe(
+        false
+      );
+    });
+
+    it('types the response with the per-report revenue stats schema', () => {
+      type Data = Awaited<
+        ReturnType<AnalyticsRevenueService['getStats']>
+      >['data'];
+      expectTypeOf<Data>().toEqualTypeOf<
+        AnalyticsRevenueStatsResponse | undefined
+      >();
+      type Segment =
+        AnalyticsRevenueStatsResponse['totals']['segments'][number];
+      expectTypeOf<Segment['segment_id']>().toEqualTypeOf<number | string>();
+      expectTypeOf<Segment['segment_label']>().toEqualTypeOf<
+        string | null | undefined
+      >();
     });
 
     it('returns error when request fails', async () => {

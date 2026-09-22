@@ -4,7 +4,7 @@ import { z } from 'zod';
  * A meta value. WooCommerce stores arbitrary serialised PHP values, so a
  * value can be any JSON type, including arrays and objects.
  */
-const AdminMetaValueSchema = z.union([
+export const AdminMetaValueSchema = z.union([
   z.string(),
   z.number(),
   z.boolean(),
@@ -22,7 +22,7 @@ export const AdminMetaDataSchema = z.object({
   value: AdminMetaValueSchema.describe('Meta value.'),
 });
 export type AdminMetaData = z.infer<typeof AdminMetaDataSchema>;
-/** @deprecated Removed in 4.0. Use `AdminMetaData`. */
+/** @deprecated Deprecated in 4.0 and will be removed in 5.0. Use `AdminMetaData` instead. */
 export type AdminMetaDataType = AdminMetaData;
 
 /**

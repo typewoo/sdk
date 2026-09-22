@@ -2,7 +2,10 @@
 import { CheckoutCreateRequestSchema } from './checkout.create.schema.js';
 import { CheckoutResponseSchema } from './checkout.schema.js';
 import { CheckoutUpdateRequestSchema } from './checkout.update.schema.js';
-import { PARTIAL_ADDRESS_SCHEMA_BUGS } from '../known-schema-bugs.js';
+import {
+  EXTENSIONS_DEFAULT_SCHEMA_BUG,
+  PARTIAL_ADDRESS_SCHEMA_BUGS,
+} from '../known-schema-bugs.js';
 
 schemaRegistry.add(CheckoutResponseSchema, {
   surface: 'store',
@@ -16,8 +19,10 @@ schemaRegistry.add(CheckoutCreateRequestSchema, {
   kind: 'request',
   method: 'POST',
   openEnums: ['payment_method'],
-  undocumented: ['payment_data'],
-  knownSchemaBugs: PARTIAL_ADDRESS_SCHEMA_BUGS,
+  knownSchemaBugs: [
+    ...PARTIAL_ADDRESS_SCHEMA_BUGS,
+    EXTENSIONS_DEFAULT_SCHEMA_BUG,
+  ],
 });
 schemaRegistry.add(CheckoutUpdateRequestSchema, {
   surface: 'store',

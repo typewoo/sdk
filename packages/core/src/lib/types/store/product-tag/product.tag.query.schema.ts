@@ -54,4 +54,4 @@ export const ProductTagRequestSchema = PaginatedSchema.omit({
     .describe('Limit results to those matching a string.'),
 });
 
-export type ProductTagRequest = z.infer<typeof ProductTagRequestSchema>;
+export type ProductTagRequest = z.input<typeof ProductTagRequestSchema>;

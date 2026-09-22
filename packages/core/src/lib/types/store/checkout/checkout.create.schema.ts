@@ -33,10 +33,15 @@ export const CheckoutCreateRequestSchema = z.looseObject({
     ),
   /**
    * Data to pass through to the payment method when processing payment,
-   * e.g. a Stripe payment method ID. Not declared in WC's schema.
+   * e.g. a Stripe payment method ID or a save-card flag.
    */
   payment_data: z
-    .array(z.looseObject({ key: z.string(), value: z.string() }))
+    .array(
+      z.looseObject({
+        key: z.string(),
+        value: z.union([z.string(), z.boolean()]),
+      })
+    )
     .optional()
     .describe(
       'Data to pass through to the payment method when processing payment.'
@@ -51,7 +56,10 @@ export const CheckoutCreateRequestSchema = z.looseObject({
     .describe(
       'Whether to create a new user account as part of order processing.'
     ),
-  order_notes: z.string().optional().describe('Order notes.'),
+  customer_password: z
+    .string()
+    .optional()
+    .describe('Customer password for new accounts, if applicable.'),
   extensions: z
     .looseObject({
       'woocommerce/order-attribution': z
@@ -144,4 +152,4 @@ export const CheckoutCreateRequestSchema = z.looseObject({
     .optional(),
 });
 
-export type CheckoutCreateRequest = z.infer<typeof CheckoutCreateRequestSchema>;
+export type CheckoutCreateRequest = z.input<typeof CheckoutCreateRequestSchema>;

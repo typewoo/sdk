@@ -74,6 +74,6 @@ export const ProductAttributeTermRequestSchema = z.looseObject({
     .describe('Sort by term property.'),
 });
 
-export type ProductAttributeTermRequest = z.infer<
+export type ProductAttributeTermRequest = z.input<
   typeof ProductAttributeTermRequestSchema
 >;

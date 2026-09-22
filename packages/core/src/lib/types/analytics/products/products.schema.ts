@@ -8,24 +8,23 @@ const productStatsFields = {
   items_sold: z.number().describe('Number of product items sold.'),
   net_revenue: z.number().describe('Net sales.'),
   orders_count: z.number().describe('Number of orders.'),
+  // The API also sends these in totals, interval subtotals and segments,
+  // although WC's schema omits them.
+  products_count: z
+    .number()
+    .optional()
+    .describe('Number of distinct products sold.'),
+  variations_count: z
+    .number()
+    .optional()
+    .describe('Number of distinct variations sold.'),
 };
 
 /**
- * A single product stats segment. The API also sends `products_count` and
- * `variations_count` in segment subtotals, which WC's schema omits.
+ * A single product stats segment.
  */
 export const AnalyticsProductSegmentSchema = analyticsStatsSegmentSchema(
-  z.looseObject({
-    ...productStatsFields,
-    products_count: z
-      .number()
-      .optional()
-      .describe('Number of distinct products sold.'),
-    variations_count: z
-      .number()
-      .optional()
-      .describe('Number of distinct variations sold.'),
-  }),
+  z.looseObject(productStatsFields),
   { labelRequired: true }
 );
 export type AnalyticsProductSegment = z.infer<

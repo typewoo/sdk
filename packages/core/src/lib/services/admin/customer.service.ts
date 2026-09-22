@@ -30,7 +30,7 @@ export class AdminCustomerService extends BaseService {
       pageParams?: AdminCustomerQueryParams
     ): Promise<ApiPaginationResult<AdminCustomer[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -54,7 +54,9 @@ export class AdminCustomerService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminCustomer>(url, options);
@@ -103,7 +105,7 @@ export class AdminCustomerService extends BaseService {
     reassign = 0,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
-    const query = qs.stringify({ force, reassign }, { encode: false });
+    const query = qs.stringify({ force, reassign }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminCustomer>(url, options);
 

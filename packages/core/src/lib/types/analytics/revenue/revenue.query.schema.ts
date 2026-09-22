@@ -94,6 +94,6 @@ export const AnalyticsRevenueQueryParamsSchema =
         'Override the "woocommerce_date_type" option that is used for the database date field considered for revenue reports.'
       ),
   });
-export type AnalyticsRevenueQueryParams = z.infer<
+export type AnalyticsRevenueQueryParams = z.input<
   typeof AnalyticsRevenueQueryParamsSchema
 >;

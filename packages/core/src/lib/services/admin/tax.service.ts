@@ -33,7 +33,7 @@ export class AdminTaxService extends BaseService {
       pageParams?: AdminTaxQueryParams
     ): Promise<ApiPaginationResult<AdminTax[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -57,7 +57,9 @@ export class AdminTaxService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminTax>(url, options);
@@ -105,7 +107,7 @@ export class AdminTaxService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminTax>(url, options);
 
@@ -158,7 +160,9 @@ export class AdminTaxClassService extends BaseService {
     params?: AdminTaxClassQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminTaxClass[]>(url, options);
@@ -202,7 +206,7 @@ export class AdminTaxClassService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${slug}?${query}`;
     const { data, error } = await this.http.delete<AdminTaxClass>(url, options);
 

@@ -142,7 +142,7 @@ export const AnalyticsProductsStatsQueryParamsSchema =
       .optional()
       .describe('Limit result to items with specified variation ids.'),
   });
-export type AnalyticsProductsStatsQueryParams = z.infer<
+export type AnalyticsProductsStatsQueryParams = z.input<
   typeof AnalyticsProductsStatsQueryParamsSchema
 >;
 
@@ -187,6 +187,6 @@ export const AnalyticsProductsListQueryParamsSchema =
       .optional()
       .describe('Limit result to items with specified product ids.'),
   });
-export type AnalyticsProductsListQueryParams = z.infer<
+export type AnalyticsProductsListQueryParams = z.input<
   typeof AnalyticsProductsListQueryParamsSchema
 >;

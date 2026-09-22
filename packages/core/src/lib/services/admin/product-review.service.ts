@@ -30,7 +30,7 @@ export class AdminProductReviewService extends BaseService {
       pageParams?: AdminProductReviewQueryParams
     ): Promise<ApiPaginationResult<AdminProductReview[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -53,7 +53,9 @@ export class AdminProductReviewService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminProductReview>(
@@ -104,7 +106,7 @@ export class AdminProductReviewService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductReview>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminProductReview>(
       url,

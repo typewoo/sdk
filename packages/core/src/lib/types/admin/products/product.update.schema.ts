@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
-import {
-  AdminProductMetaData,
-  AdminProductImage,
-  AdminProductDimensions,
-} from './product.js';
+import { AdminProductImage, AdminProductDimensions } from './product.js';
 import {
   AdminProductAttributeInputSchema,
   AdminProductDefaultAttributeSchema,

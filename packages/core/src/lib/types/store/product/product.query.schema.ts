@@ -303,13 +303,30 @@ export const ProductRequestSchema = PaginatedSchema.extend({
 });
 
 /**
- * WooCommerce's experimental taxonomy filter, e.g.
- * `{ _unstable_tax_product_cat: 12, _unstable_tax_product_cat_operator: 'in' }`.
+ * WooCommerce's experimental filter for any taxonomy registered on products.
+ *
+ * Each `_unstable_tax_<taxonomy>` value is a term ID or slug; pass several as
+ * a comma-separated string (`'12,13'` or `'red,blue'`). WooCommerce declares
+ * these params as strings, so arrays are rejected with `rest_invalid_param`.
+ * `_unstable_tax_<taxonomy>_operator` picks how terms are matched: `in`
+ * (default), `not_in` or `and`.
+ *
+ * The built-in taxonomies `product_cat`, `product_tag` and `product_brand` are
+ * ignored here — WooCommerce reads them from `category`, `tag` and `brand`
+ * instead. Use this for other taxonomies, e.g.
+ * `{ _unstable_tax_product_type: 'simple' }` or
+ * `{ _unstable_tax_genre: 'jazz,blues', _unstable_tax_genre_operator: 'not_in' }`.
+ *
  * The keys depend on the taxonomy, so they aren't part of the schema.
  */
 export type ProductUnstableTaxonomyFilter = {
-  [key: `_unstable_tax_${string}`]: string | number | number[] | undefined;
+  [key: `_unstable_tax_${string}`]: string | number | undefined;
+  [key: `_unstable_tax_${string}_operator`]:
+    | 'in'
+    | 'not_in'
+    | 'and'
+    | undefined;
 };
 
-export type ProductRequest = z.infer<typeof ProductRequestSchema> &
+export type ProductRequest = z.input<typeof ProductRequestSchema> &
   ProductUnstableTaxonomyFilter;

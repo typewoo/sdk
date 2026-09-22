@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
-import {
-  AdminOrderAddress,
-  AdminOrderMetaData,
-  WC_CURRENCIES,
-} from './order.js';
+import { AdminOrderAddress, WC_CURRENCIES } from './order.js';
 import {
   AdminOrderLineItemInputSchema,
   AdminOrderShippingLineInputSchema,

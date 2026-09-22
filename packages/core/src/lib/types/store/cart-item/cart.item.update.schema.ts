@@ -17,4 +17,4 @@ export const CartItemEditRequestSchema = z.looseObject({
     .describe('New quantity of the item in the cart.'),
 });
 
-export type CartItemEditRequest = z.infer<typeof CartItemEditRequestSchema>;
+export type CartItemEditRequest = z.input<typeof CartItemEditRequestSchema>;

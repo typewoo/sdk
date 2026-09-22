@@ -28,7 +28,7 @@ export class AnalyticsCategoriesService extends BaseService {
       pageParams?: AnalyticsCategoriesListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsCategory[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 

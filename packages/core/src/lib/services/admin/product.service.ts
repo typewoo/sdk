@@ -39,7 +39,7 @@ export class AdminProductService extends BaseService {
       pageParams?: AdminProductQueryParams
     ): Promise<ApiPaginationResult<AdminProduct[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -64,7 +64,9 @@ export class AdminProductService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminProduct>(url, options);
@@ -112,7 +114,7 @@ export class AdminProductService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProduct>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminProduct>(url, options);
 
@@ -184,7 +186,7 @@ export class AdminProductService extends BaseService {
       pageParams?: AdminProductVariationQueryParams
     ): Promise<ApiPaginationResult<AdminProductVariation[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}/${productId}/variations${
         query ? `?${query}` : ''
@@ -211,7 +213,9 @@ export class AdminProductService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${productId}/variations/${variationId}${
       query ? `?${query}` : ''
     }`;
@@ -267,7 +271,7 @@ export class AdminProductService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${productId}/variations/${variationId}?${query}`;
     const { data, error } = await this.http.delete<AdminProductVariation>(
       url,
@@ -302,7 +306,9 @@ export class AdminProductService extends BaseService {
     params?: ProductCustomFieldNameQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<string[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/custom-fields/names${
       query ? `?${query}` : ''
     }`;

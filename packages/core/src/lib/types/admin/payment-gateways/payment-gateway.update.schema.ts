@@ -15,9 +15,11 @@ export const AdminPaymentGatewayUpdateRequestSchema = z.looseObject({
   enabled: z.boolean().optional().describe('Payment gateway enabled status.'),
   /**
    * Setting values keyed by setting ID, e.g. `{ title: 'Card', testmode: 'yes' }`.
+   * Multiselect settings take an array, e.g. COD's
+   * `enable_for_methods: ['flat_rate', 'local_pickup']`.
    */
   settings: z
-    .record(z.string(), z.string())
+    .record(z.string(), z.union([z.string(), z.array(z.string())]))
     .optional()
     .describe('Payment gateway settings.'),
 });

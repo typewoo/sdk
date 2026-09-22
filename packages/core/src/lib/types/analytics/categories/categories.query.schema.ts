@@ -119,6 +119,6 @@ export const AnalyticsCategoriesListQueryParamsSchema =
       .optional()
       .describe('Sort collection by object attribute.'),
   });
-export type AnalyticsCategoriesListQueryParams = z.infer<
+export type AnalyticsCategoriesListQueryParams = z.input<
   typeof AnalyticsCategoriesListQueryParamsSchema
 >;

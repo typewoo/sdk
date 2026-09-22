@@ -29,7 +29,7 @@ export class AdminPaymentGatewayService extends BaseService {
       pageParams?: AdminPaymentGatewayQueryParams
     ): Promise<ApiPaginationResult<AdminPaymentGateway[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -52,7 +52,9 @@ export class AdminPaymentGatewayService extends BaseService {
     params?: AdminPaymentGatewayQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminPaymentGateway>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminPaymentGateway>(

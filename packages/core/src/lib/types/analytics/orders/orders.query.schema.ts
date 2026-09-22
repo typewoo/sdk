@@ -251,7 +251,7 @@ export const AnalyticsOrdersStatsQueryParamsSchema =
       .optional()
       .describe('Alias for customer_type (deprecated).'),
   });
-export type AnalyticsOrdersStatsQueryParams = z.infer<
+export type AnalyticsOrdersStatsQueryParams = z.input<
   typeof AnalyticsOrdersStatsQueryParamsSchema
 >;
 
@@ -401,6 +401,6 @@ export const AnalyticsOrdersListQueryParamsSchema =
         'Limit result set to items that have the specified variation(s) assigned.'
       ),
   });
-export type AnalyticsOrdersListQueryParams = z.infer<
+export type AnalyticsOrdersListQueryParams = z.input<
   typeof AnalyticsOrdersListQueryParamsSchema
 >;

@@ -23,4 +23,4 @@ export const CartExtensionsRequestSchema = z.looseObject({
     .describe('Additional data to pass to the extension'),
 });
 
-export type CartExtensionsRequest = z.infer<typeof CartExtensionsRequestSchema>;
+export type CartExtensionsRequest = z.input<typeof CartExtensionsRequestSchema>;

@@ -31,6 +31,6 @@ export const AnalyticsLeaderboardsQueryParamsSchema = z.object({
     .optional()
     .describe('URL query to persist across links.'),
 });
-export type AnalyticsLeaderboardsQueryParams = z.infer<
+export type AnalyticsLeaderboardsQueryParams = z.input<
   typeof AnalyticsLeaderboardsQueryParamsSchema
 >;

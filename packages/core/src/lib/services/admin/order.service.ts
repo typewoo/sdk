@@ -42,7 +42,7 @@ export class AdminOrderService extends BaseService {
       pageParams?: AdminOrderQueryParams
     ): Promise<ApiPaginationResult<AdminOrder[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -66,7 +66,9 @@ export class AdminOrderService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminOrder>(url, options);
@@ -114,7 +116,7 @@ export class AdminOrderService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrder>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminOrder>(url, options);
 
@@ -162,7 +164,9 @@ export class AdminOrderService extends BaseService {
     },
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${orderId}/notes${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminOrderNote[]>(url, options);
@@ -208,7 +212,7 @@ export class AdminOrderService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminOrderNote>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${orderId}/notes/${noteId}?${query}`;
     const { data, error } = await this.http.delete<AdminOrderNote>(
       url,
@@ -302,7 +306,7 @@ export class AdminOrderService extends BaseService {
   }
 
   /**
-   * Get order statuses with counts
+   * Get the registered order statuses (slug and name)
    */
   async getStatuses(
     options?: RequestOptions
@@ -324,7 +328,9 @@ export class AdminOrderService extends BaseService {
     params?: AdminRefundQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminRefund[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${orderId}/refunds${
       query ? `?${query}` : ''
     }`;
@@ -341,7 +347,9 @@ export class AdminOrderService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}${
       query ? `?${query}` : ''
     }`;
@@ -374,7 +382,7 @@ export class AdminOrderService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminRefund>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${orderId}/refunds/${refundId}?${query}`;
     const { data, error } = await this.http.delete<AdminRefund>(url, options);
     return { data, error };

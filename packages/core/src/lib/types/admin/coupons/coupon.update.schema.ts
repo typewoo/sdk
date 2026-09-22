@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 
-import { AdminCouponMetaData } from './coupon.js';
-
 /**
  * Coupon request parameters for PUT /coupons/{id} (update). Every field is
  * optional — omitted fields keep their current value on the resource.

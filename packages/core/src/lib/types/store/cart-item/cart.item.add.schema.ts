@@ -26,4 +26,4 @@ export const CartItemAddRequestSchema = z.looseObject({
     .describe('Chosen attributes (for variations).'),
 });
 
-export type CartItemAddRequest = z.infer<typeof CartItemAddRequestSchema>;
+export type CartItemAddRequest = z.input<typeof CartItemAddRequestSchema>;

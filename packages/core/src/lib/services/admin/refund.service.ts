@@ -26,7 +26,7 @@ export class AdminRefundService extends BaseService {
       pageParams?: AdminRefundQueryParams
     ): Promise<ApiPaginationResult<AdminRefund[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 

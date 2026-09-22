@@ -36,7 +36,7 @@ export class AdminShippingZoneService extends BaseService {
       pageParams?: AdminShippingZoneQueryParams
     ): Promise<ApiPaginationResult<AdminShippingZone[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -60,7 +60,9 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZone>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminShippingZone>(
@@ -157,7 +159,9 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminShippingZoneMethod[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${zoneId}/methods${
       query ? `?${query}` : ''
     }`;
@@ -180,7 +184,9 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneMethod>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}${
       query ? `?${query}` : ''
     }`;

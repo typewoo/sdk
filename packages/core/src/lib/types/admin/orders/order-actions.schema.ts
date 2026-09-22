@@ -91,6 +91,17 @@ export type AdminOrderEmailTemplateId = z.infer<
 >;
 
 /**
+ * A template ID registered by an extension. Typed as `string & {}` so that
+ * `AdminOrderEmailTemplateId | string` keeps its literals for autocomplete
+ * instead of collapsing to `string`.
+ */
+type OtherEmailTemplateId = string & Record<never, never>;
+const OtherEmailTemplateIdSchema = z.string() as unknown as z.ZodType<
+  OtherEmailTemplateId,
+  OtherEmailTemplateId
+>;
+
+/**
  * Send order email request
  */
 export const AdminOrderSendEmailRequestSchema = z.looseObject({
@@ -104,21 +115,18 @@ export const AdminOrderSendEmailRequestSchema = z.looseObject({
     .describe(
       'Whether to update the billing email of the order, even if it already has one.'
     ),
+  /** Core template IDs autocomplete; extensions can register more, so any string is accepted. */
   template_id: z
-    .string()
+    .union([AdminOrderEmailTemplateIdSchema, OtherEmailTemplateIdSchema])
     .optional()
     .describe(
       'The email template to use. If omitted, the best template is auto-selected based on order status.'
     ),
 });
 
-export type AdminOrderSendEmailRequest = Omit<
-  z.input<typeof AdminOrderSendEmailRequestSchema>,
-  'template_id'
-> & {
-  /** The email template to use. If omitted, the best template is auto-selected based on order status. */
-  template_id?: AdminOrderEmailTemplateId | (string & {});
-};
+export type AdminOrderSendEmailRequest = z.input<
+  typeof AdminOrderSendEmailRequestSchema
+>;
 
 /**
  * Send order details request
@@ -146,7 +154,6 @@ export type AdminOrderSendDetailsRequest = z.input<
 export const AdminOrderActionResultSchema = z.looseObject({
   message: z
     .string()
-    .optional()
     .describe('A message indicating that the action completed successfully.'),
 });
 

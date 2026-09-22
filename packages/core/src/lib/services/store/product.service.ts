@@ -29,7 +29,7 @@ export class ProductService extends BaseService {
     const request = async (
       pageParams?: ProductRequest
     ): Promise<ApiPaginationResult<ProductResponse[]>> => {
-      const query = qs.stringify(pageParams ?? {}, { encode: false });
+      const query = qs.stringify(pageParams ?? {}, { encodeValuesOnly: true });
 
       const url = `/${this.endpoint}?${query}`;
       const { data, error, headers } = await this.http.get<ProductResponse[]>(

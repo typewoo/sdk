@@ -171,7 +171,7 @@ export const AnalyticsDownloadsStatsQueryParamsSchema =
         "Limit response to objects that don't have the specified customer ids."
       ),
   });
-export type AnalyticsDownloadsStatsQueryParams = z.infer<
+export type AnalyticsDownloadsStatsQueryParams = z.input<
   typeof AnalyticsDownloadsStatsQueryParamsSchema
 >;
 
@@ -244,6 +244,6 @@ export const AnalyticsDownloadsListQueryParamsSchema =
         "Limit response to objects that don't have the specified user ids."
       ),
   });
-export type AnalyticsDownloadsListQueryParams = z.infer<
+export type AnalyticsDownloadsListQueryParams = z.input<
   typeof AnalyticsDownloadsListQueryParamsSchema
 >;

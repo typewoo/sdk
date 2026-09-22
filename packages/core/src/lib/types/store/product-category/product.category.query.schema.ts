@@ -54,6 +54,6 @@ export const ProductCategoryRequestSchema = PaginatedSchema.omit({
     ),
 });
 
-export type ProductCategoryRequest = z.infer<
+export type ProductCategoryRequest = z.input<
   typeof ProductCategoryRequestSchema
 >;

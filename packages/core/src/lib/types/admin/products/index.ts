@@ -17,6 +17,13 @@ import {
   AdminProductCustomFieldNameQueryParamsSchema,
 } from './product.query.schema.js';
 
+// WC documents a string, but get_shipping_class_id() returns an int.
+const SHIPPING_CLASS_ID_BUG = {
+  field: 'shipping_class_id',
+  reason:
+    'WC documents a string; the live API returns an integer (0 when unset).',
+};
+
 schemaRegistry.add(AdminProductSchema, {
   surface: 'admin',
   route: '/wc/v3/products',
@@ -31,6 +38,7 @@ schemaRegistry.add(AdminProductSchema, {
     'date_on_sale_to_gmt',
     'stock_quantity',
   ],
+  knownSchemaBugs: [SHIPPING_CLASS_ID_BUG],
 });
 schemaRegistry.add(AdminProductCreateRequestSchema, {
   surface: 'admin',
@@ -67,6 +75,15 @@ schemaRegistry.add(AdminProductVariationSchema, {
   ],
   // Returned by the live API but missing from WC's variation schema.
   undocumented: ['name', 'date_created_gmt', 'date_modified_gmt'],
+  knownSchemaBugs: [
+    SHIPPING_CLASS_ID_BUG,
+    {
+      field: 'status',
+      reason:
+        'WC documents get_post_statuses(), but a variation takes any post status: "trash" when its product is trashed, "future" when scheduled.',
+      driftKinds: ['enum-drift'],
+    },
+  ],
 });
 schemaRegistry.add(AdminProductVariationCreateRequestSchema, {
   surface: 'admin',

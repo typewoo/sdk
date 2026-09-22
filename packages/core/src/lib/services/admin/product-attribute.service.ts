@@ -33,7 +33,7 @@ export class AdminProductAttributeService extends BaseService {
       pageParams?: AdminProductAttributeQueryParams
     ): Promise<ApiPaginationResult<AdminProductAttribute[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -56,7 +56,9 @@ export class AdminProductAttributeService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminProductAttribute>(
@@ -107,7 +109,7 @@ export class AdminProductAttributeService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminProductAttribute>(
       url,

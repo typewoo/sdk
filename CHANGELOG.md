@@ -133,24 +133,44 @@ now require fields WooCommerce requires (e.g. coupon `code`, webhook
   all checkout address fields are now optional.
 - Review `reviewer_avatar_urls` is an object keyed by size, not an array.
 - `ProductRequest.rating` is an array of integers 1–5 (`rating: [4, 5]`),
-  matching the Store API; it was a single `number` in 3.x.
+  matching the Store API; it was a single `number` in 3.x and an array of
+  strings (`'1'`–`'5'`) in 4.0.0-alpha.0.
 - `ProductRequest.attributes` is an array of
   `{ attribute, term_id | slug, operator? }` objects, matching the Store API.
 - `ProductRequest._unstable_tax_` / `_unstable_tax_operator` arrays were
   replaced by WooCommerce's own flat keys, e.g.
-  `{ _unstable_tax_product_cat: 12, _unstable_tax_product_cat_operator: 'in' }`.
-  The old arrays were serialised incorrectly and never filtered anything.
+  `{ _unstable_tax_product_type: 'simple,variable', _unstable_tax_product_type_operator: 'in' }`.
+  Pass several terms comma-separated (WooCommerce rejects arrays here). For
+  categories, tags and brands use `category`, `tag` and `brand`:
+  WooCommerce ignores `_unstable_tax_product_cat` and friends. The old
+  arrays were serialised incorrectly and never filtered anything.
 - `AdminOrderRefund` (the entries of `AdminOrder.refunds`) is
   `{ id, reason, total }`, which is all WooCommerce returns there; fetch
   the full refund with `admin.refunds` if you need more.
 - `AdminOrderLineItem.price` is a `number` (it was typed as a string), and
   `image.id` is `number | string` (`""` when the product has no image).
-  `parent_name` and the new `global_unique_id` can be `null`.
+  `sku`, `parent_name` and the new `global_unique_id` can be `null`, and
+  `image.src` can be `false` (deleted product or image). Refund line items
+  share the order line item type.
+- Order item `meta_data` entries (on every line type) carry
+  `display_key` / `display_value`; `display_value` can be any meta value.
+- `AdminProduct.shipping_class_id` and `AdminProductVariation.shipping_class_id`
+  are `number`.
+- `orders.sendEmail()` / `sendOrderDetails()` return
+  `AdminOrderActionResult` (`{ message }`).
 - `AdminOrderCouponLine` gained `discount_type`, `nominal_amount` and
   `free_shipping`.
-- The analytics stats reports type their `segments` (they were `{}[]`), and
-  `AnalyticsOrderInterval` / `AnalyticsRevenueInterval` subtotals no longer
-  have `products`, which WooCommerce only returns in `totals`.
+- Analytics `getStats()` methods return per-report types (e.g.
+  `AnalyticsRevenueStatsResponse`) instead of `AnalyticsStatsResponse<T>` /
+  `AnalyticsTotalsResponse<T>`, which are deprecated along with
+  `AnalyticsSegment`, `AnalyticsSegmentedTotals` and
+  `AnalyticsStatsInterval` (removal in 5.0).
+- The analytics stats reports type their `segments` (they were `{}[]`):
+  `segment_id` is `number | string` (coupon segments use strings) and
+  `segment_label` can be `null` (e.g. `segmentby=customer_type`). Order and
+  revenue interval subtotals no longer have `products`, which WooCommerce
+  only returns in `totals`; products and variations stats gained
+  `products_count` / `variations_count`.
 - Store API responses: `CheckoutResponse.billing_address` and its fields
   are always present; order `errors` entries are `{ code, message }` (no
   `data`); order `tax_lines`, `payment_details`, collection-data
@@ -198,11 +218,13 @@ were removed with it.
 
 - **Checkout accepts any payment gateway.** `payment_method` was limited to
   `bacs`, `cheque` and `cod`; it's now a string, so `'stripe'` and other
-  gateways type-check and validate. `payment_data` (gateway key/value pairs)
-  is back on `CheckoutCreateRequest`.
-- **`CheckoutUpdateRequest`** (`store.checkout.update()`) now has the same
-  fields as placing an order, and `additional_fields` is an object (it was
-  an array).
+  gateways type-check and validate. `payment_data` (gateway key/value
+  pairs, values may be strings or booleans) is back on
+  `CheckoutCreateRequest`, along with `customer_password` for new accounts.
+- **`CheckoutUpdateRequest`** (`store.checkout.update()`) now has the
+  fields WooCommerce accepts when updating the draft order, including
+  `order_notes` (which only applies there), and `additional_fields` is an
+  object (it was an array).
 - **`OrderRequest`** (`store.checkoutOrder.order()`, paying for an existing
   order) only requires `key` and `billing_address`, matching WooCommerce;
   `shipping_address` and `payment_method` are optional, and
@@ -231,10 +253,20 @@ were removed with it.
 - **New types:** `AdminBatchResponse`, `AdminOrderActionResult`,
   `OrderQueryParams` (Store API `GET /order/{id}`), and `AdminRefund`
   gained `parent_id`.
+- **Query strings are encoded.** Services sent query values unencoded, so
+  `search: 'a&b'` searched for `a`, a `#` cut off the rest of the URL, `+`
+  became a space, and a value could add its own parameters. Values are now
+  URL-encoded (brackets in keys stay readable).
+- Request and query types use `z.input`, so fields with defaults stay
+  optional for callers.
 - **Coverage:** every WooCommerce route the SDK calls is now checked
   against WooCommerce's schema (232 checks, up from 147), and CI fails when
   a new upstream route is neither mapped nor listed in
   `scripts/types-sync/route-allowlist.json` with a reason.
+- **`AdminOrderSendEmailRequest`** checks its fields again (a type bug let
+  any object through); core template IDs still autocomplete.
+- **`AdminPaymentGatewayUpdateRequest.settings`** accepts string arrays for
+  multiselect settings (e.g. COD `enable_for_methods`).
 - **Admin products:** create/update `attributes[]` entries only need the
   fields you're setting (`AdminProductAttributeInput`); `visible` and
   `variation` default to `false`.

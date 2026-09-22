@@ -28,7 +28,7 @@ export class AdminShippingMethodService extends BaseService {
       pageParams?: AdminShippingMethodQueryParams
     ): Promise<ApiPaginationResult<AdminShippingMethod[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -51,7 +51,9 @@ export class AdminShippingMethodService extends BaseService {
     params?: AdminShippingMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingMethod>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminShippingMethod>(

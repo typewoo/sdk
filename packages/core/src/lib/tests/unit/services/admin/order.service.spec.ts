@@ -47,6 +47,18 @@ describe('AdminOrderService', () => {
       expect(result.pagination?.total).toBe(50);
     });
 
+    it('encodes query values so they cannot add parameters', async () => {
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new AdminOrderService(state, config, events, http);
+      doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
+
+      await svc.list({ search: 'a&b#c+d', per_page: 5 });
+
+      const url = doGetMock.mock.calls[0][0] as string;
+      expect(url).toContain('search=a%26b%23c%2Bd');
+      expect(url.match(/per_page=/g)).toHaveLength(1);
+    });
+
     it('returns error when list fails', async () => {
       const { state, config, events, http } = makeTestDeps();
       const svc = new AdminOrderService(state, config, events, http);

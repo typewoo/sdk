@@ -30,7 +30,7 @@ export class AdminProductBrandService extends BaseService {
       pageParams?: AdminBrandQueryParams
     ): Promise<ApiPaginationResult<AdminBrand[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
@@ -54,7 +54,9 @@ export class AdminProductBrandService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AdminBrand>(url, options);
@@ -102,7 +104,7 @@ export class AdminProductBrandService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
     const { data, error } = await this.http.delete<AdminBrand>(url, options);
 

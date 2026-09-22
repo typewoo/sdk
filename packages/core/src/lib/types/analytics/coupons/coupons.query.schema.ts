@@ -124,7 +124,7 @@ export const AnalyticsCouponsStatsQueryParamsSchema =
       .optional()
       .describe('Segment the response by additional constraint.'),
   });
-export type AnalyticsCouponsStatsQueryParams = z.infer<
+export type AnalyticsCouponsStatsQueryParams = z.input<
   typeof AnalyticsCouponsStatsQueryParamsSchema
 >;
 
@@ -150,6 +150,6 @@ export const AnalyticsCouponsListQueryParamsSchema =
       .optional()
       .describe('Sort collection by object attribute.'),
   });
-export type AnalyticsCouponsListQueryParams = z.infer<
+export type AnalyticsCouponsListQueryParams = z.input<
   typeof AnalyticsCouponsListQueryParamsSchema
 >;

@@ -12,6 +12,6 @@ export const AnalyticsStockStatsQueryParamsSchema = z.object({
       'Scope under which the request is made; determines fields present in response.'
     ),
 });
-export type AnalyticsStockStatsQueryParams = z.infer<
+export type AnalyticsStockStatsQueryParams = z.input<
   typeof AnalyticsStockStatsQueryParamsSchema
 >;

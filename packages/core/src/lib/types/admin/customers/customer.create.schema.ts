@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
-
-import { AdminCustomerAddress, AdminCustomerMetaData } from './customer.js';
+import { AdminCustomerAddress } from './customer.js';
 
 export const AdminCustomerCreateRequestSchema = z.looseObject({
   email: z.string().describe('New user email address.'),

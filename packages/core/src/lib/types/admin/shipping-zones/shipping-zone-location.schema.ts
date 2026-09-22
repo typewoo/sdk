@@ -9,9 +9,7 @@ const LocationTypeSchema = z.enum([
 
 export const AdminShippingZoneLocationSchema = z.looseObject({
   code: z.string().optional().describe('Shipping zone location code.'),
-  type: LocationTypeSchema.default('country')
-    .optional()
-    .describe('Shipping zone location type.'),
+  type: LocationTypeSchema.optional().describe('Shipping zone location type.'),
   _links: z.object({
     collection: z.array(z.object({ href: z.string() })),
     describes: z.array(z.object({ href: z.string() })),

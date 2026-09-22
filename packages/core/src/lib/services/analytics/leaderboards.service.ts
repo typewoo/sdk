@@ -23,7 +23,9 @@ export class AnalyticsLeaderboardsService extends BaseService {
     params?: AnalyticsLeaderboardsQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AnalyticsLeaderboard[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
     const { data, error } = await this.http.get<AnalyticsLeaderboard[]>(

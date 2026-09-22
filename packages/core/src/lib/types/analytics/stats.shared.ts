@@ -32,9 +32,14 @@ export function analyticsStatsIntervalSchema<T extends z.ZodType>(
 
 /**
  * Builds the schema for one element of a stats report's `segments` array
- * (populated when `segmentby` is set). The live API always sends
- * `segment_label`, even for reports whose WC schema omits it; pass
- * `labelRequired` for reports whose schema declares it.
+ * (populated when `segmentby` is set).
+ *
+ * `segment_id` is numeric for product/variation/category segments but a
+ * string for others (e.g. `"200"` for `segmentby=coupon`). `segment_label` is
+ * the product/variation/category name where there is one, and `null` for
+ * segments without a name (e.g. `segmentby=customer_type`); WC's schema omits
+ * it for most reports. Pass `labelRequired` for the products/variations
+ * reports, whose schema declares it and whose segments are always named.
  */
 export function analyticsStatsSegmentSchema<T extends z.ZodType>(
   subtotals: T,
@@ -43,11 +48,13 @@ export function analyticsStatsSegmentSchema<T extends z.ZodType>(
   const label = z
     .string()
     .describe(
-      'Human readable segment label (e.g. the product, variation or category name).'
+      'Human readable segment label (e.g. the product, variation or category name), or null when the segment has none.'
     );
   return z.looseObject({
-    segment_id: z.number().describe('Segment identificator.'),
-    segment_label: options.labelRequired ? label : label.optional(),
+    segment_id: z
+      .union([z.number(), z.string()])
+      .describe('Segment identificator.'),
+    segment_label: options.labelRequired ? label : label.nullable().optional(),
     subtotals: subtotals.describe('Interval subtotals.'),
   });
 }
