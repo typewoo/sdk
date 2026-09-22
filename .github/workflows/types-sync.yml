@@ -12,9 +12,11 @@ on:
   pull_request:
     branches: [main]
 
+# Least privilege: only the diff job, which files the tracking issue, can
+# write issues. The capture job runs WordPress/WooCommerce code downloaded
+# from upstream and gets read-only access.
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: types-sync-${{ github.event_name }}
@@ -48,8 +50,20 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
     steps:
       - uses: actions/checkout@v4
+
+      # The version can come from a workflow_dispatch input, so accept only a
+      # plain version number before it's used in paths and commands.
+      - name: Validate WooCommerce version
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid WooCommerce version; expected e.g. 10.7.0."
+            exit 1
+          fi
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10.20.0
@@ -59,9 +73,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
-      - name: Boot WP + WC (pinned to ${{ github.event.inputs.wc_version || needs.window.outputs.latest }})
+      - name: Boot WP + WC
         env:
-          WOO_COMMERCE_VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
+          WOO_COMMERCE_VERSION: ${{ env.VERSION }}
         run: pnpm wp:env:rebuild
 
       - name: Read provisioned REST keys
@@ -78,16 +92,16 @@ jobs:
 
       - name: Capture
         env:
-          WC_VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
+          WC_VERSION: ${{ env.VERSION }}
           WP_CONSUMER_KEY: admin
           WP_CONSUMER_SECRET: ${{ steps.keys.outputs.pwd }}
-        run: pnpm types:sync:capture --wc-version ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
+        run: pnpm types:sync:capture --wc-version "$VERSION"
 
       - name: Upload snapshot artifact
         uses: actions/upload-artifact@v4
         with:
-          name: snapshot-${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
-          path: scripts/types-sync/snapshots/wc-${{ github.event.inputs.wc_version || needs.window.outputs.latest }}.json
+          name: snapshot-${{ env.VERSION }}
+          path: scripts/types-sync/snapshots/wc-${{ env.VERSION }}.json
 
   # The diff job consumes the committed snapshots (and any freshly-captured
   # one from the `capture` step) and produces a report. Always runs against
@@ -98,6 +112,11 @@ jobs:
     if: ${{ always() && needs.window.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+    env:
+      LATEST: ${{ needs.window.outputs.latest }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -118,9 +137,16 @@ jobs:
           path: scripts/types-sync/snapshots
           merge-multiple: true
 
+      # Exit codes: 0 = clean, 1 = drift found, 2 = the tool itself failed.
+      # The code is recorded so a crash isn't reported as schema drift.
       - name: Diff against SDK types (full support window)
         id: check
-        run: pnpm types:sync:check
+        run: |
+          set +e
+          pnpm types:sync:check
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Run registry-completeness test (strict)
         env:
@@ -135,12 +161,14 @@ jobs:
           name: drift-${{ needs.window.outputs.latest }}
           path: scripts/types-sync/out/
 
+      # One tracking issue, found by its labels, so it survives WooCommerce
+      # version bumps; its title is kept current with the latest version.
       - name: Open / update tracking issue on drift
-        if: steps.check.outcome == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: always() && steps.check.outputs.code == '1' && hashFiles('scripts/types-sync/out/drift.md') != '' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_GIST_TOKEN: ${{ secrets.GH_GIST_TOKEN }}
-          TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
+          TITLE: 'Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
           gh label create "types-sync"    --color "0075ca" --description "Type synchronisation" --force
           gh label create "schema-drift"  --color "e4e669" --description "WooCommerce schema drift detected" --force
@@ -157,14 +185,14 @@ jobs:
           if [ ${#body} -gt $LIMIT ]; then
             if [ -n "$GH_GIST_TOKEN" ]; then
               gist_url=$(GH_TOKEN="$GH_GIST_TOKEN" gh gist create scripts/types-sync/out/drift.md \
-                --desc "Schema drift report: WooCommerce ${{ needs.window.outputs.latest }}" \
-                --filename "drift-${{ needs.window.outputs.latest }}.md")
+                --desc "Schema drift report: WooCommerce $LATEST" \
+                --filename "drift-$LATEST.md")
               printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> The full report has been uploaded as a gist: **[drift-%s.md](%s)**\n' \
-                "${{ needs.window.outputs.latest }}" "$gist_url" > "$body_file"
+                "$LATEST" "$gist_url" > "$body_file"
             else
-              RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> Download the full report from the **[`drift-${{ needs.window.outputs.latest }}` CI artifact](%s)**.\n> To enable automatic gist uploads, add a PAT with the `gist` scope as the `GH_GIST_TOKEN` repository secret.\n' \
-                "$RUN_URL" > "$body_file"
+              RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+              printf '> [!NOTE]\n> The drift report is too large to display inline (exceeds the 65 536-character GitHub limit).\n> Download the full report from the **[`drift-%s` CI artifact](%s)**.\n> To enable automatic gist uploads, add a PAT with the `gist` scope as the `GH_GIST_TOKEN` repository secret.\n' \
+                "$LATEST" "$RUN_URL" > "$body_file"
             fi
           else
             printf '%s' "$body" > "$body_file"
@@ -173,11 +201,10 @@ jobs:
           existing=$(gh issue list \
             --label "types-sync" --label "schema-drift" \
             --state open \
-            --json number,title \
-            --jq ".[] | select(.title==\"$TITLE\") | .number" \
-            | head -1)
+            --json number \
+            --jq ".[0].number // empty")
           if [ -n "$existing" ]; then
-            gh issue edit "$existing" --body-file "$body_file"
+            gh issue edit "$existing" --title "$TITLE" --body-file "$body_file"
             echo "Updated issue #$existing"
           else
             gh issue create \
@@ -187,20 +214,18 @@ jobs:
           fi
 
       - name: Close tracking issue if drift resolved
-        if: steps.check.outcome == 'success' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: steps.check.outputs.code == '0' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TITLE: '[Experimental] Schema drift: WooCommerce ${{ needs.window.outputs.latest }}'
         run: |
           existing=$(gh issue list \
             --label "types-sync" --label "schema-drift" \
             --state open \
-            --json number,title \
-            --jq ".[] | select(.title==\"$TITLE\") | .number" \
-            | head -1)
+            --json number \
+            --jq ".[0].number // empty")
           if [ -n "$existing" ]; then
             gh issue comment "$existing" \
-              --body "Schema drift resolved — \`pnpm types:sync:check\` passed against WooCommerce \`${{ needs.window.outputs.latest }}\` ([run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))."
+              --body "Schema drift resolved — \`pnpm types:sync:check\` passed against WooCommerce \`$LATEST\` ([run]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID))."
             gh issue close "$existing" --reason completed
             echo "Closed issue #$existing"
           else

@@ -80,7 +80,7 @@ Core internals (`packages/core/src/lib/`):
 5. Test: `pnpm nx test @typewoo/sdk  ` (add `--coverage` if changing runtime logic)
 6. Lint: `pnpm nx lint @typewoo/sdk  `
 7. Verify `index.ts` exports only intended public symbols
-8. Add tests for new code paths (coverage target ≥ 98%)
+8. Add tests for new code paths (CI enforces ≥ 90% statements/lines, 80% branches, 92% functions)
 9. Re-run full suite before final output
 
 CI enforces: install → lint → format check → test → build. Local parity reduces iteration churn.
