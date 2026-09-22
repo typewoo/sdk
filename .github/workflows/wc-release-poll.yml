@@ -9,8 +9,14 @@ name: wc-release-poll
 #      window pruning is a deliberate manual PR.
 #   4. Opens a PR with all of the above for human review.
 #
-# A tag counts as handled once it's in support-window.json (PR merged) or
-# its PR branch exists (PR open), so the hourly run doesn't rebuild it again.
+# A tag counts as handled once it's in support-window.json or a PR from its
+# branch exists (open, merged or closed), so the hourly run doesn't rebuild
+# it. A branch without a PR (the PR step failed) is retried; the PR step
+# updates the branch.
+#
+# Opening the PR needs either "Allow GitHub Actions to create and approve
+# pull requests" (Settings → Actions → General) or the TYPES_SYNC_PR_TOKEN
+# secret described below.
 #
 # The tag comes from an external repository, so it's validated as a plain
 # version number and only ever reaches shell through environment variables.
@@ -32,7 +38,7 @@ jobs:
   poll:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Get latest WC tag
         id: latest
@@ -51,25 +57,26 @@ jobs:
         id: seen
         env:
           TAG: ${{ steps.latest.outputs.tag }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if jq -e --arg v "$TAG" '.versions | index($v)' scripts/types-sync/support-window.json > /dev/null; then
             echo "WC $TAG is already in the support window. Nothing to do."
             echo "handled=true" >> "$GITHUB_OUTPUT"
-          elif git ls-remote --exit-code --heads origin "types-sync/wc-$TAG" > /dev/null; then
-            echo "A PR branch for WC $TAG already exists. Nothing to do."
+          elif [ -n "$(gh pr list --head "types-sync/wc-$TAG" --state all --json number --jq '.[0].number // empty')" ]; then
+            echo "A PR for WC $TAG already exists (open, merged or closed). Nothing to do."
             echo "handled=true" >> "$GITHUB_OUTPUT"
           else
             echo "handled=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.seen.outputs.handled == 'false'
         with:
           version: 10.20.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: steps.seen.outputs.handled == 'false'
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - if: steps.seen.outputs.handled == 'false'
         run: pnpm install --frozen-lockfile
@@ -116,7 +123,7 @@ jobs:
       # pull-requests write on this repo) to get CI on these PRs.
       - name: Open PR with new snapshot + window bump
         if: steps.seen.outputs.handled == 'false'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.TYPES_SYNC_PR_TOKEN || github.token }}
           branch: types-sync/wc-${{ steps.latest.outputs.tag }}

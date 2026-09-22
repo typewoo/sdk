@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -45,7 +45,7 @@ jobs:
           ASSETS_DIR: assets/wordpress-org
 
       - name: Upload plugin package as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: typewoo-plugin
           path: dist/wp-plugin/typewoo.zip

@@ -31,7 +31,7 @@ jobs:
       latest: ${{ steps.read.outputs.latest }}
       versions_json: ${{ steps.read.outputs.versions_json }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: read
         run: |
           file=scripts/types-sync/support-window.json
@@ -53,7 +53,7 @@ jobs:
     env:
       VERSION: ${{ github.event.inputs.wc_version || needs.window.outputs.latest }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # The version can come from a workflow_dispatch input, so accept only a
       # plain version number before it's used in paths and commands.
@@ -64,12 +64,12 @@ jobs:
             exit 1
           fi
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.20.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
@@ -98,7 +98,7 @@ jobs:
         run: pnpm types:sync:capture --wc-version "$VERSION"
 
       - name: Upload snapshot artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: snapshot-${{ env.VERSION }}
           path: scripts/types-sync/snapshots/wc-${{ env.VERSION }}.json
@@ -118,13 +118,13 @@ jobs:
     env:
       LATEST: ${{ needs.window.outputs.latest }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.20.0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
@@ -132,7 +132,7 @@ jobs:
       # diff sees the latest data even before it's been committed.
       - name: Restore freshly-captured snapshot (if any)
         if: ${{ needs.capture.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: scripts/types-sync/snapshots
           merge-multiple: true
@@ -156,7 +156,7 @@ jobs:
 
       - name: Upload drift report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: drift-${{ needs.window.outputs.latest }}
           path: scripts/types-sync/out/
