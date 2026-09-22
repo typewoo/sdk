@@ -29,7 +29,7 @@ describe('BatchService (store)', () => {
       });
 
       const result = await svc.execute({
-        requests: [{ method: 'GET', path: '/wc/store/v1/cart' }],
+        requests: [{ method: 'POST', path: '/wc/store/v1/cart/add-item' }],
       });
       expect(doPostMock.mock.calls[0][0]).toContain(
         '/wp-json/wc/store/v1/batch'

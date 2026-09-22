@@ -22,14 +22,12 @@ beforeAll(() => {
 });
 
 describe('Analytics Categories — integration', () => {
-  it('returns category stats with valid shape', async () => {
-    const { data, error } = await sdk.analytics.categories.getStats({
+  it('returns category stats via products stats segmented by category', async () => {
+    const { data, error } = await sdk.analytics.products.getStats({
       after: '2025-01-01T00:00:00',
       before: '2026-12-31T23:59:59',
+      segmentby: 'category',
     });
-
-    // categories/stats may return rest_no_route on some WC installations
-    if (error?.code === 'rest_no_route') return;
 
     expect(
       error,

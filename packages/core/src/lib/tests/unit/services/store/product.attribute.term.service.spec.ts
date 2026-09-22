@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, expectTypeOf, vi, beforeEach } from 'vitest';
+import type { ProductAttributeTermResponse } from '../../../../types/index.js';
 import { makeTestDeps } from '../../../helpers/make-test-deps.js';
 
 vi.mock('../../../../http/http.js', () => ({
@@ -68,5 +69,14 @@ describe('ProductAttributeTermService (store)', () => {
       const result = await svc.list(1);
       expect(result.error).toBeDefined();
     });
+  });
+
+  it('types list() rows as attribute terms, not attributes', () => {
+    type Rows = Awaited<
+      ReturnType<ProductAttributeTermService['list']>
+    >['data'];
+    expectTypeOf<Rows>().toEqualTypeOf<
+      ProductAttributeTermResponse[] | undefined
+    >();
   });
 });

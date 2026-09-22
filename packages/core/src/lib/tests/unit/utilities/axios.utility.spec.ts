@@ -23,7 +23,7 @@ describe('createServerError()', () => {
         headers: { 'x-test': 'yes' },
         status: 404,
       },
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createServerError(axiosError);
     expect(result.error?.code).toBe('woocommerce_rest_not_found');
@@ -43,7 +43,7 @@ describe('createServerError()', () => {
         headers: { 'X-Custom-Header': 'value' },
         status: 500,
       },
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createServerError(axiosError);
     expect(result.headers?.['x-custom-header']).toBe('value');
@@ -56,7 +56,7 @@ describe('createNetworkError()', () => {
       code: 'ECONNREFUSED',
       message: 'Connection refused',
       request: {},
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createNetworkError(axiosError);
     expect(result.error?.code).toBe('ECONNREFUSED');
@@ -68,7 +68,7 @@ describe('createRequestError()', () => {
   it('returns request_error code for setup failures', () => {
     const axiosError = {
       message: 'Invalid URL',
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createRequestError(axiosError);
     expect(result.error?.code).toBe('request_error');
@@ -89,7 +89,7 @@ describe('createError() dispatcher', () => {
         headers: {},
         status: 400,
       },
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createError(axiosError);
     expect(result.status).toBe(400);
@@ -100,7 +100,7 @@ describe('createError() dispatcher', () => {
       code: 'ENETDOWN',
       message: 'Network is down',
       request: {},
-    } as AxiosError<ApiError>;
+    } as unknown as AxiosError<ApiError>;
 
     const result = createError(axiosError);
     expect(result.error?.code).toBe('ENETDOWN');

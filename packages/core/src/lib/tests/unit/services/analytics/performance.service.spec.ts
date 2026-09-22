@@ -37,12 +37,14 @@ describe('AnalyticsPerformanceService', () => {
 
       await svc.getIndicators({
         after: '2026-01-01',
-        stats: 'revenue/gross_revenue,orders/net_revenue',
+        stats: ['revenue/net_revenue', 'orders/orders_count'],
       });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('after=2026-01-01');
-      expect(url).toContain('stats=revenue');
+      expect(url).toContain(
+        'stats[0]=revenue/net_revenue&stats[1]=orders/orders_count'
+      );
     });
 
     it('returns error when request fails', async () => {

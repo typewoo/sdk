@@ -79,7 +79,7 @@ describe('AnalyticsRevenueService', () => {
       const { state, config, events, http } = makeTestDeps();
       const svc = new AnalyticsRevenueService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
-      const options = { signal: new AbortController().signal };
+      const options = { axiosConfig: { signal: new AbortController().signal } };
 
       await svc.getStats(undefined, options);
 

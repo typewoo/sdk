@@ -19,55 +19,6 @@ const doGetMock = vi.mocked(doGet);
 describe('AnalyticsCategoriesService', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  describe('getStats()', () => {
-    it('calls /categories/stats URL with no params', async () => {
-      const { state, config, events, http } = makeTestDeps();
-      const svc = new AnalyticsCategoriesService(state, config, events, http);
-      doGetMock.mockResolvedValueOnce({
-        data: { totals: { items_sold: 10 }, intervals: [] },
-        error: undefined,
-      });
-
-      const result = await svc.getStats();
-
-      expect(doGetMock).toHaveBeenCalledWith(
-        '/wp-json/wc-analytics/reports/categories/stats',
-        undefined
-      );
-      expect(result.error).toBeUndefined();
-      expect(result.data).toBeDefined();
-    });
-
-    it('appends query params to stats URL', async () => {
-      const { state, config, events, http } = makeTestDeps();
-      const svc = new AnalyticsCategoriesService(state, config, events, http);
-      doGetMock.mockResolvedValueOnce({ data: { totals: {}, intervals: [] } });
-
-      await svc.getStats({ after: '2026-01-01', interval: 'week' });
-
-      const url = doGetMock.mock.calls[0][0] as string;
-      expect(url).toContain('after=2026-01-01');
-      expect(url).toContain('interval=week');
-    });
-
-    it('returns error when request fails', async () => {
-      const { state, config, events, http } = makeTestDeps();
-      const svc = new AnalyticsCategoriesService(state, config, events, http);
-      const mockError = {
-        code: 'woocommerce_rest_cannot_view',
-        message: 'Sorry, you cannot view.',
-        data: { status: 403 },
-        details: {},
-      };
-      doGetMock.mockResolvedValueOnce({ data: undefined, error: mockError });
-
-      const result = await svc.getStats();
-
-      expect(result.data).toBeUndefined();
-      expect(result.error).toEqual(mockError);
-    });
-  });
-
   describe('list()', () => {
     it('returns a PaginatedRequest (has .then and .loop)', () => {
       const { state, config, events, http } = makeTestDeps();

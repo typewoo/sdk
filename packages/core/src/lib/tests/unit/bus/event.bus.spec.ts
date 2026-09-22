@@ -110,7 +110,9 @@ describe('EventBus', () => {
         order.push('mw2');
         next();
       });
-      bus.on('test:data', () => order.push('handler'));
+      bus.on('test:data', () => {
+        order.push('handler');
+      });
 
       bus.emit('test:data', { value: 1 });
       expect(order).toEqual(['mw1', 'mw2', 'handler']);

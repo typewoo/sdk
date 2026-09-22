@@ -43,11 +43,14 @@ describe('AnalyticsCustomersService', () => {
       const svc = new AnalyticsCustomersService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: { totals: {} } });
 
-      await svc.getStats({ after: '2026-01-01', before: '2026-12-31' });
+      await svc.getStats({
+        registered_after: '2026-01-01',
+        registered_before: '2026-12-31',
+      });
 
       const url = doGetMock.mock.calls[0][0] as string;
-      expect(url).toContain('after=2026-01-01');
-      expect(url).toContain('before=2026-12-31');
+      expect(url).toContain('registered_after=2026-01-01');
+      expect(url).toContain('registered_before=2026-12-31');
     });
 
     it('returns error when request fails', async () => {

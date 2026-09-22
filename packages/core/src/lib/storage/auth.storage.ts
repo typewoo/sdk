@@ -75,7 +75,6 @@ export const localStorageProvider = (
     }
     return memoryStorageProvider();
   }
-  /* v8 ignore next 20 -- browser-only path; SSR/Node.js always falls back to memory above */
   return {
     type: 'localstorage',
     get: () => Promise.resolve(localStorage.getItem(key)),
@@ -114,7 +113,6 @@ export const sessionStorageProvider = (
     }
     return memoryStorageProvider();
   }
-  /* v8 ignore next 20 -- browser-only path; SSR/Node.js always falls back to memory above */
   return {
     type: 'sessionstorage',
     get: () => Promise.resolve(sessionStorage.getItem(key)),

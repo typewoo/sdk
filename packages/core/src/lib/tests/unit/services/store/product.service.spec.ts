@@ -63,6 +63,33 @@ describe('ProductService (store)', () => {
       const result = await svc.list();
       expect(result.error).toBeDefined();
     });
+
+    it('serialises rating, attribute and taxonomy filters as Store API params', async () => {
+      const { state, config, events, http } = makeTestDeps();
+      const svc = new ProductService(state, config, events, http);
+      doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
+      const params = {
+        rating: [4, 5] as (4 | 5)[],
+        attributes: [
+          { attribute: 'pa_color', slug: 'red', operator: 'in' as const },
+        ],
+        _unstable_tax_product_cat: 12,
+        _unstable_tax_product_cat_operator: 'in',
+      };
+      const snapshot = structuredClone(params);
+
+      await svc.list(params);
+
+      const url = doGetMock.mock.calls[0][0] as string;
+      expect(url).toContain('rating[0]=4&rating[1]=5');
+      expect(url).toContain(
+        'attributes[0][attribute]=pa_color&attributes[0][slug]=red&attributes[0][operator]=in'
+      );
+      expect(url).toContain('_unstable_tax_product_cat=12');
+      expect(url).toContain('_unstable_tax_product_cat_operator=in');
+      expect(url).not.toContain('undefined');
+      expect(params).toEqual(snapshot);
+    });
   });
 
   describe('single()', () => {

@@ -27,8 +27,8 @@ beforeAll(() => {
 describe('Analytics Customers — integration', () => {
   it('returns customer stats with valid shape', async () => {
     const { data, error } = await sdk.analytics.customers.getStats({
-      after: '2025-01-01T00:00:00',
-      before: '2026-12-31T23:59:59',
+      registered_after: '2025-01-01T00:00:00',
+      registered_before: '2026-12-31T23:59:59',
     });
 
     expect(

@@ -11,26 +11,21 @@ const CLI = resolve(REPO_ROOT, 'scripts', 'types-sync', 'cli.mjs');
  * Contract drift regression test.
  *
  * Runs the types-sync CLI against the committed wc-10.7.0.json snapshot and
- * asserts that no `error`-severity schema drifts exist. Route-coverage is
- * intentionally skipped here (--no-coverage-check) — coverage gaps are tracked
- * separately in the types-sync allowlist; this test guards against schema-level
- * regressions (type mismatches, missing fields, introspection failures).
+ * asserts that no `error`-severity drifts exist: schema regressions (type
+ * mismatches, missing fields, introspection failures) and upstream routes
+ * that are neither registered nor listed in route-allowlist.json.
  *
  * If this test fails, run:
- *   node scripts/types-sync/cli.mjs check --no-coverage-check
+ *   node scripts/types-sync/cli.mjs check
  * to see the full human-readable diff report.
  */
 describe('Contract drift — schema regression', () => {
   it('has zero error-severity schema drifts against wc-10.7.0.json', () => {
-    const result = spawnSync(
-      'node',
-      [CLI, 'check', '--json', '--no-coverage-check'],
-      {
-        cwd: REPO_ROOT,
-        encoding: 'utf8',
-        maxBuffer: 10 * 1024 * 1024,
-      }
-    );
+    const result = spawnSync('node', [CLI, 'check', '--json'], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+    });
 
     const stdout = result.stdout ?? '';
     const stderr = result.stderr ?? '';
@@ -76,7 +71,7 @@ describe('Contract drift — schema regression', () => {
         .map((e) => `  [${e.id ?? e.driftKind}] ${e.route} — field: ${e.field}`)
         .join('\n');
       expect.fail(
-        `${errors.length} error-severity schema drift(s) detected:\n${summary}\n\nRun: node scripts/types-sync/cli.mjs check --no-coverage-check`
+        `${errors.length} error-severity schema drift(s) detected:\n${summary}\n\nRun: node scripts/types-sync/cli.mjs check`
       );
     }
 

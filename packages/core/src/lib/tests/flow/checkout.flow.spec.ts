@@ -25,24 +25,13 @@ import {
 describe('Flow: Customer Checkout', () => {
   let sdk: TypewooClient;
   let pluginActive = true;
-  let accessToken = '';
-  let refreshToken = '';
 
   beforeAll(async () => {
     sdk = createTypewoo({
       baseUrl: getWpUrl(),
       auth: {
-        getToken: async () => accessToken,
-        setToken: async (t: string) => {
-          accessToken = t;
-        },
-        clearToken: async () => {
-          accessToken = '';
-        },
-        getRefreshToken: async () => refreshToken,
-        setRefreshToken: async (t: string) => {
-          refreshToken = t;
-        },
+        accessToken: { storage: 'memory' },
+        refreshToken: { storage: 'memory' },
       },
     });
 

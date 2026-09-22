@@ -45,7 +45,7 @@ describe('AnalyticsStockService', () => {
         data: { totals: {} },
         error: undefined,
       });
-      const opts = { signal: new AbortController().signal };
+      const opts = { axiosConfig: { signal: new AbortController().signal } };
 
       await svc.getStats(opts);
 

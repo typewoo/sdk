@@ -39,11 +39,11 @@ describe('AdminOrderService', () => {
       const svc = new AdminOrderService(state, config, events, http);
       doGetMock.mockResolvedValueOnce({ data: [], headers: {} });
 
-      const result = await svc.list({ per_page: 10, status: 'processing' });
+      const result = await svc.list({ per_page: 10, status: ['processing'] });
 
       const url = doGetMock.mock.calls[0][0] as string;
       expect(url).toContain('/wp-json/wc/v3/orders');
-      expect(url).toContain('status=processing');
+      expect(url).toContain('status[0]=processing');
       expect(result.pagination?.total).toBe(50);
     });
 

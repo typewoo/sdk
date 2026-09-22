@@ -29,10 +29,9 @@ describe('CheckoutOrderService (store)', () => {
       });
 
       const result = await svc.order(55, {
+        key: 'wc_order_abc',
         payment_method: 'bacs',
-        billing_address: {} as never,
-        shipping_address: {} as never,
-        customer_note: '',
+        billing_address: { email: 'jane@example.com' },
       });
       expect(doPostMock.mock.calls[0][0]).toContain(
         '/wp-json/wc/store/v1/checkout/55'
@@ -54,10 +53,9 @@ describe('CheckoutOrderService (store)', () => {
       });
 
       const result = await svc.order(999, {
+        key: 'wc_order_missing',
         payment_method: 'bacs',
-        billing_address: {} as never,
-        shipping_address: {} as never,
-        customer_note: '',
+        billing_address: { email: 'jane@example.com' },
       });
       expect(result.error).toBeDefined();
     });
