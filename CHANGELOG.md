@@ -1,10 +1,14 @@
 ## Unreleased
 
-<!-- Fold this section into the next generated release entry (4.0.0-alpha.1). -->
+<!-- Fold this section into the generated 4.0.0 release entry. -->
 
-> **⚠️ Breaking changes.** Read this before upgrading from 3.x or
-> 4.0.0-alpha.0. This is an **alpha**; the API may still change before the
-> stable 4.0.0.
+> **⚠️ 4.0.0 is a major release with breaking changes.** Read the upgrade
+> summary and work through the migration checklist at the end before
+> upgrading from 3.x. If you tried 4.0.0-alpha.0, the type changes below
+> also apply to you.
+>
+> **WooCommerce compatibility:** the request and response types are checked
+> against WooCommerce 10.7.0's REST schemas.
 
 ### 📝 Upgrade summary (read this first)
 
@@ -85,11 +89,12 @@ const typewoo = createTypewoo({
 
 A plain object of endpoints still works unchanged for single-instance apps.
 
-#### ⚠️ Breaking change — type definitions regenerated from WooCommerce's schemas (since 4.0.0-alpha.0)
+#### ⚠️ Breaking change — types rebuilt from WooCommerce's REST schemas
 
-The request and response types were rebuilt from WooCommerce 10.7.0's
-published REST schemas. This shipped in 4.0.0-alpha.0 without being flagged
-as breaking.
+The request and response types were rebuilt from WooCommerce's published
+REST schemas and checked against a live store, route by route. Many 3.x
+types didn't match what WooCommerce actually sends or accepts; those are
+fixed here, and some of the fixes change a type's shape.
 
 **Admin request types were split into create and update variants.** The
 3.x `Admin*Request` names still work as deprecated aliases of the update
@@ -176,7 +181,6 @@ now require fields WooCommerce requires (e.g. coupon `code`, webhook
   `data`); order `tax_lines`, `payment_details`, collection-data
   `stock_status_counts` and attribute terms' `default` are typed; order
   coupons have `discount_type`. `AdminTaxClass.name` is required.
-
 - **Product variations:** `AdminProductVariation` fields WooCommerce
   doesn't guarantee are optional, `image` can be `null`, and it gained
   `type`, `parent_id`, `name` and `global_unique_id`. The variation methods
@@ -214,7 +218,7 @@ so it always returned a `rest_no_route` error. Use
 `AnalyticsCategoriesStatsQueryParams` and `AnalyticsCategoryStats` types
 were removed with it.
 
-#### 🩹 Type fixes found by the schema-drift check
+#### 🩹 Fixes and additions
 
 - **Checkout accepts any payment gateway.** `payment_method` was limited to
   `bacs`, `cheque` and `cod`; it's now a string, so `'stripe'` and other
@@ -259,10 +263,6 @@ were removed with it.
   URL-encoded (brackets in keys stay readable).
 - Request and query types use `z.input`, so fields with defaults stay
   optional for callers.
-- **Coverage:** every WooCommerce route the SDK calls is now checked
-  against WooCommerce's schema (232 checks, up from 147), and CI fails when
-  a new upstream route is neither mapped nor listed in
-  `scripts/types-sync/route-allowlist.json` with a reason.
 - **`AdminOrderSendEmailRequest`** checks its fields again (a type bug let
   any object through); core template IDs still autocomplete.
 - **`AdminPaymentGatewayUpdateRequest.settings`** accepts string arrays for
@@ -273,6 +273,24 @@ were removed with it.
 - The docs' custom-endpoint examples passed `params`/`headers` at the top
   level of `RequestOptions`, where they're ignored; they belong in
   `axiosConfig`.
+
+#### 🗓️ Deprecated (removed in 5.0)
+
+- `httpClient`: use `typewoo.http.client`.
+- The 3.x `Admin*Request` / `Admin*RequestSchema` names: use the
+  `…CreateRequest` / `…UpdateRequest` variants.
+- `AdminMetaDataType`: use `AdminMetaData`.
+- `AnalyticsStatsResponse`, `AnalyticsTotalsResponse`, `AnalyticsSegment`,
+  `AnalyticsSegmentedTotals`, `AnalyticsStatsInterval`: use each report's
+  own types, e.g. `AnalyticsRevenueStatsResponse`.
+
+#### 🔧 Keeping types in sync with WooCommerce
+
+The repository now checks every WooCommerce route the SDK calls against
+WooCommerce's published schema (232 checks), including fields inside
+arrays. CI fails on a new difference or on a new WooCommerce route that
+isn't mapped or explicitly skipped, and new WooCommerce releases are picked
+up automatically as a pull request with a fresh schema snapshot.
 
 #### ✅ Migration checklist
 
@@ -289,6 +307,14 @@ were removed with it.
 - [ ] Replace removed shared types (`AdminAddress`, `AnalyticsLinks`, …) with
       the resource-specific ones
 - [ ] Add fallbacks where you read response fields that are now optional
+- [ ] Replace `analytics.categories.getStats()` with
+      `analytics.products.getStats({ segmentby: 'category' })`
+- [ ] Store product filters: pass `rating` as an array of numbers, and use
+      `category` / `tag` / `brand` rather than `_unstable_tax_*` for those
+      taxonomies
+- [ ] Check code that reads `AdminOrder.refunds` (now `{ id, reason, total }`),
+      order line item `price` (now a number) or analytics `getStats()`
+      results (now per-report types)
 - [ ] (Angular) drop the `provideAppInitializer(() => Typewoo.init(...))` provider;
       create the instance in a shared module instead
 
