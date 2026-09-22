@@ -1,15 +1,15 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminTaxQueryParams,
   AdminTax,
-  AdminTaxRequest,
+  AdminTaxCreateRequest,
+  AdminTaxUpdateRequest,
   AdminTaxClassQueryParams,
   AdminTaxClass,
-  AdminTaxClassRequest,
+  AdminTaxClassCreateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -33,11 +33,14 @@ export class AdminTaxService extends BaseService {
       pageParams?: AdminTaxQueryParams
     ): Promise<ApiPaginationResult<AdminTax[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminTax[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminTax[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -54,10 +57,12 @@ export class AdminTaxService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTax>(url, options);
+    const { data, error } = await this.http.get<AdminTax>(url, options);
     return { data, error };
   }
 
@@ -65,15 +70,14 @@ export class AdminTaxService extends BaseService {
    * Create a new tax
    */
   async create(
-    tax: AdminTaxRequest,
+    tax: AdminTaxCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminTax, AdminTaxRequest>(
-      url,
-      tax,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminTax,
+      AdminTaxCreateRequest
+    >(url, tax, options);
 
     return { data, error };
   }
@@ -83,15 +87,14 @@ export class AdminTaxService extends BaseService {
    */
   async update(
     id: number,
-    tax: AdminTaxRequest,
+    tax: AdminTaxUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminTax, AdminTaxRequest>(
-      url,
-      tax,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminTax,
+      AdminTaxUpdateRequest
+    >(url, tax, options);
 
     return { data, error };
   }
@@ -104,9 +107,9 @@ export class AdminTaxService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTax>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTax>(url, options);
+    const { data, error } = await this.http.delete<AdminTax>(url, options);
 
     return { data, error };
   }
@@ -116,8 +119,8 @@ export class AdminTaxService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminTaxRequest[];
-      update?: Array<AdminTaxRequest & { id: number }>;
+      create?: AdminTaxCreateRequest[];
+      update?: Array<AdminTaxUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -129,7 +132,7 @@ export class AdminTaxService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminTax[];
         update: AdminTax[];
@@ -157,10 +160,12 @@ export class AdminTaxClassService extends BaseService {
     params?: AdminTaxClassQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxClass[]>(url, options);
+    const { data, error } = await this.http.get<AdminTaxClass[]>(url, options);
     return { data, error };
   }
 
@@ -173,7 +178,7 @@ export class AdminTaxClassService extends BaseService {
   ): Promise<ApiResult<AdminTaxClass[]>> {
     const url = `/${this.endpoint}/${slug}`;
 
-    const { data, error } = await doGet<AdminTaxClass[]>(url, options);
+    const { data, error } = await this.http.get<AdminTaxClass[]>(url, options);
     return { data, error };
   }
 
@@ -181,15 +186,14 @@ export class AdminTaxClassService extends BaseService {
    * Create a new tax class
    */
   async create(
-    taxClass: AdminTaxClassRequest,
+    taxClass: AdminTaxClassCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminTaxClass, AdminTaxClassRequest>(
-      url,
-      taxClass,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminTaxClass,
+      AdminTaxClassCreateRequest
+    >(url, taxClass, options);
 
     return { data, error };
   }
@@ -202,9 +206,9 @@ export class AdminTaxClassService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxClass>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${slug}?${query}`;
-    const { data, error } = await doDelete<AdminTaxClass>(url, options);
+    const { data, error } = await this.http.delete<AdminTaxClass>(url, options);
 
     return { data, error };
   }

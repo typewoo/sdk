@@ -7,24 +7,25 @@ import {
 } from '../storage/auth.storage.js';
 import { ApiError } from '../types/api.js';
 import { RequestContext } from '../types/request.js';
+import type { TypewooHttp } from '../http/http.js';
 
 /**
  * Type for custom endpoint functions.
  * Each endpoint is a function that can have any parameters and returns a Promise.
- * Use the exported HTTP helpers (doGet, doPost, etc.) inside your endpoint functions.
+ * Use the instance-bound `http` helpers passed to the `endpoints` factory.
  *
  * @example
  * ```typescript
- * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
+ * import { createTypewoo, RequestOptions } from '@typewoo/sdk';
  *
  * const sdk = createTypewoo({
  *   baseUrl: 'https://mystore.com',
- *   endpoints: {
+ *   endpoints: (http) => ({
  *     getNotifications: (userId: string, options?: RequestOptions) =>
- *       doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+ *       http.get<Notification[]>(`/custom/notifications/${userId}`, options),
  *     markAsRead: (id: number) =>
- *       doPost(`/custom/notifications/${id}/read`),
- *   },
+ *       http.post(`/custom/notifications/${id}/read`),
+ *   }),
  * });
  *
  * // Endpoints are fully typed:
@@ -33,16 +34,6 @@ import { RequestContext } from '../types/request.js';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CustomEndpoints = Record<string, (...args: any[]) => Promise<any>>;
-
-let resolvedSdkConfig: ResolvedSdkConfig | null = null;
-
-export function setSdkConfig(config: ResolvedSdkConfig): void {
-  resolvedSdkConfig = config;
-}
-
-export function getSdkConfig(): ResolvedSdkConfig | null {
-  return resolvedSdkConfig;
-}
 
 /**
  * Configuration interface for the SDK.
@@ -120,30 +111,32 @@ export interface SdkConfig<
    */
   suppressStorageWarnings?: boolean;
   /**
-   * Custom endpoints object.
-   * Define custom API endpoints that will be accessible via the returned SDK's `endpoints` property.
-   * Use the exported HTTP helpers (doGet, doPost, doPut, doDelete, doHead) in your endpoint functions.
+   * Custom endpoints, accessible via the returned SDK's `endpoints` property.
    * Each endpoint can have any parameters you need.
+   *
+   * Pass a factory to receive HTTP helpers bound to this instance. Use the
+   * factory form whenever you create more than one instance: the free helpers
+   * (`doGet`, `doPost`, …) always target the first instance created.
    *
    * @example
    * ```typescript
-   * import { createTypewoo, doGet, doPost, RequestOptions } from '@typewoo/core';
+   * import { createTypewoo, RequestOptions } from '@typewoo/sdk';
    *
    * const sdk = createTypewoo({
    *   baseUrl: 'https://mystore.com',
-   *   endpoints: {
+   *   endpoints: (http) => ({
    *     getNotifications: (userId: string, options?: RequestOptions) =>
-   *       doGet<Notification[]>(`/custom/notifications/${userId}`, options),
+   *       http.get<Notification[]>(`/custom/notifications/${userId}`, options),
    *     markAsRead: (id: number) =>
-   *       doPost(`/custom/notifications/${id}/read`),
-   *   },
+   *       http.post(`/custom/notifications/${id}/read`),
+   *   }),
    * });
    *
    * // Endpoints are fully typed from the config:
    * const { data } = await sdk.endpoints.getNotifications('user-123');
    * ```
    */
-  endpoints?: TEndpoints;
+  endpoints?: TEndpoints | ((http: TypewooHttp) => TEndpoints);
   request?: {
     /**
      * Global callback invoked when a request starts retrying.

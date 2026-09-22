@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet, doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   CartResponse,
@@ -27,7 +26,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doGet<CartResponse>(url, options);
+    const { data, error } = await this.http.get<CartResponse>(url, options);
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', { error });
@@ -52,7 +51,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -83,7 +82,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -111,7 +110,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -139,7 +138,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -167,7 +166,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -195,11 +194,10 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
-      url,
-      body,
-      options
-    );
+    const { data, error } = await this.http.post<
+      CartResponse,
+      CartCustomerRequest
+    >(url, body, options);
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', { error });
@@ -226,7 +224,7 @@ export class CartService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartResponse, unknown>(
+    const { data, error } = await this.http.post<CartResponse, unknown>(
       url,
       undefined,
       options

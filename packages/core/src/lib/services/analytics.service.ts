@@ -41,7 +41,8 @@ export class AnalyticsService extends BaseService {
       this._revenue = new AnalyticsRevenueService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._revenue;
@@ -55,7 +56,8 @@ export class AnalyticsService extends BaseService {
       this._orders = new AnalyticsOrdersService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._orders;
@@ -69,7 +71,8 @@ export class AnalyticsService extends BaseService {
       this._products = new AnalyticsProductsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._products;
@@ -83,7 +86,8 @@ export class AnalyticsService extends BaseService {
       this._categories = new AnalyticsCategoriesService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._categories;
@@ -97,7 +101,8 @@ export class AnalyticsService extends BaseService {
       this._coupons = new AnalyticsCouponsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._coupons;
@@ -111,7 +116,8 @@ export class AnalyticsService extends BaseService {
       this._taxes = new AnalyticsTaxesService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._taxes;
@@ -125,7 +131,8 @@ export class AnalyticsService extends BaseService {
       this._variations = new AnalyticsVariationsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._variations;
@@ -139,7 +146,8 @@ export class AnalyticsService extends BaseService {
       this._customers = new AnalyticsCustomersService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._customers;
@@ -153,7 +161,8 @@ export class AnalyticsService extends BaseService {
       this._downloads = new AnalyticsDownloadsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._downloads;
@@ -167,7 +176,8 @@ export class AnalyticsService extends BaseService {
       this._stock = new AnalyticsStockService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._stock;
@@ -181,7 +191,8 @@ export class AnalyticsService extends BaseService {
       this._performance = new AnalyticsPerformanceService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._performance;
@@ -195,7 +206,8 @@ export class AnalyticsService extends BaseService {
       this._leaderboards = new AnalyticsLeaderboardsService(
         this.state,
         this.config,
-        this.events
+        this.events,
+        this.http
       );
     }
     return this._leaderboards;

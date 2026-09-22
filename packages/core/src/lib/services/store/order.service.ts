@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import { OrderResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -30,7 +29,7 @@ export class OrderService extends BaseService {
       url += `&billing_email=${billingEmail}`;
     }
 
-    const { data, error } = await doGet<OrderResponse>(url, options);
+    const { data, error } = await this.http.get<OrderResponse>(url, options);
     return { data, error };
   }
 }

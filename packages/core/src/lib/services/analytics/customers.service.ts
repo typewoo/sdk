@@ -1,14 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsCustomer,
-  AnalyticsCustomerStats,
+  AnalyticsCustomersStatsResponse,
   AnalyticsCustomersStatsQueryParams,
   AnalyticsCustomersListQueryParams,
-  AnalyticsTotalsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -32,11 +30,11 @@ export class AnalyticsCustomersService extends BaseService {
       pageParams?: AnalyticsCustomersListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsCustomer[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsCustomer[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsCustomer[]>(
         url,
         options
       );
@@ -54,13 +52,14 @@ export class AnalyticsCustomersService extends BaseService {
   async getStats(
     params?: AnalyticsCustomersStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsTotalsResponse<AnalyticsCustomerStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsCustomersStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsTotalsResponse<AnalyticsCustomerStats>
-    >(url, options);
+    const { data, error } =
+      await this.http.get<AnalyticsCustomersStatsResponse>(url, options);
     return { data, error };
   }
 }

@@ -1,14 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsOrder,
-  AnalyticsOrderStats,
+  AnalyticsOrdersStatsResponse,
   AnalyticsOrdersStatsQueryParams,
   AnalyticsOrdersListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -32,11 +30,11 @@ export class AnalyticsOrdersService extends BaseService {
       pageParams?: AnalyticsOrdersListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsOrder[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsOrder[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsOrder[]>(
         url,
         options
       );
@@ -54,13 +52,16 @@ export class AnalyticsOrdersService extends BaseService {
   async getStats(
     params?: AnalyticsOrdersStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsOrderStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsOrdersStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsOrderStats>
-    >(url, options);
+    const { data, error } = await this.http.get<AnalyticsOrdersStatsResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

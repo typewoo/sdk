@@ -1,4 +1,4 @@
-export * from './batch/index.js';
+﻿export * from './batch/index.js';
 export * from './cart/index.js';
 export * from './cart-coupon/index.js';
 export * from './cart-extensions/index.js';
@@ -14,6 +14,6 @@ export * from './product-collection-data/index.js';
 export * from './product-review/index.js';
 export * from './product-tag/index.js';
 
-export * from './image.response.js';
-export * from './error.response.js';
+export * from './image.schema.js';
+export * from './error.schema.js';
 export * from './paginated.js';

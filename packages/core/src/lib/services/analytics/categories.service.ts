@@ -1,14 +1,10 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import { ApiPaginationResult } from '../../types/api.js';
 import {
   AnalyticsCategory,
-  AnalyticsCategoryStats,
-  AnalyticsCategoriesStatsQueryParams,
   AnalyticsCategoriesListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -32,11 +28,11 @@ export class AnalyticsCategoriesService extends BaseService {
       pageParams?: AnalyticsCategoriesListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsCategory[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsCategory[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsCategory[]>(
         url,
         options
       );
@@ -48,19 +44,6 @@ export class AnalyticsCategoriesService extends BaseService {
     return new PaginatedRequest(request, params);
   }
 
-  /**
-   * Get category statistics with time intervals
-   */
-  async getStats(
-    params?: AnalyticsCategoriesStatsQueryParams,
-    options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsCategoryStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
-
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsCategoryStats>
-    >(url, options);
-    return { data, error };
-  }
+  // WooCommerce has no `reports/categories/stats` route. For category stats
+  // over time, use `analytics.products.getStats({ segmentby: 'category' })`.
 }

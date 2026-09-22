@@ -1,11 +1,10 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult } from '../../types/api.js';
 import {
   ProductAttributeTermRequest,
-  ProductAttributeResponse,
+  ProductAttributeTermResponse,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -26,16 +25,18 @@ export class ProductAttributeTermService extends BaseService {
     attributeId: number,
     params?: ProductAttributeTermRequest,
     options?: RequestOptions
-  ): PaginatedRequest<ProductAttributeResponse[], ProductAttributeTermRequest> {
+  ): PaginatedRequest<
+    ProductAttributeTermResponse[],
+    ProductAttributeTermRequest
+  > {
     const request = async (
       pageParams?: ProductAttributeTermRequest
-    ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> => {
+    ): Promise<ApiPaginationResult<ProductAttributeTermResponse[]>> => {
       const query = qs.stringify(pageParams, { encode: true });
       const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
-      const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        ProductAttributeTermResponse[]
+      >(url, options);
 
       const pagination = extractPagination(headers);
       return { data, error, pagination };

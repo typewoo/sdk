@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult } from '../../types/api.js';
@@ -27,11 +26,14 @@ export class AdminRefundService extends BaseService {
       pageParams?: AdminRefundQueryParams
     ): Promise<ApiPaginationResult<AdminRefund[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminRefund[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminRefund[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };

@@ -1,0 +1,140 @@
+name: wc-release-poll
+
+# Polls woocommerce/woocommerce for new GA releases. When a new tag appears,
+# this workflow:
+#   1. Boots WP+WC pinned to that tag.
+#   2. Captures a fresh snapshot to scripts/types-sync/snapshots/wc-<tag>.json.
+#   3. Appends <tag> to scripts/types-sync/support-window.json `versions[]`
+#      and rewrites `latest` to <tag>. Never drops older versions —
+#      window pruning is a deliberate manual PR.
+#   4. Opens a PR with all of the above for human review.
+#
+# A tag counts as handled once it's in support-window.json (PR merged) or
+# its PR branch exists (PR open), so the hourly run doesn't rebuild it again.
+#
+# The tag comes from an external repository, so it's validated as a plain
+# version number and only ever reaches shell through environment variables.
+
+on:
+  schedule:
+    - cron: '17 * * * *' # hourly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: wc-release-poll
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest WC tag
+        id: latest
+        run: |
+          tag=$(gh api repos/woocommerce/woocommerce/releases/latest --jq .tag_name)
+          tag="${tag#v}"
+          if [[ ! "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Unexpected WooCommerce release tag format; refusing to continue."
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Check whether this release is already handled
+        id: seen
+        env:
+          TAG: ${{ steps.latest.outputs.tag }}
+        run: |
+          if jq -e --arg v "$TAG" '.versions | index($v)' scripts/types-sync/support-window.json > /dev/null; then
+            echo "WC $TAG is already in the support window. Nothing to do."
+            echo "handled=true" >> "$GITHUB_OUTPUT"
+          elif git ls-remote --exit-code --heads origin "types-sync/wc-$TAG" > /dev/null; then
+            echo "A PR branch for WC $TAG already exists. Nothing to do."
+            echo "handled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "handled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.seen.outputs.handled == 'false'
+        with:
+          version: 10.20.0
+      - uses: actions/setup-node@v4
+        if: steps.seen.outputs.handled == 'false'
+        with:
+          node-version: 20
+          cache: pnpm
+      - if: steps.seen.outputs.handled == 'false'
+        run: pnpm install --frozen-lockfile
+
+      - name: Boot WP + WC
+        if: steps.seen.outputs.handled == 'false'
+        env:
+          WOO_COMMERCE_VERSION: ${{ steps.latest.outputs.tag }}
+        run: pnpm wp:env:rebuild
+
+      - name: Read provisioned REST keys
+        id: keys
+        if: steps.seen.outputs.handled == 'false'
+        run: |
+          file=infra/wordpress/scripts/generated-app-passwords.txt
+          pwd=$(grep -m1 -i 'WP_ADMIN_APP_PASSWORD' "$file" | sed 's/.*= *//')
+          echo "::add-mask::$pwd"
+          echo "pwd=$pwd" >> "$GITHUB_OUTPUT"
+
+      - name: Capture snapshot
+        if: steps.seen.outputs.handled == 'false'
+        env:
+          TAG: ${{ steps.latest.outputs.tag }}
+          WC_VERSION: ${{ steps.latest.outputs.tag }}
+          WP_CONSUMER_KEY: admin
+          WP_CONSUMER_SECRET: ${{ steps.keys.outputs.pwd }}
+        run: pnpm types:sync:capture --wc-version "$TAG"
+
+      - name: Update support-window.json
+        if: steps.seen.outputs.handled == 'false'
+        env:
+          TAG: ${{ steps.latest.outputs.tag }}
+        run: |
+          file=scripts/types-sync/support-window.json
+          # Append the new tag if not already present, then set latest to it.
+          jq --arg v "$TAG" '
+            (.versions |= (. + [$v] | unique))
+            | .latest = $v
+          ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+
+      # PRs opened with the default GITHUB_TOKEN don't trigger other
+      # workflows, so CI wouldn't run on them. Set the TYPES_SYNC_PR_TOKEN
+      # secret (a fine-grained PAT or GitHub App token with contents and
+      # pull-requests write on this repo) to get CI on these PRs.
+      - name: Open PR with new snapshot + window bump
+        if: steps.seen.outputs.handled == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.TYPES_SYNC_PR_TOKEN || github.token }}
+          branch: types-sync/wc-${{ steps.latest.outputs.tag }}
+          commit-message: |
+            chore(types-sync): add WooCommerce ${{ steps.latest.outputs.tag }} to support window
+          title: 'types-sync: add WooCommerce ${{ steps.latest.outputs.tag }} to support window'
+          body: |
+            Detected new WooCommerce release `${{ steps.latest.outputs.tag }}`.
+
+            This PR:
+            - Adds `scripts/types-sync/snapshots/wc-${{ steps.latest.outputs.tag }}.json`
+            - Appends `${{ steps.latest.outputs.tag }}` to `scripts/types-sync/support-window.json` `versions[]`
+            - Rewrites `latest` to `${{ steps.latest.outputs.tag }}`
+
+            No older snapshot is dropped. CI will run the diff job against
+            the full support window and surface any drift the SDK needs to
+            address for the new version.
+          labels: types-sync, automated
+          add-paths: |
+            scripts/types-sync/snapshots/wc-${{ steps.latest.outputs.tag }}.json
+            scripts/types-sync/support-window.json

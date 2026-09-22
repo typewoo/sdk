@@ -1,14 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsProduct,
-  AnalyticsProductStats,
+  AnalyticsProductsStatsResponse,
   AnalyticsProductsStatsQueryParams,
   AnalyticsProductsListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -32,11 +30,11 @@ export class AnalyticsProductsService extends BaseService {
       pageParams?: AnalyticsProductsListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsProduct[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsProduct[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsProduct[]>(
         url,
         options
       );
@@ -54,13 +52,16 @@ export class AnalyticsProductsService extends BaseService {
   async getStats(
     params?: AnalyticsProductsStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsProductStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsProductsStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsProductStats>
-    >(url, options);
+    const { data, error } = await this.http.get<AnalyticsProductsStatsResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

@@ -296,17 +296,20 @@ request: {
 
 ### Direct Axios Access
 
+Each instance owns its own Axios client, exposed as `sdk.http.client`.
+Interceptors you add there only apply to that instance.
+
 ```typescript
-import { httpClient } from '@typewoo/sdk';
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
 
 // Add custom interceptor
-httpClient.interceptors.request.use((config) => {
+sdk.http.client.interceptors.request.use((config) => {
   config.headers['X-Request-ID'] = generateRequestId();
   return config;
 });
 
 // Add response interceptor
-httpClient.interceptors.response.use(
+sdk.http.client.interceptors.response.use(
   (response) => {
     console.log('Response time:', Date.now() - response.config.startTime);
     return response;
@@ -318,14 +321,12 @@ httpClient.interceptors.response.use(
 ### Custom Request Timing
 
 ```typescript
-import { httpClient } from '@typewoo/sdk';
-
-httpClient.interceptors.request.use((config) => {
+sdk.http.client.interceptors.request.use((config) => {
   config.metadata = { startTime: Date.now() };
   return config;
 });
 
-httpClient.interceptors.response.use((response) => {
+sdk.http.client.interceptors.response.use((response) => {
   const duration = Date.now() - response.config.metadata.startTime;
   console.log(`${response.config.url}: ${duration}ms`);
   return response;
@@ -367,17 +368,30 @@ const sdk = createTypewoo({
 
 ### Request-Scoped State
 
-For SSR, you may need request-scoped SDK instances:
+For SSR, create one SDK instance per incoming request. Each instance has its
+own Axios client, interceptors, config and state, so tokens, nonces and cart
+tokens never leak between requests, and nothing accumulates on a shared client:
 
 ```typescript
-// Not recommended for SSR without modifications
-// The SDK is a singleton by design
-
-// For SSR, consider:
-// 1. Making stateless API calls
-// 2. Passing tokens explicitly per-request
-// 3. Using a request-scoped storage provider
+// Create a fresh, request-scoped instance for each incoming request
+function createRequestSdk(req: Request, res: Response) {
+  return createTypewoo({
+    baseUrl: 'https://your-store.com',
+    auth: {
+      // Request-scoped storage (see "Custom Storage Provider" below)
+      accessToken: { storage: cookieStorage('access_token', req, res) },
+      refreshToken: { storage: cookieStorage('refresh_token', req, res) },
+    },
+    nonce: { storage: 'memory' },
+    cartToken: { storage: 'memory' },
+  });
+}
 ```
+
+<Note>
+  Use request-scoped (or `'memory'`) storage for every instance. A storage
+  provider shared between requests would share its tokens too.
+</Note>
 
 ### Custom Storage Provider
 

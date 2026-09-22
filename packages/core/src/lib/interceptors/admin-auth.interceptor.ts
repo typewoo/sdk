@@ -1,11 +1,13 @@
-import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
-import { httpClient } from '../http/index.js';
 
 const ADMIN_AUTH_PREFIXES = ['/wp-json/wc/v3/', '/wp-json/wc-analytics/'];
 
-export const addAdminAuthInterceptor = (config: ResolvedSdkConfig) => {
-  httpClient.interceptors.request.use(
+export const addAdminAuthInterceptor = (
+  client: AxiosInstance,
+  config: ResolvedSdkConfig
+) => {
+  client.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (
         !ADMIN_AUTH_PREFIXES.some((prefix) =>

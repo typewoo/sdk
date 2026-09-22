@@ -5,7 +5,7 @@ description: SDK initialization and main client reference
 
 # SDK Client
 
-The Typewoo SDK is exported as a singleton instance. This page documents the main client interface.
+The Typewoo SDK is created through the `createTypewoo()` factory, which returns a typed client instance. This page documents the main client interface.
 
 ## Import
 
@@ -15,9 +15,9 @@ import { createTypewoo } from '@typewoo/sdk';
 
 ## Initialization
 
-### `createTypewoo(config: SdkConfig): Sdk`
+### `createTypewoo(config: SdkConfig): TypewooClient`
 
-Create an SDK instance with configuration options. Returns the SDK instance synchronously.
+Create an SDK instance with configuration options. Returns the client instance synchronously.
 
 ```typescript
 const sdk = createTypewoo({
@@ -247,6 +247,21 @@ interface SdkState {
 }
 ```
 
+### `ready`
+
+A promise that resolves once the initial authentication state has been read
+from storage. `createTypewoo()` returns synchronously, so await `ready` before
+relying on `state.authenticated` at startup.
+
+```typescript
+const sdk = createTypewoo({ baseUrl: 'https://your-store.com' });
+await sdk.ready;
+console.log('Authenticated:', sdk.state.authenticated);
+```
+
+**Type:** `Promise<void>` — never rejects; a failing storage provider leaves
+the instance unauthenticated.
+
 ### `config`
 
 Access the resolved SDK configuration.
@@ -257,23 +272,33 @@ console.log('Base URL:', sdk.config.baseUrl);
 
 **Type:** `ResolvedSdkConfig`
 
-**Note:** Throws an error if accessed before initialization.
-
 ## HTTP Client
 
-The SDK exports HTTP client utilities for advanced use cases:
+### `sdk.http`
+
+HTTP helpers bound to this instance, for requests the built-in services
+don't cover. Requests go through the instance's own Axios client, so they use
+its `baseUrl`, interceptors, retry settings and request hooks.
 
 ```typescript
-import { httpClient, createHttpClient } from '@typewoo/sdk';
+const { data, error } = await sdk.http.get<Post[]>('/wp-json/wp/v2/posts');
+await sdk.http.post('/wp-json/custom/v1/items', { name: 'Item' });
+
+// The instance's Axios client, e.g. for your own interceptors
+sdk.http.client.interceptors.request.use((config) => config);
 ```
 
-### `httpClient`
+**Type:** `TypewooHttp` — `get`, `post`, `put`, `delete`, `head`, `client`
 
-A proxy to the underlying Axios instance. Throws if accessed before SDK initialization.
+### `doGet`, `doPost`, `doPut`, `doDelete`, `doHead`
 
-### `createHttpClient(config)`
+Free helpers with the same behaviour. Without a context argument they use the
+**first** instance created, so prefer `sdk.http` (or the `endpoints` factory)
+when your app creates more than one instance.
 
-Creates the Axios instance. Called internally during `init()`. Idempotent.
+### `httpClient` (deprecated)
+
+A proxy to the first instance's Axios client. Use `sdk.http.client` instead.
 
 ## Exported Utilities
 

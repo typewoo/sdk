@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminCustomerQueryParams,
   AdminCustomer,
-  AdminCustomerRequest,
+  AdminCustomerCreateRequest,
+  AdminCustomerUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -30,11 +30,11 @@ export class AdminCustomerService extends BaseService {
       pageParams?: AdminCustomerQueryParams
     ): Promise<ApiPaginationResult<AdminCustomer[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminCustomer[]>(
+      const { data, error, headers } = await this.http.get<AdminCustomer[]>(
         url,
         options
       );
@@ -54,10 +54,12 @@ export class AdminCustomerService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCustomer>(url, options);
+    const { data, error } = await this.http.get<AdminCustomer>(url, options);
     return { data, error };
   }
 
@@ -65,15 +67,14 @@ export class AdminCustomerService extends BaseService {
    * Create a new customer
    */
   async create(
-    customer: AdminCustomerRequest,
+    customer: AdminCustomerCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminCustomer, AdminCustomerRequest>(
-      url,
-      customer,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminCustomer,
+      AdminCustomerCreateRequest
+    >(url, customer, options);
 
     return { data, error };
   }
@@ -83,15 +84,14 @@ export class AdminCustomerService extends BaseService {
    */
   async update(
     id: number,
-    customer: AdminCustomerRequest,
+    customer: AdminCustomerUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminCustomer, AdminCustomerRequest>(
-      url,
-      customer,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminCustomer,
+      AdminCustomerUpdateRequest
+    >(url, customer, options);
 
     return { data, error };
   }
@@ -105,9 +105,9 @@ export class AdminCustomerService extends BaseService {
     reassign = 0,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCustomer>> {
-    const query = qs.stringify({ force, reassign }, { encode: false });
+    const query = qs.stringify({ force, reassign }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCustomer>(url, options);
+    const { data, error } = await this.http.delete<AdminCustomer>(url, options);
 
     return { data, error };
   }
@@ -117,8 +117,8 @@ export class AdminCustomerService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminCustomerRequest[];
-      update?: Array<AdminCustomerRequest & { id: number }>;
+      create?: AdminCustomerCreateRequest[];
+      update?: Array<AdminCustomerUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -130,7 +130,7 @@ export class AdminCustomerService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminCustomer[];
         update: AdminCustomer[];

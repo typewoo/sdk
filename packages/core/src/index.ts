@@ -13,7 +13,9 @@ export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 export * from './lib/extensions/index.js';
 
 // Common
-export { httpClient, createHttpClient } from './lib/http/http.client.js';
+export { httpClient } from './lib/http/http.client.js';
+export type { HttpContext } from './lib/http/http.client.js';
+export type { TypewooHttp } from './lib/http/http.js';
 export { doRequest } from './lib/http/http.request.js';
 export {
   doGet,

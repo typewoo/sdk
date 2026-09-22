@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminShippingClassQueryParams,
   AdminShippingClass,
-  AdminShippingClassRequest,
+  AdminShippingClassCreateRequest,
+  AdminShippingClassUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -30,14 +30,13 @@ export class AdminShippingClassService extends BaseService {
       pageParams?: AdminShippingClassQueryParams
     ): Promise<ApiPaginationResult<AdminShippingClass[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminShippingClass[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminShippingClass[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -54,10 +53,15 @@ export class AdminShippingClassService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminShippingClass>(url, options);
+    const { data, error } = await this.http.get<AdminShippingClass>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -65,13 +69,13 @@ export class AdminShippingClassService extends BaseService {
    * Create a new shipping class
    */
   async create(
-    shippingClass: AdminShippingClassRequest,
+    shippingClass: AdminShippingClassCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminShippingClass,
-      AdminShippingClassRequest
+      AdminShippingClassCreateRequest
     >(url, shippingClass, options);
 
     return { data, error };
@@ -82,13 +86,13 @@ export class AdminShippingClassService extends BaseService {
    */
   async update(
     id: number,
-    shippingClass: AdminShippingClassRequest,
+    shippingClass: AdminShippingClassUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminShippingClass,
-      AdminShippingClassRequest
+      AdminShippingClassUpdateRequest
     >(url, shippingClass, options);
 
     return { data, error };
@@ -102,9 +106,12 @@ export class AdminShippingClassService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingClass>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminShippingClass>(url, options);
+    const { data, error } = await this.http.delete<AdminShippingClass>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -114,8 +121,8 @@ export class AdminShippingClassService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminShippingClassRequest[];
-      update?: Array<AdminShippingClassRequest & { id: number }>;
+      create?: AdminShippingClassCreateRequest[];
+      update?: Array<AdminShippingClassUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -127,7 +134,7 @@ export class AdminShippingClassService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminShippingClass[];
         update: AdminShippingClass[];

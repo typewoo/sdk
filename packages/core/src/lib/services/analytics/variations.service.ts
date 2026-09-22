@@ -1,14 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsVariation,
-  AnalyticsVariationStats,
+  AnalyticsVariationsStatsResponse,
   AnalyticsVariationsStatsQueryParams,
   AnalyticsVariationsListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -35,14 +33,13 @@ export class AnalyticsVariationsService extends BaseService {
       pageParams?: AnalyticsVariationsListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsVariation[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsVariation[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AnalyticsVariation[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -57,13 +54,14 @@ export class AnalyticsVariationsService extends BaseService {
   async getStats(
     params?: AnalyticsVariationsStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsVariationStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsVariationsStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsVariationStats>
-    >(url, options);
+    const { data, error } =
+      await this.http.get<AnalyticsVariationsStatsResponse>(url, options);
     return { data, error };
   }
 }

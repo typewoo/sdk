@@ -1,6 +1,8 @@
 import { AxiosError, Method } from 'axios';
-import { getSdkConfig } from '../configs/index.js';
+import type { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError, AxiosApiResult } from '../types/index.js';
+
+type RetryConfig = NonNullable<ResolvedSdkConfig['request']>['retry'];
 
 /**
  * Default retry configuration
@@ -49,11 +51,9 @@ export const getMaxRetries = (
 export const shouldRetry = (
   error: AxiosError,
   attempt: number,
-  method: string
+  method: string,
+  retryConfig: RetryConfig | undefined
 ): boolean => {
-  const config = getSdkConfig();
-  const retryConfig = config?.request?.retry;
-
   if (!retryConfig?.enabled) {
     return false;
   }

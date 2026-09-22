@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -23,10 +22,15 @@ export class AdminSystemStatusService extends BaseService {
     params?: AdminSystemStatusQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminSystemStatus>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminSystemStatus>(url, options);
+    const { data, error } = await this.http.get<AdminSystemStatus>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

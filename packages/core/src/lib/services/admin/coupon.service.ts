@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminCouponQueryParams,
   AdminCoupon,
-  AdminCouponRequest,
+  AdminCouponCreateRequest,
+  AdminCouponUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -48,11 +48,14 @@ export class AdminCouponService extends BaseService {
       pageParams?: AdminCouponQueryParams
     ): Promise<ApiPaginationResult<AdminCoupon[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminCoupon[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminCoupon[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -69,10 +72,12 @@ export class AdminCouponService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminCoupon>(url, options);
+    const { data, error } = await this.http.get<AdminCoupon>(url, options);
     return { data, error };
   }
 
@@ -80,15 +85,14 @@ export class AdminCouponService extends BaseService {
    * Create a new coupon
    */
   async create(
-    coupon: AdminCouponRequest,
+    coupon: AdminCouponCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminCoupon, AdminCouponRequest>(
-      url,
-      coupon,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminCoupon,
+      AdminCouponCreateRequest
+    >(url, coupon, options);
 
     return { data, error };
   }
@@ -98,15 +102,14 @@ export class AdminCouponService extends BaseService {
    */
   async update(
     id: number,
-    coupon: AdminCouponRequest,
+    coupon: AdminCouponUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminCoupon, AdminCouponRequest>(
-      url,
-      coupon,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminCoupon,
+      AdminCouponUpdateRequest
+    >(url, coupon, options);
 
     return { data, error };
   }
@@ -119,9 +122,9 @@ export class AdminCouponService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminCoupon>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminCoupon>(url, options);
+    const { data, error } = await this.http.delete<AdminCoupon>(url, options);
 
     return { data, error };
   }
@@ -131,8 +134,8 @@ export class AdminCouponService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminCouponRequest[];
-      update?: Array<AdminCouponRequest & { id: number }>;
+      create?: AdminCouponCreateRequest[];
+      update?: Array<AdminCouponUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -144,7 +147,7 @@ export class AdminCouponService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminCoupon[];
         update: AdminCoupon[];

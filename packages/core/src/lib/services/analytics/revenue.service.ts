@@ -1,11 +1,9 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
-  AnalyticsRevenueStats,
+  AnalyticsRevenueStatsResponse,
   AnalyticsRevenueQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 
@@ -23,13 +21,16 @@ export class AnalyticsRevenueService extends BaseService {
   async getStats(
     params?: AnalyticsRevenueQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsRevenueStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsRevenueStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsRevenueStats>
-    >(url, options);
+    const { data, error } = await this.http.get<AnalyticsRevenueStatsResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

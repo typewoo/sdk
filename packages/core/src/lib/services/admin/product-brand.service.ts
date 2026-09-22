@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminBrandQueryParams,
   AdminBrand,
-  AdminBrandRequest,
+  AdminBrandCreateRequest,
+  AdminBrandUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -30,11 +30,14 @@ export class AdminProductBrandService extends BaseService {
       pageParams?: AdminBrandQueryParams
     ): Promise<ApiPaginationResult<AdminBrand[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminBrand[]>(url, options);
+      const { data, error, headers } = await this.http.get<AdminBrand[]>(
+        url,
+        options
+      );
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -51,10 +54,12 @@ export class AdminProductBrandService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminBrand>(url, options);
+    const { data, error } = await this.http.get<AdminBrand>(url, options);
     return { data, error };
   }
 
@@ -62,15 +67,14 @@ export class AdminProductBrandService extends BaseService {
    * Create a new product brand
    */
   async create(
-    brand: AdminBrandRequest,
+    brand: AdminBrandCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminBrand, AdminBrandRequest>(
-      url,
-      brand,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminBrand,
+      AdminBrandCreateRequest
+    >(url, brand, options);
 
     return { data, error };
   }
@@ -80,15 +84,14 @@ export class AdminProductBrandService extends BaseService {
    */
   async update(
     id: number,
-    brand: AdminBrandRequest,
+    brand: AdminBrandUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminBrand, AdminBrandRequest>(
-      url,
-      brand,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminBrand,
+      AdminBrandUpdateRequest
+    >(url, brand, options);
 
     return { data, error };
   }
@@ -101,9 +104,9 @@ export class AdminProductBrandService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminBrand>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminBrand>(url, options);
+    const { data, error } = await this.http.delete<AdminBrand>(url, options);
 
     return { data, error };
   }
@@ -113,8 +116,8 @@ export class AdminProductBrandService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminBrandRequest[];
-      update?: Array<AdminBrandRequest & { id: number }>;
+      create?: AdminBrandCreateRequest[];
+      update?: Array<AdminBrandUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -126,7 +129,7 @@ export class AdminProductBrandService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminBrand[];
         update: AdminBrand[];

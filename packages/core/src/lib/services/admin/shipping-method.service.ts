@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
@@ -29,14 +28,13 @@ export class AdminShippingMethodService extends BaseService {
       pageParams?: AdminShippingMethodQueryParams
     ): Promise<ApiPaginationResult<AdminShippingMethod[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminShippingMethod[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminShippingMethod[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -53,10 +51,15 @@ export class AdminShippingMethodService extends BaseService {
     params?: AdminShippingMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingMethod>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminShippingMethod>(url, options);
+    const { data, error } = await this.http.get<AdminShippingMethod>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

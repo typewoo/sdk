@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -26,13 +25,14 @@ export class AnalyticsPerformanceService extends BaseService {
     params?: AnalyticsPerformanceQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AnalyticsPerformanceIndicator[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AnalyticsPerformanceIndicator[]>(
-      url,
-      options
-    );
+    const { data, error } = await this.http.get<
+      AnalyticsPerformanceIndicator[]
+    >(url, options);
     return { data, error };
   }
 
@@ -44,7 +44,7 @@ export class AnalyticsPerformanceService extends BaseService {
   ): Promise<ApiResult<AnalyticsPerformanceAllowed[]>> {
     const url = `/${this.endpoint}/allowed`;
 
-    const { data, error } = await doGet<AnalyticsPerformanceAllowed[]>(
+    const { data, error } = await this.http.get<AnalyticsPerformanceAllowed[]>(
       url,
       options
     );

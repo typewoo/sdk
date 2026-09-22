@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NxWelcome } from './nx-welcome';
-import { Typewoo } from '@typewoo/core';
+import { typewoo } from './typewoo';
 
 @Component({
   imports: [NxWelcome, RouterModule],
@@ -11,8 +11,7 @@ import { Typewoo } from '@typewoo/core';
 })
 export class App implements OnInit {
   async ngOnInit(): Promise<void> {
-    // const data = await Typewoo.store.products.list();
-    const data = await Typewoo.store.products.list();
+    const data = await typewoo.store.products.list();
     console.log(data);
   }
 }

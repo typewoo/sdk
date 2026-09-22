@@ -139,11 +139,11 @@ import { BaseService } from '../base.service';
 
 ### Service Pattern
 
-New services should extend `BaseService`:
+New services should extend `BaseService` and make requests through
+`this.http`, which is bound to the owning SDK instance:
 
 ```typescript
 import { BaseService } from '../base.service.js';
-import { doGet, doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import { RequestOptions } from '../../types/request.js';
 
@@ -152,7 +152,10 @@ export class NewService extends BaseService {
 
   async list(options?: RequestOptions): Promise<ApiResult<ResponseType[]>> {
     const url = `/${this.endpoint}`;
-    const { data, error, headers } = await doGet<ResponseType[]>(url, options);
+    const { data, error, headers } = await this.http.get<ResponseType[]>(
+      url,
+      options
+    );
     return { data, error, headers };
   }
 }
@@ -171,7 +174,7 @@ When adding new events:
 this.events.emit('domain:loading', true);
 this.events.emit('domain:request:start');
 
-const { data, error } = await doGet(url, options);
+const { data, error } = await this.http.get(url, options);
 
 this.events.emitIf(!!data, 'domain:request:success');
 this.events.emitIf(!!error, 'domain:request:error', { error });
@@ -184,7 +187,7 @@ Return errors in the result object; don't throw:
 
 ```typescript
 // Correct
-const { data, error } = await doGet<T>(url);
+const { data, error } = await this.http.get<T>(url);
 return { data, error };
 
 // Incorrect
@@ -220,7 +223,6 @@ Create `packages/core/src/lib/services/store/new.service.ts`:
 
 ```typescript
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import { NewResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -230,7 +232,7 @@ export class NewService extends BaseService {
 
   async list(options?: RequestOptions): Promise<ApiResult<NewResponse[]>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doGet<NewResponse[]>(url, options);
+    const { data, error } = await this.http.get<NewResponse[]>(url, options);
     return { data, error };
   }
 }

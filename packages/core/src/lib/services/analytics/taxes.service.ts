@@ -1,14 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsTax,
-  AnalyticsTaxStats,
+  AnalyticsTaxesStatsResponse,
   AnalyticsTaxesStatsQueryParams,
   AnalyticsTaxesListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -32,11 +30,11 @@ export class AnalyticsTaxesService extends BaseService {
       pageParams?: AnalyticsTaxesListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsTax[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsTax[]>(
+      const { data, error, headers } = await this.http.get<AnalyticsTax[]>(
         url,
         options
       );
@@ -54,13 +52,16 @@ export class AnalyticsTaxesService extends BaseService {
   async getStats(
     params?: AnalyticsTaxesStatsQueryParams,
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsTaxStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+  ): Promise<ApiResult<AnalyticsTaxesStatsResponse>> {
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<
-      AnalyticsStatsResponse<AnalyticsTaxStats>
-    >(url, options);
+    const { data, error } = await this.http.get<AnalyticsTaxesStatsResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

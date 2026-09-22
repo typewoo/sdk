@@ -1,4 +1,3 @@
-import { doGet, doPost } from '../../http/http.js';
 import { BaseService } from '../base.service.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
@@ -47,11 +46,10 @@ export class AuthService extends BaseService {
 
     this.events.emit('auth:login:start');
 
-    const { data, error } = await doPost<AuthTokenResponse, AuthTokenRequest>(
-      url,
-      body,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AuthTokenResponse,
+      AuthTokenRequest
+    >(url, body, options);
 
     this.events.emitIf(!!data, 'auth:login:success');
     this.events.emitIf(!!error, 'auth:login:error', error);
@@ -81,11 +79,10 @@ export class AuthService extends BaseService {
 
     this.events.emit('auth:token:refresh:start');
 
-    const { data, error } = await doPost<AuthTokenResponse, AuthRefreshRequest>(
-      url,
-      body,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AuthTokenResponse,
+      AuthRefreshRequest
+    >(url, body, options);
 
     this.events.emitIf(!!data, 'auth:token:refresh:success');
     this.events.emitIf(!!error, 'auth:token:refresh:error', error);
@@ -114,11 +111,10 @@ export class AuthService extends BaseService {
 
     this.events.emit('auth:token:revoke:start');
 
-    const { data, error } = await doPost<AuthRevokeResponse, AuthRevokeRequest>(
-      url,
-      body,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AuthRevokeResponse,
+      AuthRevokeRequest
+    >(url, body, options);
 
     this.events.emitIf(!!data, 'auth:token:revoke:success');
     this.events.emitIf(!!error, 'auth:token:revoke:error', error);
@@ -134,7 +130,7 @@ export class AuthService extends BaseService {
   ): Promise<ApiResult<AuthOneTimeTokenResponse>> {
     const url = `/${this.endpoint}/one-time-token`;
 
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AuthOneTimeTokenResponse,
       AuthOneTimeTokenRequest
     >(url, body, options);
@@ -147,7 +143,10 @@ export class AuthService extends BaseService {
   ): Promise<ApiResult<AuthValidateResponse>> {
     const url = `/${this.endpoint}/validate`;
 
-    const { data, error } = await doGet<AuthValidateResponse>(url, options);
+    const { data, error } = await this.http.get<AuthValidateResponse>(
+      url,
+      options
+    );
 
     return { data: data, error };
   }
@@ -157,7 +156,10 @@ export class AuthService extends BaseService {
   ): Promise<ApiResult<AuthStatusResponse>> {
     const url = `/${this.endpoint}/status`;
 
-    const { data, error } = await doGet<AuthStatusResponse>(url, options);
+    const { data, error } = await this.http.get<AuthStatusResponse>(
+      url,
+      options
+    );
 
     return { data: data, error };
   }

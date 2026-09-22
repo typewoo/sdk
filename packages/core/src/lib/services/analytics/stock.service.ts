@@ -1,13 +1,11 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AnalyticsStockItem,
-  AnalyticsStockStats,
+  AnalyticsStockStatsResponse,
   AnalyticsStockListQueryParams,
-  AnalyticsTotalsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -31,14 +29,13 @@ export class AnalyticsStockService extends BaseService {
       pageParams?: AnalyticsStockListQueryParams
     ): Promise<ApiPaginationResult<AnalyticsStockItem[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AnalyticsStockItem[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AnalyticsStockItem[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -52,12 +49,13 @@ export class AnalyticsStockService extends BaseService {
    */
   async getStats(
     options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsTotalsResponse<AnalyticsStockStats>>> {
+  ): Promise<ApiResult<AnalyticsStockStatsResponse>> {
     const url = `/${this.endpoint}/stats`;
 
-    const { data, error } = await doGet<
-      AnalyticsTotalsResponse<AnalyticsStockStats>
-    >(url, options);
+    const { data, error } = await this.http.get<AnalyticsStockStatsResponse>(
+      url,
+      options
+    );
     return { data, error };
   }
 }

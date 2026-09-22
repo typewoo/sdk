@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import { BatchRequest, BatchResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -28,7 +27,7 @@ export class BatchService extends BaseService {
     this.events.emit('batch:loading', true);
     this.events.emit('batch:request:start');
 
-    const { data, error } = await doPost<BatchResponse, BatchRequest>(
+    const { data, error } = await this.http.post<BatchResponse, BatchRequest>(
       url,
       params,
       options

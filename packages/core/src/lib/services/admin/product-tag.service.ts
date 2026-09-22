@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminTaxonomyTagQueryParams,
   AdminTaxonomyTag,
-  AdminTaxonomyTagRequest,
+  AdminTaxonomyTagCreateRequest,
+  AdminTaxonomyTagUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -30,11 +30,11 @@ export class AdminProductTagService extends BaseService {
       pageParams?: AdminTaxonomyTagQueryParams
     ): Promise<ApiPaginationResult<AdminTaxonomyTag[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminTaxonomyTag[]>(
+      const { data, error, headers } = await this.http.get<AdminTaxonomyTag[]>(
         url,
         options
       );
@@ -54,10 +54,12 @@ export class AdminProductTagService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminTaxonomyTag>(url, options);
+    const { data, error } = await this.http.get<AdminTaxonomyTag>(url, options);
     return { data, error };
   }
 
@@ -65,13 +67,13 @@ export class AdminProductTagService extends BaseService {
    * Create a new product tag
    */
   async create(
-    tag: AdminTaxonomyTagRequest,
+    tag: AdminTaxonomyTagCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminTaxonomyTag,
-      AdminTaxonomyTagRequest
+      AdminTaxonomyTagCreateRequest
     >(url, tag, options);
 
     return { data, error };
@@ -82,13 +84,13 @@ export class AdminProductTagService extends BaseService {
    */
   async update(
     id: number,
-    tag: AdminTaxonomyTagRequest,
+    tag: AdminTaxonomyTagUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminTaxonomyTag,
-      AdminTaxonomyTagRequest
+      AdminTaxonomyTagUpdateRequest
     >(url, tag, options);
 
     return { data, error };
@@ -102,9 +104,12 @@ export class AdminProductTagService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminTaxonomyTag>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminTaxonomyTag>(url, options);
+    const { data, error } = await this.http.delete<AdminTaxonomyTag>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -114,8 +119,8 @@ export class AdminProductTagService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminTaxonomyTagRequest[];
-      update?: Array<AdminTaxonomyTagRequest & { id: number }>;
+      create?: AdminTaxonomyTagCreateRequest[];
+      update?: Array<AdminTaxonomyTagUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -127,7 +132,7 @@ export class AdminProductTagService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminTaxonomyTag[];
         update: AdminTaxonomyTag[];

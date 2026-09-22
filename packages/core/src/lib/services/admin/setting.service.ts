@@ -1,10 +1,9 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPut, doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   AdminSettingGroup,
   AdminSetting,
-  AdminSettingRequest,
+  AdminSettingUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 
@@ -24,7 +23,10 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSettingGroup[]>> {
     const url = `/${this.endpoint}`;
 
-    const { data, error } = await doGet<AdminSettingGroup[]>(url, options);
+    const { data, error } = await this.http.get<AdminSettingGroup[]>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -37,7 +39,7 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSetting[]>> {
     const url = `/${this.endpoint}/${groupId}`;
 
-    const { data, error } = await doGet<AdminSetting[]>(url, options);
+    const { data, error } = await this.http.get<AdminSetting[]>(url, options);
     return { data, error };
   }
 
@@ -51,7 +53,7 @@ export class AdminSettingService extends BaseService {
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
 
-    const { data, error } = await doGet<AdminSetting>(url, options);
+    const { data, error } = await this.http.get<AdminSetting>(url, options);
     return { data, error };
   }
 
@@ -61,15 +63,14 @@ export class AdminSettingService extends BaseService {
   async updateSetting(
     groupId: string,
     settingId: string,
-    setting: AdminSettingRequest,
+    setting: AdminSettingUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminSetting>> {
     const url = `/${this.endpoint}/${groupId}/${settingId}`;
-    const { data, error } = await doPut<AdminSetting, AdminSettingRequest>(
-      url,
-      setting,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminSetting,
+      AdminSettingUpdateRequest
+    >(url, setting, options);
 
     return { data, error };
   }
@@ -80,12 +81,12 @@ export class AdminSettingService extends BaseService {
   async batchUpdateSettings(
     groupId: string,
     operations: {
-      update?: Array<AdminSettingRequest & { id: string }>;
+      update?: Array<AdminSettingUpdateRequest & { id: string }>;
     },
     options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/${groupId}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       { update: AdminSetting[] },
       typeof operations
     >(url, operations, options);
@@ -98,12 +99,12 @@ export class AdminSettingService extends BaseService {
    */
   async batchUpdate(
     operations: {
-      update?: Array<AdminSettingRequest & { group: string; id: string }>;
+      update?: Array<AdminSettingUpdateRequest & { group: string; id: string }>;
     },
     options?: RequestOptions
   ): Promise<ApiResult<{ update: AdminSetting[] }>> {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       { update: AdminSetting[] },
       typeof operations
     >(url, operations, options);

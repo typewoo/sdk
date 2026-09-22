@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminProductAttributeQueryParams,
   AdminProductAttribute,
-  AdminProductAttributeRequest,
+  AdminProductAttributeCreateRequest,
+  AdminProductAttributeUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -33,14 +33,13 @@ export class AdminProductAttributeService extends BaseService {
       pageParams?: AdminProductAttributeQueryParams
     ): Promise<ApiPaginationResult<AdminProductAttribute[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminProductAttribute[]>(
-        url,
-        options
-      );
+      const { data, error, headers } = await this.http.get<
+        AdminProductAttribute[]
+      >(url, options);
       const pagination = extractPagination(headers);
 
       return { data, error, pagination };
@@ -57,10 +56,15 @@ export class AdminProductAttributeService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminProductAttribute>(url, options);
+    const { data, error } = await this.http.get<AdminProductAttribute>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -68,13 +72,13 @@ export class AdminProductAttributeService extends BaseService {
    * Create a new product attribute
    */
   async create(
-    attribute: AdminProductAttributeRequest,
+    attribute: AdminProductAttributeCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminProductAttribute,
-      AdminProductAttributeRequest
+      AdminProductAttributeCreateRequest
     >(url, attribute, options);
 
     return { data, error };
@@ -85,13 +89,13 @@ export class AdminProductAttributeService extends BaseService {
    */
   async update(
     id: number,
-    attribute: AdminProductAttributeRequest,
+    attribute: AdminProductAttributeUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminProductAttribute,
-      AdminProductAttributeRequest
+      AdminProductAttributeUpdateRequest
     >(url, attribute, options);
 
     return { data, error };
@@ -105,9 +109,12 @@ export class AdminProductAttributeService extends BaseService {
     force = false,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductAttribute>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminProductAttribute>(url, options);
+    const { data, error } = await this.http.delete<AdminProductAttribute>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -117,8 +124,8 @@ export class AdminProductAttributeService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminProductAttributeRequest[];
-      update?: Array<AdminProductAttributeRequest & { id: number }>;
+      create?: AdminProductAttributeCreateRequest[];
+      update?: Array<AdminProductAttributeUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -130,7 +137,7 @@ export class AdminProductAttributeService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminProductAttribute[];
         update: AdminProductAttribute[];

@@ -1,5 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { httpClient } from '../http/index.js';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosError,
+  AxiosResponse,
+} from 'axios';
 import { AuthService } from '../services/auth/auth.service.js';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
@@ -15,43 +19,41 @@ interface QueuedRequest {
   originalRequest: AxiosRequestConfig;
 }
 
-// Global state to manage single-flight refresh token requests
-let isRefreshing = false;
-let failedQueue: QueuedRequest[] = [];
-
-// Function to reset the state (useful for testing)
-export const resetRefreshTokenState = () => {
-  isRefreshing = false;
-  failedQueue = [];
-};
-
-const processQueue = (error: ApiError | null, token: string | null = null) => {
-  failedQueue.forEach(({ resolve, reject, originalRequest }) => {
-    if (error) {
-      reject(error);
-    } else {
-      // Update the Authorization header with the new token
-      if (!originalRequest.headers) {
-        originalRequest.headers = {};
-      }
-      originalRequest.headers = {
-        ...originalRequest.headers,
-        Authorization: `Bearer ${token}`,
-      };
-      resolve(axios(originalRequest));
-    }
-  });
-
-  failedQueue = [];
-};
-
 export const addRefreshTokenInterceptor = (
+  client: AxiosInstance,
   config: ResolvedSdkConfig,
   auth: AuthService,
   state: SdkState,
   events: EventBus<SdkEvent>
 ) => {
-  httpClient.interceptors.response.use(
+  // Single-flight refresh state, scoped to this SDK instance
+  let isRefreshing = false;
+  let failedQueue: QueuedRequest[] = [];
+
+  const processQueue = (
+    error: ApiError | null,
+    token: string | null = null
+  ) => {
+    failedQueue.forEach(({ resolve, reject, originalRequest }) => {
+      if (error) {
+        reject(error);
+      } else {
+        // Update the Authorization header with the new token
+        if (!originalRequest.headers) {
+          originalRequest.headers = {};
+        }
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${token}`,
+        };
+        resolve(axios(originalRequest));
+      }
+    });
+
+    failedQueue = [];
+  };
+
+  client.interceptors.response.use(
     (response) => response,
     async (error) => {
       // Only handle errors for Store API or Typewoo endpoints

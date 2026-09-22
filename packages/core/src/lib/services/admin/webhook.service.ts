@@ -1,12 +1,12 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminWebhookQueryParams,
   AdminWebhook,
-  AdminWebhookRequest,
+  AdminWebhookCreateRequest,
+  AdminWebhookUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -30,11 +30,11 @@ export class AdminWebhookService extends BaseService {
       pageParams?: AdminWebhookQueryParams
     ): Promise<ApiPaginationResult<AdminWebhook[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminWebhook[]>(
+      const { data, error, headers } = await this.http.get<AdminWebhook[]>(
         url,
         options
       );
@@ -54,10 +54,12 @@ export class AdminWebhookService extends BaseService {
     params?: { context?: 'view' | 'edit' },
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminWebhook>(url, options);
+    const { data, error } = await this.http.get<AdminWebhook>(url, options);
     return { data, error };
   }
 
@@ -65,15 +67,14 @@ export class AdminWebhookService extends BaseService {
    * Create a new webhook
    */
   async create(
-    webhook: AdminWebhookRequest,
+    webhook: AdminWebhookCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<AdminWebhook, AdminWebhookRequest>(
-      url,
-      webhook,
-      options
-    );
+    const { data, error } = await this.http.post<
+      AdminWebhook,
+      AdminWebhookCreateRequest
+    >(url, webhook, options);
 
     return { data, error };
   }
@@ -83,15 +84,14 @@ export class AdminWebhookService extends BaseService {
    */
   async update(
     id: number,
-    webhook: AdminWebhookRequest,
+    webhook: AdminWebhookUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<AdminWebhook, AdminWebhookRequest>(
-      url,
-      webhook,
-      options
-    );
+    const { data, error } = await this.http.put<
+      AdminWebhook,
+      AdminWebhookUpdateRequest
+    >(url, webhook, options);
 
     return { data, error };
   }
@@ -104,9 +104,9 @@ export class AdminWebhookService extends BaseService {
     force = true,
     options?: RequestOptions
   ): Promise<ApiResult<AdminWebhook>> {
-    const query = qs.stringify({ force }, { encode: false });
+    const query = qs.stringify({ force }, { encodeValuesOnly: true });
     const url = `/${this.endpoint}/${id}?${query}`;
-    const { data, error } = await doDelete<AdminWebhook>(url, options);
+    const { data, error } = await this.http.delete<AdminWebhook>(url, options);
 
     return { data, error };
   }
@@ -116,8 +116,8 @@ export class AdminWebhookService extends BaseService {
    */
   async batch(
     operations: {
-      create?: AdminWebhookRequest[];
-      update?: Array<AdminWebhookRequest & { id: number }>;
+      create?: AdminWebhookCreateRequest[];
+      update?: Array<AdminWebhookUpdateRequest & { id: number }>;
       delete?: number[];
     },
     options?: RequestOptions
@@ -129,7 +129,7 @@ export class AdminWebhookService extends BaseService {
     }>
   > {
     const url = `/${this.endpoint}/batch`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       {
         create: AdminWebhook[];
         update: AdminWebhook[];

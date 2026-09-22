@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doDelete, doGet, doPost } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { CartCouponResponse } from '../../types/index.js';
@@ -19,7 +18,7 @@ export class CartCouponService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiPaginationResult<CartCouponResponse[]>> {
     const url = `/${this.endpoint}`;
-    const { data, error, headers } = await doGet<CartCouponResponse[]>(
+    const { data, error, headers } = await this.http.get<CartCouponResponse[]>(
       url,
       options
     );
@@ -39,7 +38,10 @@ export class CartCouponService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}/${code}`;
-    const { data, error } = await doGet<CartCouponResponse>(url, options);
+    const { data, error } = await this.http.get<CartCouponResponse>(
+      url,
+      options
+    );
 
     return { data, error };
   }
@@ -58,7 +60,7 @@ export class CartCouponService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doPost<CartCouponResponse, unknown>(
+    const { data, error } = await this.http.post<CartCouponResponse, unknown>(
       url,
       undefined,
       options
@@ -85,7 +87,7 @@ export class CartCouponService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doDelete<unknown>(url, options);
+    const { data, error } = await this.http.delete<unknown>(url, options);
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', error);
@@ -106,7 +108,10 @@ export class CartCouponService extends BaseService {
     this.events.emit('cart:loading', true);
     this.events.emit('cart:request:start');
 
-    const { data, error } = await doDelete<CartCouponResponse[]>(url, options);
+    const { data, error } = await this.http.delete<CartCouponResponse[]>(
+      url,
+      options
+    );
 
     this.events.emitIf(!!data, 'cart:request:success');
     this.events.emitIf(!!error, 'cart:request:error', error);

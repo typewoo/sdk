@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   ProductCollectionDataRequest,
@@ -29,7 +28,7 @@ export class ProductCollectionDataService extends BaseService {
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}?${query}`;
-    const { data, error } = await doGet<ProductCollectionDataResponse>(
+    const { data, error } = await this.http.get<ProductCollectionDataResponse>(
       url,
       options
     );

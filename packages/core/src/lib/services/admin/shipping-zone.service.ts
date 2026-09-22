@@ -1,17 +1,18 @@
 import { BaseService } from '../base.service.js';
-import { doGet, doPost, doPut, doDelete } from '../../http/http.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import {
   AdminShippingZoneQueryParams,
   AdminShippingZone,
-  AdminShippingZoneRequest,
+  AdminShippingZoneCreateRequest,
+  AdminShippingZoneUpdateRequest,
   AdminShippingZoneLocation,
   AdminShippingZoneLocationRequest,
   AdminShippingZoneMethodQueryParams,
   AdminShippingZoneMethod,
-  AdminShippingZoneMethodRequest,
+  AdminShippingZoneMethodCreateRequest,
+  AdminShippingZoneMethodUpdateRequest,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -35,11 +36,11 @@ export class AdminShippingZoneService extends BaseService {
       pageParams?: AdminShippingZoneQueryParams
     ): Promise<ApiPaginationResult<AdminShippingZone[]>> => {
       const query = pageParams
-        ? qs.stringify(pageParams, { encode: false })
+        ? qs.stringify(pageParams, { encodeValuesOnly: true })
         : '';
       const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-      const { data, error, headers } = await doGet<AdminShippingZone[]>(
+      const { data, error, headers } = await this.http.get<AdminShippingZone[]>(
         url,
         options
       );
@@ -59,10 +60,15 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZone>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${id}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AdminShippingZone>(url, options);
+    const { data, error } = await this.http.get<AdminShippingZone>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -70,13 +76,13 @@ export class AdminShippingZoneService extends BaseService {
    * Create a new shipping zone
    */
   async create(
-    zone: AdminShippingZoneRequest,
+    zone: AdminShippingZoneCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZone>> {
     const url = `/${this.endpoint}`;
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       AdminShippingZone,
-      AdminShippingZoneRequest
+      AdminShippingZoneCreateRequest
     >(url, zone, options);
     return { data, error };
   }
@@ -86,13 +92,13 @@ export class AdminShippingZoneService extends BaseService {
    */
   async update(
     id: number,
-    zone: AdminShippingZoneRequest,
+    zone: AdminShippingZoneUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZone>> {
     const url = `/${this.endpoint}/${id}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminShippingZone,
-      AdminShippingZoneRequest
+      AdminShippingZoneUpdateRequest
     >(url, zone, options);
     return { data, error };
   }
@@ -107,7 +113,10 @@ export class AdminShippingZoneService extends BaseService {
   ): Promise<ApiResult<AdminShippingZone>> {
     const query = force ? '?force=true' : '';
     const url = `/${this.endpoint}/${id}${query}`;
-    const { data, error } = await doDelete<AdminShippingZone>(url, options);
+    const { data, error } = await this.http.delete<AdminShippingZone>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -119,7 +128,7 @@ export class AdminShippingZoneService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneLocation[]>> {
     const url = `/${this.endpoint}/${zoneId}/locations`;
-    const { data, error } = await doGet<AdminShippingZoneLocation[]>(
+    const { data, error } = await this.http.get<AdminShippingZoneLocation[]>(
       url,
       options
     );
@@ -135,7 +144,7 @@ export class AdminShippingZoneService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneLocation[]>> {
     const url = `/${this.endpoint}/${zoneId}/locations`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminShippingZoneLocation[],
       AdminShippingZoneLocationRequest[]
     >(url, locations, options);
@@ -150,15 +159,16 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiPaginationResult<AdminShippingZoneMethod[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${zoneId}/methods${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error, headers } = await doGet<AdminShippingZoneMethod[]>(
-      url,
-      options
-    );
+    const { data, error, headers } = await this.http.get<
+      AdminShippingZoneMethod[]
+    >(url, options);
 
     const pagination = extractPagination(headers);
 
@@ -174,12 +184,17 @@ export class AdminShippingZoneService extends BaseService {
     params?: AdminShippingZoneMethodQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneMethod>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}${
       query ? `?${query}` : ''
     }`;
 
-    const { data, error } = await doGet<AdminShippingZoneMethod>(url, options);
+    const { data, error } = await this.http.get<AdminShippingZoneMethod>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -189,16 +204,18 @@ export class AdminShippingZoneService extends BaseService {
   async addMethod(
     zoneId: number,
     methodId: string,
-    params?: AdminShippingZoneMethodRequest,
+    params?: AdminShippingZoneMethodUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const url = `/${this.endpoint}/${zoneId}/methods`;
-    const body = { method_id: methodId, ...params };
-    const { data, error } = await doPost<AdminShippingZoneMethod, typeof body>(
-      url,
-      body,
-      options
-    );
+    const body: AdminShippingZoneMethodCreateRequest = {
+      method_id: methodId,
+      ...params,
+    };
+    const { data, error } = await this.http.post<
+      AdminShippingZoneMethod,
+      AdminShippingZoneMethodCreateRequest
+    >(url, body, options);
     return { data, error };
   }
 
@@ -208,13 +225,13 @@ export class AdminShippingZoneService extends BaseService {
   async updateMethod(
     zoneId: number,
     instanceId: number,
-    method: AdminShippingZoneMethodRequest,
+    method: AdminShippingZoneMethodUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}`;
-    const { data, error } = await doPut<
+    const { data, error } = await this.http.put<
       AdminShippingZoneMethod,
-      AdminShippingZoneMethodRequest
+      AdminShippingZoneMethodUpdateRequest
     >(url, method, options);
     return { data, error };
   }
@@ -230,7 +247,7 @@ export class AdminShippingZoneService extends BaseService {
   ): Promise<ApiResult<AdminShippingZoneMethod>> {
     const query = force ? '?force=true' : '';
     const url = `/${this.endpoint}/${zoneId}/methods/${instanceId}${query}`;
-    const { data, error } = await doDelete<AdminShippingZoneMethod>(
+    const { data, error } = await this.http.delete<AdminShippingZoneMethod>(
       url,
       options
     );

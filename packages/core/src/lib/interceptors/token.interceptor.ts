@@ -1,9 +1,11 @@
-import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { httpClient } from '../http/index.js';
+import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
 
-export const addTokenInterceptor = (config: ResolvedSdkConfig) => {
-  httpClient.interceptors.request.use(
+export const addTokenInterceptor = (
+  client: AxiosInstance,
+  config: ResolvedSdkConfig
+) => {
+  client.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (
         !axiosConfig.url?.startsWith('/wp-json/wc/store/v1/') &&

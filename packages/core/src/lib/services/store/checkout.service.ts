@@ -1,6 +1,5 @@
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet, doPut, doPost } from '../../http/http.js';
 import { ApiResult } from '../../types/api.js';
 import {
   CheckoutResponse,
@@ -24,7 +23,7 @@ export class CheckoutService extends BaseService {
   async get(options?: RequestOptions): Promise<ApiResult<CheckoutResponse>> {
     const url = `/${this.endpoint}/`;
 
-    const { data, error } = await doGet<CheckoutResponse>(url, options);
+    const { data, error } = await this.http.get<CheckoutResponse>(url, options);
 
     return { data, error };
   }
@@ -45,7 +44,7 @@ export class CheckoutService extends BaseService {
     const url = `/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    const { data, error } = await doPut<CheckoutResponse, unknown>(
+    const { data, error } = await this.http.put<CheckoutResponse, unknown>(
       url,
       undefined,
       options
@@ -66,7 +65,7 @@ export class CheckoutService extends BaseService {
     // Store API expects POST body with checkout payload at the base endpoint
     const url = `/${this.endpoint}/`;
 
-    const { data, error } = await doPost<
+    const { data, error } = await this.http.post<
       CheckoutResponse,
       CheckoutCreateRequest
     >(url, params, options);

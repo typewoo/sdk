@@ -1,18 +1,18 @@
-import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { ResolvedSdkConfig } from '../configs/sdk.config.js';
-import { httpClient } from '../http/index.js';
 import { SdkState } from '../types/sdk.state.js';
 import { EventBus } from '../bus/event.bus.js';
 import { SdkEvent } from '../sdk.events.js';
 
 export const addNonceInterceptors = (
+  client: AxiosInstance,
   config: ResolvedSdkConfig,
   state: SdkState,
   events: EventBus<SdkEvent>
 ) => {
   const nonceStorage = config.nonce?.storage;
 
-  httpClient.interceptors.request.use(
+  client.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.nonce?.disabled) return axiosConfig;
 
@@ -28,7 +28,7 @@ export const addNonceInterceptors = (
     }
   );
 
-  httpClient.interceptors.response.use(async (response) => {
+  client.interceptors.response.use(async (response) => {
     if (config.nonce?.disabled) return response;
 
     const headers = response.headers;

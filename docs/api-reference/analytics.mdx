@@ -68,8 +68,8 @@ Typical stats services:
 
 - `revenue.getStats()`
 - `orders.getStats()`
-- `products.getStats()`
-- `categories.getStats()`
+- `products.getStats()` (pass `segmentby: 'category'` for per-category stats;
+  WooCommerce has no separate categories stats route)
 - `coupons.getStats()`
 - `taxes.getStats()`
 - `variations.getStats()`

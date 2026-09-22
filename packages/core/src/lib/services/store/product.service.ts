@@ -4,7 +4,6 @@ import {
 } from '../../utilities/common.js';
 import * as qs from 'qs';
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { ProductRequest, ProductResponse } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -30,32 +29,10 @@ export class ProductService extends BaseService {
     const request = async (
       pageParams?: ProductRequest
     ): Promise<ApiPaginationResult<ProductResponse[]>> => {
-      let unstable_tax: string | undefined = undefined;
-      let unstable_tax_operator: string | undefined = undefined;
-      if (pageParams && pageParams._unstable_tax_) {
-        pageParams._unstable_tax_?.forEach((item) => {
-          Object.keys(item).forEach((key) => {
-            unstable_tax += `_unstable_tax_${key}=${item[key]}`;
-          });
-        });
-        pageParams._unstable_tax_ = [];
-      }
-
-      if (pageParams && pageParams._unstable_tax_operator) {
-        pageParams._unstable_tax_operator?.forEach((item) => {
-          Object.keys(item).forEach((key) => {
-            unstable_tax_operator += `_unstable_tax_${key}_operator=${item[key]}`;
-          });
-        });
-        pageParams._unstable_tax_operator = [];
-      }
-      const query = qs.stringify(
-        { ...pageParams, unstable_tax, unstable_tax_operator },
-        { encode: false }
-      );
+      const query = qs.stringify(pageParams ?? {}, { encodeValuesOnly: true });
 
       const url = `/${this.endpoint}?${query}`;
-      const { data, error, headers } = await doGet<ProductResponse[]>(
+      const { data, error, headers } = await this.http.get<ProductResponse[]>(
         url,
         options
       );
@@ -77,7 +54,7 @@ export class ProductService extends BaseService {
     options?: RequestOptions
   ): Promise<ApiResult<ProductResponse>> {
     const url = `/${this.endpoint}/${params.id || params.slug}`;
-    const { data, error } = await doGet<ProductResponse>(url, options);
+    const { data, error } = await this.http.get<ProductResponse>(url, options);
     return { data, error };
   }
 }

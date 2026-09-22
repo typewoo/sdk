@@ -1,5 +1,4 @@
 import { BaseService } from '../base.service.js';
-import { doGet } from '../../http/http.js';
 import * as qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import {
@@ -24,10 +23,15 @@ export class AnalyticsLeaderboardsService extends BaseService {
     params?: AnalyticsLeaderboardsQueryParams,
     options?: RequestOptions
   ): Promise<ApiResult<AnalyticsLeaderboard[]>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
+    const query = params
+      ? qs.stringify(params, { encodeValuesOnly: true })
+      : '';
     const url = `/${this.endpoint}${query ? `?${query}` : ''}`;
 
-    const { data, error } = await doGet<AnalyticsLeaderboard[]>(url, options);
+    const { data, error } = await this.http.get<AnalyticsLeaderboard[]>(
+      url,
+      options
+    );
     return { data, error };
   }
 
@@ -39,7 +43,7 @@ export class AnalyticsLeaderboardsService extends BaseService {
   ): Promise<ApiResult<AnalyticsLeaderboardAllowed[]>> {
     const url = `/${this.endpoint}/allowed`;
 
-    const { data, error } = await doGet<AnalyticsLeaderboardAllowed[]>(
+    const { data, error } = await this.http.get<AnalyticsLeaderboardAllowed[]>(
       url,
       options
     );

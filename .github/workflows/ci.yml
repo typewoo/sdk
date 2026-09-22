@@ -2,7 +2,10 @@ name: ci
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - 'alpha/**'
+      - 'alpha*'
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -74,9 +77,18 @@ jobs:
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Run Unit Tests (fast, no WP env)
+      # The default suite (no WP env): unit tests, the public API snapshot and
+      # the schema-drift contract test against the committed WooCommerce
+      # snapshot, so type changes that drift from WooCommerce fail here.
+      - name: Run Unit, Contract & Snapshot Tests (fast, no WP env)
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/unit
+          cd packages/core && npx vitest run --coverage
+      # Vitest strips types, so type errors in specs only show up here. The
+      # spec tsconfig resolves the library through its build output.
+      - name: Typecheck Specs
+        run: |
+          pnpm exec nx run @typewoo/sdk:build
+          pnpm exec tsc -p packages/core/tsconfig.spec.json --noEmit
   test:
     name: tests / integration & flow & plugin
     runs-on: ubuntu-latest
@@ -107,10 +119,10 @@ jobs:
           npx vitest run --config scripts/tests/vitest.config.ts scripts/tests
       - name: Run Integration Tests
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/integration
+          cd packages/core && npx vitest run src/lib/tests/integration
       - name: Run Flow Tests
         run: |
-          cd packages/core && npx vitest run --coverage src/lib/tests/flow
+          cd packages/core && npx vitest run src/lib/tests/flow
       - name: Tear Down WordPress Environment
         if: always()
         run: npm run wp:env:clean || true

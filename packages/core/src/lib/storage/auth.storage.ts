@@ -15,7 +15,7 @@ const hasLocalStorage = (): boolean => {
       typeof window !== 'undefined' &&
       typeof window.localStorage !== 'undefined'
     );
-  } catch {
+  } catch /* v8 ignore next */ {
     return false;
   }
 };
@@ -29,7 +29,7 @@ const hasSessionStorage = (): boolean => {
       typeof window !== 'undefined' &&
       typeof window.sessionStorage !== 'undefined'
     );
-  } catch {
+  } catch /* v8 ignore next */ {
     return false;
   }
 };
