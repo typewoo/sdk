@@ -1,19 +1,6 @@
 import { z } from 'zod';
 
 /**
- * Category stats totals/subtotals shape
- */
-export const AnalyticsCategoryStatsSchema = z.object({
-  items_sold: z.number(),
-  net_revenue: z.number(),
-  orders_count: z.number(),
-  products_count: z.number(),
-});
-export type AnalyticsCategoryStats = z.infer<
-  typeof AnalyticsCategoryStatsSchema
->;
-
-/**
  * Extended info for a category detail row
  */
 export const AnalyticsCategoryExtendedInfoSchema = z.object({

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { analyticsStatsIntervalSchema } from '../stats.shared.js';
 
 /**
  * Download stats totals/subtotals shape
@@ -10,14 +11,9 @@ export type AnalyticsDownloadStats = z.infer<
   typeof AnalyticsDownloadStatsSchema
 >;
 
-export const AnalyticsDownloadIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsDownloadStatsSchema,
-});
+export const AnalyticsDownloadIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsDownloadStatsSchema
+);
 export type AnalyticsDownloadInterval = z.infer<
   typeof AnalyticsDownloadIntervalSchema
 >;

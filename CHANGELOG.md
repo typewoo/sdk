@@ -85,6 +85,163 @@ const typewoo = createTypewoo({
 
 A plain object of endpoints still works unchanged for single-instance apps.
 
+#### ⚠️ Breaking change — type definitions regenerated from WooCommerce's schemas (since 4.0.0-alpha.0)
+
+The request and response types were rebuilt from WooCommerce 10.7.0's
+published REST schemas. This shipped in 4.0.0-alpha.0 without being flagged
+as breaking.
+
+**Admin request types were split into create and update variants.** The
+3.x `Admin*Request` names still work as deprecated aliases of the update
+variant (all fields optional, like before) and will be removed in 5.0:
+
+| 3.x name                                                                                                                                                                                       | Use instead                                                      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `Admin{Brand,Coupon,Customer,Order,ProductAttribute,ProductAttributeTerm,Product,ProductReview,ShippingClass,ShippingZone,ShippingZoneMethod,Tax,TaxonomyCategory,TaxonomyTag,Webhook}Request` | `…CreateRequest` for `create()`, `…UpdateRequest` for `update()` |
+| `AdminPaymentGatewayRequest`, `AdminSettingRequest`                                                                                                                                            | `…UpdateRequest`                                                 |
+| `AdminOrderNoteRequest`, `AdminTaxClassRequest`                                                                                                                                                | `…CreateRequest`                                                 |
+
+The same applies to each `…RequestSchema`. Note that some create variants
+now require fields WooCommerce requires (e.g. coupon `code`, webhook
+`topic` and `delivery_url`).
+
+**Removed exports without an alias:**
+
+- Shared admin schemas from `common.types`: `AdminAddress`, `AdminLinks`,
+  `AdminImage`, `AdminDimensions`, `AdminTaxLine` (and their `…Type`
+  aliases), and `AdminCouponDiscountType`. Use the field types of the
+  resource you're working with, e.g. `AdminOrder['billing']`.
+- `AdminMetaData` is now the meta entry **type**; the schema is
+  `AdminMetaDataSchema`, and `AdminMetaDataType` is a deprecated alias.
+  Meta values may now be arrays. Create/update requests use
+  `AdminMetaDataInput`, where `id` is optional (omit it to add a new entry).
+- Shared analytics schemas: `AnalyticsIntervalEnum`/`AnalyticsIntervalType`,
+  `AnalyticsLink(s)`, `AnalyticsListQueryParams`, `AnalyticsStatsQueryParams`,
+  `AnalyticsSegmentSchema`. Each report now has its own query and response
+  types, e.g. `AnalyticsRevenueQueryParams`.
+
+**Fields that changed shape:**
+
+- Response fields WooCommerce doesn't guarantee are now optional, e.g.
+  `ProductResponse` `name`, `slug`, `sku`, `description`, `images`,
+  `categories`, `tags`, `attributes`, `variations`, and most admin entity
+  fields. Code that assigned them to non-optional variables needs a fallback.
+- `CartCouponResponse.type` is now `discount_type`, and `code` is optional.
+- `CheckoutResponse.__experimentalCart` was removed.
+- `ProductAttributeTermRequest.id` was removed (the ID is part of the URL).
+- `CartItemAddRequest`, `CartItemEditRequest`, `CartExtensionsRequest` and
+  all checkout address fields are now optional.
+- Review `reviewer_avatar_urls` is an object keyed by size, not an array.
+- `ProductRequest.rating` is an array of integers 1–5 (`rating: [4, 5]`),
+  matching the Store API; it was a single `number` in 3.x.
+- `ProductRequest.attributes` is an array of
+  `{ attribute, term_id | slug, operator? }` objects, matching the Store API.
+- `ProductRequest._unstable_tax_` / `_unstable_tax_operator` arrays were
+  replaced by WooCommerce's own flat keys, e.g.
+  `{ _unstable_tax_product_cat: 12, _unstable_tax_product_cat_operator: 'in' }`.
+  The old arrays were serialised incorrectly and never filtered anything.
+- `AdminOrderRefund` (the entries of `AdminOrder.refunds`) is
+  `{ id, reason, total }`, which is all WooCommerce returns there; fetch
+  the full refund with `admin.refunds` if you need more.
+- `AdminOrderLineItem.price` is a `number` (it was typed as a string), and
+  `image.id` is `number | string` (`""` when the product has no image).
+  `parent_name` and the new `global_unique_id` can be `null`.
+- `AdminOrderCouponLine` gained `discount_type`, `nominal_amount` and
+  `free_shipping`.
+- The analytics stats reports type their `segments` (they were `{}[]`), and
+  `AnalyticsOrderInterval` / `AnalyticsRevenueInterval` subtotals no longer
+  have `products`, which WooCommerce only returns in `totals`.
+- Store API responses: `CheckoutResponse.billing_address` and its fields
+  are always present; order `errors` entries are `{ code, message }` (no
+  `data`); order `tax_lines`, `payment_details`, collection-data
+  `stock_status_counts` and attribute terms' `default` are typed; order
+  coupons have `discount_type`. `AdminTaxClass.name` is required.
+
+- **Product variations:** `AdminProductVariation` fields WooCommerce
+  doesn't guarantee are optional, `image` can be `null`, and it gained
+  `type`, `parent_id`, `name` and `global_unique_id`. The variation methods
+  take their own types (`AdminProductVariationCreateRequest`,
+  `…UpdateRequest`, `…QueryParams`, `…GenerateRequest`) instead of
+  product or `Partial<AdminProductVariation>` types, and
+  `generateVariations()` returns `{ count, deleted_count? }`.
+- **`products.duplicate()`** returns `AdminProductDuplicateResponse`:
+  WooCommerce returns the raw product data there (e.g. `category_ids`,
+  dates as objects), not the REST product shape.
+- **Reports:** `AdminTopSellersReport.title` is `name`;
+  `AdminSalesReport.total_refunds` and `AdminTotalsReportEntry.total` are
+  numbers. `AdminReportsQueryParams` only has `context`, and the sales and
+  top-sellers params lost `interval`, `per_page` and `page`, which
+  WooCommerce ignores. `AdminCustomersReport(QueryParams)` and
+  `AdminOrdersReport(QueryParams)` are aliases of the totals types.
+- **`AdminSystemStatus`** matches the live API:
+  `enforce_approved_download_dirs` (was
+  `enforce_approved_product_download_directories`),
+  `woocommerce_com_connected` and `pages[].page_id` are strings,
+  `database_tables` is `{ woocommerce, other }`, `theme.overrides` is an
+  array of `{ file, version, core_version }`, and `_links` is gone.
+- **Order actions:** `AdminOrderReceipt` is
+  `{ receipt_url, expiration_date }`; `AdminOrderEmailTemplate` is
+  `{ id, title, description }`; `AdminOrderStatusInfo` has no `total`;
+  `AdminOrderSendEmailRequest.template_id` is an optional string, and
+  `AdminOrderEmailTemplateId` drops `new_receipt`.
+- `AdminShippingZoneLocation` fields and the `AdminContinent` locale
+  fields are optional, and continent state codes can be numbers.
+
+**Removed: `analytics.categories.getStats()`.** It called
+`/wc-analytics/reports/categories/stats`, a route WooCommerce doesn't have,
+so it always returned a `rest_no_route` error. Use
+`analytics.products.getStats({ segmentby: 'category' })` instead. The
+`AnalyticsCategoriesStatsQueryParams` and `AnalyticsCategoryStats` types
+were removed with it.
+
+#### 🩹 Type fixes found by the schema-drift check
+
+- **Checkout accepts any payment gateway.** `payment_method` was limited to
+  `bacs`, `cheque` and `cod`; it's now a string, so `'stripe'` and other
+  gateways type-check and validate. `payment_data` (gateway key/value pairs)
+  is back on `CheckoutCreateRequest`.
+- **`CheckoutUpdateRequest`** (`store.checkout.update()`) now has the same
+  fields as placing an order, and `additional_fields` is an object (it was
+  an array).
+- **`OrderRequest`** (`store.checkoutOrder.order()`, paying for an existing
+  order) only requires `key` and `billing_address`, matching WooCommerce;
+  `shipping_address` and `payment_method` are optional, and
+  `customer_note`, `additional_fields` and `extensions` were added.
+- **`ProductCollectionDataRequest`** accepts every products filter
+  (category, price, attributes, …), so collection data can describe a
+  filtered collection.
+- **`AdminPaymentGatewayUpdateRequest`** gained `title` and `description`.
+- **`AdminCouponQueryParams`** no longer requires `dates_are_gmt` and
+  `exclude` (defaulted fields were typed as required).
+- **Admin `meta_data`** accepts array values on every resource, and create
+  or update requests can add entries without an `id`.
+- **`AdminProductReviewQueryParams.reviewer`** takes user IDs (`number[]`).
+- **`ProductAttributeTermService.list()`** returns
+  `ProductAttributeTermResponse[]` (it was typed as attributes).
+- **Removing order lines:** `AdminOrderCreateRequest` / `UpdateRequest`
+  accept `null` for a line's `product_id`, `name`, `method_id`,
+  `method_title` or `code`, which is how WooCommerce removes it
+  (`{ id, product_id: null }`).
+- **Partial refunds:** `AdminRefundCreateRequest` gained `line_items`
+  (`{ id, quantity?, refund_total?, refund_tax? }`) to refund individual
+  line, shipping or fee items.
+- **Store batch:** `requests[].method` is optional (defaults to `POST`).
+- **Product filters:** `ProductRequest.attributes[].term_id` / `slug`
+  accept arrays.
+- **New types:** `AdminBatchResponse`, `AdminOrderActionResult`,
+  `OrderQueryParams` (Store API `GET /order/{id}`), and `AdminRefund`
+  gained `parent_id`.
+- **Coverage:** every WooCommerce route the SDK calls is now checked
+  against WooCommerce's schema (232 checks, up from 147), and CI fails when
+  a new upstream route is neither mapped nor listed in
+  `scripts/types-sync/route-allowlist.json` with a reason.
+- **Admin products:** create/update `attributes[]` entries only need the
+  fields you're setting (`AdminProductAttributeInput`); `visible` and
+  `variation` default to `false`.
+- The docs' custom-endpoint examples passed `params`/`headers` at the top
+  level of `RequestOptions`, where they're ignored; they belong in
+  `axiosConfig`.
+
 #### ✅ Migration checklist
 
 - [ ] Replace `await Typewoo.init({...})` with `export const typewoo = createTypewoo({...})`
@@ -95,6 +252,11 @@ A plain object of endpoints still works unchanged for single-instance apps.
 - [ ] Replace `httpClient.interceptors...` with `typewoo.http.client.interceptors...`
 - [ ] Remove calls to `createHttpClient()`, `getSdkConfig()` and `setSdkConfig()`
 - [ ] (Multiple instances) switch custom `endpoints` to the factory form
+- [ ] Replace `Admin*Request` types with `Admin*CreateRequest` /
+      `Admin*UpdateRequest` (the old names are deprecated aliases)
+- [ ] Replace removed shared types (`AdminAddress`, `AnalyticsLinks`, …) with
+      the resource-specific ones
+- [ ] Add fallbacks where you read response fields that are now optional
 - [ ] (Angular) drop the `provideAppInitializer(() => Typewoo.init(...))` provider;
       create the instance in a shared module instead
 
@@ -104,7 +266,8 @@ A plain object of endpoints still works unchanged for single-instance apps.
 
 - **Type definitions split into per-resource Zod schemas** (`*.schema.ts`,
   `*.query.schema.ts`) for store products, categories, tags, reviews,
-  collection-data, and more — improving type inference and tree-shaking.
+  collection-data, and more — improving type inference. This was a breaking
+  change; see the upgrade notes above.
 - **Expanded WooCommerce Analytics** schemas and response types with detailed
   descriptions.
 - **Schema-drift detection tooling** (`scripts/types-sync`) to keep SDK types in

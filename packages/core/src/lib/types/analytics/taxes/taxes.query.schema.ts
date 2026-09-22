@@ -148,8 +148,10 @@ export const AnalyticsTaxesListQueryParamsSchema =
       .describe(
         'Scope under which the request is made; determines fields present in response.'
       ),
+    // WC declares tax rate IDs as strings here; numbers are accepted too
+    // since they serialise the same in the query string.
     taxes: z
-      .array(z.number())
+      .array(z.union([z.string(), z.number()]))
       .optional()
       .describe('Limit result set to items assigned one or more tax rates.'),
     orderby: z

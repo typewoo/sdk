@@ -2,6 +2,11 @@ import { z } from 'zod';
 
 export const OrderCouponResponseSchema = z.looseObject({
   code: z.string(),
+  discount_type: z
+    .string()
+    .describe(
+      'The discount type for the coupon (e.g. percentage or fixed amount)'
+    ),
   totals: z.looseObject({
     currency_code: z
       .string()

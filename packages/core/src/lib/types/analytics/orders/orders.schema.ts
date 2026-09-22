@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import {
+  analyticsStatsIntervalSchema,
+  analyticsStatsSegmentSchema,
+} from '../stats.shared.js';
 
-/**
- * Order stats totals/subtotals shape
- */
-export const AnalyticsOrderStatsSchema = z.looseObject({
+const orderStatsFields = {
   orders_count: z.number().describe('Number of orders'),
   num_items_sold: z.number().describe('Number of items sold'),
   coupons: z.number().describe('Amount discounted by coupons.'),
@@ -13,20 +14,32 @@ export const AnalyticsOrderStatsSchema = z.looseObject({
   avg_order_value: z.number().describe('Average order value.'),
   total_customers: z.number().describe('Total distinct customers.'),
   products: z.number().optional().describe('Number of distinct products sold.'),
+};
+
+/**
+ * A single order stats segment. The API omits `products` from segment
+ * subtotals, although WC's schema declares it.
+ */
+export const AnalyticsOrderSegmentSchema = analyticsStatsSegmentSchema(
+  z.looseObject(orderStatsFields)
+);
+export type AnalyticsOrderSegment = z.infer<typeof AnalyticsOrderSegmentSchema>;
+
+/**
+ * Order stats totals/subtotals shape
+ */
+export const AnalyticsOrderStatsSchema = z.looseObject({
+  ...orderStatsFields,
   segments: z
-    .array(z.looseObject({}))
+    .array(AnalyticsOrderSegmentSchema)
     .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsOrderStats = z.infer<typeof AnalyticsOrderStatsSchema>;
 
-export const AnalyticsOrderIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsOrderStatsSchema,
-});
+/** Interval subtotals: same as the totals, minus `products`. */
+export const AnalyticsOrderIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsOrderStatsSchema.omit({ products: true })
+);
 export type AnalyticsOrderInterval = z.infer<
   typeof AnalyticsOrderIntervalSchema
 >;

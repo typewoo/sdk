@@ -6,6 +6,7 @@ schemaRegistry.add(AdminShippingMethodSchema, {
   surface: 'admin',
   route: '/wc/v3/shipping_methods',
   kind: 'response',
+  alsoAt: ['/wc/v3/shipping_methods/(?P<id>[\\w-]+)'],
 });
 schemaRegistry.add(AdminShippingMethodQueryParamsSchema, {
   surface: 'admin',

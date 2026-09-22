@@ -104,7 +104,6 @@ export const AdminRefundQueryParamsSchema = z.looseObject({
     .describe(
       'Limit response to resources modified before a given ISO8601 compliant date.'
     ),
-  order_id: z.number().optional().describe('The order ID.'),
   order_item_display_meta: z
     .boolean()
     .default(false)

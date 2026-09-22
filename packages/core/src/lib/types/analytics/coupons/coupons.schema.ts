@@ -1,26 +1,39 @@
 import { z } from 'zod';
+import {
+  analyticsStatsIntervalSchema,
+  analyticsStatsSegmentSchema,
+} from '../stats.shared.js';
+
+const couponStatsFields = {
+  amount: z.number().describe('Net discount amount.'),
+  coupons_count: z.number().describe('Number of coupons.'),
+  orders_count: z.number().describe('Number of discounted orders.'),
+};
+
+/**
+ * A single coupon stats segment
+ */
+export const AnalyticsCouponSegmentSchema = analyticsStatsSegmentSchema(
+  z.looseObject(couponStatsFields)
+);
+export type AnalyticsCouponSegment = z.infer<
+  typeof AnalyticsCouponSegmentSchema
+>;
 
 /**
  * Coupon stats totals/subtotals shape
  */
 export const AnalyticsCouponStatsSchema = z.looseObject({
-  amount: z.number().describe('Net discount amount.'),
-  coupons_count: z.number().describe('Number of coupons.'),
-  orders_count: z.number().describe('Number of discounted orders.'),
+  ...couponStatsFields,
   segments: z
-    .array(z.looseObject({}))
+    .array(AnalyticsCouponSegmentSchema)
     .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsCouponStats = z.infer<typeof AnalyticsCouponStatsSchema>;
 
-export const AnalyticsCouponIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsCouponStatsSchema,
-});
+export const AnalyticsCouponIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsCouponStatsSchema
+);
 export type AnalyticsCouponInterval = z.infer<
   typeof AnalyticsCouponIntervalSchema
 >;

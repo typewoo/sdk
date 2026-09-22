@@ -29,37 +29,7 @@ export class ProductService extends BaseService {
     const request = async (
       pageParams?: ProductRequest
     ): Promise<ApiPaginationResult<ProductResponse[]>> => {
-      let unstable_tax: string | undefined = undefined;
-      let unstable_tax_operator: string | undefined = undefined;
-      const unstableParams = pageParams as Record<string, unknown> | undefined;
-      /* v8 ignore next 22 -- experimental _unstable_tax_ parameter is not part of the public API */
-      if (unstableParams && unstableParams['_unstable_tax_']) {
-        (
-          unstableParams['_unstable_tax_'] as Array<Record<string, unknown>>
-        )?.forEach((item) => {
-          Object.keys(item).forEach((key) => {
-            unstable_tax += `_unstable_tax_${key}=${item[key]}`;
-          });
-        });
-        unstableParams['_unstable_tax_'] = [];
-      }
-
-      if (unstableParams && unstableParams['_unstable_tax_operator']) {
-        (
-          unstableParams['_unstable_tax_operator'] as Array<
-            Record<string, unknown>
-          >
-        )?.forEach((item) => {
-          Object.keys(item).forEach((key) => {
-            unstable_tax_operator += `_unstable_tax_${key}_operator=${item[key]}`;
-          });
-        });
-        unstableParams['_unstable_tax_operator'] = [];
-      }
-      const query = qs.stringify(
-        { ...pageParams, unstable_tax, unstable_tax_operator },
-        { encode: false }
-      );
+      const query = qs.stringify(pageParams ?? {}, { encode: false });
 
       const url = `/${this.endpoint}?${query}`;
       const { data, error, headers } = await this.http.get<ProductResponse[]>(

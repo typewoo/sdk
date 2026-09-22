@@ -251,7 +251,26 @@ export const ProductRequestSchema = PaginatedSchema.extend({
    * Expects an array of objects containing attribute (taxonomy), `term_id` or `slug`, and optional operator for comparison.
    */
   attributes: z
-    .array(z.string())
+    .array(
+      z.object({
+        /** Attribute taxonomy, e.g. `pa_color`. */
+        attribute: z.string(),
+        /** Term ID(s) to match (use this or `slug`). */
+        term_id: z
+          .union([z.number(), z.array(z.number())])
+          .optional()
+          .describe('List of attribute term IDs.'),
+        /** Term slug(s) to match (use this or `term_id`). */
+        slug: z
+          .union([z.string(), z.array(z.string())])
+          .optional()
+          .describe(
+            'List of attribute slug(s). If a term ID is provided, this will be ignored.'
+          ),
+        /** How to match terms. Defaults to `in`. */
+        operator: z.enum(['in', 'not_in', 'and']).optional(),
+      })
+    )
     .default([])
     .optional()
     .describe('Limit result set to products with selected global attributes.'),
@@ -277,10 +296,20 @@ export const ProductRequestSchema = PaginatedSchema.extend({
    * Limit result set to products with a certain average rating.
    */
   rating: z
-    .array(z.enum(['1', '2', '3', '4', '5']))
+    .array(z.literal([1, 2, 3, 4, 5]))
     .default([])
     .optional()
     .describe('Limit result set to products with a certain average rating.'),
 });
 
-export type ProductRequest = z.infer<typeof ProductRequestSchema>;
+/**
+ * WooCommerce's experimental taxonomy filter, e.g.
+ * `{ _unstable_tax_product_cat: 12, _unstable_tax_product_cat_operator: 'in' }`.
+ * The keys depend on the taxonomy, so they aren't part of the schema.
+ */
+export type ProductUnstableTaxonomyFilter = {
+  [key: `_unstable_tax_${string}`]: string | number | number[] | undefined;
+};
+
+export type ProductRequest = z.infer<typeof ProductRequestSchema> &
+  ProductUnstableTaxonomyFilter;

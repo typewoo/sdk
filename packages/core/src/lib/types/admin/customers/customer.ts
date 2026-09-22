@@ -1,17 +1,7 @@
 import { z } from 'zod';
+import { AdminMetaDataSchema } from '../meta-data.schema.js';
 
-export const AdminCustomerMetaData = z.object({
-  id: z.number(),
-  key: z.string(),
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.unknown()),
-    z.record(z.string(), z.unknown()),
-    z.null(),
-  ]),
-});
+export const AdminCustomerMetaData = AdminMetaDataSchema;
 
 export const AdminCustomerAddress = z.object({
   first_name: z.string().optional().describe('First name.'),

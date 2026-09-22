@@ -1,6 +1,6 @@
 ﻿import { z } from 'zod';
+import { CartErrorResponseSchema } from '../cart/cart.error.schema.js';
 import { CartItemResponseSchema } from '../cart-item/cart.item.schema.js';
-import { ErrorResponseSchema } from '../error.schema.js';
 import { OrderBillingResponseSchema } from './order.billing.schema.js';
 import { OrderCouponResponseSchema } from './order.coupon.schema.js';
 import { OrderShippingResponseSchema } from './order.shipping.schema.js';
@@ -34,7 +34,7 @@ export const OrderResponseSchema = z.looseObject({
     ),
   totals: OrderTotalResponseSchema.describe('Order totals.'),
   errors: z
-    .array(ErrorResponseSchema)
+    .array(CartErrorResponseSchema)
     .describe(
       'List of cart item errors, for example, items in the cart which are out of stock.'
     ),

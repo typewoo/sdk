@@ -1,18 +1,14 @@
 import { z } from 'zod';
+import { CheckoutCreateRequestSchema } from './checkout.create.schema.js';
 
-export const CheckoutUpdateRequestSchema = z.looseObject({
-  /**
-   * Name => value pairs of additional fields to update.
-   */
-  additional_fields: z.array(z.record(z.string(), z.string())).optional(),
-  /**
-   * The ID of the payment method selected.
-   */
-  payment_method: z.string().optional(),
-  /**
-   * Order notes.
-   */
-  order_notes: z.string().optional(),
+/**
+ * Body for updating the draft checkout (`PUT /checkout`). WooCommerce
+ * declares the same fields as for placing the order; the update handler
+ * persists `additional_fields`, `payment_method` and `order_notes`.
+ * `payment_data` only applies when placing the order, so it's left out.
+ */
+export const CheckoutUpdateRequestSchema = CheckoutCreateRequestSchema.omit({
+  payment_data: true,
 });
 
-export type CheckoutUpdateRequest = z.infer<typeof CheckoutUpdateRequestSchema>;
+export type CheckoutUpdateRequest = z.input<typeof CheckoutUpdateRequestSchema>;

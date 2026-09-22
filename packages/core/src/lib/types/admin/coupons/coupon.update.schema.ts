@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 
 import { AdminCouponMetaData } from './coupon.js';
 
@@ -96,7 +97,10 @@ export const AdminCouponUpdateRequestSchema = z.looseObject({
     .array(z.string())
     .optional()
     .describe('List of email addresses that can use this coupon.'),
-  meta_data: z.array(AdminCouponMetaData).optional().describe('Meta data.'),
+  meta_data: z
+    .array(AdminMetaDataInputSchema)
+    .optional()
+    .describe('Meta data.'),
 });
 
 export type AdminCouponUpdateRequest = z.input<

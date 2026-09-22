@@ -7,6 +7,15 @@ import {
   AdminOrderNoteSchema,
   AdminOrderNoteCreateRequestSchema,
 } from './order-note.schema.js';
+import {
+  AdminOrderActionResultSchema,
+  AdminOrderEmailTemplateSchema,
+  AdminOrderReceiptRequestSchema,
+  AdminOrderReceiptSchema,
+  AdminOrderSendDetailsRequestSchema,
+  AdminOrderSendEmailRequestSchema,
+  AdminOrderStatusInfoSchema,
+} from './order-actions.schema.js';
 
 schemaRegistry.add(AdminOrderSchema, {
   surface: 'admin',
@@ -19,19 +28,44 @@ schemaRegistry.add(AdminOrderSchema, {
     'date_completed_gmt',
     'date_paid',
     'date_paid_gmt',
+    // Null when the line item's product no longer exists.
+    'line_items[].global_unique_id',
+    // Null unless the product is a variation.
+    'line_items[].parent_name',
   ],
+  // WC stores the rate percent on tax items and returns it, but its schema
+  // omits the field.
+  undocumented: ['tax_lines[].rate_percent'],
 });
+
+// WC lists display_key/display_value as writable line item meta, but only
+// key, value and id are used when saving.
+const LINE_ITEM_META_DISPLAY_BUGS = [
+  'line_items[].meta_data[].display_key',
+  'line_items[].meta_data[].display_value',
+].map((field) => ({
+  field,
+  reason: 'Read-only formatted meta; WC ignores it when saving line items.',
+  driftKinds: ['missing-in-sdk'],
+}));
+
 schemaRegistry.add(AdminOrderCreateRequestSchema, {
   surface: 'admin',
   route: '/wc/v3/orders',
   kind: 'request',
   method: 'POST',
+  knownSchemaBugs: LINE_ITEM_META_DISPLAY_BUGS,
+  // Echoed back from responses, where it is null for non-variations.
+  knownNullable: ['line_items[].parent_name'],
 });
 schemaRegistry.add(AdminOrderUpdateRequestSchema, {
   surface: 'admin',
   route: '/wc/v3/orders/(?P<id>[\\d]+)',
   kind: 'request',
   method: 'PATCH',
+  knownSchemaBugs: LINE_ITEM_META_DISPLAY_BUGS,
+  // Echoed back from responses, where it is null for non-variations.
+  knownNullable: ['line_items[].parent_name'],
 });
 schemaRegistry.add(AdminOrderQueryParamsSchema, {
   surface: 'admin',
@@ -43,12 +77,59 @@ schemaRegistry.add(AdminOrderNoteSchema, {
   surface: 'admin',
   route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes',
   kind: 'response',
+  alsoAt: ['/wc/v3/orders/(?P<order_id>[\\d]+)/notes/(?P<id>[\\d]+)'],
 });
 schemaRegistry.add(AdminOrderNoteCreateRequestSchema, {
   surface: 'admin',
   route: '/wc/v3/orders/(?P<order_id>[\\d]+)/notes',
   kind: 'request',
   method: 'POST',
+});
+schemaRegistry.add(AdminOrderEmailTemplateSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/actions/email_templates',
+  kind: 'response',
+  // WC's enum lists every email the mailer has registered, which depends on
+  // the store's extensions.
+  openEnums: ['id'],
+});
+schemaRegistry.add(AdminOrderSendEmailRequestSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/actions/send_email',
+  kind: 'request',
+  method: 'POST',
+  // Same mailer-dependent enum as the email_templates response.
+  openEnums: ['template_id'],
+});
+schemaRegistry.add(AdminOrderSendDetailsRequestSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/actions/send_order_details',
+  kind: 'request',
+  method: 'POST',
+});
+schemaRegistry.add(AdminOrderActionResultSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/actions/send_email',
+  kind: 'response',
+  alsoAt: ['/wc/v3/orders/(?P<id>[\\d]+)/actions/send_order_details'],
+});
+schemaRegistry.add(AdminOrderReceiptRequestSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/receipt',
+  kind: 'request',
+  method: 'POST',
+});
+schemaRegistry.add(AdminOrderReceiptSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/(?P<id>[\\d]+)/receipt',
+  kind: 'response',
+  noUpstreamSchema:
+    'WC registers the receipt route without a response schema; it returns { receipt_url, expiration_date }.',
+});
+schemaRegistry.add(AdminOrderStatusInfoSchema, {
+  surface: 'admin',
+  route: '/wc/v3/orders/statuses',
+  kind: 'response',
 });
 
 export * from './order.schema.js';

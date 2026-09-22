@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AdminMetaDataSchema } from '../meta-data.schema.js';
 
 export const WC_CURRENCIES = [
   'AED',
@@ -166,17 +167,7 @@ export const WC_CURRENCIES = [
   'ZMW',
 ] as const;
 
-export const AdminOrderMetaData = z.object({
-  id: z.number(),
-  key: z.string(),
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.record(z.string(), z.unknown()),
-    z.null(),
-  ]),
-});
+export const AdminOrderMetaData = AdminMetaDataSchema;
 
 export const AdminOrderAddress = z.object({
   first_name: z.string().optional().describe('First name.'),

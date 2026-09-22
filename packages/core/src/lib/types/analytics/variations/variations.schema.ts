@@ -1,28 +1,49 @@
 import { z } from 'zod';
+import {
+  analyticsStatsIntervalSchema,
+  analyticsStatsSegmentSchema,
+} from '../stats.shared.js';
+
+const variationStatsFields = {
+  items_sold: z.number().describe('Number of variation items sold.'),
+  net_revenue: z.number().describe('Net sales.'),
+  orders_count: z.number().describe('Number of orders.'),
+};
+
+/**
+ * A single variation stats segment. The API also sends `variations_count` in
+ * segment subtotals, which WC's schema omits.
+ */
+export const AnalyticsVariationSegmentSchema = analyticsStatsSegmentSchema(
+  z.looseObject({
+    ...variationStatsFields,
+    variations_count: z
+      .number()
+      .optional()
+      .describe('Number of distinct variations sold.'),
+  }),
+  { labelRequired: true }
+);
+export type AnalyticsVariationSegment = z.infer<
+  typeof AnalyticsVariationSegmentSchema
+>;
 
 /**
  * Variation stats totals/subtotals shape
  */
 export const AnalyticsVariationStatsSchema = z.looseObject({
-  items_sold: z.number().describe('Number of variation items sold.'),
-  net_revenue: z.number().describe('Net sales.'),
-  orders_count: z.number().describe('Number of orders.'),
+  ...variationStatsFields,
   segments: z
-    .array(z.looseObject({}))
+    .array(AnalyticsVariationSegmentSchema)
     .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsVariationStats = z.infer<
   typeof AnalyticsVariationStatsSchema
 >;
 
-export const AnalyticsVariationIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsVariationStatsSchema,
-});
+export const AnalyticsVariationIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsVariationStatsSchema
+);
 export type AnalyticsVariationInterval = z.infer<
   typeof AnalyticsVariationIntervalSchema
 >;

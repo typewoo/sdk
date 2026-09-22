@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 import {
   AdminOrderAddress,
   AdminOrderMetaData,
@@ -10,6 +11,98 @@ import {
   AdminOrderFeeLineSchema,
   AdminOrderCouponLineSchema,
 } from './order.schema.js';
+
+const REMOVE_LINE_NOTE = "Pass null (with the item's id) to remove the line.";
+
+/**
+ * Line item sent in an order create or update request.
+ */
+export const AdminOrderLineItemInputSchema =
+  AdminOrderLineItemSchema.partial().extend({
+    name: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(`Product name. ${REMOVE_LINE_NOTE}`),
+    product_id: z
+      .number()
+      .nullable()
+      .optional()
+      .describe(`Product ID. ${REMOVE_LINE_NOTE}`),
+    meta_data: z
+      .array(AdminMetaDataInputSchema)
+      .optional()
+      .describe('Meta data.'),
+  });
+
+export type AdminOrderLineItemInput = z.input<
+  typeof AdminOrderLineItemInputSchema
+>;
+
+/**
+ * Shipping line sent in an order create or update request.
+ */
+export const AdminOrderShippingLineInputSchema =
+  AdminOrderShippingLineSchema.partial().extend({
+    method_title: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(`Shipping method name. ${REMOVE_LINE_NOTE}`),
+    method_id: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(`Shipping method ID. ${REMOVE_LINE_NOTE}`),
+    meta_data: z
+      .array(AdminMetaDataInputSchema)
+      .optional()
+      .describe('Meta data.'),
+  });
+
+export type AdminOrderShippingLineInput = z.input<
+  typeof AdminOrderShippingLineInputSchema
+>;
+
+/**
+ * Fee line sent in an order create or update request.
+ */
+export const AdminOrderFeeLineInputSchema =
+  AdminOrderFeeLineSchema.partial().extend({
+    name: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(`Fee name. ${REMOVE_LINE_NOTE}`),
+    meta_data: z
+      .array(AdminMetaDataInputSchema)
+      .optional()
+      .describe('Meta data.'),
+  });
+
+export type AdminOrderFeeLineInput = z.input<
+  typeof AdminOrderFeeLineInputSchema
+>;
+
+/**
+ * Coupon line sent in an order create or update request.
+ */
+export const AdminOrderCouponLineInputSchema =
+  AdminOrderCouponLineSchema.partial().extend({
+    code: z
+      .string()
+      .nullable()
+      .optional()
+      .describe(`Coupon code. ${REMOVE_LINE_NOTE}`),
+    meta_data: z
+      .array(AdminMetaDataInputSchema)
+      .optional()
+      .describe('Meta data.'),
+  });
+
+export type AdminOrderCouponLineInput = z.input<
+  typeof AdminOrderCouponLineInputSchema
+>;
 
 /**
  * Order request parameters for POST /orders (create). WooCommerce accepts
@@ -53,21 +146,24 @@ export const AdminOrderCreateRequestSchema = z.looseObject({
   payment_method: z.string().optional().describe('Payment method ID.'),
   payment_method_title: z.string().optional().describe('Payment method title.'),
   transaction_id: z.string().optional().describe('Unique transaction ID.'),
-  meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
+  meta_data: z
+    .array(AdminMetaDataInputSchema)
+    .optional()
+    .describe('Meta data.'),
   line_items: z
-    .array(AdminOrderLineItemSchema.partial())
+    .array(AdminOrderLineItemInputSchema)
     .optional()
     .describe('Line items data.'),
   shipping_lines: z
-    .array(AdminOrderShippingLineSchema.partial())
+    .array(AdminOrderShippingLineInputSchema)
     .optional()
     .describe('Shipping lines data.'),
   fee_lines: z
-    .array(AdminOrderFeeLineSchema.partial())
+    .array(AdminOrderFeeLineInputSchema)
     .optional()
     .describe('Fee lines data.'),
   coupon_lines: z
-    .array(AdminOrderCouponLineSchema.partial())
+    .array(AdminOrderCouponLineInputSchema)
     .optional()
     .describe('Coupons line data.'),
   set_paid: z

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 
 import { AdminCustomerAddress, AdminCustomerMetaData } from './customer.js';
 
@@ -14,7 +15,10 @@ export const AdminCustomerCreateRequestSchema = z.looseObject({
   shipping: AdminCustomerAddress.omit({ email: true })
     .optional()
     .describe('List of shipping address data.'),
-  meta_data: z.array(AdminCustomerMetaData).optional().describe('Meta data.'),
+  meta_data: z
+    .array(AdminMetaDataInputSchema)
+    .optional()
+    .describe('Meta data.'),
 });
 
 export type AdminCustomerCreateRequest = z.input<

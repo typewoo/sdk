@@ -3,6 +3,10 @@ import { AdminShippingZoneSchema } from './shipping-zone.schema.js';
 import { AdminShippingZoneCreateRequestSchema } from './shipping-zone.create.schema.js';
 import { AdminShippingZoneUpdateRequestSchema } from './shipping-zone.update.schema.js';
 import { AdminShippingZoneQueryParamsSchema } from './shipping-zone.query.schema.js';
+import {
+  AdminShippingZoneLocationSchema,
+  AdminShippingZoneLocationRequestSchema,
+} from './shipping-zone-location.schema.js';
 import { AdminShippingZoneMethodSchema } from './shipping-zone-method.schema.js';
 import { AdminShippingZoneMethodCreateRequestSchema } from './shipping-zone-method.create.schema.js';
 import { AdminShippingZoneMethodUpdateRequestSchema } from './shipping-zone-method.update.schema.js';
@@ -31,6 +35,26 @@ schemaRegistry.add(AdminShippingZoneQueryParamsSchema, {
   kind: 'query',
   method: 'GET',
 });
+schemaRegistry.add(AdminShippingZoneLocationSchema, {
+  surface: 'admin',
+  route: '/wc/v3/shipping/zones/(?P<id>[\\d]+)/locations',
+  kind: 'response',
+});
+// WC documents a single location, but PUT replaces all of the zone's
+// locations and takes an array of them; this schema is one array element.
+schemaRegistry.add(AdminShippingZoneLocationRequestSchema, {
+  surface: 'admin',
+  route: '/wc/v3/shipping/zones/(?P<id>[\\d]+)/locations',
+  kind: 'request',
+  method: 'PUT',
+  knownSchemaBugs: [
+    {
+      field: 'code',
+      reason: 'Required in practice: WC silently skips locations without one.',
+      driftKinds: ['optional-mismatch'],
+    },
+  ],
+});
 schemaRegistry.add(AdminShippingZoneMethodSchema, {
   surface: 'admin',
   route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
@@ -44,7 +68,8 @@ schemaRegistry.add(AdminShippingZoneMethodCreateRequestSchema, {
 });
 schemaRegistry.add(AdminShippingZoneMethodUpdateRequestSchema, {
   surface: 'admin',
-  route: '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods',
+  route:
+    '/wc/v3/shipping/zones/(?P<zone_id>[\\d]+)/methods/(?P<instance_id>[\\d]+)',
   kind: 'request',
   method: 'PUT',
 });

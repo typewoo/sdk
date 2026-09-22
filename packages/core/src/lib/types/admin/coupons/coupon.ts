@@ -1,13 +1,4 @@
 import { z } from 'zod';
+import { AdminMetaDataSchema } from '../meta-data.schema.js';
 
-export const AdminCouponMetaData = z.object({
-  id: z.number(),
-  key: z.string(),
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.record(z.string(), z.unknown()),
-    z.null(),
-  ]),
-});
+export const AdminCouponMetaData = AdminMetaDataSchema;

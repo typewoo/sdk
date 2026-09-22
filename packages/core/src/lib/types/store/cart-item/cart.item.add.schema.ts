@@ -16,7 +16,12 @@ export const CartItemAddRequestSchema = z.looseObject({
    * Chosen attributes (for variations) containing an array of objects with keys `attribute` and `value`.
    */
   variation: z
-    .array(z.record(z.string(), z.string()))
+    .array(
+      z.looseObject({
+        attribute: z.string().optional().describe('Variation attribute name.'),
+        value: z.string().optional().describe('Variation attribute value.'),
+      })
+    )
     .optional()
     .describe('Chosen attributes (for variations).'),
 });

@@ -1,28 +1,39 @@
 import { z } from 'zod';
+import {
+  analyticsStatsIntervalSchema,
+  analyticsStatsSegmentSchema,
+} from '../stats.shared.js';
 
-/**
- * Tax stats totals/subtotals shape
- */
-export const AnalyticsTaxStatsSchema = z.looseObject({
+const taxStatsFields = {
   tax_codes: z.number().optional().describe('Amount of tax codes.'),
   total_tax: z.number().describe('Total tax.'),
   order_tax: z.number().describe('Order tax.'),
   shipping_tax: z.number().describe('Shipping tax.'),
   orders_count: z.number().describe('Number of orders.'),
+};
+
+/**
+ * A single tax stats segment
+ */
+export const AnalyticsTaxSegmentSchema = analyticsStatsSegmentSchema(
+  z.looseObject(taxStatsFields)
+);
+export type AnalyticsTaxSegment = z.infer<typeof AnalyticsTaxSegmentSchema>;
+
+/**
+ * Tax stats totals/subtotals shape
+ */
+export const AnalyticsTaxStatsSchema = z.looseObject({
+  ...taxStatsFields,
   segments: z
-    .array(z.looseObject({}))
+    .array(AnalyticsTaxSegmentSchema)
     .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsTaxStats = z.infer<typeof AnalyticsTaxStatsSchema>;
 
-export const AnalyticsTaxIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsTaxStatsSchema,
-});
+export const AnalyticsTaxIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsTaxStatsSchema
+);
 export type AnalyticsTaxInterval = z.infer<typeof AnalyticsTaxIntervalSchema>;
 
 export const AnalyticsTaxesStatsResponseSchema = z.looseObject({

@@ -1,5 +1,9 @@
 import { schemaRegistry } from '../../schema-registry.js';
 import {
+  ANALYTICS_STATS_INTERVAL_ID_BUG,
+  ANALYTICS_STATS_SEGMENT_LABEL_FIELDS,
+} from '../stats.shared.js';
+import {
   AnalyticsTaxSchema,
   AnalyticsTaxesStatsResponseSchema,
 } from './taxes.schema.js';
@@ -23,6 +27,8 @@ schemaRegistry.add(AnalyticsTaxesStatsResponseSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/taxes/stats',
   kind: 'response',
+  undocumented: ANALYTICS_STATS_SEGMENT_LABEL_FIELDS,
+  knownSchemaBugs: [ANALYTICS_STATS_INTERVAL_ID_BUG],
 });
 schemaRegistry.add(AnalyticsTaxesStatsQueryParamsSchema, {
   surface: 'analytics',

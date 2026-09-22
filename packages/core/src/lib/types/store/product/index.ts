@@ -6,6 +6,10 @@ schemaRegistry.add(ProductResponseSchema, {
   surface: 'store',
   route: '/wc/store/v1/products',
   kind: 'response',
+  alsoAt: [
+    '/wc/store/v1/products/(?P<id>[\\d]+)',
+    '/wc/store/v1/products/(?P<slug>[\\S]+)',
+  ],
 });
 schemaRegistry.add(ProductRequestSchema, {
   surface: 'store',

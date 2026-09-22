@@ -23,7 +23,12 @@ export const ProductCollectionDataResponseSchema = z.looseObject({
     .nullable()
     .describe('Returns number of products within taxonomy terms.'),
   stock_status_counts: z
-    .array(z.record(z.string(), z.unknown()))
+    .array(
+      z.looseObject({
+        status: z.string().describe('Status'),
+        count: z.number().describe('Number of products.'),
+      })
+    )
     .nullable()
     .optional()
     .describe('Returns number of products with each stock status.'),

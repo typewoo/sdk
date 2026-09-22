@@ -15,6 +15,7 @@ import {
   AdminOrderSendEmailRequest,
   AdminOrderSendDetailsRequest,
   AdminOrderStatusInfo,
+  AdminOrderActionResult,
   AdminRefundQueryParams,
   AdminRefund,
   AdminRefundCreateRequest,
@@ -273,10 +274,10 @@ export class AdminOrderService extends BaseService {
     orderId: number,
     params: AdminOrderSendEmailRequest,
     options?: RequestOptions
-  ): Promise<ApiResult<{ message: string }>> {
+  ): Promise<ApiResult<AdminOrderActionResult>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_email`;
     const { data, error } = await this.http.post<
-      { message: string },
+      AdminOrderActionResult,
       AdminOrderSendEmailRequest
     >(url, params, options);
 
@@ -290,10 +291,10 @@ export class AdminOrderService extends BaseService {
     orderId: number,
     params?: AdminOrderSendDetailsRequest,
     options?: RequestOptions
-  ): Promise<ApiResult<{ message: string }>> {
+  ): Promise<ApiResult<AdminOrderActionResult>> {
     const url = `/${this.endpoint}/${orderId}/actions/send_order_details`;
     const { data, error } = await this.http.post<
-      { message: string },
+      AdminOrderActionResult,
       AdminOrderSendDetailsRequest
     >(url, params || {}, options);
 

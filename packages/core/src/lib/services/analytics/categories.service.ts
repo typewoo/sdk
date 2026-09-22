@@ -1,13 +1,10 @@
 import { BaseService } from '../base.service.js';
 import { extractPagination } from '../../utilities/common.js';
 import * as qs from 'qs';
-import { ApiPaginationResult, ApiResult } from '../../types/api.js';
+import { ApiPaginationResult } from '../../types/api.js';
 import {
   AnalyticsCategory,
-  AnalyticsCategoryStats,
-  AnalyticsCategoriesStatsQueryParams,
   AnalyticsCategoriesListQueryParams,
-  AnalyticsStatsResponse,
 } from '../../types/analytics/index.js';
 import { RequestOptions } from '../../types/request.js';
 import { PaginatedRequest } from '../../extensions/paginated-request.js';
@@ -47,19 +44,6 @@ export class AnalyticsCategoriesService extends BaseService {
     return new PaginatedRequest(request, params);
   }
 
-  /**
-   * Get category statistics with time intervals
-   */
-  async getStats(
-    params?: AnalyticsCategoriesStatsQueryParams,
-    options?: RequestOptions
-  ): Promise<ApiResult<AnalyticsStatsResponse<AnalyticsCategoryStats>>> {
-    const query = params ? qs.stringify(params, { encode: false }) : '';
-    const url = `/${this.endpoint}/stats${query ? `?${query}` : ''}`;
-
-    const { data, error } = await this.http.get<
-      AnalyticsStatsResponse<AnalyticsCategoryStats>
-    >(url, options);
-    return { data, error };
-  }
+  // WooCommerce has no `reports/categories/stats` route. For category stats
+  // over time, use `analytics.products.getStats({ segmentby: 'category' })`.
 }

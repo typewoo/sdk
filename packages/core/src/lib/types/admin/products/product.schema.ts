@@ -53,6 +53,34 @@ export const AdminProductAttributeSchema = z.looseObject({
 export type AdminProductAttribute = z.infer<typeof AdminProductAttributeSchema>;
 
 /**
+ * Product attribute as sent in create/update requests. Every field is
+ * optional; `visible` and `variation` default to `false` server-side.
+ */
+export const AdminProductAttributeInputSchema = z.looseObject({
+  id: z.number().optional().describe('Attribute ID.'),
+  name: z.string().optional().describe('Attribute name.'),
+  position: z.number().optional().describe('Attribute position.'),
+  visible: z
+    .boolean()
+    .default(false)
+    .describe(
+      'Define if the attribute is visible on the "Additional information" tab in the product\'s page.'
+    ),
+  variation: z
+    .boolean()
+    .default(false)
+    .describe('Define if the attribute can be used as variation.'),
+  options: z
+    .array(z.string())
+    .optional()
+    .describe('List of available term names of the attribute.'),
+});
+
+export type AdminProductAttributeInput = z.input<
+  typeof AdminProductAttributeInputSchema
+>;
+
+/**
  * Product default attribute for variations
  */
 export const AdminProductDefaultAttributeSchema = z.looseObject({
@@ -311,88 +339,134 @@ export const AdminProductSchema = z.looseObject({
 export type AdminProduct = z.infer<typeof AdminProductSchema>;
 
 /**
- * Product variation for variable products
+ * Product variation for variable products.
+ *
+ * Returned by `GET/POST /products/{product_id}/variations` and
+ * `GET/PUT/DELETE /products/{product_id}/variations/{id}`.
  */
 export const AdminProductVariationSchema = z.looseObject({
-  id: z.number(),
-  date_created: z.string(),
-  date_created_gmt: z.string(),
-  date_modified: z.string(),
-  date_modified_gmt: z.string(),
-  description: z.string().describe('Product description.'),
-  permalink: z.string(),
-  sku: z.string().describe('Stock Keeping Unit.'),
-  price: z.string(),
-  regular_price: z.string().describe('Product regular price.'),
-  sale_price: z.string().describe('Product sale price.'),
+  id: z.number().describe('Unique identifier for the resource.'),
+  type: z.string().describe('Product type (always `variation`).'),
+  name: z
+    .string()
+    .optional()
+    .describe('Variation name, built from its attribute values.'),
+  parent_id: z.number().describe('Product parent ID.'),
+  date_created: z
+    .string()
+    .describe("The date the variation was created, in the site's timezone."),
+  date_created_gmt: z
+    .string()
+    .optional()
+    .describe('The date the variation was created, as GMT.'),
+  date_modified: z
+    .string()
+    .describe(
+      "The date the variation was last modified, in the site's timezone."
+    ),
+  date_modified_gmt: z
+    .string()
+    .optional()
+    .describe('The date the variation was last modified, as GMT.'),
+  description: z.string().optional().describe('Variation description.'),
+  permalink: z.string().describe('Variation URL.'),
+  sku: z.string().optional().describe('Stock Keeping Unit.'),
+  global_unique_id: z.string().optional().describe('GTIN, UPC, EAN or ISBN.'),
+  price: z.string().describe('Current variation price.'),
+  regular_price: z.string().optional().describe('Variation regular price.'),
+  sale_price: z.string().optional().describe('Variation sale price.'),
   date_on_sale_from: z
     .string()
     .nullable()
+    .optional()
     .describe("Start date of sale price, in the site's timezone."),
   date_on_sale_from_gmt: z
     .string()
     .nullable()
+    .optional()
     .describe('Start date of sale price, as GMT.'),
   date_on_sale_to: z
     .string()
     .nullable()
+    .optional()
     .describe("End date of sale price, in the site's timezone."),
   date_on_sale_to_gmt: z
     .string()
     .nullable()
-    .describe("End date of sale price, in the site's timezone."),
-  on_sale: z.boolean().describe('Shows if the product is on sale.'),
+    .optional()
+    .describe('End date of sale price, as GMT.'),
+  on_sale: z.boolean().describe('Shows if the variation is on sale.'),
   status: z
-    .enum([
-      'auto-draft',
-      'draft',
-      'future',
-      'pending',
-      'private',
-      'publish',
-      'trash',
-    ])
-    .describe('Product status (post status).'),
-  purchasable: z.boolean(),
-  virtual: z.boolean().describe('If the product is virtual.'),
-  downloadable: z.boolean().describe('If the product is downloadable.'),
+    .enum(['draft', 'pending', 'private', 'publish'])
+    .optional()
+    .describe('Variation status.'),
+  purchasable: z.boolean().describe('Shows if the variation can be bought.'),
+  virtual: z.boolean().optional().describe('If the variation is virtual.'),
+  downloadable: z
+    .boolean()
+    .optional()
+    .describe('If the variation is downloadable.'),
   downloads: z
     .array(AdminDownloadableFileSchema)
+    .optional()
     .describe('List of downloadable files.'),
   download_limit: z
     .number()
+    .optional()
     .describe(
       'Number of times downloadable files can be downloaded after purchase.'
     ),
   download_expiry: z
     .number()
+    .optional()
     .describe('Number of days until access to downloadable files expires.'),
-  tax_status: z.enum(['taxable', 'shipping', 'none']).describe('Tax status.'),
-  tax_class: z.string().describe('Tax class.'),
-  manage_stock: z.boolean().describe('Stock management at product level.'),
-  stock_quantity: z.number().nullable().describe('Stock quantity.'),
+  tax_status: z
+    .enum(['taxable', 'shipping', 'none'])
+    .optional()
+    .describe('Tax status.'),
+  tax_class: z.string().optional().describe('Tax class.'),
+  manage_stock: z
+    .boolean()
+    .optional()
+    .describe('Stock management at variation level.'),
+  stock_quantity: z.number().nullable().optional().describe('Stock quantity.'),
   stock_status: z
     .enum(['instock', 'outofstock', 'onbackorder'])
-    .describe('Controls the stock status of the product.'),
+    .optional()
+    .describe('Controls the stock status of the variation.'),
   backorders: z
     .enum(['no', 'notify', 'yes'])
+    .optional()
     .describe('If managing stock, this controls if backorders are allowed.'),
-  backorders_allowed: z.boolean(),
-  backordered: z.boolean(),
+  backorders_allowed: z.boolean().describe('Shows if backorders are allowed.'),
+  backordered: z
+    .boolean()
+    .describe('Shows if the variation is on backordered.'),
   low_stock_amount: z
     .number()
     .nullable()
-    .describe('Low Stock amount for the product.'),
-  weight: z.string().describe('Product weight (lbs).'),
-  dimensions: AdminProductDimensions.describe('Product dimensions.'),
-  shipping_class: z.string().describe('Shipping class slug.'),
-  shipping_class_id: z.string(),
-  image: AdminProductImage,
+    .optional()
+    .describe('Low Stock amount for the variation.'),
+  weight: z.string().optional().describe('Variation weight.'),
+  dimensions: AdminProductDimensions.optional().describe(
+    'Variation dimensions.'
+  ),
+  shipping_class: z.string().optional().describe('Shipping class slug.'),
+  shipping_class_id: z
+    .union([z.number(), z.string()])
+    .describe('Shipping class ID.'),
+  image: AdminProductImage.nullable()
+    .optional()
+    .describe('Variation image data (`null` when the variation has none).'),
   attributes: z
     .array(AdminProductDefaultAttributeSchema)
+    .optional()
     .describe('List of attributes.'),
-  menu_order: z.number().describe('Menu order, used to custom sort products.'),
-  meta_data: z.array(AdminProductMetaData).describe('Meta data.'),
+  menu_order: z
+    .number()
+    .optional()
+    .describe('Menu order, used to custom sort products.'),
+  meta_data: z.array(AdminProductMetaData).optional().describe('Meta data.'),
   _links: z
     .object({
       self: z.array(z.object({ href: z.string() })),

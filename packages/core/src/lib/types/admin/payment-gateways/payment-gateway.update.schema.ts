@@ -6,9 +6,20 @@ import { z } from 'zod';
  * by plugins, not via the REST API.
  */
 export const AdminPaymentGatewayUpdateRequestSchema = z.looseObject({
-  order: z.number().optional(),
-  enabled: z.boolean().optional(),
-  settings: z.record(z.string(), z.string()).optional(),
+  title: z.string().optional().describe('Payment gateway title on checkout.'),
+  description: z
+    .string()
+    .optional()
+    .describe('Payment gateway description on checkout.'),
+  order: z.number().optional().describe('Payment gateway sort order.'),
+  enabled: z.boolean().optional().describe('Payment gateway enabled status.'),
+  /**
+   * Setting values keyed by setting ID, e.g. `{ title: 'Card', testmode: 'yes' }`.
+   */
+  settings: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe('Payment gateway settings.'),
 });
 
 export type AdminPaymentGatewayUpdateRequest = z.input<

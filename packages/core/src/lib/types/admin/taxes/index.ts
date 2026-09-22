@@ -34,6 +34,8 @@ schemaRegistry.add(AdminTaxClassSchema, {
   surface: 'admin',
   route: '/wc/v3/taxes/classes',
   kind: 'response',
+  // DELETE /taxes/classes/{slug} returns the deleted tax class.
+  alsoAt: ['/wc/v3/taxes/classes/(?P<slug>\\w[\\w\\s\\-]*)'],
 });
 schemaRegistry.add(AdminTaxClassCreateRequestSchema, {
   surface: 'admin',

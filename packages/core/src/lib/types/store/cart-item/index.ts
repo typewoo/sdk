@@ -7,6 +7,7 @@ schemaRegistry.add(CartItemResponseSchema, {
   surface: 'store',
   route: '/wc/store/v1/cart/items',
   kind: 'response',
+  alsoAt: ['/wc/store/v1/cart/items/(?P<key>[\\w-]{32})'],
 });
 schemaRegistry.add(CartItemAddRequestSchema, {
   surface: 'store',

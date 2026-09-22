@@ -6,6 +6,8 @@ schemaRegistry.add(BatchResponseSchema, {
   surface: 'store',
   route: '/wc/store/v1/batch',
   kind: 'response',
+  noUpstreamSchema:
+    'WooCommerce publishes no response schema for batch requests; each item mirrors the response of the batched route.',
 });
 schemaRegistry.add(BatchRequestSchema, {
   surface: 'store',

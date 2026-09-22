@@ -81,6 +81,12 @@ export type AdminRefundFeeLine = z.infer<typeof AdminRefundFeeLineSchema>;
 
 export const AdminRefundSchema = z.looseObject({
   id: z.number().describe('Unique identifier for the resource.'),
+  parent_id: z
+    .number()
+    .optional()
+    .describe(
+      'Parent order ID. Only returned by `/refunds`, not by the order-scoped routes.'
+    ),
   date_created: z
     .string()
     .describe("The date the order refund was created, in the site's timezone."),

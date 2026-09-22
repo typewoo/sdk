@@ -59,7 +59,7 @@ export const AdminProductReviewQueryParamsSchema = z.looseObject({
     .optional()
     .describe('Sort collection by object attribute.'),
   reviewer: z
-    .array(z.string())
+    .array(z.number())
     .optional()
     .describe('Limit result set to reviews assigned to specific user IDs.'),
   reviewer_exclude: z

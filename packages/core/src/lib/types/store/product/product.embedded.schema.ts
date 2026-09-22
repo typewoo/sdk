@@ -10,6 +10,7 @@ export const ProductEmbeddedAttributeResponseSchema = z.looseObject({
       id: z.number(),
       name: z.string(),
       slug: z.string(),
+      default: z.boolean().describe('If this is a default attribute'),
     })
   ),
 });

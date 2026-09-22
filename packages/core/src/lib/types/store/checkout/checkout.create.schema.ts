@@ -21,13 +21,25 @@ export const CheckoutCreateRequestSchema = z.looseObject({
     .optional()
     .describe('Note added to the order by the customer during checkout.'),
   /**
-   * The ID of the payment method being used to process the payment.
+   * The ID of the payment method. Any gateway enabled on the store is valid,
+   * so this is not an enum (WC's schema only lists the gateways enabled on
+   * the site it was generated from).
    */
   payment_method: z
-    .enum(['', 'bacs', 'cheque', 'cod'])
+    .string()
     .optional()
     .describe(
       'The ID of the payment method being used to process the payment.'
+    ),
+  /**
+   * Data to pass through to the payment method when processing payment,
+   * e.g. a Stripe payment method ID. Not declared in WC's schema.
+   */
+  payment_data: z
+    .array(z.looseObject({ key: z.string(), value: z.string() }))
+    .optional()
+    .describe(
+      'Data to pass through to the payment method when processing payment.'
     ),
   additional_fields: z
     .record(z.string(), z.unknown())

@@ -1,5 +1,9 @@
 import { schemaRegistry } from '../../schema-registry.js';
 import {
+  ANALYTICS_STATS_INTERVAL_ID_BUG,
+  ANALYTICS_STATS_SEGMENT_LABEL_FIELDS,
+} from '../stats.shared.js';
+import {
   AnalyticsOrderSchema,
   AnalyticsOrdersStatsResponseSchema,
 } from './orders.schema.js';
@@ -23,6 +27,8 @@ schemaRegistry.add(AnalyticsOrdersStatsResponseSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/orders/stats',
   kind: 'response',
+  undocumented: ANALYTICS_STATS_SEGMENT_LABEL_FIELDS,
+  knownSchemaBugs: [ANALYTICS_STATS_INTERVAL_ID_BUG],
 });
 schemaRegistry.add(AnalyticsOrdersStatsQueryParamsSchema, {
   surface: 'analytics',

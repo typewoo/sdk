@@ -1,9 +1,33 @@
 import { z } from 'zod';
+import { AdminMetaDataSchema } from '../meta-data.schema.js';
 import {
   AdminOrderAddress,
   AdminOrderMetaData,
   WC_CURRENCIES,
 } from './order.js';
+
+/**
+ * A line item `meta_data` entry. On top of the raw key/value, WooCommerce
+ * adds the formatted label and value it shows in the admin UI.
+ */
+export const AdminOrderLineItemMetaDataSchema = AdminMetaDataSchema.extend({
+  display_key: z.string().optional().describe('Meta key for UI display.'),
+  display_value: z.string().optional().describe('Meta value for UI display.'),
+});
+
+export type AdminOrderLineItemMetaData = z.infer<
+  typeof AdminOrderLineItemMetaDataSchema
+>;
+
+/**
+ * Image ID of a line item's product. WooCommerce documents an integer, but
+ * returns an empty string when the product has no image.
+ */
+const AdminOrderLineItemImageIdSchema = z
+  .union([z.number(), z.string()])
+  .describe(
+    'Image ID. An empty string when the product has no image, otherwise the attachment ID.'
+  );
 
 /**
  * Line item in an order
@@ -26,14 +50,26 @@ export const AdminOrderLineItemSchema = z.looseObject({
       subtotal: z.string(),
     })
   ),
-  meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  meta_data: z.array(AdminOrderLineItemMetaDataSchema).describe('Meta data.'),
   sku: z.string(),
-  price: z.string(),
+  global_unique_id: z
+    .string()
+    .nullable()
+    .describe(
+      'GTIN, UPC, EAN or ISBN. Null when the product no longer exists.'
+    ),
+  price: z.number().describe('Product price.'),
   image: z.object({
-    id: z.string(),
+    id: AdminOrderLineItemImageIdSchema,
     src: z.string(),
   }),
-  parent_name: z.string().optional(),
+  parent_name: z
+    .string()
+    .nullable()
+    .optional()
+    .describe(
+      'Parent product name if the product is a variation, otherwise null.'
+    ),
 });
 
 export type AdminOrderLineItem = z.infer<typeof AdminOrderLineItemSchema>;
@@ -109,28 +145,27 @@ export const AdminOrderCouponLineSchema = z.looseObject({
   discount: z.string(),
   discount_tax: z.string(),
   meta_data: z.array(AdminOrderMetaData).describe('Meta data.'),
+  discount_type: z.string().describe('Discount type.'),
+  nominal_amount: z
+    .number()
+    .describe(
+      'Discount amount as defined in the coupon (absolute value or a percent, depending on the discount type).'
+    ),
+  free_shipping: z
+    .boolean()
+    .describe('Whether the coupon grants free shipping or not.'),
 });
 
 export type AdminOrderCouponLine = z.infer<typeof AdminOrderCouponLineSchema>;
 
 /**
- * Order refund
+ * Refund summary embedded in an order's `refunds` list. Fetch the full
+ * refund from `/orders/{id}/refunds/{refund_id}`.
  */
 export const AdminOrderRefundSchema = z.looseObject({
-  id: z.number(),
-  date_created: z.string().optional(),
-  date_created_gmt: z.string().optional(),
-  amount: z.string().optional(),
-  reason: z.string().optional(),
-  refunded_by: z.number().optional(),
-  refunded_payment: z.boolean().optional(),
-  meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
-  line_items: z
-    .array(AdminOrderLineItemSchema)
-    .optional()
-    .describe('Line items data.'),
-  api_refund: z.boolean().optional(),
-  api_restock: z.boolean().optional(),
+  id: z.number().describe('Refund ID.'),
+  reason: z.string().describe('Refund reason.'),
+  total: z.string().describe('Refund total (negative, e.g. "-5.00").'),
 });
 
 export type AdminOrderRefund = z.infer<typeof AdminOrderRefundSchema>;

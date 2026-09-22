@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import {
+  analyticsStatsIntervalSchema,
+  analyticsStatsSegmentSchema,
+} from '../stats.shared.js';
 
-/**
- * Revenue stats totals/subtotals shape
- */
-export const AnalyticsRevenueStatsSchema = z.looseObject({
+const revenueStatsFields = {
   orders_count: z.number().describe('Number of orders.'),
   num_items_sold: z.number().describe('Items sold.'),
   gross_sales: z.number().describe('Gross sales.'),
@@ -14,21 +15,38 @@ export const AnalyticsRevenueStatsSchema = z.looseObject({
   taxes: z.number().describe('Total of taxes.'),
   shipping: z.number().describe('Total of shipping.'),
   net_revenue: z.number().describe('Net sales.'),
+};
+
+/**
+ * Subtotals of a single revenue stats segment. The API omits `gross_sales`
+ * here, although WC's schema declares it.
+ */
+export const AnalyticsRevenueSegmentSchema = analyticsStatsSegmentSchema(
+  z.looseObject({
+    ...revenueStatsFields,
+    gross_sales: revenueStatsFields.gross_sales.optional(),
+  })
+);
+export type AnalyticsRevenueSegment = z.infer<
+  typeof AnalyticsRevenueSegmentSchema
+>;
+
+/**
+ * Revenue stats totals/subtotals shape
+ */
+export const AnalyticsRevenueStatsSchema = z.looseObject({
+  ...revenueStatsFields,
   products: z.number().optional().describe('Products sold.'),
   segments: z
-    .array(z.looseObject({}))
+    .array(AnalyticsRevenueSegmentSchema)
     .describe('Reports data grouped by segment condition.'),
 });
 export type AnalyticsRevenueStats = z.infer<typeof AnalyticsRevenueStatsSchema>;
 
-export const AnalyticsRevenueIntervalSchema = z.looseObject({
-  interval: z.string(),
-  date_start: z.string(),
-  date_start_gmt: z.string(),
-  date_end: z.string(),
-  date_end_gmt: z.string(),
-  subtotals: AnalyticsRevenueStatsSchema,
-});
+/** Interval subtotals: same as the totals, minus `products`. */
+export const AnalyticsRevenueIntervalSchema = analyticsStatsIntervalSchema(
+  AnalyticsRevenueStatsSchema.omit({ products: true })
+);
 export type AnalyticsRevenueInterval = z.infer<
   typeof AnalyticsRevenueIntervalSchema
 >;

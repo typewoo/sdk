@@ -7,7 +7,14 @@ import {
   AdminProduct,
   AdminProductCreateRequest,
   AdminProductUpdateRequest,
+  AdminProductDuplicateRequest,
+  AdminProductDuplicateResponse,
   AdminProductVariation,
+  AdminProductVariationCreateRequest,
+  AdminProductVariationUpdateRequest,
+  AdminProductVariationQueryParams,
+  AdminProductVariationGenerateRequest,
+  AdminProductVariationGenerateResponse,
   ProductCustomFieldNameQueryParams,
 } from '../../types/index.js';
 import { RequestOptions } from '../../types/request.js';
@@ -143,17 +150,20 @@ export class AdminProductService extends BaseService {
   }
 
   /**
-   * Duplicate a product
+   * Duplicate a product. Fields in `product` override the copied values.
+   *
+   * WooCommerce returns the new product's raw `WC_Product::get_data()`, not
+   * the REST product shape; call `getById(data.id)` for the latter.
    */
   async duplicate(
     id: number,
-    product?: AdminProductUpdateRequest,
+    product?: AdminProductDuplicateRequest,
     options?: RequestOptions
-  ): Promise<ApiResult<AdminProduct>> {
+  ): Promise<ApiResult<AdminProductDuplicateResponse>> {
     const url = `/${this.endpoint}/${id}/duplicate`;
     const { data, error } = await this.http.post<
-      AdminProduct,
-      AdminProductUpdateRequest
+      AdminProductDuplicateResponse,
+      AdminProductDuplicateRequest
     >(url, product || {}, options);
 
     return { data, error };
@@ -164,11 +174,14 @@ export class AdminProductService extends BaseService {
    */
   listVariations(
     productId: number,
-    params?: AdminProductQueryParams,
+    params?: AdminProductVariationQueryParams,
     options?: RequestOptions
-  ): PaginatedRequest<AdminProductVariation[], AdminProductQueryParams> {
+  ): PaginatedRequest<
+    AdminProductVariation[],
+    AdminProductVariationQueryParams
+  > {
     const request = async (
-      pageParams?: AdminProductQueryParams
+      pageParams?: AdminProductVariationQueryParams
     ): Promise<ApiPaginationResult<AdminProductVariation[]>> => {
       const query = pageParams
         ? qs.stringify(pageParams, { encode: false })
@@ -215,13 +228,13 @@ export class AdminProductService extends BaseService {
    */
   async createVariation(
     productId: number,
-    variation: Partial<AdminProductVariation>,
+    variation: AdminProductVariationCreateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations`;
     const { data, error } = await this.http.post<
       AdminProductVariation,
-      Partial<AdminProductVariation>
+      AdminProductVariationCreateRequest
     >(url, variation, options);
 
     return { data, error };
@@ -233,13 +246,13 @@ export class AdminProductService extends BaseService {
   async updateVariation(
     productId: number,
     variationId: number,
-    variation: Partial<AdminProductVariation>,
+    variation: AdminProductVariationUpdateRequest,
     options?: RequestOptions
   ): Promise<ApiResult<AdminProductVariation>> {
     const url = `/${this.endpoint}/${productId}/variations/${variationId}`;
     const { data, error } = await this.http.put<
       AdminProductVariation,
-      Partial<AdminProductVariation>
+      AdminProductVariationUpdateRequest
     >(url, variation, options);
 
     return { data, error };
@@ -269,16 +282,13 @@ export class AdminProductService extends BaseService {
    */
   async generateVariations(
     productId: number,
-    options?: {
-      delete?: boolean;
-      default_values?: Partial<AdminProductVariation>;
-    },
+    options?: AdminProductVariationGenerateRequest,
     requestOptions?: RequestOptions
-  ): Promise<ApiResult<{ count: number }>> {
+  ): Promise<ApiResult<AdminProductVariationGenerateResponse>> {
     const url = `/${this.endpoint}/${productId}/variations/generate`;
     const { data, error } = await this.http.post<
-      { count: number },
-      typeof options
+      AdminProductVariationGenerateResponse,
+      AdminProductVariationGenerateRequest
     >(url, options || {}, requestOptions);
 
     return { data, error };

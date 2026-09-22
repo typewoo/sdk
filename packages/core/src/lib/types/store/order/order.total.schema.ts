@@ -21,7 +21,13 @@ export const OrderTotalResponseSchema = z.looseObject({
       'Total tax on shipping. If shipping has not been calculated, a null response will be sent.'
     ),
   tax_lines: z
-    .array(z.unknown())
+    .array(
+      z.looseObject({
+        name: z.string().describe('The name of the tax.'),
+        price: z.string().describe('The amount of tax charged.'),
+        rate: z.string().describe('The rate at which tax is applied.'),
+      })
+    )
     .describe('Lines of taxes applied to items and shipping.'),
   currency_code: z
     .string()

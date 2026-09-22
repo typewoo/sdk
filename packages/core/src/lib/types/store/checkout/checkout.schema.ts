@@ -22,11 +22,18 @@ export const CheckoutResponseSchema = z.looseObject({
     .number()
     .describe('Customer ID if registered. Will return 0 for guests.'),
   billing_address:
-    CheckoutBillingResponseSchema.optional().describe('Billing address.'),
-  shipping_address:
-    CheckoutShippingResponseSchema.optional().describe('Shipping address.'),
+    // Responses always include every address key (empty strings when unset).
+    CheckoutBillingResponseSchema.required().describe('Billing address.'),
+  shipping_address: CheckoutShippingResponseSchema.required()
+    .optional()
+    .describe('Shipping address.'),
+  /**
+   * The ID of the payment method. Any gateway enabled on the store is valid,
+   * so this is not an enum (WC's schema only lists the gateways enabled on
+   * the site it was generated from).
+   */
   payment_method: z
-    .enum(['', 'bacs', 'cheque', 'cod'])
+    .string()
     .optional()
     .describe(
       'The ID of the payment method being used to process the payment.'
@@ -40,7 +47,12 @@ export const CheckoutResponseSchema = z.looseObject({
           'Status of the payment returned by the gateway. One of success, pending, failure, error.'
         ),
       payment_details: z
-        .array(z.record(z.string(), z.unknown()))
+        .array(
+          z.looseObject({
+            key: z.string().optional(),
+            value: z.string().optional(),
+          })
+        )
         .optional()
         .describe('An array of data being returned from the payment gateway.'),
       redirect_url: z

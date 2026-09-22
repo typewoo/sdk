@@ -1,4 +1,5 @@
 import { schemaRegistry } from '../../schema-registry.js';
+import { ANALYTICS_STATS_INTERVAL_ID_BUG } from '../stats.shared.js';
 import {
   AnalyticsDownloadSchema,
   AnalyticsDownloadsStatsResponseSchema,
@@ -23,6 +24,7 @@ schemaRegistry.add(AnalyticsDownloadsStatsResponseSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/downloads/stats',
   kind: 'response',
+  knownSchemaBugs: [ANALYTICS_STATS_INTERVAL_ID_BUG],
 });
 schemaRegistry.add(AnalyticsDownloadsStatsQueryParamsSchema, {
   surface: 'analytics',

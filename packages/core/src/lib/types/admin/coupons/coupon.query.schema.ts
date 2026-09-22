@@ -86,6 +86,6 @@ export const AdminCouponQueryParamsSchema = z.looseObject({
     .describe('Limit result set to resources with a specific code.'),
 });
 
-export type AdminCouponQueryParams = z.infer<
+export type AdminCouponQueryParams = z.input<
   typeof AdminCouponQueryParamsSchema
 >;

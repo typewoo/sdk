@@ -1,11 +1,12 @@
 import { z } from 'zod';
+import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 import {
   AdminProductMetaData,
   AdminProductImage,
   AdminProductDimensions,
 } from './product.js';
 import {
-  AdminProductAttributeSchema,
+  AdminProductAttributeInputSchema,
   AdminProductDefaultAttributeSchema,
   AdminDownloadableFileSchema,
 } from './product.schema.js';
@@ -151,7 +152,7 @@ export const AdminProductUpdateRequestSchema = z.looseObject({
     .describe('List of brands.'),
   images: z.array(AdminProductImage).optional().describe('List of images.'),
   attributes: z
-    .array(AdminProductAttributeSchema)
+    .array(AdminProductAttributeInputSchema)
     .optional()
     .describe('List of attributes.'),
   default_attributes: z
@@ -162,7 +163,10 @@ export const AdminProductUpdateRequestSchema = z.looseObject({
     .number()
     .optional()
     .describe('Menu order, used to custom sort products.'),
-  meta_data: z.array(AdminProductMetaData).optional().describe('Meta data.'),
+  meta_data: z
+    .array(AdminMetaDataInputSchema)
+    .optional()
+    .describe('Meta data.'),
   date_created: z
     .string()
     .nullable()

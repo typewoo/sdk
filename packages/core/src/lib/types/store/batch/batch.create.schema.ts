@@ -2,9 +2,12 @@ import { z } from 'zod';
 
 export const BatchRequestItemSchema = z.looseObject({
   /**
-   * HTTP method for the request
+   * HTTP method for the request. Defaults to `POST` when omitted.
    */
-  method: z.enum(['POST', 'PUT', 'PATCH', 'DELETE']),
+  method: z
+    .enum(['POST', 'PUT', 'PATCH', 'DELETE'])
+    .default('POST')
+    .describe('HTTP method for the request. Defaults to POST.'),
 
   /**
    * API path for the request (relative to WooCommerce Store API)
@@ -23,7 +26,7 @@ export const BatchRequestItemSchema = z.looseObject({
     .record(z.string(), z.union([z.string(), z.array(z.string())]))
     .optional(),
 });
-export type BatchRequestItem = z.infer<typeof BatchRequestItemSchema>;
+export type BatchRequestItem = z.input<typeof BatchRequestItemSchema>;
 
 export const BatchRequestSchema = z.looseObject({
   /**
@@ -42,4 +45,4 @@ export const BatchRequestSchema = z.looseObject({
    */
   requests: z.array(BatchRequestItemSchema).max(25),
 });
-export type BatchRequest = z.infer<typeof BatchRequestSchema>;
+export type BatchRequest = z.input<typeof BatchRequestSchema>;

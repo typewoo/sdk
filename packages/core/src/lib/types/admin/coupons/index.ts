@@ -18,6 +18,13 @@ schemaRegistry.add(AdminCouponSchema, {
     'usage_limit',
     'usage_limit_per_user',
   ],
+  knownSchemaBugs: [
+    {
+      field: 'used_by',
+      reason:
+        'Declared as integer user IDs, but also holds guest email addresses, so the API returns strings.',
+    },
+  ],
 });
 schemaRegistry.add(AdminCouponCreateRequestSchema, {
   surface: 'admin',
@@ -41,6 +48,13 @@ schemaRegistry.add(AdminCouponBatchResponseSchema, {
   surface: 'admin',
   route: '/wc/v3/coupons/batch',
   kind: 'response',
+  knownSchemaBugs: [
+    {
+      field: 'delete',
+      reason:
+        'The batch route publishes its request schema (IDs to delete); the response returns the deleted coupons.',
+    },
+  ],
 });
 // Note: WC batch endpoints expose the item schema (PATCH) in OPTIONS, not the
 // {create, update, delete} envelope. AdminCouponBatchRequestSchema is correct

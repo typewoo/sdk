@@ -21,7 +21,7 @@ schemaRegistry.add(AdminProductAttributeCreateRequestSchema, {
 });
 schemaRegistry.add(AdminProductAttributeUpdateRequestSchema, {
   surface: 'admin',
-  route: '/wc/v3/products/attributes',
+  route: '/wc/v3/products/attributes/(?P<id>[\\d]+)',
   kind: 'request',
   method: 'PUT',
 });
@@ -44,7 +44,8 @@ schemaRegistry.add(AdminProductAttributeTermCreateRequestSchema, {
 });
 schemaRegistry.add(AdminProductAttributeTermUpdateRequestSchema, {
   surface: 'admin',
-  route: '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms',
+  route:
+    '/wc/v3/products/attributes/(?P<attribute_id>[\\d]+)/terms/(?P<id>[\\d]+)',
   kind: 'request',
   method: 'PUT',
 });

@@ -1,15 +1,16 @@
 import { z } from 'zod';
+import { AdminMetaDataInputSchema } from '../meta-data.schema.js';
 import {
   AdminOrderAddress,
   AdminOrderMetaData,
   WC_CURRENCIES,
 } from './order.js';
 import {
-  AdminOrderLineItemSchema,
-  AdminOrderShippingLineSchema,
-  AdminOrderFeeLineSchema,
-  AdminOrderCouponLineSchema,
-} from './order.schema.js';
+  AdminOrderLineItemInputSchema,
+  AdminOrderShippingLineInputSchema,
+  AdminOrderFeeLineInputSchema,
+  AdminOrderCouponLineInputSchema,
+} from './order.create.schema.js';
 
 /**
  * Order request parameters for PUT /orders/{id} (update).
@@ -49,21 +50,24 @@ export const AdminOrderUpdateRequestSchema = z.looseObject({
   payment_method: z.string().optional().describe('Payment method ID.'),
   payment_method_title: z.string().optional().describe('Payment method title.'),
   transaction_id: z.string().optional().describe('Unique transaction ID.'),
-  meta_data: z.array(AdminOrderMetaData).optional().describe('Meta data.'),
+  meta_data: z
+    .array(AdminMetaDataInputSchema)
+    .optional()
+    .describe('Meta data.'),
   line_items: z
-    .array(AdminOrderLineItemSchema.partial())
+    .array(AdminOrderLineItemInputSchema)
     .optional()
     .describe('Line items data.'),
   shipping_lines: z
-    .array(AdminOrderShippingLineSchema.partial())
+    .array(AdminOrderShippingLineInputSchema)
     .optional()
     .describe('Shipping lines data.'),
   fee_lines: z
-    .array(AdminOrderFeeLineSchema.partial())
+    .array(AdminOrderFeeLineInputSchema)
     .optional()
     .describe('Fee lines data.'),
   coupon_lines: z
-    .array(AdminOrderCouponLineSchema.partial())
+    .array(AdminOrderCouponLineInputSchema)
     .optional()
     .describe('Coupons line data.'),
   set_paid: z

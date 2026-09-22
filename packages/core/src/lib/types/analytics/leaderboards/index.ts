@@ -7,6 +7,13 @@ schemaRegistry.add(AnalyticsLeaderboardSchema, {
   surface: 'analytics',
   route: '/wc-analytics/leaderboards',
   kind: 'response',
+  knownSchemaBugs: [
+    {
+      field: 'headers',
+      reason:
+        'Declared as an array of arrays, but the API returns { label } objects.',
+    },
+  ],
 });
 schemaRegistry.add(AnalyticsLeaderboardsQueryParamsSchema, {
   surface: 'analytics',
@@ -18,6 +25,13 @@ schemaRegistry.add(AnalyticsLeaderboardAllowedSchema, {
   surface: 'analytics',
   route: '/wc-analytics/leaderboards/allowed',
   kind: 'response',
+  knownSchemaBugs: [
+    {
+      field: 'headers',
+      reason:
+        'Declared as an array of arrays, but the API returns { label } objects.',
+    },
+  ],
 });
 
 export * from './leaderboards.schema.js';

@@ -1,5 +1,9 @@
 import { schemaRegistry } from '../../schema-registry.js';
 import {
+  ANALYTICS_STATS_INTERVAL_ID_BUG,
+  ANALYTICS_STATS_SEGMENT_LABEL_ENUM_BUGS,
+} from '../stats.shared.js';
+import {
   AnalyticsVariationSchema,
   AnalyticsVariationsStatsResponseSchema,
 } from './variations.schema.js';
@@ -23,6 +27,14 @@ schemaRegistry.add(AnalyticsVariationsStatsResponseSchema, {
   surface: 'analytics',
   route: '/wc-analytics/reports/variations/stats',
   kind: 'response',
+  undocumented: [
+    'totals.segments[].subtotals.variations_count',
+    'intervals[].subtotals.segments[].subtotals.variations_count',
+  ],
+  knownSchemaBugs: [
+    ANALYTICS_STATS_INTERVAL_ID_BUG,
+    ...ANALYTICS_STATS_SEGMENT_LABEL_ENUM_BUGS,
+  ],
 });
 schemaRegistry.add(AnalyticsVariationsStatsQueryParamsSchema, {
   surface: 'analytics',

@@ -6,6 +6,7 @@ schemaRegistry.add(ProductCategoryResponseSchema, {
   surface: 'store',
   route: '/wc/store/v1/products/categories',
   kind: 'response',
+  alsoAt: ['/wc/store/v1/products/categories/(?P<id>[\\d]+)'],
   // WC JSON Schema declares image as non-nullable, but the live API returns
   // null when no image has been assigned to the category.
   knownNullable: ['image'],

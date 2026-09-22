@@ -10,9 +10,17 @@ schemaRegistry.add(AdminPaymentGatewaySchema, {
 });
 schemaRegistry.add(AdminPaymentGatewayUpdateRequestSchema, {
   surface: 'admin',
-  route: '/wc/v3/payment_gateways',
+  route: '/wc/v3/payment_gateways/(?P<id>[\\w-]+)',
   kind: 'request',
   method: 'PUT',
+  knownSchemaBugs: [
+    {
+      field: 'settings',
+      driftKinds: ['type-mismatch', 'missing-in-sdk'],
+      reason:
+        "The update handler takes settings as a map of setting ID to value; the published schema describes one setting's response shape.",
+    },
+  ],
 });
 schemaRegistry.add(AdminPaymentGatewayQueryParamsSchema, {
   surface: 'admin',

@@ -10,8 +10,8 @@ schemaRegistry.add(ProductCollectionDataResponseSchema, {
 schemaRegistry.add(ProductCollectionDataRequestSchema, {
   surface: 'store',
   route: '/wc/store/v1/products/collection-data',
-  kind: 'request',
-  method: 'POST',
+  kind: 'query',
+  method: 'GET',
 });
 
 export * from './product.collection.data.attribute.counts.schema.js';

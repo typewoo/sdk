@@ -2,6 +2,7 @@
  * Export all REST API types with selective exports to avoid conflicts
  */
 export * from './common.types.js';
+export * from './batch.schema.js';
 export * from './products/index.js';
 export * from './orders/index.js';
 export * from './customers/index.js';
@@ -42,3 +43,5 @@ export type {
   AdminProductAttributeTermUpdateRequest,
   AdminProductAttributeTermQueryParams,
 } from './attributes/index.js';
+export * from './deprecated.js';
+export * from './meta-data.schema.js';
