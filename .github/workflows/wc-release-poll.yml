@@ -112,10 +112,15 @@ jobs:
         run: |
           file=scripts/types-sync/support-window.json
           # Append the new tag if not already present, then set latest to it.
+          # `unique` would sort as strings (11.10.0 before 11.2.0), so keep
+          # insertion order instead.
           jq --arg v "$TAG" '
-            (.versions |= (. + [$v] | unique))
+            (.versions |= (if index($v) then . else . + [$v] end))
             | .latest = $v
           ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+          # jq expands every array; match the repo's prettier style so the
+          # PR passes the format check.
+          pnpm exec prettier --write "$file"
 
       # PRs opened with the default GITHUB_TOKEN don't trigger other
       # workflows, so CI wouldn't run on them. Set the TYPES_SYNC_PR_TOKEN
