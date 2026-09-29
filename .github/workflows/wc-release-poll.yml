@@ -72,7 +72,7 @@ jobs:
       - uses: pnpm/action-setup@v6
         if: steps.seen.outputs.handled == 'false'
         with:
-          version: 10.20.0
+          version: 10.34.6
       - uses: actions/setup-node@v6
         if: steps.seen.outputs.handled == 'false'
         with:
