@@ -72,7 +72,7 @@
     "@playwright/test": "1.63.0",
     "@schematics/angular": "20.3.13",
     "@swc-node/register": "1.12.1",
-    "@swc/core": "1.16.2",
+    "@swc/core": "1.16.13",
     "@swc/helpers": "0.5.23",
     "@types/jest": "^30.0.0",
     "@types/node": "24.19.0",
