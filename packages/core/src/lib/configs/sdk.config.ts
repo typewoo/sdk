@@ -263,15 +263,17 @@ export interface ResolvedSdkConfig {
     accessToken?: ResolvedStorageConfig;
     refreshToken?: ResolvedStorageConfig;
   };
+  /** Has no storage while disabled. */
   nonce?: {
     key?: string;
     disabled?: boolean;
-    storage: StorageProvider;
+    storage?: StorageProvider;
   };
+  /** Has no storage while disabled. */
   cartToken?: {
     key?: string;
     disabled?: boolean;
-    storage: StorageProvider;
+    storage?: StorageProvider;
   };
   axiosConfig?: AxiosRequestConfig;
   suppressStorageWarnings?: boolean;
@@ -390,27 +392,29 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
   }
 
   // Resolve auth storage providers
-  // Auth is always initialized unless access token is explicitly disabled
+  // The token storages are initialized unless the access token is explicitly
+  // disabled; the other auth options apply either way.
   const accessTokenDisabled = config.auth?.accessToken?.disabled === true;
   const refreshTokenDisabled = config.auth?.refreshToken?.disabled === true;
 
+  resolved.auth = {
+    autoLoginUrl: config.auth?.autoLoginUrl,
+    fetchCartOnLogin: config.auth?.fetchCartOnLogin,
+    revokeTokenBeforeLogin: config.auth?.revokeTokenBeforeLogin,
+    clearSessionOnAuthChange: config.auth?.clearSessionOnAuthChange ?? true,
+  };
+
   if (!accessTokenDisabled) {
-    resolved.auth = {
-      autoLoginUrl: config.auth?.autoLoginUrl,
-      fetchCartOnLogin: config.auth?.fetchCartOnLogin,
-      revokeTokenBeforeLogin: config.auth?.revokeTokenBeforeLogin,
-      clearSessionOnAuthChange: config.auth?.clearSessionOnAuthChange ?? true,
-      accessToken: {
-        key: config.auth?.accessToken?.key,
-        disabled: config.auth?.accessToken?.disabled,
-        useInterceptor: config.auth?.accessToken?.useInterceptor,
-        storage: resolveStorageProvider(
-          config.auth?.accessToken?.storage,
-          config.auth?.accessToken?.key ?? 'typewoo_access_token',
-          'localstorage',
-          config.suppressStorageWarnings
-        ),
-      },
+    resolved.auth.accessToken = {
+      key: config.auth?.accessToken?.key,
+      disabled: config.auth?.accessToken?.disabled,
+      useInterceptor: config.auth?.accessToken?.useInterceptor,
+      storage: resolveStorageProvider(
+        config.auth?.accessToken?.storage,
+        config.auth?.accessToken?.key ?? 'typewoo_access_token',
+        'localstorage',
+        config.suppressStorageWarnings
+      ),
     };
 
     if (!refreshTokenDisabled) {
@@ -428,33 +432,35 @@ export const resolveConfig = (config: SdkConfig): ResolvedSdkConfig => {
     }
   }
 
-  // Resolve cart token storage
-  if (!config.cartToken?.disabled) {
-    resolved.cartToken = {
-      key: config.cartToken?.key,
-      disabled: config.cartToken?.disabled,
-      storage: resolveStorageProvider(
-        config.cartToken?.storage,
-        config.cartToken?.key ?? 'typewoo_cart_token',
-        'localstorage',
-        config.suppressStorageWarnings
-      ),
-    };
-  }
+  // Resolve cart token storage. A disabled cart token keeps its flag, which
+  // its interceptors check, and gets no storage.
+  resolved.cartToken = config.cartToken?.disabled
+    ? { key: config.cartToken.key, disabled: true }
+    : {
+        key: config.cartToken?.key,
+        disabled: config.cartToken?.disabled,
+        storage: resolveStorageProvider(
+          config.cartToken?.storage,
+          config.cartToken?.key ?? 'typewoo_cart_token',
+          'localstorage',
+          config.suppressStorageWarnings
+        ),
+      };
 
-  // Resolve nonce storage
-  if (!config.nonce?.disabled) {
-    resolved.nonce = {
-      key: config.nonce?.key,
-      disabled: config.nonce?.disabled,
-      storage: resolveStorageProvider(
-        config.nonce?.storage,
-        config.nonce?.key ?? 'typewoo_nonce',
-        'localstorage',
-        config.suppressStorageWarnings
-      ),
-    };
-  }
+  // Resolve nonce storage. A disabled nonce keeps its flag, which its
+  // interceptors check, and gets no storage.
+  resolved.nonce = config.nonce?.disabled
+    ? { key: config.nonce.key, disabled: true }
+    : {
+        key: config.nonce?.key,
+        disabled: config.nonce?.disabled,
+        storage: resolveStorageProvider(
+          config.nonce?.storage,
+          config.nonce?.key ?? 'typewoo_nonce',
+          'localstorage',
+          config.suppressStorageWarnings
+        ),
+      };
 
   return resolved;
 };
