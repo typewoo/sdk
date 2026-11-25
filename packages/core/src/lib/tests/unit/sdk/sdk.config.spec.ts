@@ -61,6 +61,37 @@ describe('resolveConfig()', () => {
     expect(cfg.auth?.accessToken?.storage.type).toBe('memory');
   });
 
+  it('keeps the disabled flag of nonce and cart token, without storage', () => {
+    const cfg = resolveConfig({
+      baseUrl: 'https://store.test',
+      nonce: { disabled: true },
+      cartToken: { disabled: true },
+    });
+    expect(cfg.nonce?.disabled).toBe(true);
+    expect(cfg.nonce?.storage).toBeUndefined();
+    expect(cfg.cartToken?.disabled).toBe(true);
+    expect(cfg.cartToken?.storage).toBeUndefined();
+  });
+
+  it('keeps the auth options when the access token is disabled', () => {
+    const cfg = resolveConfig({
+      baseUrl: 'https://store.test',
+      auth: {
+        autoLoginUrl: 'https://login.store.test',
+        fetchCartOnLogin: true,
+        revokeTokenBeforeLogin: true,
+        clearSessionOnAuthChange: false,
+        accessToken: { disabled: true },
+      },
+    });
+    expect(cfg.auth?.autoLoginUrl).toBe('https://login.store.test');
+    expect(cfg.auth?.fetchCartOnLogin).toBe(true);
+    expect(cfg.auth?.revokeTokenBeforeLogin).toBe(true);
+    expect(cfg.auth?.clearSessionOnAuthChange).toBe(false);
+    expect(cfg.auth?.accessToken).toBeUndefined();
+    expect(cfg.auth?.refreshToken).toBeUndefined();
+  });
+
   it('forwards global request callbacks', () => {
     const onError = vi.fn();
     const cfg = resolveConfig({
