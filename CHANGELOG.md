@@ -1,3 +1,30 @@
+## 4.0.2 (2026-11-25)
+
+### 🩹 Fixes
+
+- **core:** keep the disabled flag of the nonce and cart-token interceptors ([3737ec8](https://github.com/typewoo/sdk/commit/3737ec8))
+- **types-sync:** streamline version formatting in support-window.json ([53d3dd2](https://github.com/typewoo/sdk/commit/53d3dd2))
+- **workflow:** ensure unique version insertion and format support-window.json ([14719df](https://github.com/typewoo/sdk/commit/14719df))
+
+### 🧹 Chores
+
+- **deps:** update dependency vite to v6.4.3 ([fe7e16b](https://github.com/typewoo/sdk/commit/fe7e16b))
+- **deps:** update dependency axios to v1.20.0 ([5640b5a](https://github.com/typewoo/sdk/commit/5640b5a))
+- **deps:** update dependency @types/qs to v6.15.1 ([5989b92](https://github.com/typewoo/sdk/commit/5989b92))
+- **deps:** update vitest monorepo to v3.2.7 ([10f4711](https://github.com/typewoo/sdk/commit/10f4711))
+- **deps:** update dependency @playwright/test to v1.63.0 ([a21dd30](https://github.com/typewoo/sdk/commit/a21dd30))
+- **deps:** update dependency @types/node to v24.19.0 ([076dcb4](https://github.com/typewoo/sdk/commit/076dcb4))
+- **deps:** update dependency autoprefixer to v10.6.1 ([55fdb2e](https://github.com/typewoo/sdk/commit/55fdb2e))
+- **deps:** update swc monorepo ([240033d](https://github.com/typewoo/sdk/commit/240033d))
+- **deps:** update dependency dotenv to v17.4.2 ([d029212](https://github.com/typewoo/sdk/commit/d029212))
+- **deps:** update dependency eslint-plugin-playwright to v2.12.0 ([d45710f](https://github.com/typewoo/sdk/commit/d45710f))
+- **deps:** update dependency postcss to v8.5.28 ([476d5a7](https://github.com/typewoo/sdk/commit/476d5a7))
+- **deps:** update dependency esbuild to v0.28.2 ([2b3217e](https://github.com/typewoo/sdk/commit/2b3217e))
+- **deps:** update dependency rimraf to v6.1.3 ([36c7070](https://github.com/typewoo/sdk/commit/36c7070))
+- **deps:** update dependency ts-jest to v29.4.14 ([fcd3801](https://github.com/typewoo/sdk/commit/fcd3801))
+- **deps:** update eslint monorepo to v9.39.5 ([165514d](https://github.com/typewoo/sdk/commit/165514d))
+- **types-sync:** add WooCommerce 11.1.2 to support window ([01a94a4](https://github.com/typewoo/sdk/commit/01a94a4))
+
 ## 4.0.1 (2026-09-22)
 
 ### 🩹 Fixes
